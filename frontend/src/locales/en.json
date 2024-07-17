@@ -2,5 +2,9 @@
     "HomePage": {
         "title": "Home - Unica",
         "header": "Home"
+    },
+    "SettingsPage": {
+        "title": "Settings - Unica",
+        "header": "Settings"
     }
 }

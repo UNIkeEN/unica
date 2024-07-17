@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { Button } from "@chakra-ui/react";
 import { useTranslation } from 'react-i18next';
 
 const HomePage = () => {
@@ -10,6 +11,7 @@ const HomePage = () => {
         <meta name="headerText" content={t('HomePage.header')} />
       </Head>
       {/* {t('HomePage.header')} */}
+      <Button>Test</Button>
     </>
   );
 };

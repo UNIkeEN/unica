@@ -2,5 +2,9 @@
     "HomePage": {
         "title": "主页 - Unica",
         "header": "主页"
+    },
+    "SettingsPage": {
+        "title": "设置 - Unica",
+        "header": "设置"
     }
 }

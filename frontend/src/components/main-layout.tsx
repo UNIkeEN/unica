@@ -32,14 +32,14 @@ const MainLayout = ({ children }) => {
       <Box
         display={{ base: 'none', md: 'block' }}
         w="xs"
-        bg="gray.100"
+        bg="gray.50"
         p={4}
       >
         <MainSider />
       </Box>
 
       {/* Mobile Sidebar Drawer */}
-      <Drawer 
+      <Drawer
         placement="left" 
         onClose={onClose} 
         isOpen={isOpen} 
@@ -48,7 +48,7 @@ const MainLayout = ({ children }) => {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerBody bg="gray.100">
+          <DrawerBody bg="gray.50">
             <MainSider />
           </DrawerBody>
         </DrawerContent>
