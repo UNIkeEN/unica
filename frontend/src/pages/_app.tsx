@@ -1,14 +1,32 @@
-import "@/styles/globals.css";
-import type { AppProps } from "next/app";
-import { ChakraProvider } from '@chakra-ui/react'
-import MainLayout from "@/components/main-layout";
+import type { AppProps } from 'next/app';
+import { ChakraProvider } from '@chakra-ui/react';
+import { appWithTranslation } from 'next-i18next';
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import { localeResources } from '@/locales';
+import MainLayout from '@/components/main-layout';
+import '@/styles/globals.css';
 
-export default function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
+
+  i18n
+  .use(initReactI18next) 
+  .init({
+    resources: localeResources,
+    lng: 'zh_Hans', 
+    fallbackLng: 'en',
+    interpolation: {
+      escapeValue: false,
+    },
+  });
+
   return (
     <ChakraProvider>
       <MainLayout>
         <Component {...pageProps} />
       </MainLayout>
     </ChakraProvider>
-  )
+  );
 }
+
+export default appWithTranslation(App);
