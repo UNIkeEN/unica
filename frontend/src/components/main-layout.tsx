@@ -9,7 +9,9 @@ import {
 	DrawerCloseButton,
 	useDisclosure,
 	IconButton,
-  Text
+  Text,
+  Show, 
+  Hide
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import MainSider from '@/components/main-sider';
@@ -29,30 +31,34 @@ const MainLayout = ({ children }) => {
   return (
     <Flex h="100vh">
       {/* Desktop Sidebar */}
-      <Box
-        display={{ base: 'none', md: 'block' }}
-        w="xs"
-        bg="gray.50"
-        p={4}
-      >
-        <MainSider />
-      </Box>
+      <Show above='md'>
+        <Box
+          display={{ base: 'none', md: 'block' }}
+          w="xs"
+          bg="gray.50"
+          p={4}
+        >
+          <MainSider />
+        </Box>
+      </Show>
 
       {/* Mobile Sidebar Drawer */}
-      <Drawer
-        placement="left" 
-        onClose={onClose} 
-        isOpen={isOpen} 
-        size="xs"
-      >
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerBody bg="gray.50">
-            <MainSider />
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
+      <Hide above='md'>
+        <Drawer
+          placement="left" 
+          onClose={onClose} 
+          isOpen={isOpen} 
+          size="xs"
+        >
+          <DrawerOverlay />
+          <DrawerContent>
+            {/* <DrawerCloseButton /> */}
+            <DrawerBody bg="gray.50" pt={4}>
+              <MainSider />
+            </DrawerBody>
+          </DrawerContent>
+        </Drawer>
+      </Hide>
 
       {/* Main Content Area */}
       <Box flex="1">
