@@ -4,6 +4,7 @@ import { appWithTranslation } from 'next-i18next';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { localeResources } from '@/locales';
+import { ToastContextProvider } from '@/contexts/toast';
 import MainLayout from '@/components/main-layout';
 import theme from '../theme';
 import '@/styles/globals.css';
@@ -23,9 +24,11 @@ function App({ Component, pageProps }: AppProps) {
 
   return (
     <ChakraProvider theme={theme}>
-      <MainLayout>
-        <Component {...pageProps} />
-      </MainLayout>
+      <ToastContextProvider>
+        <MainLayout>
+          <Component {...pageProps} />
+        </MainLayout>
+      </ToastContextProvider>
     </ChakraProvider>
   );
 }
