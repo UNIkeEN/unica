@@ -1,23 +1,32 @@
 import React from 'react';
-import { Button, ButtonProps, Text, useColorModeValue } from '@chakra-ui/react';
+import { Button, ButtonProps, useColorModeValue, useTheme } from '@chakra-ui/react';
 
 interface SelectableButtonProps extends ButtonProps {
   isSelected?: boolean;
-  selectedColor?: string;
 }
-  
-const SelectableButton: React.FC<SelectableButtonProps> = ({ isSelected = false, selectedColor = 'gray.800', children, ...props }) => {
-  const selectedBg = useColorModeValue('gray.200', 'gray.700');
+
+const SelectableButton: React.FC<SelectableButtonProps> = ({ isSelected = false, colorScheme = 'gray', children, ...props }) => {
+  const theme = useTheme();
+
+  const selectedBg = theme.colors[colorScheme][200];
+  const selectedColor = theme.colors[colorScheme][900];
+  const defaultColor = theme.colors[colorScheme][500];
 
   return (
     <Button
       variant='ghost'
       size='sm'
       bg={isSelected ? selectedBg : 'transparent'}
-      color={isSelected ? selectedColor : 'gray.500'}
+      color={isSelected ? selectedColor : defaultColor}
       fontWeight="normal"
       textAlign="left"
       justifyContent="flex-start"
+      _hover={{
+        bg: isSelected ? selectedBg : theme.colors[colorScheme][100],
+      }}
+      _active={{
+        bg: theme.colors[colorScheme][200],
+      }}
       {...props}
     >
       {children}

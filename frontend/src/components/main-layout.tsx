@@ -38,7 +38,7 @@ const MainLayout = ({ children }) => {
       <Show above='md'>
         <Box
           display={{ base: 'none', md: 'block' }}
-          w="xs"
+          w="2xs"
           bg="gray.50"
           p={4}
         >

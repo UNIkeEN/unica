@@ -11,14 +11,12 @@ interface NavMenuProps {
   items: MenuItem[];
   selectedKeys?: string[];
   onClick?: (value: string) => void;
-  selectedColor?: string;
 }
 
 const NavMenu: React.FC<NavMenuProps> = ({
   items,
   selectedKeys = [],
   onClick,
-  selectedColor = 'black',
 }) => {
   return (
     <VStack spacing={2} align="stretch">
@@ -26,7 +24,6 @@ const NavMenu: React.FC<NavMenuProps> = ({
         <SelectableButton
           key={item.value}
           isSelected={selectedKeys.includes(item.value)}
-          selectedColor={selectedColor}
           onClick={() => onClick && onClick(item.value)}
         >
           {item.label}
