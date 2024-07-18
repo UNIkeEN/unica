@@ -22,11 +22,13 @@ import SelectableButton from "@/components/selectable-button";
 import { Logout } from "@/services/auth";
 import AuthContext from "@/contexts/auth";
 import { 
-  FiHome, 
+  FiHome,
+  FiBook,
+  FiUsers,
   FiSettings, 
   FiGithub, 
   FiHelpCircle, 
-  FiLogOut 
+  FiLogOut,
 } from "react-icons/fi";
 
 const MainSider = () => {
@@ -43,13 +45,15 @@ const MainSider = () => {
 
   const topMenuItems = [
     { icon: FiHome, label: t('HomePage.header'), value: '/home' },
+    { icon: FiBook, label: t('MyProjectsPage.header'), value: '/projects' },
+    { icon: FiUsers, label: t('MyOrganizationsPage.header'), value: '/organizations' },
     { icon: FiSettings, label: t('SettingsPage.header'), value: '/settings' },
   ];
 
   return (
     <Flex direction="column" h="100%" justifyContent="space-between">
       <VStack spacing={8} align="stretch">
-        <Popover placement="bottom-start" closeOnBlur>
+        <Popover placement="bottom-start" closeOnBlur trigger="hover">
           <PopoverTrigger>
             <Button 
               variant='ghost'  
@@ -75,7 +79,11 @@ const MainSider = () => {
                   <SelectableButton
                     size="xs"
                     colorScheme="red"
-                    onClick={() => {Logout(); authCtx.onLogout();}}
+                    onClick={() => {
+                      authCtx.onLogout();
+                      Logout(); 
+                      router.push('/login');
+                    }}
                   >
                     <HStack spacing={2}>
                       <Icon as={FiLogOut} />
@@ -91,7 +99,6 @@ const MainSider = () => {
           items={topMenuItems.map((item) => ({
             value: item.value,
             label: 
-              <Link href={item.value}>
                 <HStack spacing={2}>
                   <Icon as={item.icon} />
                   <Text 
@@ -99,8 +106,8 @@ const MainSider = () => {
                     // fontWeight={router.asPath === item.value ? 'bold' : 'normal'}
                   >{item.label}</Text>
                 </HStack>
-              </Link>,
           }))}
+          onClick={(value) => {router.push(value)}}
           selectedKeys={[router.asPath]}/>
       </VStack>
       
@@ -116,7 +123,7 @@ const MainSider = () => {
           <IconButton
             as="a"
             target="_blank"
-            href="/help"
+            href="https://github.com/UNIkeEN/unica/wiki"
             variant='ghost'
             aria-label='Help'
             icon={<FiHelpCircle />}
