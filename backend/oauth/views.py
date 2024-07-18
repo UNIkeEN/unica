@@ -67,12 +67,13 @@ def auth_oauth(request, provider):
         user_info['email'] = claims['sub'] + "@sjtu.edu.cn"
 
     User = get_user_model()
-    user, created = User.objects.get_or_create(username=user_info.get('name'))
+    user, created = User.objects.get_or_create(username=user_info.get('email')) # use email as username to make it unique
     if user:
         login(request, user)
         if created:
             user.oauth_provider = provider
             user.email = user_info.get('email')
+            user.name = user_info.get('name')
             user.save()
         return JsonResponse({
                 "message": "login success", 
@@ -85,4 +86,4 @@ def auth_oauth(request, provider):
 @login_required
 def logout(request):
     logout(request)
-    return JsonResponse({'detail': '已登出。'})
+    return JsonResponse({'message': 'logout success'}, status=200)
