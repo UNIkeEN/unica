@@ -3,3 +3,4 @@ Django
 djangorestframework
 django-cors-headers
 Authlib
+requests
