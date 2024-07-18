@@ -15,6 +15,7 @@ const OAuthRedirectBack = () => {
 
   const doAuth = (code: string, state: string) => {
     let provider = router.query.provider as string;
+    
     if (provider === "jaccount") {
       jAccountAuth(code, state)
         .then((data) => {
@@ -36,8 +37,10 @@ const OAuthRedirectBack = () => {
   
   useEffect(()=>{
     if (authCtx.isLoggedIn) router.push('/home');
-    if (router.query.code && router.query.state) {
-      doAuth(router.query.code as string, router.query.state as string)
+    else {
+      if (router.query.code && router.query.state) {
+        doAuth(router.query.code as string, router.query.state as string)
+      }
     }
   },[router.query.code])
 

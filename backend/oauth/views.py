@@ -41,7 +41,6 @@ def login_oauth(request, provider):
 def auth_oauth(request, provider):    
     code = request.data.get('code')
     state = request.data.get('state')
-    print("!!! ", code, state)
     redirect_uri = request.session.get('redirect_uri')
     next = request.session.get('next')
     if provider not in oauth._clients:
@@ -69,7 +68,6 @@ def auth_oauth(request, provider):
 
     User = get_user_model()
     user, created = User.objects.get_or_create(username=user_info.get('name'))
-    print(user_info)
     if user:
         login(request, user)
         if created:
