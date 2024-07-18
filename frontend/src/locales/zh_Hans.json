@@ -12,6 +12,13 @@
             "need_login": "请先登录"
         }
     },
+    "MainSider": {
+        "user_popover": {
+            "button": {
+                "logout": "退出登录"
+            }
+        }
+    },
     "OAuthRedirectBack": {
         "title": "认证中 - Unica",
         "toast": {

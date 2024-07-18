@@ -12,6 +12,13 @@
             "need_login": "Please login first"
         }
     },
+    "MainSider": {
+        "user_popover": {
+            "button": {
+                "logout": "Logout"
+            }
+        }
+    },
     "OAuthRedirectBack": {
         "title": "Authenticating - Unica",
         "toast": {

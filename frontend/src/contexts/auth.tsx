@@ -3,6 +3,8 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '@/contexts/toast';
 import useLocalStorage from '@/hooks/useLocalStorage';
+import { UserBasicInfo } from '@/models/user';
+import { getUserBasicInfo } from '@/services/user';
 
 interface AuthContextType {
   token: string;
@@ -10,6 +12,8 @@ interface AuthContextType {
   onLogin: (token: string) => void;
   onLogout: () => void;
   checkLoginAndRedirect: () => boolean;
+  userInfo: UserBasicInfo,
+  updateUserInfo: () => void,
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -18,10 +22,13 @@ const AuthContext = createContext<AuthContextType>({
   onLogin: () => {},
   onLogout: () => {},
   checkLoginAndRedirect: () => false,
+  userInfo: {} as UserBasicInfo | undefined,
+  updateUserInfo: () => {},
 });
 
 export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [token, setToken] = useLocalStorage<string>('token', '');
+  const [userInfo, setUserInfo] = useState(undefined);
   const router = useRouter();
   const toast = useToast();
   const { t } = useTranslation();
@@ -30,10 +37,12 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   const loginHandler = useCallback((newToken: string) => {
     setToken(newToken);
+    updateUserInfo();
   }, [setToken]);
 
   const logoutHandler = useCallback(() => {
     setToken('');
+    setUserInfo(undefined);
     router.push('/login');
   }, [setToken, router]);
 
@@ -54,13 +63,25 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     return true;
   }
 
-  const contextValue = useMemo(() => ({
+  const updateUserInfo = () => {
+    try {
+      getUserBasicInfo().then((res) => {
+        setUserInfo(res);
+      });
+    } catch (error) {
+      setUserInfo(undefined);
+    }    
+  }
+
+  const contextValue = {
     token,
     isLoggedIn,
     onLogin: loginHandler,
     onLogout: logoutHandler,
     checkLoginAndRedirect: checkLoginAndRedirect,
-  }), [token, isLoggedIn, loginHandler, logoutHandler, checkLoginAndRedirect]);
+    userInfo,
+    updateUserInfo: updateUserInfo
+  };
 
   return (
     <AuthContext.Provider value={contextValue}>

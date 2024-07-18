@@ -1,4 +1,4 @@
-import { fetcher, request } from "@/services/request";
+import { request } from "@/services/request";
 
 export async function jAccountLogin(next = "/", params = "") {
     let redirect_uri = window.location.origin + `/oauth/redirect-back/jaccount/`;
@@ -12,14 +12,21 @@ export async function jAccountLogin(next = "/", params = "") {
 
 export async function jAccountAuth(code:string, state:string) {
     try {
-        const resp = await request.post("/auth/auth/jaccount/", {
+        const response = await request.post("/auth/auth/jaccount/", {
             code,
             state,
         });
-        return resp.data;
-    } catch (err) {
-        console.log(err);
-        throw err;
+        return response.data;
+    } catch (error) {
+        console.error('Failed to login:', error);
+        throw error;
     }
 }
 
+export async function Logout() {
+    try {
+        await request.post('/oauth/logout/');
+    } catch (error) {
+        console.error('Failed to logout:', error);
+    }
+};
