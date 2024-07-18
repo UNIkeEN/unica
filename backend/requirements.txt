@@ -1,0 +1,5 @@
+python-dotenv
+Django
+djangorestframework
+django-cors-headers
+Authlib
