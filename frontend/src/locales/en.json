@@ -3,6 +3,21 @@
         "title": "Home - Unica",
         "header": "Home"
     },
+    "LoginPage": {
+        "title": "Login - Unica",
+        "button": {
+            "jaccount": "Login via jAccount"
+        },
+        "toast": {
+            "need_login": "Please login first"
+        }
+    },
+    "OAuthRedirectBack": {
+        "title": "Authenticating - Unica",
+        "toast": {
+            "error": "Authentication failed"
+        }
+    },
     "SettingsPage": {
         "title": "Settings - Unica",
         "header": "Settings"

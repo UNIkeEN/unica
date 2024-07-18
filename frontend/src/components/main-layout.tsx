@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
 	Box,
 	Flex,
@@ -14,9 +14,13 @@ import {
   Hide
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
+import AuthContext from '@/contexts/auth';
 import MainSider from '@/components/main-sider';
 
 const MainLayout = ({ children }) => {
+  const authCtx = useContext(AuthContext);
+  if (!authCtx.isLoggedIn) {return <>{children}</>;}
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [headerText, setHeaderText] = useState('');
   const [headerExtra, setHeaderExtra] = useState(null);

@@ -3,6 +3,21 @@
         "title": "主页 - Unica",
         "header": "主页"
     },
+    "LoginPage": {
+        "title": "登录 - Unica",
+        "button": {
+            "jaccount": "使用 jAccount 登录"
+        },
+        "toast": {
+            "need_login": "请先登录"
+        }
+    },
+    "OAuthRedirectBack": {
+        "title": "认证中 - Unica",
+        "toast": {
+            "error": "认证失败"
+        }
+    },
     "SettingsPage": {
         "title": "设置 - Unica",
         "header": "设置"
