@@ -2,11 +2,11 @@ import React from 'react';
 import { Button, ButtonProps, Text, useColorModeValue } from '@chakra-ui/react';
 
 interface SelectableButtonProps extends ButtonProps {
-    isSelected?: boolean;
-    selectedColor?: string;
-  }
+  isSelected?: boolean;
+  selectedColor?: string;
+}
   
-const SelectableButton: React.FC<SelectableButtonProps> = ({ isSelected, selectedColor = 'gray.800', children, ...props }) => {
+const SelectableButton: React.FC<SelectableButtonProps> = ({ isSelected = false, selectedColor = 'gray.800', children, ...props }) => {
   const selectedBg = useColorModeValue('gray.200', 'gray.700');
 
   return (
@@ -14,7 +14,7 @@ const SelectableButton: React.FC<SelectableButtonProps> = ({ isSelected, selecte
       variant='ghost'
       size='sm'
       bg={isSelected ? selectedBg : 'transparent'}
-      color={isSelected ? selectedColor : 'inherit'}
+      color={isSelected ? selectedColor : 'gray.500'}
       fontWeight="normal"
       textAlign="left"
       justifyContent="flex-start"

@@ -1,19 +1,21 @@
 import Link from "next/link";
 import {
   Button,
+  Flex,
   Popover,
   PopoverTrigger,
   PopoverContent,
   PopoverBody,
   Text,
   VStack,
+  HStack,
   Icon,
-  HStack
+  IconButton
 } from '@chakra-ui/react'
 import { useTranslation } from 'react-i18next';
 import { useRouter } from "next/router";
 import NavMenu from '@/components/nav-menu';
-import { FiHome, FiSettings } from "react-icons/fi";
+import { FiHome, FiSettings, FiGithub, FiHelpCircle } from "react-icons/fi";
 
 const MainSider = () => {
   const { t } = useTranslation();
@@ -25,39 +27,69 @@ const MainSider = () => {
   ];
 
   return (
-    <VStack spacing={8} align="stretch">
-      <Popover placement="bottom-start" closeOnBlur>
-        <PopoverTrigger>
-          <Button 
-            variant='ghost' 
-            mt={-2} 
-            size='sm' 
-            textAlign="left"
-            justifyContent="flex-start">
-            <Text fontSize="lg" fontWeight="normal">User Placeholder</Text>
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent width="auto">
-          <PopoverBody>Popover</PopoverBody>
-        </PopoverContent>
-      </Popover>
+    <Flex direction="column" h="100%" justifyContent="space-between">
+      <VStack spacing={8} align="stretch">
+        <Popover placement="bottom-start" closeOnBlur>
+          <PopoverTrigger>
+            <Button 
+              variant='ghost' 
+              mt={-2} 
+              size='sm' 
+              textAlign="left"
+              justifyContent="flex-start">
+              <Text fontSize="lg" fontWeight="normal">User Placeholder</Text>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent width="auto">
+            <PopoverBody>Popover</PopoverBody>
+          </PopoverContent>
+        </Popover>
 
-      <NavMenu 
-        items={topMenuItems.map((item) => ({
-          value: item.value,
-          label: 
-            <Link href={item.value}>
-              <HStack spacing={2}>
-                <Icon as={item.icon} />
-                <Text 
-                  fontSize="md"
-                  // fontWeight={router.asPath === item.value ? 'bold' : 'normal'}
-                >{item.label}</Text>
-              </HStack>
-            </Link>,
-        }))}
-        selectedKeys={[router.asPath]}/>
-    </VStack>
+        <NavMenu 
+          items={topMenuItems.map((item) => ({
+            value: item.value,
+            label: 
+              <Link href={item.value}>
+                <HStack spacing={2}>
+                  <Icon as={item.icon} />
+                  <Text 
+                    fontSize="md"
+                    // fontWeight={router.asPath === item.value ? 'bold' : 'normal'}
+                  >{item.label}</Text>
+                </HStack>
+              </Link>,
+          }))}
+          selectedKeys={[router.asPath]}/>
+      </VStack>
+      
+      <Flex w="100%" justifyContent="space-between" alignItems="center">
+        <Text 
+          fontSize="md" 
+          bgGradient='linear(to-l, #C080E0, #7FACD9)'
+          bgClip='text'
+        >
+          UNICA
+        </Text>
+        <HStack spacing={2}>
+          <IconButton
+            as="a"
+            target="_blank"
+            href="/help"
+            variant='ghost'
+            aria-label='Help'
+            icon={<FiHelpCircle />}
+          />
+          <IconButton
+            as="a"
+            target="_blank"
+            href="https://github.com/UNIkeEN/unica"
+            variant='ghost'
+            aria-label='Github'
+            icon={<FiGithub />}
+          />
+        </HStack>
+      </Flex>
+    </Flex>
   );
 };
 

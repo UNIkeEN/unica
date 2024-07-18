@@ -61,7 +61,7 @@ const MainLayout = ({ children }) => {
       </Hide>
 
       {/* Main Content Area */}
-      <Box flex="1">
+      <Box flex="1" borderLeftWidth="1px">
         {/* Header */}
         <Flex
           as="header"
