@@ -47,7 +47,7 @@ const OAuthRedirectBack = () => {
   return (
     <>
       <Head>
-        <title>{t('OAuthRedirectBack.title')}</title>
+        <title>{`${t('OAuthRedirectBack.title')} - Unica`}</title>
       </Head>
       <div style={{
         display: 'flex',

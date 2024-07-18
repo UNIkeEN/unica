@@ -1,10 +1,10 @@
 {
     "HomePage": {
-        "title": "主页 - Unica",
+        "title": "主页",
         "header": "主页"
     },
     "LoginPage": {
-        "title": "登录 - Unica",
+        "title": "登录",
         "button": {
             "jaccount": "使用 jAccount 登录"
         },
@@ -19,14 +19,27 @@
             }
         }
     },
+    "MyOrganizationsPage": {
+        "title": "我的组织",
+        "header": "组织"
+    },
+    "MyProjectsPage": {
+        "title": "我的项目",
+        "header": "项目"
+    },
     "OAuthRedirectBack": {
-        "title": "认证中 - Unica",
+        "title": "认证中",
         "toast": {
             "error": "认证失败"
         }
     },
     "SettingsPage": {
-        "title": "设置 - Unica",
-        "header": "设置"
+        "header": "设置",
+        "profile": {
+            "title": "个人资料设置"
+        },
+        "appearance": {
+            "title": "外观设置"
+        }
     }
 }

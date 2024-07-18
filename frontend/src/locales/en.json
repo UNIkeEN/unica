@@ -1,10 +1,10 @@
 {
     "HomePage": {
-        "title": "Home - Unica",
+        "title": "Home",
         "header": "Home"
     },
     "LoginPage": {
-        "title": "Login - Unica",
+        "title": "Login",
         "button": {
             "jaccount": "Login via jAccount"
         },
@@ -19,14 +19,27 @@
             }
         }
     },
+    "MyOrganizationsPage": {
+        "title": "My Organizations",
+        "header": "My Organizations"
+    },
+    "MyProjectsPage": {
+        "title": "My Projects",
+        "header": "My Projects"
+    },
     "OAuthRedirectBack": {
-        "title": "Authenticating - Unica",
+        "title": "Authenticating",
         "toast": {
             "error": "Authentication failed"
         }
     },
     "SettingsPage": {
-        "title": "Settings - Unica",
-        "header": "Settings"
+        "header": "Settings",
+        "profile": {
+            "title": "Profile Settings"
+        },
+        "appearance": {
+            "title": "Appearance Settings"
+        }
     }
 }

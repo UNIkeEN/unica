@@ -15,8 +15,8 @@ const HomePage = () => {
   return (
     <>
       <Head>
-        <title>{t('HomePage.title')}</title>
-        <meta name="headerText" content={t('HomePage.header')} />
+        <title>{`${t('HomePage.title')} - Unica`}</title>
+        <meta name="headerTitle" content={t('HomePage.header')} />
       </Head>
       {/* {t('HomePage.header')} */}
       <Button>Test</Button>

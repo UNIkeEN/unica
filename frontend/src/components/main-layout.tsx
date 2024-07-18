@@ -22,13 +22,13 @@ const MainLayout = ({ children }) => {
   if (!authCtx.isLoggedIn) {return <>{children}</>;}
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [headerText, setHeaderText] = useState('');
+  const [headerTitle, setHeaderTitle] = useState('');
   const [headerExtra, setHeaderExtra] = useState(null);
 
   useEffect(() => {
-    const headerTextMeta = document.querySelector('meta[name="headerText"]') as HTMLMetaElement;;
-    if (headerTextMeta) {
-      setHeaderText(headerTextMeta.content);
+    const headerTitleMeta = document.querySelector('meta[name="headerTitle"]') as HTMLMetaElement;;
+    if (headerTitleMeta) {
+      setHeaderTitle(headerTitleMeta.content);
     }
   }, [children]);
 
@@ -76,13 +76,15 @@ const MainLayout = ({ children }) => {
           borderBottomWidth="1px"
         >
           <Flex align="center">
-            <IconButton
-              display={{ base: 'inline-flex', md: 'none' }}
-              aria-label="Open Menu"
-              icon={<HamburgerIcon />}
-              onClick={onOpen}
-            />
-            <Text fontSize="lg" ml={4}>{headerText}</Text>
+            <Hide above='md'>
+              <IconButton
+                display={{ base: 'inline-flex', md: 'none' }}
+                aria-label="Open Menu"
+                icon={<HamburgerIcon />}
+                onClick={onOpen}
+              />
+            </Hide>
+            <Text fontSize="lg" ml={2}>{headerTitle}</Text>
           </Flex>
           <Box>
             {headerExtra}
@@ -90,7 +92,7 @@ const MainLayout = ({ children }) => {
         </Flex>
 
         {/* Content */}
-        <Box as="main" p={4}>
+        <Box as="main" p={6}>
           {children}
         </Box>
       </Box>

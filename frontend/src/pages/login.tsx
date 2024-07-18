@@ -18,7 +18,7 @@ const LoginPage = () => {
   return (
     <>
       <Head>
-        <title>{t('LoginPage.title')}</title>
+        <title>{`${t('LoginPage.title')} - Unica`}</title>
       </Head>
       <div style={{
         display: 'flex',
