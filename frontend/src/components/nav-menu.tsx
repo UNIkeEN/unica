@@ -2,12 +2,12 @@ import React from 'react';
 import { VStack } from '@chakra-ui/react';
 import SelectableButton from '@/components/selectable-button';
 
-interface MenuItem {
+export interface MenuItem {
   label: React.ReactNode;
   value: string;
 }
 
-interface NavMenuProps {
+export interface NavMenuProps {
   items: MenuItem[];
   selectedKeys?: string[];
   onClick?: (value: string) => void;
