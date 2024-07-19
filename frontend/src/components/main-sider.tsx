@@ -1,25 +1,16 @@
-import { use, useContext, useEffect } from "react";
-import Link from "next/link";
+import { useContext, useEffect } from "react";
 import {
-  Button,
   Flex,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverBody,
-  Divider,
   Text,
   VStack,
   HStack,
   Icon,
   IconButton,
-  Avatar
-} from '@chakra-ui/react'
+} from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from "next/router";
+import UserInfoPopover from "@/components/user-info-popover";
 import NavMenu from '@/components/nav-menu';
-import SelectableButton from "@/components/selectable-button";
-import { Logout } from "@/services/auth";
 import AuthContext from "@/contexts/auth";
 import { 
   FiHome,
@@ -28,7 +19,6 @@ import {
   FiSettings, 
   FiGithub, 
   FiHelpCircle, 
-  FiLogOut,
 } from "react-icons/fi";
 
 const MainSider = () => {
@@ -53,47 +43,7 @@ const MainSider = () => {
   return (
     <Flex direction="column" h="100%" justifyContent="space-between">
       <VStack spacing={8} align="stretch">
-        <Popover placement="bottom-start" closeOnBlur trigger="hover">
-          <PopoverTrigger>
-            <Button 
-              variant='ghost'  
-              size='sm' 
-              textAlign="left"
-              justifyContent="flex-start"
-            >
-              <HStack spacing={3}>
-                <Avatar size="xs"/>
-                <Text fontSize="lg" fontWeight="normal">{authCtx.userInfo?.name}</Text>
-              </HStack>
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent width="auto">
-            <PopoverBody p={2}>
-              <VStack 
-                spacing={2} 
-                align="stretch"
-              >
-                <Text fontSize="xs" fontWeight="normal" pl={2} pr={2} color="gray.500">{authCtx.userInfo?.email}</Text>
-                <Text fontSize="lg" fontWeight="normal" pl={2} pr={2} mt={-2}>{authCtx.userInfo?.name}</Text>
-                <Divider/>
-                  <SelectableButton
-                    size="xs"
-                    colorScheme="red"
-                    onClick={() => {
-                      authCtx.onLogout();
-                      Logout(); 
-                      router.push('/login');
-                    }}
-                  >
-                    <HStack spacing={2}>
-                      <Icon as={FiLogOut} />
-                      <Text fontSize="xs">{t('MainSider.user_popover.button.logout')}</Text>
-                    </HStack>
-                  </SelectableButton>
-              </VStack>
-            </PopoverBody>
-          </PopoverContent>
-        </Popover>
+        <UserInfoPopover />
 
         <NavMenu 
           items={topMenuItems.map((item) => ({
@@ -103,7 +53,6 @@ const MainSider = () => {
                   <Icon as={item.icon} />
                   <Text 
                     fontSize="md"
-                    // fontWeight={router.asPath === item.value ? 'bold' : 'normal'}
                   >{item.label}</Text>
                 </HStack>
           }))}
