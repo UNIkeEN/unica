@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, use } from 'react';
 import {
 	Box,
 	Flex,
@@ -15,10 +15,12 @@ import {
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import AuthContext from '@/contexts/auth';
+import UserContext from '@/contexts/user';
 import MainSider from '@/components/main-sider';
 
 const MainLayout = ({ children }) => {
   const authCtx = useContext(AuthContext);
+  const userCtx = useContext(UserContext);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [headerTitle, setHeaderTitle] = useState('');
@@ -31,6 +33,15 @@ const MainLayout = ({ children }) => {
     }
   }, [children]);
 
+  useEffect(() => {
+    if (authCtx.isLoggedIn) {
+      if (authCtx.userInfo === undefined) {
+        authCtx.updateUserInfo();
+      }
+      userCtx.updateUserOrganizations();
+    }
+  },[]);
+  
   if (!authCtx.isLoggedIn) {return <>{children}</>;}
 
   return (
@@ -93,7 +104,7 @@ const MainLayout = ({ children }) => {
         </Flex>
 
         {/* Content */}
-        <Box as="main" p={6} maxWidth="1400px" mx="auto" w="full">
+        <Box as="main" p={6} maxWidth="1200px" mx="auto" w="full">
           {children}
         </Box>
       </Box>

@@ -1,4 +1,9 @@
 {
+    "AuthContext": {
+        "toast": {
+            "error-1": "获取用户信息失败"
+        }
+    },
     "HomePage": {
         "title": "主页",
         "header": "主页"
@@ -17,11 +22,19 @@
             "button": {
                 "logout": "退出登录"
             }
+        },
+        "block-title": {
+            "pinned": "已固定",
+            "recent": "最近访问",
+            "my-organizations": "我的组织"
         }
     },
     "MyOrganizationsPage": {
         "title": "我的组织",
-        "header": "组织"
+        "header": "组织",
+        "button": {
+            "create": "创建新组织"
+        }
     },
     "MyProjectsPage": {
         "title": "我的项目",
@@ -40,6 +53,11 @@
         },
         "appearance": {
             "title": "外观设置"
+        }
+    },
+    "UserContext": {
+        "toast": {
+            "error-1": "获取组织列表失败"
         }
     }
 }

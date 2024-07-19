@@ -1,10 +1,11 @@
-import React, { createContext, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '@/contexts/toast';
 import useLocalStorage from '@/hooks/useLocalStorage';
 import { UserBasicInfo } from '@/models/user';
 import { getUserBasicInfo } from '@/services/user';
+import UserContext from '@/contexts/user';
 
 interface AuthContextType {
   token: string;
@@ -29,6 +30,7 @@ const AuthContext = createContext<AuthContextType>({
 export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [token, setToken] = useLocalStorage<string>('token', '');
   const [userInfo, setUserInfo] = useState(undefined);
+  const userCtx = useContext(UserContext);
   const router = useRouter();
   const toast = useToast();
   const { t } = useTranslation();
@@ -38,11 +40,13 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const loginHandler = useCallback((newToken: string) => {
     setToken(newToken);
     updateUserInfo();
+    userCtx.updateUserOrganizations();
   }, [setToken]);
 
   const logoutHandler = useCallback(() => {
     setToken('');
     setUserInfo(undefined);
+    userCtx.cleanUp();
     router.push('/login');
   }, [setToken, router]);
 
@@ -65,6 +69,10 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
         setUserInfo(res);
       });
     } catch (error) {
+      toast({
+        title: t('AuthContext.toast.error-1'),
+        status: 'error'
+      })
       setUserInfo(undefined);
     }    
   }

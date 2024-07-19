@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import type { AppProps } from 'next/app';
-import Head from 'next/head';
 import { ChakraProvider } from '@chakra-ui/react';
 import { appWithTranslation } from 'next-i18next';
 import i18n from 'i18next';
@@ -8,6 +7,7 @@ import { initReactI18next } from 'react-i18next';
 import { localeResources } from '@/locales';
 import { ToastContextProvider } from '@/contexts/toast';
 import { AuthContextProvider } from '@/contexts/auth';
+import { UserContextProvider } from '@/contexts/user';
 import MainLayout from '@/components/main-layout';
 import theme from '../theme';
 import '@/styles/globals.css';
@@ -19,14 +19,14 @@ function App({ Component, pageProps }: AppProps) {
   }, []);
 
   i18n
-  .use(initReactI18next) 
-  .init({
-    resources: localeResources,
-    lng: 'zh_Hans', 
-    fallbackLng: 'en',
-    interpolation: {
-      escapeValue: false,
-    },
+    .use(initReactI18next)
+    .init({
+      resources: localeResources,
+      lng: 'zh_Hans', 
+      fallbackLng: 'en',
+      interpolation: {
+        escapeValue: false,
+      },
   });
 
   if (!mounted) return <></>;
@@ -34,11 +34,13 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
       <ToastContextProvider>
-        <AuthContextProvider>
-          <MainLayout>
-            <Component {...pageProps} />
-          </MainLayout>
-        </AuthContextProvider>   
+        <UserContextProvider>
+          <AuthContextProvider>
+            <MainLayout>
+              <Component {...pageProps} />
+            </MainLayout>
+          </AuthContextProvider>
+        </UserContextProvider>   
       </ToastContextProvider>
     </ChakraProvider>
   );

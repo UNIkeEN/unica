@@ -1,4 +1,9 @@
 {
+    "AuthContext": {
+        "toast": {
+            "error-1": "Failed to get user information"
+        }
+    },
     "HomePage": {
         "title": "Home",
         "header": "Home"
@@ -17,11 +22,19 @@
             "button": {
                 "logout": "Logout"
             }
+        },
+        "block-title": {
+            "pinned": "Pinned",
+            "recent": "Recent",
+            "my-organizations": "My Organizations"
         }
     },
     "MyOrganizationsPage": {
         "title": "My Organizations",
-        "header": "My Organizations"
+        "header": "My Organizations",
+        "button": {
+            "create": "New Organization"
+        }
     },
     "MyProjectsPage": {
         "title": "My Projects",
@@ -40,6 +53,11 @@
         },
         "appearance": {
             "title": "Appearance Settings"
+        }
+    },
+    "UserContext": {
+        "toast": {
+            "error-1": "Failed to get user organization list"
         }
     }
 }
