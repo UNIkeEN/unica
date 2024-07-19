@@ -6,12 +6,14 @@ import {
   HStack,
   Icon,
   IconButton,
+  Avatar,
 } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from "next/router";
 import UserInfoPopover from "@/components/user-info-popover";
 import NavMenu from '@/components/nav-menu';
 import AuthContext from "@/contexts/auth";
+import UserContext from '@/contexts/user';
 import { 
   FiHome,
   FiBook,
@@ -24,14 +26,8 @@ import {
 const MainSider = () => {
   
   const router = useRouter();
-  const authCtx = useContext(AuthContext);
+  const userCtx = useContext(UserContext);
   const { t } = useTranslation();
-
-  useEffect(() => {
-    if (authCtx.userInfo === undefined) {
-      authCtx.updateUserInfo();
-    }
-  },[]);
 
   const topMenuItems = [
     { icon: FiHome, label: t('HomePage.header'), value: '/home' },
@@ -43,21 +39,50 @@ const MainSider = () => {
   return (
     <Flex direction="column" h="100%" justifyContent="space-between">
       <VStack spacing={8} align="stretch">
+        
         <UserInfoPopover />
-
+        
+        {/* Top Menu */}
         <NavMenu 
           items={topMenuItems.map((item) => ({
             value: item.value,
             label: 
                 <HStack spacing={2}>
                   <Icon as={item.icon} />
-                  <Text 
-                    fontSize="md"
-                  >{item.label}</Text>
+                  <Text fontSize="md">{item.label}</Text>
                 </HStack>
           }))}
           onClick={(value) => {router.push(value)}}
           selectedKeys={[router.asPath]}/>
+
+          {/* Pinned Projects */}
+          <VStack spacing={2} align="stretch">
+            <Text fontSize="sm" className="secondary-text" ml={3}>{t('MainSider.block-title.pinned')}</Text>
+          </VStack>
+
+          {/* Recent Projects */}
+          <VStack spacing={2} align="stretch">
+            <Text fontSize="sm" className="secondary-text" ml={3}>{t('MainSider.block-title.recent')}</Text>
+          </VStack>
+
+          {/* Recent Projects */}
+          {userCtx.organizations && userCtx.organizations.length>0 &&
+            <VStack spacing={2} align="stretch">
+              <Text fontSize="sm" className="secondary-text" ml={3}>{t('MainSider.block-title.my-organizations')}</Text>
+              <NavMenu 
+                items={userCtx.organizations.slice(0, 5).map((item) => ({
+                  value: `organizations/${item.slug}`,
+                  label: 
+                      <HStack spacing={2}>
+                        <Avatar size="2xs" name={item.display_name}/>
+                        <Text fontSize="md">{item.display_name}</Text>
+                      </HStack>
+                }))}
+                onClick={(value) => {router.push(value)}}
+                selectedKeys={[router.asPath]}/>
+            </VStack>
+          }
+
       </VStack>
       
       <Flex w="100%" justifyContent="space-between" alignItems="center">
