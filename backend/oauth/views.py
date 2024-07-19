@@ -6,6 +6,7 @@ from authlib.integrations.django_client import OAuth
 from authlib.jose import jwt
 from authlib.oidc.core import CodeIDToken
 from django.conf import settings
+from rest_framework import status
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import AllowAny
@@ -32,7 +33,7 @@ def login_oauth(request, provider):
     request.session['next'] = next
     client = oauth.create_client(provider)
     if not client:
-        return JsonResponse({"message": "unsupported provider"}, status=400)
+        return JsonResponse({"message": "unsupported provider"}, status=status.HTTP_400_BAD_REQUEST)
     return client.authorize_redirect(request, redirect_uri)
 
 @api_view(['POST'])
@@ -44,7 +45,7 @@ def auth_oauth(request, provider):
     redirect_uri = request.session.get('redirect_uri')
     next = request.session.get('next')
     if provider not in oauth._clients:
-        return JsonResponse({"message": "unsupported provider"}, status=400)
+        return JsonResponse({"message": "unsupported provider"}, status=status.HTTP_400_BAD_REQUEST)
     
     client = oauth.create_client(provider)
     client_id = client.client_id
@@ -79,11 +80,11 @@ def auth_oauth(request, provider):
                 "message": "login success", 
                 "next": next,
                 "token": access_token
-            }, status=200)
-    return JsonResponse({"message": "login failed"}, status=400)
+            }, status=status.HTTP_200_OK)
+    return JsonResponse({"message": "login failed"}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 @login_required
 def logout(request):
     logout(request)
-    return JsonResponse({'message': 'logout success'}, status=200)
+    return JsonResponse({'message': 'logout success'}, status=status.HTTP_200_OK)
