@@ -6,7 +6,7 @@ export async function jAccountLogin(next = "/", params = "") {
         redirect_uri += `?${params}`;
     }
     // const loginUrl = `/auth/login/jaccount/?redirect_uri=${encodeURIComponent(redirect_uri)}&next=${encodeURIComponent(next)}/`;
-    const loginUrl = `http://localhost:8000/auth/login/jaccount/?redirect_uri=${encodeURIComponent(redirect_uri)}&next=${encodeURIComponent(next)}/`;
+    const loginUrl = `http://localhost:8000/auth/login/jaccount/?redirect_uri=${encodeURIComponent(redirect_uri)}&next=${encodeURIComponent(next)}`;
     window.location.href = loginUrl;
 }
 

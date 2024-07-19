@@ -36,7 +36,7 @@ const OAuthRedirectBack = () => {
     };
   
   useEffect(()=>{
-    if (authCtx.isLoggedIn) router.push('/home');
+    if (authCtx.isLoggedIn) { }
     else {
       if (router.query.code && router.query.state) {
         doAuth(router.query.code as string, router.query.state as string)
