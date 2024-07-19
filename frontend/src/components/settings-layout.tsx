@@ -16,7 +16,7 @@ const SettingsLayout: React.FC<SettingsLayoutProps> = ({ children }) => {
   const settingItems = ["profile", "appearance"];
 
   return (
-    <VStack spacing={4} align="stretch">
+    <VStack spacing={6} align="stretch">
       <NavTabs 
         items={settingItems.map((item) => ({
             label: t(`SettingsPage.${item}.title`),

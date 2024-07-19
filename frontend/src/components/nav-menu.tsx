@@ -19,7 +19,7 @@ const NavMenu: React.FC<NavMenuProps> = ({
   onClick,
 }) => {
   return (
-    <VStack spacing={2} align="stretch">
+    <VStack spacing={0.5} align="stretch">
       {items.map((item) => (
         <SelectableButton
           key={item.value}

@@ -49,7 +49,7 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const checkLoginAndRedirect= () => {
     if (!isLoggedIn) {
       toast({
-        title: t('LoginPage.toast.need_login'),
+        title: t('LoginPage.toast.need-login'),
         status: 'warning',
         duration: 3000,
         position: 'top',

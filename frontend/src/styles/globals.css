@@ -5,3 +5,19 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+}
+
+
+/* Text */
+.secondary-text {
+  color: var(--chakra-colors-gray-500);
+}

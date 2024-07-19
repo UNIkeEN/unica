@@ -9,11 +9,11 @@
             "jaccount": "使用 jAccount 登录"
         },
         "toast": {
-            "need_login": "请先登录"
+            "need-login": "请先登录"
         }
     },
     "MainSider": {
-        "user_popover": {
+        "user-popover": {
             "button": {
                 "logout": "退出登录"
             }

@@ -10,7 +10,7 @@ const SelectableButton: React.FC<SelectableButtonProps> = ({ isSelected = false,
 
   const selectedBg = theme.colors[colorScheme][200];
   const selectedColor = theme.colors[colorScheme][900];
-  const defaultColor = theme.colors[colorScheme][500];
+  const defaultColor = theme.colors[colorScheme][600];
 
   return (
     <Button

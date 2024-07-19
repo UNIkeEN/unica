@@ -9,11 +9,11 @@
             "jaccount": "Login via jAccount"
         },
         "toast": {
-            "need_login": "Please login first"
+            "need-login": "Please login first"
         }
     },
     "MainSider": {
-        "user_popover": {
+        "user-popover": {
             "button": {
                 "logout": "Logout"
             }

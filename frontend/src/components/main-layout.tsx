@@ -92,7 +92,7 @@ const MainLayout = ({ children }) => {
         </Flex>
 
         {/* Content */}
-        <Box as="main" p={6}>
+        <Box as="main" p={6} maxWidth="1400px" mx="auto" w="full">
           {children}
         </Box>
       </Box>
