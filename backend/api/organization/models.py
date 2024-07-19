@@ -16,8 +16,8 @@ class Organization(models.Model):
         return self.display_name
 
 class Membership(models.Model):
-    OWNER = 'owner'
-    MEMBER = 'member'
+    OWNER = 'Owner'
+    MEMBER = 'Member'
     ROLE_CHOICES = [
         (OWNER, 'Owner'),
         (MEMBER, 'Member'),

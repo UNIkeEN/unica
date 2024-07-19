@@ -36,7 +36,8 @@ class OrganizationSerializer(serializers.ModelSerializer):
         if len(name) > 100:
             raise serializers.ValidationError("Name cannot be longer than 100 characters.")
         slug = slugify(name)
-        print(f"Name: {name}, Slug: {slug}")
+        if not slug:
+            raise serializers.ValidationError("Invalid name.")
         if Organization.objects.filter(name=name).exists():
             raise serializers.ValidationError("Name is already in use.")
         if Organization.objects.filter(slug=slug).exists():
