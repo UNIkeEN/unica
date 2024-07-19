@@ -25,10 +25,6 @@ const OAuthRedirectBack = () => {
           toast({
             title: t('OAuthRedirectBack.toast.error'),
             status: 'error',
-            duration: 3000,
-            position: 'top',
-            variant: 'top-accent',
-            isClosable: true,
           })
           router.push('/login');
         });

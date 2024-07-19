@@ -50,11 +50,7 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     if (!isLoggedIn) {
       toast({
         title: t('LoginPage.toast.need-login'),
-        status: 'warning',
-        duration: 3000,
-        position: 'top',
-        variant: 'top-accent',
-        isClosable: true,
+        status: 'warning'
       })
       const currentPath = router.asPath;
       router.push(`/login?next=${encodeURIComponent(currentPath)}`);
