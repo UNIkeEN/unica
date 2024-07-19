@@ -45,7 +45,7 @@ const MainLayout = ({ children }) => {
   if (!authCtx.isLoggedIn) {return <>{children}</>;}
 
   return (
-    <Flex h="100vh">
+    <Flex h="100vh" overflow="hidden">
       {/* Desktop Sidebar */}
       <Show above='md'>
         <Box
@@ -53,6 +53,7 @@ const MainLayout = ({ children }) => {
           w="2xs"
           bg="gray.50"
           p={4}
+          overflowY="auto"
         >
           <MainSider />
         </Box>
@@ -77,7 +78,7 @@ const MainLayout = ({ children }) => {
       </Hide>
 
       {/* Main Content Area */}
-      <Box flex="1" borderLeftWidth="1px">
+      <Flex flex="1" direction="column" borderLeftWidth="1px" overflow="hidden">
         {/* Header */}
         <Flex
           as="header"
@@ -86,6 +87,9 @@ const MainLayout = ({ children }) => {
           w="full"
           p={4}
           borderBottomWidth="1px"
+          position="sticky"
+          top="0"
+          zIndex="10"
         >
           <Flex align="center">
             <Hide above='md'>
@@ -104,10 +108,17 @@ const MainLayout = ({ children }) => {
         </Flex>
 
         {/* Content */}
-        <Box as="main" p={6} maxWidth="1200px" mx="auto" w="full">
+        <Box 
+          as="main" 
+          p={6} 
+          maxWidth="1200px" 
+          mx="auto" 
+          w="full"
+          overflow="auto"
+        >
           {children}
         </Box>
-      </Box>
+      </Flex>
     </Flex>
   );
 };

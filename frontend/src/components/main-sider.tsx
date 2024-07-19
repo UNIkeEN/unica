@@ -38,7 +38,7 @@ const MainSider = () => {
 
   return (
     <Flex direction="column" h="100%" justifyContent="space-between">
-      <VStack spacing={8} align="stretch">
+      <VStack spacing={8} align="stretch" overflowY="auto">
         
         <UserInfoPopover />
         
@@ -73,9 +73,9 @@ const MainSider = () => {
                 items={userCtx.organizations.slice(0, 5).map((item) => ({
                   value: `organizations/${item.slug}`,
                   label: 
-                      <HStack spacing={2}>
+                      <HStack spacing={2} overflow="hidden">
                         <Avatar size="2xs" name={item.display_name}/>
-                        <Text fontSize="md">{item.display_name}</Text>
+                        <Text fontSize="md" overflow="hidden" textOverflow="ellipsis">{item.display_name}</Text>
                       </HStack>
                 }))}
                 onClick={(value) => {router.push(value)}}
