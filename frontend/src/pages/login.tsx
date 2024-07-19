@@ -13,7 +13,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (authCtx.isLoggedIn) router.push(router.query.next as string || '/');
-  },[]);
+  },[authCtx]);
 
   return (
     <>

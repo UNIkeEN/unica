@@ -10,7 +10,7 @@ const ProfileSettingsPage = () => {
 
   useEffect(() => {
     if (!authCtx.checkLoginAndRedirect()) return;
-  }, []);
+  }, [authCtx]);
 
   return (
     <>

@@ -10,7 +10,7 @@ const HomePage = () => {
 
   useEffect(() => {
     if (!authCtx.checkLoginAndRedirect()) return;
-  }, []);
+  }, [authCtx]);
 
   return (
     <>

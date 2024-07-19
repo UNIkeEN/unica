@@ -10,7 +10,7 @@ const AppearanceSettingsPage = () => {
 
   useEffect(() => {
     if (!authCtx.checkLoginAndRedirect()) return;
-  }, []);
+  }, [authCtx]);
 
   return (
     <>

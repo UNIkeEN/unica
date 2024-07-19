@@ -9,7 +9,7 @@ const MyOrganizationsPage = () => {
 
   useEffect(() => {
     if (!authCtx.checkLoginAndRedirect()) return;
-  }, []);
+  }, [authCtx]);
 
   return (
     <>

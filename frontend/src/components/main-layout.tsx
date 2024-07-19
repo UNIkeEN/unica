@@ -19,7 +19,6 @@ import MainSider from '@/components/main-sider';
 
 const MainLayout = ({ children }) => {
   const authCtx = useContext(AuthContext);
-  if (!authCtx.isLoggedIn) {return <>{children}</>;}
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [headerTitle, setHeaderTitle] = useState('');
@@ -31,6 +30,8 @@ const MainLayout = ({ children }) => {
       setHeaderTitle(headerTitleMeta.content);
     }
   }, [children]);
+
+  if (!authCtx.isLoggedIn) {return <>{children}</>;}
 
   return (
     <Flex h="100vh">
