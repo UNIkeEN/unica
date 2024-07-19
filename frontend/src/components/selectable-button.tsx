@@ -18,7 +18,6 @@ const SelectableButton: React.FC<SelectableButtonProps> = ({ isSelected = false,
       size='sm'
       bg={isSelected ? selectedBg : 'transparent'}
       color={isSelected ? selectedColor : defaultColor}
-      fontWeight="normal"
       textAlign="left"
       justifyContent="flex-start"
       _hover={{
