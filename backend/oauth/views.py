@@ -74,7 +74,7 @@ def auth_oauth(request, provider):
         if created:
             user.oauth_provider = provider
             user.email = user_info.get('email')
-            user.name = user_info.get('name')
+            user.display_name = user_info.get('name')
             user.save()
         return JsonResponse({
                 "message": "login success", 
