@@ -1,21 +1,10 @@
 import { request } from "@/services/request";
 
-export async function checkName(name:string) {
-    try {
-        const response = await request.post('/api/organization/check-name-slug/', {
-            name: name,
-        });
-        return response.data;
-    } catch (error) {
-        console.error('Failed to check name and slug:', error);
-        throw error;
-    }
-}
-
-export async function createOrganization(name:string) {
+export async function createOrganization(name:string, description?:string) {
     try {
         const response = await request.post('/api/organization/create/', {
-            name: name,
+            display_name: name,
+            description: description
         });
         return response.data;
     } catch (error) {

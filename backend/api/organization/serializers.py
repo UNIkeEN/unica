@@ -1,7 +1,5 @@
 from rest_framework import serializers
-from slugify import slugify
 from .models import Organization, Membership
-
 
 class MembershipSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField()
@@ -18,7 +16,8 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Organization
-        fields = ['id', 'display_name', 'name', 'slug', 'created_at', 'updated_at', 'role', 'member_count', 'owner_count']
+        fields = ['id', 'display_name', 'description', 'created_at', 'updated_at', 'role', 'member_count', 'owner_count']
+        read_only_fields = ['id']
 
     def get_role(self, obj):
         user = self.context['request'].user
@@ -35,21 +34,17 @@ class OrganizationSerializer(serializers.ModelSerializer):
 class OrganizationCreationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
-        fields = ['id', 'display_name', 'name', 'slug', 'created_at', 'updated_at']
+        fields = ['id', 'display_name', 'description', 'created_at', 'updated_at']
+        read_only_fields = ['id']
 
     def validate(self, data):
-        name = data.get('name')
-        if not name:
+        display_name = data.get('display_name')
+        if not display_name:
             raise serializers.ValidationError("Name is required.")
-        if len(name) > 100:
-            raise serializers.ValidationError("Name cannot be longer than 100 characters.")
-        slug = slugify(name)
-        if not slug:
-            raise serializers.ValidationError("Invalid name.")
-        if Organization.objects.filter(name=name).exists():
-            raise serializers.ValidationError("Name is already in use.")
-        if Organization.objects.filter(slug=slug).exists():
-            raise serializers.ValidationError("Slug is already in use.")
-        data['slug'] = slug
-        data['display_name'] = name
+        if len(display_name) > 20:
+            raise serializers.ValidationError("Name cannot be longer than 20 characters.")
+        description = data.get('description', '')
+        if len(description) > 200:
+            raise serializers.ValidationError("Description cannot be longer than 200 characters.")
+        
         return data

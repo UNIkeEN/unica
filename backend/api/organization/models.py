@@ -1,16 +1,24 @@
 from django.db import models
-from django.utils.text import slugify
 from django.contrib.auth import get_user_model
+from django.utils import timezone
+import mmh3
 
 User = get_user_model()
 
 class Organization(models.Model):
-    display_name = models.CharField(max_length=100)
-    name = models.CharField(unique=True, max_length=100)
-    slug = models.SlugField(unique=True, blank=True)
+    id = models.BigIntegerField(primary_key=True, editable=False, unique=True) # hash id
+    display_name = models.CharField(max_length=20)
+    description = models.CharField(blank=True, max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     members = models.ManyToManyField(User, through='Membership', related_name='organizations')
+
+    def save(self, *args, **kwargs):
+        # Generate id if not set
+        if self.pk is None:
+            timestamp = timezone.now().strftime('%Y%m%d%H%M%S%f')
+            self.id = mmh3.hash(str(self.display_name + timestamp), signed=False)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.display_name

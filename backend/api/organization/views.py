@@ -10,26 +10,8 @@ from .serializers import OrganizationCreationSerializer, OrganizationSerializer,
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
-def check_name(request):
-    data = {
-        "name": request.data.get("name"),
-        "display_name": request.data.get("name")
-    }
-    serializer = OrganizationCreationSerializer(data=data)
-    if serializer.is_valid():
-        return Response({"message": "Name and slug are available."}, status=status.HTTP_200_OK)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['POST'])
-@authentication_classes([SessionAuthentication])
-@permission_classes([IsAuthenticated])
 def create_organization(request):
-    data = {
-        "name": request.data.get("name"),
-        "display_name": request.data.get("name")
-    }
-    serializer = OrganizationCreationSerializer(data=data)
+    serializer = OrganizationCreationSerializer(data=request.data)
     if serializer.is_valid():
         organization = serializer.save()
         Membership.objects.create(user=request.user, organization=organization, role=Membership.OWNER)

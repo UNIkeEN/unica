@@ -4,4 +4,4 @@ djangorestframework
 django-cors-headers
 Authlib
 requests
-unicode-slugify
+mmh3
