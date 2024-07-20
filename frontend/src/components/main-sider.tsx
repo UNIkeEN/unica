@@ -34,7 +34,7 @@ const MainSider = () => {
     { icon: FiHome, label: t('HomePage.header'), value: '/home' },
     { icon: FiBook, label: t('MyProjectsPage.header'), value: '/projects' },
     { icon: FiUsers, label: t('MyOrganizationsPage.header'), value: '/organizations' },
-    { icon: FiSettings, label: t('SettingsPage.header'), value: '/settings' },
+    { icon: FiSettings, label: t('SettingsPages.header'), value: '/settings' },
   ];
 
   return (
@@ -72,7 +72,7 @@ const MainSider = () => {
               <Text fontSize="sm" className="secondary-text" ml={3}>{t('MainSider.my-organizations.title')}</Text>
               <NavMenu 
                 items={userCtx.organizations.slice(0, 5).map((item) => ({
-                  value: `organizations/${item.slug}`,
+                  value: `/organizations/${item.id}`,
                   label: 
                       <HStack spacing={2} overflow="hidden">
                         <Avatar size="2xs" name={item.display_name}/>
