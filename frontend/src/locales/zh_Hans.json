@@ -54,7 +54,11 @@
             "error": "认证失败"
         }
     },
-    "SettingsPage": {
+    "OrganizationPages": {
+        "overview": {
+            "title": "概览"
+        }
+    },
         "header": "设置",
         "profile": {
             "title": "个人资料设置"

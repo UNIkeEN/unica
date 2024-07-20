@@ -54,7 +54,11 @@
             "error": "Authentication failed"
         }
     },
-    "SettingsPage": {
+    "OrganizationPages": {
+        "overview": {
+            "title": "Overview"
+        }
+    },
         "header": "Settings",
         "profile": {
             "title": "Profile Settings"
