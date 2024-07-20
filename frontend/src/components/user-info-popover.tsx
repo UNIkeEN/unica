@@ -18,11 +18,13 @@ import { useRouter } from "next/router";
 import SelectableButton from "@/components/selectable-button";
 import { Logout } from "@/services/auth";
 import AuthContext from "@/contexts/auth";
+import UserContext from "@/contexts/user";
 
 const UserInfoPopover = () => {
 
   const router = useRouter();
   const authCtx = useContext(AuthContext);
+  const userCtx = useContext(UserContext);
   const { t } = useTranslation();
 
   return (
@@ -36,7 +38,7 @@ const UserInfoPopover = () => {
         >
           <HStack spacing={3}>
             <Avatar size="xs"/>
-            <Text fontSize="lg" fontWeight="normal">{authCtx.userInfo?.name}</Text>
+            <Text fontSize="lg" fontWeight="normal">{userCtx.basicInfo?.name}</Text>
           </HStack>
         </Button>
       </PopoverTrigger>
@@ -46,8 +48,8 @@ const UserInfoPopover = () => {
             spacing={2} 
             align="stretch"
           >
-            <Text fontSize="xs" fontWeight="normal" pl={2} pr={2} className="secondary-text">{authCtx.userInfo?.email}</Text>
-            <Text fontSize="lg" fontWeight="normal" pl={2} pr={2} mt={-2}>{authCtx.userInfo?.name}</Text>
+            <Text fontSize="xs" fontWeight="normal" pl={2} pr={2} className="secondary-text">{userCtx.basicInfo?.email}</Text>
+            <Text fontSize="lg" fontWeight="normal" pl={2} pr={2} mt={-2}>{userCtx.basicInfo?.name}</Text>
             <Divider/>
               <SelectableButton
                 size="xs"

@@ -1,10 +1,18 @@
 import { useContext, useEffect } from "react";
 import Head from "next/head";
-import { Button, Flex, VStack } from "@chakra-ui/react";
+import { 
+  Button, 
+  Flex, 
+  VStack,
+  Divider,
+  Tag,
+  Text
+} from "@chakra-ui/react";
 import { useTranslation } from 'react-i18next';
 import AuthContext from "@/contexts/auth";
 import UserContext from "@/contexts/user";
 import { createOrganization } from "@/services/organization";
+import LinkList from "@/components/link-list";
 
 const MyOrganizationsPage = () => {
   const authCtx = useContext(AuthContext);
@@ -39,6 +47,27 @@ const MyOrganizationsPage = () => {
             {t('MyOrganizationsPage.button.create')}
           </Button>
         </Flex>
+
+        <div>
+          <Divider/>
+          {userCtx.organizations && userCtx.organizations.length > 0 &&
+            <LinkList
+              items={userCtx.organizations.map((item) => ({
+                title: item.display_name,
+                href: `organizations/${item.slug}`,
+                subtitle: item.name,
+                titleExtra: 
+                  <Tag colorScheme={item.role === "Owner" ? "green" : "cyan"}>
+                    {item.role}
+                  </Tag>,
+                body: 
+                  <Text fontSize="sm" className="secondary-text">
+                    {item.member_count} { item.member_count > 1 ? t('MyOrganizationsPage.text.members') : t('MyOrganizationsPage.text.member') }
+                  </Text>
+              }))}/>
+          }
+        </div>
+
       </VStack>
     </>
   );

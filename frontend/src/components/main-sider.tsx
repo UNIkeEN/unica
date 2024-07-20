@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { useRouter } from "next/router";
 import UserInfoPopover from "@/components/user-info-popover";
 import NavMenu from '@/components/nav-menu';
-import AuthContext from "@/contexts/auth";
+import SelectableButton from "@/components/selectable-button";
 import UserContext from '@/contexts/user';
 import { 
   FiHome,
@@ -22,6 +22,7 @@ import {
   FiGithub, 
   FiHelpCircle, 
 } from "react-icons/fi";
+
 
 const MainSider = () => {
   
@@ -57,18 +58,18 @@ const MainSider = () => {
 
           {/* Pinned Projects */}
           <VStack spacing={2} align="stretch">
-            <Text fontSize="sm" className="secondary-text" ml={3}>{t('MainSider.block-title.pinned')}</Text>
+            <Text fontSize="sm" className="secondary-text" ml={3}>{t('MainSider.pinned.title')}</Text>
           </VStack>
 
           {/* Recent Projects */}
           <VStack spacing={2} align="stretch">
-            <Text fontSize="sm" className="secondary-text" ml={3}>{t('MainSider.block-title.recent')}</Text>
+            <Text fontSize="sm" className="secondary-text" ml={3}>{t('MainSider.recent.title')}</Text>
           </VStack>
 
           {/* Recent Projects */}
           {userCtx.organizations && userCtx.organizations.length>0 &&
             <VStack spacing={2} align="stretch">
-              <Text fontSize="sm" className="secondary-text" ml={3}>{t('MainSider.block-title.my-organizations')}</Text>
+              <Text fontSize="sm" className="secondary-text" ml={3}>{t('MainSider.my-organizations.title')}</Text>
               <NavMenu 
                 items={userCtx.organizations.slice(0, 5).map((item) => ({
                   value: `organizations/${item.slug}`,
@@ -80,6 +81,12 @@ const MainSider = () => {
                 }))}
                 onClick={(value) => {router.push(value)}}
                 selectedKeys={[router.asPath]}/>
+                {
+                  userCtx.organizations.length>5 &&
+                  <SelectableButton mt={-1.5} fontSize="xs" onClick={() => {router.push('/organizations')}}>
+                    <Text />{t('MainSider.my-organizations.button.more')}<Text/>
+                  </SelectableButton>
+                }
             </VStack>
           }
 

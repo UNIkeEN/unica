@@ -20,6 +20,7 @@ const SelectableButton: React.FC<SelectableButtonProps> = ({ isSelected = false,
       color={isSelected ? selectedColor : defaultColor}
       textAlign="left"
       justifyContent="flex-start"
+      overflow="hidden"
       _hover={{
         bg: isSelected ? selectedBg : theme.colors[colorScheme][100],
       }}

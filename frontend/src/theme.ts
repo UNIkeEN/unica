@@ -1,11 +1,16 @@
 // theme.ts
-import { extendTheme } from '@chakra-ui/react';
+import { Divider, extendTheme } from '@chakra-ui/react';
 
 const theme = extendTheme({
   components: {
     Button: {
       baseStyle: {
         fontWeight: "normal",
+      },
+    },
+    Divider: {
+      baseStyle: {
+        borderColor: "gray.300",
       },
     },
   },

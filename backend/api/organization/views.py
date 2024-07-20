@@ -4,7 +4,7 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Organization, Membership
-from .serializers import OrganizationSerializer, OrganizationMembershipSerializer, MembershipSerializer
+from .serializers import OrganizationCreationSerializer, OrganizationSerializer, MembershipSerializer
 
 
 @api_view(['POST'])
@@ -15,7 +15,7 @@ def check_name(request):
         "name": request.data.get("name"),
         "display_name": request.data.get("name")
     }
-    serializer = OrganizationSerializer(data=data)
+    serializer = OrganizationCreationSerializer(data=data)
     if serializer.is_valid():
         return Response({"message": "Name and slug are available."}, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -29,7 +29,7 @@ def create_organization(request):
         "name": request.data.get("name"),
         "display_name": request.data.get("name")
     }
-    serializer = OrganizationSerializer(data=data)
+    serializer = OrganizationCreationSerializer(data=data)
     if serializer.is_valid():
         organization = serializer.save()
         Membership.objects.create(user=request.user, organization=organization, role=Membership.OWNER)
@@ -43,7 +43,7 @@ def create_organization(request):
 def get_user_organizations(request):
     memberships = Membership.objects.filter(user=request.user)
     organizations = [membership.organization for membership in memberships]
-    serializer = OrganizationMembershipSerializer(organizations, many=True, context={'request': request})
+    serializer = OrganizationSerializer(organizations, many=True, context={'request': request})
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 

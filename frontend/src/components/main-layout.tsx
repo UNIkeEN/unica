@@ -35,10 +35,7 @@ const MainLayout = ({ children }) => {
 
   useEffect(() => {
     if (authCtx.isLoggedIn) {
-      if (authCtx.userInfo === undefined) {
-        authCtx.updateUserInfo();
-      }
-      userCtx.updateUserOrganizations();
+      userCtx.updateAll();
     }
   },[]);
   

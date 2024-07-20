@@ -6,4 +6,5 @@ export interface Organization {
   created_at: string;
   updated_at: string;
   role?: string;
+  member_count?: number;
 }
