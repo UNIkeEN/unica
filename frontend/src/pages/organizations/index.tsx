@@ -56,8 +56,8 @@ const MyOrganizationsPage = () => {
             <LinkList
               items={userCtx.organizations.map((item) => ({
                 title: item.display_name,
-                href: `organizations/${item.slug}`,
-                subtitle: item.name,
+                href: `organizations/${item.id}`,
+                subtitle: item.description,
                 titleExtra: 
                   <Tag fontWeight="normal" colorScheme={item.role === "Owner" ? "green" : "cyan"}>
                     {item.role}
