@@ -6,7 +6,9 @@ import {
   VStack,
   Divider,
   Tag,
-  Text
+  Text,
+  HStack,
+  Show
 } from "@chakra-ui/react";
 import { useTranslation } from 'react-i18next';
 import AuthContext from "@/contexts/auth";
@@ -25,8 +27,8 @@ const MyOrganizationsPage = () => {
 
   const handleCreateOrganization = async () => {
     try {
-      await createOrganization("测试组织2"); // only for test, @TODO: design a modal to input organization name
-      userCtx.updateUserOrganizations();
+      await createOrganization("🦄 测试"); // only for test, @TODO: design a modal to input organization name
+      userCtx.updateOrganizations();
     } catch (error) {
       console.error('Failed to create organization:', error);
     }
@@ -57,13 +59,27 @@ const MyOrganizationsPage = () => {
                 href: `organizations/${item.slug}`,
                 subtitle: item.name,
                 titleExtra: 
-                  <Tag colorScheme={item.role === "Owner" ? "green" : "cyan"}>
+                  <Tag fontWeight="normal" colorScheme={item.role === "Owner" ? "green" : "cyan"}>
                     {item.role}
                   </Tag>,
                 body: 
                   <Text fontSize="sm" className="secondary-text">
                     {item.member_count} { item.member_count > 1 ? t('MyOrganizationsPage.text.members') : t('MyOrganizationsPage.text.member') }
-                  </Text>
+                  </Text>,
+                lineExtra:
+                  <Show above="md">
+                    <HStack spacing={2}>
+                      {/* TODO: Button logic */}
+                      {item.role === "Owner" && 
+                        <Button size="sm">{t('MyOrganizationsPage.button.settings')}</Button>
+                      }
+                      <Button size="sm" colorScheme="red" variant="subtle"
+                        isDisabled={item.role === "Owner" && item.owner_count === 1}
+                      >
+                        {t('MyOrganizationsPage.button.leave')}
+                      </Button>
+                    </HStack>
+                  </Show>
               }))}/>
           }
         </div>

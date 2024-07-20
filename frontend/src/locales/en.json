@@ -35,7 +35,9 @@
         "title": "My Organizations",
         "header": "My Organizations",
         "button": {
-            "create": "New Organization"
+            "create": "New Organization",
+            "settings": "Settings",
+            "leave": "Leave"
         },
         "text": {
             "member": "Member",

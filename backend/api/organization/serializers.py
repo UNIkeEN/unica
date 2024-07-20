@@ -13,11 +13,12 @@ class MembershipSerializer(serializers.ModelSerializer):
 
 class OrganizationSerializer(serializers.ModelSerializer):
     role = serializers.SerializerMethodField()
-    member_count = serializers.SerializerMethodField()
+    member_count = serializers.SerializerMethodField()  # All members, include owner
+    owner_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Organization
-        fields = ['id', 'display_name', 'name', 'slug', 'created_at', 'updated_at', 'role', 'member_count']
+        fields = ['id', 'display_name', 'name', 'slug', 'created_at', 'updated_at', 'role', 'member_count', 'owner_count']
 
     def get_role(self, obj):
         user = self.context['request'].user
@@ -26,6 +27,9 @@ class OrganizationSerializer(serializers.ModelSerializer):
     
     def get_member_count(self, obj):
         return Membership.objects.filter(organization=obj).count()
+    
+    def get_owner_count(self, obj):
+        return Membership.objects.filter(organization=obj, role=Membership.OWNER).count()
 
 
 class OrganizationCreationSerializer(serializers.ModelSerializer):

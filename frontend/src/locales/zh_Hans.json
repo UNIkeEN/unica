@@ -35,7 +35,9 @@
         "title": "我的组织",
         "header": "组织",
         "button": {
-            "create": "创建新组织"
+            "create": "创建新组织",
+            "settings": "组织设置",
+            "leave": "退出"
         },
         "text": {
             "member": "人",
