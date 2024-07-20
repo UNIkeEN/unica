@@ -14,6 +14,8 @@ interface UserContextType {
   updateBasicInfo: () => void;
   organizations: Organization[];
   updateOrganizations: () => void;
+  orgSortBy: string;
+  updateOrgSortBy:(prop: string) => void;
 }
 
 const UserContext = createContext<UserContextType>({
@@ -23,13 +25,27 @@ const UserContext = createContext<UserContextType>({
   updateBasicInfo: () => {},
   organizations: [],
   updateOrganizations: () => {},
+  orgSortBy: 'updated_at',
+  updateOrgSortBy: () => {},
 });
 
 export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [userInfo, setUserInfo] = useState(undefined);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [orgSortBy, setOrgSortBy] = useState<string>('updated_at');
   const toast = useToast();
   const { t } = useTranslation();
+
+  const sortedOrganizations = (orgs: Organization[], orgSortBy: string): Organization[] => {
+    return [...orgs].sort((a, b) => {
+      if (orgSortBy === 'created_at' || orgSortBy === 'updated_at') {
+        return new Date(b[orgSortBy]).getTime() - new Date(a[orgSortBy]).getTime();
+      } else if (orgSortBy === 'display_name') {
+        return a.display_name.localeCompare(b.display_name);
+      }
+      return 0;
+    });
+  };
 
   const updateBasicInfo = useCallback(() => {
     try {
@@ -49,7 +65,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const updateOrganizations = useCallback(async () => {
     try {
       const orgList = await getUserOrganizations();
-      setOrganizations(orgList);
+      setOrganizations(sortedOrganizations(orgList, orgSortBy));
     } catch (error) {
       toast({
         title: t('UserContext.toast.error-2'),
@@ -70,13 +86,20 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     setOrganizations([]);
   }, [toast, t]);
 
+  const updateOrgSortBy = (newSort: string) => {
+    setOrgSortBy(newSort);
+    setOrganizations(sortedOrganizations(organizations, newSort));
+  }
+
   const contextValue = {
     updateAll,
     cleanUp,
     basicInfo: userInfo,
     updateBasicInfo,
     organizations: organizations,
-    updateOrganizations
+    updateOrganizations,
+    orgSortBy,
+    updateOrgSortBy: updateOrgSortBy,
   };
 
   return (

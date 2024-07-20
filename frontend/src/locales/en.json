@@ -34,6 +34,12 @@
     "MyOrganizationsPage": {
         "title": "My Organizations",
         "header": "My Organizations",
+        "select": {
+            "sortBy": "Sort By",
+            "byCreatedAt": "Sort by Created At",
+            "byUpdatedAt": "Sort by Updated At",
+            "byDisplayName": "Sort by Display Name"
+        },
         "button": {
             "create": "New Organization",
             "settings": "Settings",

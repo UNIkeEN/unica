@@ -34,6 +34,12 @@
     "MyOrganizationsPage": {
         "title": "我的组织",
         "header": "组织",
+        "select": {
+            "sortBy": "排序方式",
+            "byCreatedAt": "按创建时间",
+            "byUpdatedAt": "按更新时间",
+            "byDisplayName": "按名称"
+        },
         "button": {
             "create": "创建新组织",
             "settings": "组织设置",
