@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import Head from "next/head";
 import {
   Menu,
@@ -22,11 +22,14 @@ import UserContext from "@/contexts/user";
 import { createOrganization } from "@/services/organization";
 import LinkList from "@/components/link-list";
 import { ChevronDownIcon } from "@chakra-ui/icons";
+import { Organization } from '@/models/organization';
 
 const MyOrganizationsPage = () => {
   const authCtx = useContext(AuthContext);
   const userCtx = useContext(UserContext);
   const { t } = useTranslation();
+  const [orgSortBy, setOrgSortBy] = useState<string>('updated_at'); // updated_at, created_at, display_name
+  const sortOptions = ['created_at', 'updated_at', 'display_name'];
 
   useEffect(() => {
     if (!authCtx.checkLoginAndRedirect()) return;
@@ -41,6 +44,17 @@ const MyOrganizationsPage = () => {
     }
   };
 
+  const sortOrganizations = (orgs: Organization[], orgSortBy: string): Organization[] => {
+    return [...orgs].sort((a, b) => {
+      if (orgSortBy === 'created_at' || orgSortBy === 'updated_at') {
+        return new Date(b[orgSortBy]).getTime() - new Date(a[orgSortBy]).getTime();
+      } else if (orgSortBy === 'display_name') {
+        return a.display_name.localeCompare(b.display_name);
+      }
+      return 0;
+    });
+  };
+
   return (
     <>
       <Head>
@@ -50,18 +64,20 @@ const MyOrganizationsPage = () => {
       <VStack spacing={6} align="stretch">
         <Flex w="100%" justifyContent="flex-end" align="center">
           <Menu closeOnSelect={true}>
-            <MenuButton as={Button} rightIcon={<ChevronDownIcon />} w="160px" style={{ textAlign: 'left' }}>
-              {t('MyOrganizationsPage.select.sortBy')}
+            <MenuButton as={Button} rightIcon={<ChevronDownIcon />} w="auto" style={{ textAlign: 'left' }}>
+              {`${t('MyOrganizationsPage.select.sort_by')}${t(`MyOrganizationsPage.select.by_${orgSortBy}`)}`}
             </MenuButton>
             <MenuList>
               <MenuOptionGroup
-                defaultValue={userCtx.orgSortBy}
+                defaultValue={orgSortBy}
                 type="radio"
-                onChange={(value) => userCtx.updateOrgSortBy(value.toString())}
+                onChange={(value) => setOrgSortBy(value as string)}
               >
-                <MenuItemOption value="created_at">{t('MyOrganizationsPage.select.byCreatedAt')}</MenuItemOption>
-                <MenuItemOption value="updated_at">{t('MyOrganizationsPage.select.byUpdatedAt')}</MenuItemOption>
-                <MenuItemOption value="display_name">{t('MyOrganizationsPage.select.byDisplayName')}</MenuItemOption>
+                {sortOptions.map((option) => (
+                  <MenuItemOption key={option} value={option}>
+                    {t(`MyOrganizationsPage.select.by_${option}`)}
+                  </MenuItemOption>
+                ))}
               </MenuOptionGroup>
             </MenuList>
           </Menu>
@@ -77,7 +93,7 @@ const MyOrganizationsPage = () => {
           <Divider />
           {userCtx.organizations && userCtx.organizations.length > 0 &&
             <LinkList
-              items={userCtx.organizations.map((item) => ({
+              items={sortOrganizations(userCtx.organizations, orgSortBy).map((item) => ({
                 title: item.display_name,
                 href: `organizations/${item.id}`,
                 subtitle: item.description,

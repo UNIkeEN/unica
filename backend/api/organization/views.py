@@ -24,7 +24,11 @@ def create_organization(request):
 @permission_classes([IsAuthenticated])
 def get_user_organizations(request):
     memberships = Membership.objects.filter(user=request.user)
-    organizations = [membership.organization for membership in memberships]
+    organizations = sorted(
+        (membership.organization for membership in memberships),
+        key=lambda org: org.updated_at,
+        reverse=True
+    )
     serializer = OrganizationSerializer(organizations, many=True, context={'request': request})
     return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -32,9 +36,9 @@ def get_user_organizations(request):
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
-def get_organization_members_by_slug(request, slug):
+def get_organization_members(request, id):
     try:
-        organization = Organization.objects.get(slug=slug)
+        organization = Organization.objects.get(id=id)
     except Organization.DoesNotExist:
         return Response({"detail": "Organization not found."}, status=status.HTTP_404_NOT_FOUND)
 

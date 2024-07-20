@@ -22,9 +22,9 @@ export async function getUserOrganizations() {
     }
 };
 
-export async function getOrganizationMembersBySlug(slug: string) {
+export async function getOrganizationMembers(id: number) {
     try {
-        const response = await request.get(`/api/organization/${slug}/members/`);
+        const response = await request.get(`/api/organization/${id}/members/`);
         return response.data;
     } catch (error) {
         console.error('Failed to get organization members:', error);

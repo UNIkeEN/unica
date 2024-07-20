@@ -35,10 +35,10 @@
         "title": "My Organizations",
         "header": "My Organizations",
         "select": {
-            "sortBy": "Sort By",
-            "byCreatedAt": "Sort by Created At",
-            "byUpdatedAt": "Sort by Updated At",
-            "byDisplayName": "Sort by Display Name"
+            "sort_by": "Sort By: ",
+            "by_created_at": "Last Created",
+            "by_updated_at": "Last Updated",
+            "by_display_name": "Name"
         },
         "button": {
             "create": "New Organization",
