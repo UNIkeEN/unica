@@ -28,21 +28,27 @@ const LinkList: React.FC<LinkListProps> = ({ items }) => {
       {items.map((item) => (
         <>
           <Flex px={4} py={4} justify="space-between" alignItems="center">
-            <VStack spacing={2} align="start">
-              <HStack spacing={2}>
+            <VStack spacing={2} align="start" overflow="hidden">
+              <HStack spacing={2} flexWrap="wrap">
                 <Link 
                   as={NextLink} 
                   fontSize="md"
                   color="blue.500"
                   fontWeight="semibold" 
                   href={item.href}
+                  wordBreak="break-all"
                 >
                   {item.title}
                 </Link>
                 {item?.titleExtra}
               </HStack>
               {item.subtitle && 
-                <Text fontSize="sm" className="secondary-text" mt={-1.5}>
+                <Text 
+                  fontSize="sm" 
+                  className="secondary-text" 
+                  mt={-1.5}
+                  wordBreak="break-all"
+                >
                   {item.subtitle}
                 </Text>
               }
