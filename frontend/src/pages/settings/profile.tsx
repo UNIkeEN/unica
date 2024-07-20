@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import Head from "next/head";
 import { useTranslation } from 'react-i18next';
 import AuthContext from "@/contexts/auth";
-import SettingsLayout from "@/components/settings-layout";
+import SettingsLayout from "@/layouts/settings-layout";
 
 const ProfileSettingsPage = () => {
   const authCtx = useContext(AuthContext);

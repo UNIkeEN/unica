@@ -8,7 +8,7 @@ import { localeResources } from '@/locales';
 import { ToastContextProvider } from '@/contexts/toast';
 import { AuthContextProvider } from '@/contexts/auth';
 import { UserContextProvider } from '@/contexts/user';
-import MainLayout from '@/components/main-layout';
+import MainLayout from '@/layouts/main-layout';
 import theme from '../theme';
 import '@/styles/globals.css';
 
