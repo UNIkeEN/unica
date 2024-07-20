@@ -59,6 +59,7 @@
             "title": "概览"
         }
     },
+    "SettingsPages": {
         "header": "设置",
         "profile": {
             "title": "个人资料设置"

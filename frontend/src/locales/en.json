@@ -59,6 +59,7 @@
             "title": "Overview"
         }
     },
+    "SettingsPages": {
         "header": "Settings",
         "profile": {
             "title": "Profile Settings"

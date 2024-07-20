@@ -1,22 +1,15 @@
-import { useContext, useEffect } from "react";
 import Head from "next/head";
 import { useTranslation } from 'react-i18next';
-import AuthContext from "@/contexts/auth";
 import SettingsLayout from "@/layouts/settings-layout";
 
 const ProfileSettingsPage = () => {
-  const authCtx = useContext(AuthContext);
   const { t } = useTranslation();
-
-  useEffect(() => {
-    if (!authCtx.checkLoginAndRedirect()) return;
-  }, [authCtx]);
 
   return (
     <>
       <Head>
-        <title>{`${t('SettingsPage.profile.title')} - Unica`}</title>
-        <meta name="headerTitle" content={t('SettingsPage.header')} />
+        <title>{`${t('SettingsPages.profile.title')} - Unica`}</title>
+        <meta name="headerTitle" content={t('SettingsPages.header')} />
       </Head>
       <SettingsLayout>
         <div>Profile Settings</div>
