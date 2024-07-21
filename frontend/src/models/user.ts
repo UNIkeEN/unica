@@ -1,4 +1,4 @@
 export interface UserBasicInfo {
-    name: string,
+    display_name: string,
     email: string
 }
