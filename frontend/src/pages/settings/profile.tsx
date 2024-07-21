@@ -11,9 +11,7 @@ const ProfileSettingsPage = () => {
         <title>{`${t('SettingsPages.profile.title')} - Unica`}</title>
         <meta name="headerTitle" content={t('SettingsPages.header')} />
       </Head>
-      <SettingsLayout>
-        <div>Profile Settings</div>
-      </SettingsLayout>
+      <div>Profile Settings</div>
     </>
   );
 };

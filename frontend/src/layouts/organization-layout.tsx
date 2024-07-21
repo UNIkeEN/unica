@@ -1,37 +1,66 @@
-import React, { useContext, useEffect } from 'react';
-import { VStack } from '@chakra-ui/react';
+import React, { use, useContext, useEffect } from 'react';
+import { VStack, Text, HStack, Icon } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from "next/router";
+import { FiHome, FiBook, FiUser } from 'react-icons/fi';
 import AuthContext from "@/contexts/auth";
+import OrganizationContext, { OrganizationContextProvider } from '@/contexts/organization';
 import NavTabs from '@/components/nav-tabs';
+import Head from 'next/head';
 
 interface OrganizationLayoutProps {
   children: React.ReactNode;
 }
 
 const OrganizationLayout: React.FC<OrganizationLayoutProps> = ({ children }) => {
-  const authCtx = useContext(AuthContext);
+  return (
+    <OrganizationContextProvider>
+      <OrgLayoutContent>{children}</OrgLayoutContent>
+    </OrganizationContextProvider>
+  );
+};
+
+const OrgLayoutContent: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const orgCtx = useContext(OrganizationContext);
   const router = useRouter();
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (!authCtx.checkLoginAndRedirect()) return;
-  }, [authCtx]);
+    if (router.query.id) {
+      orgCtx.updateBasicInfo(Number(router.query.id));
+      // orgCtx.updateMemberList();
+    }
+  }, [router.query.id]);
 
-  const orgMenuItems = ["overview"];
+  const orgMenuItems = [
+    { icon: FiHome, label: 'overview' },
+    { icon: FiBook, label: 'projects' },
+    { icon: FiUser, label: 'members' },
+  ];
 
   return (
-    <VStack spacing={6} align="stretch">
-      <NavTabs 
-        items={orgMenuItems.map((item) => ({
-            label: t(`OrganizationPages.${item}.title`),
-            value: `/organizations/${router.query.id}/${item}`,
-        }))}
-        onClick={(value) => {router.push(value)}}
-        selectedKeys={[router.asPath]}
+    <>
+      <Head>
+        <title>{orgCtx.basicInfo?.display_name}</title>
+        <meta name="headerTitle" content={orgCtx.basicInfo?.display_name} />
+      </Head>
+      <VStack spacing={6} align="stretch">
+        <NavTabs
+          items={orgMenuItems.map((item) => ({
+            label:
+              <HStack spacing={2}>
+                <Icon as={item.icon} />
+                <Text>{t(`OrganizationPages.${item.label}.title`)}</Text>
+              </HStack>
+            ,
+            value: `/organizations/${router.query.id}/${item.label}`,
+          }))}
+          onClick={(value) => { router.push(value) }}
+          selectedKeys={[router.asPath]}
         />
-      {children}
-    </VStack>
+        {children}
+      </VStack>
+    </>
   );
 };
 

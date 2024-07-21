@@ -95,7 +95,7 @@ const MyOrganizationsPage = () => {
             <LinkList
               items={sortOrganizations(userCtx.organizations, orgSortBy).map((item) => ({
                 title: item.display_name,
-                href: `organizations/${item.id}`,
+                href: `organizations/${item.id}/overview`,
                 subtitle: item.description,
                 titleExtra:
                   <Tag fontWeight="normal" colorScheme={item.role === "Owner" ? "green" : "cyan"}>

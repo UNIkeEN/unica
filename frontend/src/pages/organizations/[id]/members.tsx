@@ -2,15 +2,15 @@ import { useContext, useEffect } from "react";
 import { useTranslation } from 'react-i18next';
 import OrganizationContext from "@/contexts/organization";
 
-const OrganizationOverviewPage = () => {
+const OrganizationMembersPage = () => {
   const orgCtx = useContext(OrganizationContext);
   const { t } = useTranslation();
 
   return (
     <>
-      <div>Organization Overview</div>
+      <div>Organization Members</div>
     </>
   );
 };
 
-export default OrganizationOverviewPage;
+export default OrganizationMembersPage;

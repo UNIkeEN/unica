@@ -12,9 +12,7 @@ const AppearanceSettingsPage = () => {
         <title>{`${t('SettingsPages.appearance.title')} - Unica`}</title>
         <meta name="headerTitle" content={t('SettingsPages.header')} />
       </Head>
-      <SettingsLayout>
-        <div>Appearance Settings</div>
-      </SettingsLayout>
+      <div>Appearance Settings</div>
     </>
   );
 };

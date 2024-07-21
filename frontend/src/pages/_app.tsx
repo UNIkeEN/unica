@@ -10,6 +10,8 @@ import { ToastContextProvider } from '@/contexts/toast';
 import { AuthContextProvider } from '@/contexts/auth';
 import { UserContextProvider } from '@/contexts/user';
 import MainLayout from '@/layouts/main-layout';
+import OrganizationLayout from '@/layouts/organization-layout';
+import SettingsLayout from '@/layouts/settings-layout';
 import theme from '../theme';
 import '@/styles/globals.css';
 
@@ -41,13 +43,26 @@ function App({ Component, pageProps }: AppProps) {
 
   if (!mounted) return <></>;
 
+  const isOrganizationPage = router.pathname.startsWith('/organizations/[id]/');
+  const isSettingsPage = router.pathname.startsWith('/settings/');
+
   return (
     <ChakraProvider theme={theme}>
       <ToastContextProvider>
         <UserContextProvider>
           <AuthContextProvider>
             <MainLayout>
-              <Component {...pageProps} />
+              {isOrganizationPage ? (
+                <OrganizationLayout>
+                  <Component {...pageProps} />
+                </OrganizationLayout>
+              ) : isSettingsPage ? (
+                <SettingsLayout>
+                  <Component {...pageProps} />
+                </SettingsLayout>
+              ) : (
+                <Component {...pageProps} />
+              )}
             </MainLayout>
           </AuthContextProvider>
         </UserContextProvider>   

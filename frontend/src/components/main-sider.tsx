@@ -72,7 +72,7 @@ const MainSider = () => {
               <Text fontSize="sm" className="secondary-text" ml={3}>{t('MainSider.my-organizations.title')}</Text>
               <NavMenu 
                 items={userCtx.organizations.slice(0, 5).map((item) => ({
-                  value: `/organizations/${item.id}`,
+                  value: `/organizations/${item.id}/overview`,
                   label: 
                       <HStack spacing={2} overflow="hidden">
                         <Avatar size="2xs" name={item.display_name}/>

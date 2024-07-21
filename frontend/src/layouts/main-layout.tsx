@@ -26,10 +26,15 @@ const MainLayout = ({ children }) => {
   const [headerExtra, setHeaderExtra] = useState(null);
 
   useEffect(() => {
-    const headerTitleMeta = document.querySelector('meta[name="headerTitle"]') as HTMLMetaElement;;
-    if (headerTitleMeta) {
-      setHeaderTitle(headerTitleMeta.content);
-    }
+    const updateHeaderTitle = () => {
+      const headerTitleMeta = document.querySelector('meta[name="headerTitle"]') as HTMLMetaElement;
+      if (headerTitleMeta) {
+        setHeaderTitle(headerTitleMeta.content);
+      }
+    };
+    updateHeaderTitle();
+    const timer = setTimeout(updateHeaderTitle, 100); // wait for the meta tag to be updated, for some meta tag is depend on async state, TODO: perf!
+    return () => clearTimeout(timer);
   }, [children]);
 
   useEffect(() => {
