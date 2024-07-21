@@ -19,6 +19,7 @@ export async function getUserOrganizations() {
         return response.data;
     } catch (error) {
         console.error('Failed to get user organizations:', error);
+        throw error;
     }
 };
 

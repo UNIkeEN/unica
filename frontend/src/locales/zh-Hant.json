@@ -68,7 +68,13 @@
             "title": "項目"
         },
         "members": {
-            "title": "成員"
+          "title": "成員",
+          "button": {
+            "invite": "邀請新成員"
+          },
+          "list": {
+            "joined_at": "於 {{date}} 加入"
+          }
         }
     },
     "SettingsPages": {

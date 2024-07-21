@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next';
 import AuthContext from "@/contexts/auth";
 import UserContext from "@/contexts/user";
 import { createOrganization } from "@/services/organization";
-import LinkList from "@/components/link-list";
+import RichList from "@/components/rich-list";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Organization } from '@/models/organization';
 
@@ -62,7 +62,7 @@ const MyOrganizationsPage = () => {
         <meta name="headerTitle" content={t('MyOrganizationsPage.header')} />
       </Head>
       <VStack spacing={6} align="stretch">
-        <Flex w="100%" justifyContent="flex-end" align="center">
+        <HStack w="100%" justifyContent="flex-end" align="center" spacing={3}>
           <Menu closeOnSelect={true}>
             <MenuButton as={Button} rightIcon={<ChevronDownIcon />} w="auto" style={{ textAlign: 'left' }}>
               {`${t('MyOrganizationsPage.select.sort_by')}${t(`MyOrganizationsPage.select.by_${orgSortBy}`)}`}
@@ -81,18 +81,18 @@ const MyOrganizationsPage = () => {
               </MenuOptionGroup>
             </MenuList>
           </Menu>
-          <Button style={{ marginLeft: '20px' }}
+          <Button
             colorScheme="blue"
             onClick={handleCreateOrganization}
           >
             {t('MyOrganizationsPage.button.create')}
           </Button>
-        </Flex>
+        </HStack>
 
         <div>
           <Divider />
           {userCtx.organizations && userCtx.organizations.length > 0 &&
-            <LinkList
+            <RichList titleAsLink
               items={sortOrganizations(userCtx.organizations, orgSortBy).map((item) => ({
                 title: item.display_name,
                 href: `organizations/${item.id}/overview`,

@@ -75,7 +75,13 @@
             "title": "项目"
         },
         "members": {
-            "title": "成员"
+            "title": "成员",
+            "button": {
+                "invite": "邀请新成员"
+            },
+            "list": {
+                "joined_at": "于 {{date}} 加入"
+            }
         }
     },
     "SettingsPages": {

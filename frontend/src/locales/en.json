@@ -75,7 +75,13 @@
             "title": "Projects"
         },
         "members": {
-            "title": "Members"
+            "title": "Members",
+            "button": {
+                "invite": "Invite"
+            },
+            "list": {
+                "joined_at": "Joined At {{date}}"
+            }
         }
     },
     "SettingsPages": {

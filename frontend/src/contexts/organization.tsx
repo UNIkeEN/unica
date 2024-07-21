@@ -6,19 +6,21 @@ import { Organization, OrganizationMember } from '@/models/organization';
 import { checkUserOrgPermission, getOrganizationMembers } from '@/services/organization';
 
 interface OrganizationContextType {
+  updateAll: () => void;
   cleanUp: () => void;
   userRole: string;
   basicInfo: Organization;
-  updateBasicInfo: (orgId: number) => void;
+  updateBasicInfo: () => void;
   memberList: OrganizationMember[];
   updateMemberList: () => void;
 }
 
 const OrganizationContext = createContext<OrganizationContextType>({
+  updateAll: () => {},
   cleanUp: () => {},
   userRole: '',
   basicInfo: {} as Organization | undefined,
-  updateBasicInfo: (orgId: number) => {},
+  updateBasicInfo: () => {},
   memberList: [],
   updateMemberList: () => {},
 });
@@ -39,15 +41,15 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
 
     setTimeout(() => {
       router.push('/home');
-    }, 3000);
+    }, 2000);
   };
 
-  const updateBasicInfo = (orgId: number) => {
+  const updateBasicInfo = async () => {
+    if (!router.query.id) return;
     try {
-      checkUserOrgPermission(orgId).then((res) => {
-        setUserRole(res.role);
-        setOrgInfo(res.organization);
-      });
+      const res = await checkUserOrgPermission(Number(router.query.id));
+      setUserRole(res.role);
+      setOrgInfo(res.organization);
     } catch (error) {
       if (error.response && error.response.status === 403) {
         toastNoPermissionAndRedirect();
@@ -60,14 +62,14 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
       setUserRole(undefined);
       setOrgInfo(undefined);
       console.error('Failed to update user basic info:', error);
-    }    
+    }
   };
 
-  const updateMemberList = () => {
+  const updateMemberList = async () => {
+    if (!router.query.id) return;
     try {
-      getOrganizationMembers(orgInfo.id).then((res) => {
-        setMemberList(res);
-      });
+      const res = await getOrganizationMembers(Number(router.query.id));
+      setMemberList(res);
     } catch (error) {
       if (error.response && error.response.status === 403) {
         toastNoPermissionAndRedirect();
@@ -82,6 +84,11 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
     }
   };
 
+  const updateAll = () => {
+    updateBasicInfo();
+    updateMemberList();
+  }
+
   const cleanUp = () => {
     setOrgInfo(undefined);
     setMemberList([]);
@@ -89,6 +96,7 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
   };
 
   const contextValue = {
+    updateAll,
     cleanUp,
     userRole: userRole,
     basicInfo: orgInfo,

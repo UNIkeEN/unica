@@ -9,20 +9,21 @@ import {
   Text
 } from "@chakra-ui/react";
 
-interface LinkListItem {
+interface RichListItem {
   title: string | React.ReactNode;
-  href: string;
+  href?: string;
   subtitle?: string | React.ReactNode;
   body?: React.ReactNode;
   titleExtra?: React.ReactNode;
   lineExtra?: React.ReactNode;
 }
 
-interface LinkListProps {
-  items: LinkListItem[];
+interface RichListProps {
+  titleAsLink?: boolean;
+  items: RichListItem[];
 }
 
-const LinkList: React.FC<LinkListProps> = ({ items }) => {
+const RichList: React.FC<RichListProps> = ({ titleAsLink = false, items }) => {
   return (
     <>
       {items.map((item) => (
@@ -30,16 +31,28 @@ const LinkList: React.FC<LinkListProps> = ({ items }) => {
           <Flex px={4} py={4} justify="space-between" alignItems="center">
             <VStack spacing={2} align="start" overflow="hidden">
               <HStack spacing={2} flexWrap="wrap">
-                <Link 
-                  as={NextLink} 
-                  fontSize="md"
-                  color="blue.500"
-                  fontWeight="semibold" 
-                  href={item.href}
-                  wordBreak="break-all"
-                >
-                  {item.title}
-                </Link>
+                {titleAsLink ? (
+                  <Link 
+                    as={NextLink} 
+                    fontSize="md"
+                    color="blue.500"
+                    fontWeight="semibold" 
+                    href={item.href}
+                    wordBreak="break-all"
+                  >
+                    {item.title}
+                  </Link>
+                ) : (
+                  typeof item.title === "string" ? (
+                  <Text 
+                    fontSize="md"
+                    fontWeight="semibold" 
+                    wordBreak="break-all"
+                  >
+                    {item.title}
+                  </Text>
+                  ) : (item.title)
+                )}
                 {item?.titleExtra}
               </HStack>
               {item.subtitle && 
@@ -63,6 +76,4 @@ const LinkList: React.FC<LinkListProps> = ({ items }) => {
   );
 }
 
-
-
-export default LinkList;
+export default RichList;

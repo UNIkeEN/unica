@@ -26,9 +26,11 @@ const OrgLayoutContent: React.FC<{ children: React.ReactNode }> = ({ children })
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (router.query.id) {
-      orgCtx.updateBasicInfo(Number(router.query.id));
-      // orgCtx.updateMemberList();
+    const id = Number(router.query.id);
+    if (id) {
+      orgCtx.updateAll();
+    } else {
+      orgCtx.cleanUp();
     }
   }, [router.query.id]);
 
