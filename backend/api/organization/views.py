@@ -69,7 +69,7 @@ def get_user_organizations(request):
     method='get',
     responses={
         200: openapi.Response(
-            description="Organization name and authenticated user's role",
+            description="Organization info and authenticated user's role"
         ),
         404: openapi.Response(
             description="Organization not found"
@@ -86,9 +86,12 @@ def get_user_organizations(request):
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner', 'Member'])
 def check_user_organization_permission(request, id):
-    serializer = MembershipSerializer(request.membership)
-    data = serializer.data
-    data['org_name'] = request.organization.display_name
+    membership = MembershipSerializer(request.membership, context={'request': request}).data
+    organization = OrganizationSerializer(request.organization, context={'request': request}).data
+    data = {
+        **membership,
+        'organization': organization
+    }
     return Response(data, status=status.HTTP_200_OK)
 
 
