@@ -2,11 +2,18 @@ from rest_framework import serializers
 from .models import Organization, Membership
 
 class MembershipSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField()
+    user = serializers.SerializerMethodField()
 
     class Meta:
         model = Membership
         fields = ['user', 'role', 'joined_at']
+
+    def get_user(self, obj):
+        user = obj.user
+        return {
+            'email': user.email,
+            'display_name': user.display_name,
+        }
 
 
 class OrganizationSerializer(serializers.ModelSerializer):

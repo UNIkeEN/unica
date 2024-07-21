@@ -5,3 +5,4 @@ django-cors-headers
 Authlib
 requests
 mmh3
+drf-yasg
