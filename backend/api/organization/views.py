@@ -7,6 +7,7 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from .models import Organization, Membership
 from .serializers import OrganizationCreationSerializer, OrganizationSerializer, MembershipSerializer
+from .decorators import organization_permission_classes
 
 
 @swagger_auto_schema(
@@ -68,6 +69,33 @@ def get_user_organizations(request):
     method='get',
     responses={
         200: openapi.Response(
+            description="Organization name and authenticated user's role",
+        ),
+        404: openapi.Response(
+            description="Organization not found"
+        ),
+        403: openapi.Response(
+            description="Authenticated user are not a member of this organization"
+        ),
+    },
+    operation_description="Check if the authenticated user is a member of the organization and retrieve the user's role.",
+    tags=["organization"]
+)
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@organization_permission_classes(['Owner', 'Member'])
+def check_user_organization_permission(request, id):
+    serializer = MembershipSerializer(request.membership)
+    data = serializer.data
+    data['org_name'] = request.organization.display_name
+    return Response(data, status=status.HTTP_200_OK)
+
+
+@swagger_auto_schema(
+    method='get',
+    responses={
+        200: openapi.Response(
             description="List of members in the organization",
             schema=MembershipSerializer(many=True)
         ),
@@ -84,17 +112,8 @@ def get_user_organizations(request):
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
+@organization_permission_classes(['Owner', 'Member'])
 def get_organization_members(request, id):
-    try:
-        organization = Organization.objects.get(id=id)
-    except Organization.DoesNotExist:
-        return Response({"detail": "Organization not found."}, status=status.HTTP_404_NOT_FOUND)
-    
-    try:
-        membership = Membership.objects.get(user=request.user, organization=organization)
-    except Membership.DoesNotExist:
-        return Response({"detail": "You are not a member of this organization."}, status=status.HTTP_403_FORBIDDEN)
-
-    memberships = Membership.objects.filter(organization=organization)
+    memberships = Membership.objects.filter(organization=request.organization)
     serializer = MembershipSerializer(memberships, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
