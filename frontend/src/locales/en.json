@@ -60,6 +60,13 @@
             "error": "Authentication failed"
         }
     },
+    "OrganizationContext": {
+        "toast": {
+            "error-1": "You are not a member of this organization or do not have enough permissions",
+            "error-2": "Failed to get organization information",
+            "error-3": "Failed to get member list"
+        }
+    },
     "OrganizationPages": {
         "overview": {
             "title": "Overview"

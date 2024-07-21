@@ -1,3 +1,5 @@
+import { UserBasicInfo } from "./user";
+
 export interface Organization {
   id: number;
   display_name: string;
@@ -7,4 +9,10 @@ export interface Organization {
   role?: string;
   member_count?: number;
   owner_count?: number;
+}
+
+export interface OrganizationMember {
+  user: UserBasicInfo;
+  role: string;
+  joined_at: string;
 }

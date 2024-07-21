@@ -3,8 +3,6 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '@/contexts/toast';
 import useLocalStorage from '@/hooks/useLocalStorage';
-import { UserBasicInfo } from '@/models/user';
-import { getUserBasicInfo } from '@/services/user';
 import UserContext from '@/contexts/user';
 
 interface AuthContextType {
