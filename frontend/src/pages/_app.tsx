@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { AppProps } from 'next/app';
+import { useRouter } from 'next/router';
 import { ChakraProvider } from '@chakra-ui/react';
 import { appWithTranslation } from 'next-i18next';
 import i18n from 'i18next';
@@ -12,22 +13,31 @@ import MainLayout from '@/layouts/main-layout';
 import theme from '../theme';
 import '@/styles/globals.css';
 
+i18n
+  .use(initReactI18next)
+  .init({
+    resources: localeResources,
+    fallbackLng: 'en',
+    interpolation: {
+      escapeValue: false,
+    },
+});
+
 function App({ Component, pageProps }: AppProps) {
   const [mounted, setMounted] = useState<boolean>(false);
+  const router = useRouter();
+  
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    // detect language in route (like '/[locale]/...')
+    const currentLang = router.locale || 'zh-Hans';
+    if (!Object.keys(localeResources).includes(currentLang)) {
+      i18n.changeLanguage('zh-Hans');
+    } else {
+      i18n.changeLanguage(currentLang);
+    }
 
-  i18n
-    .use(initReactI18next)
-    .init({
-      resources: localeResources,
-      lng: 'zh_Hans', 
-      fallbackLng: 'en',
-      interpolation: {
-        escapeValue: false,
-      },
-  });
+    setMounted(true);
+  }, [router.locale]);
 
   if (!mounted) return <></>;
 

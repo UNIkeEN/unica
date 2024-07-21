@@ -1,4 +1,4 @@
 export const i18n = {
-  defaultLocale: 'zh_Hans',
-  locales: ['en', 'zh_Hans'],
+  defaultLocale: 'zh-Hans',
+  locales: ['en', 'zh-Hans', 'zh-Hant'],
 };

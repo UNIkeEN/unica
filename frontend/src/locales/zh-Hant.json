@@ -1,0 +1,89 @@
+{
+    "HomePage": {
+        "title": "主頁",
+        "header": "主頁"
+    },
+    "LoginPage": {
+        "title": "登入",
+        "button": {
+            "jaccount": "使用 jAccount 登入"
+        },
+        "toast": {
+            "need-login": "請先登入"
+        }
+    },
+    "MainSider": {
+        "user-popover": {
+            "button": {
+                "logout": "退出登入"
+            }
+        },
+        "pinned": {
+            "title": "已固定"
+        },
+        "recent": {
+            "title": "最近訪問"
+        },
+        "my-organizations": {
+            "title": "我的組織",
+            "button": {
+                "more": "展示全部"
+            }
+        }
+    },
+    "MyOrganizationsPage": {
+        "title": "我的組織",
+        "header": "組織",
+        "select": {
+            "sort_by": "排序方式：",
+            "by_created_at": "最近創建",
+            "by_updated_at": "最近更新",
+            "by_display_name": "名稱"
+        },
+        "button": {
+            "create": "創建新組織",
+            "settings": "組織設置",
+            "leave": "退出"
+        },
+        "text": {
+            "member": "人",
+            "members": "人"
+        }
+    },
+    "MyProjectsPage": {
+        "title": "我的項目",
+        "header": "項目"
+    },
+    "OAuthRedirectBack": {
+        "title": "認證中",
+        "toast": {
+            "error": "認證失敗"
+        }
+    },
+    "OrganizationPages": {
+        "overview": {
+            "title": "概覽"
+        },
+        "projects": {
+            "title": "項目"
+        },
+        "members": {
+            "title": "成員"
+        }
+    },
+    "SettingsPages": {
+        "header": "設置",
+        "profile": {
+            "title": "個人資料設置"
+        },
+        "appearance": {
+            "title": "外觀設置"
+        }
+    },
+    "UserContext": {
+        "toast": {
+            "error-1": "獲取用戶信息失敗",
+            "error-2": "獲取組織列表失敗"
+        }
+    }
+}

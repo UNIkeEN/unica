@@ -1,12 +1,16 @@
 // src/locales/index.js
 import en from './en.json';
-import zh_Hans from './zh_Hans.json';
+import zh_Hans from './zh-Hans.json';
+import zh_Hant from './zh-Hant.json';
 
 export const localeResources = {
-  en: {
+  "en": {
     translation: en,
   },
-  zh_Hans: {
+  "zh-Hans": {
     translation: zh_Hans,
+  },
+  "zh-Hant": {
+    translation: zh_Hant,
   },
 };

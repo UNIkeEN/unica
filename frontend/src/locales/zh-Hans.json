@@ -63,6 +63,12 @@
     "OrganizationPages": {
         "overview": {
             "title": "概览"
+        },
+        "projects": {
+            "title": "项目"
+        },
+        "members": {
+            "title": "成员"
         }
     },
     "SettingsPages": {
