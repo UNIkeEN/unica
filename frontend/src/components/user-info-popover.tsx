@@ -38,7 +38,7 @@ const UserInfoPopover = () => {
         >
           <HStack spacing={3}>
             <Avatar size="xs"/>
-            <Text fontSize="lg" fontWeight="normal">{userCtx.basicInfo?.name}</Text>
+            <Text fontSize="lg" fontWeight="normal">{userCtx.basicInfo?.display_name}</Text>
           </HStack>
         </Button>
       </PopoverTrigger>
@@ -48,8 +48,8 @@ const UserInfoPopover = () => {
             spacing={2} 
             align="stretch"
           >
-            <Text fontSize="xs" fontWeight="normal" pl={2} pr={2} className="secondary-text">{userCtx.basicInfo?.email}</Text>
-            <Text fontSize="lg" fontWeight="normal" pl={2} pr={2} mt={-2}>{userCtx.basicInfo?.name}</Text>
+            <Text fontSize="xs" fontWeight="normal" px={2} className="secondary-text">{userCtx.basicInfo?.email}</Text>
+            <Text fontSize="lg" fontWeight="normal" px={2} mt={-2}>{userCtx.basicInfo?.display_name}</Text>
             <Divider/>
               <SelectableButton
                 size="xs"
