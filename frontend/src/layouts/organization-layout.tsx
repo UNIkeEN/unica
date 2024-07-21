@@ -28,7 +28,7 @@ const OrgLayoutContent: React.FC<{ children: React.ReactNode }> = ({ children })
   useEffect(() => {
     const id = Number(router.query.id);
     if (id) {
-      orgCtx.updateAll();
+      orgCtx.updateAll(id);
     } else {
       orgCtx.cleanUp();
     }

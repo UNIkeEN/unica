@@ -6,13 +6,12 @@ import { Organization, OrganizationMember } from '@/models/organization';
 import { checkUserOrgPermission, getOrganizationMembers } from '@/services/organization';
 
 interface OrganizationContextType {
-  updateAll: () => void;
+  updateAll: (id: number) => void;
   cleanUp: () => void;
   userRole: string;
   basicInfo: Organization;
-  updateBasicInfo: () => void;
-  memberList: OrganizationMember[];
-  updateMemberList: () => void;
+  updateBasicInfo: (id: number) => void;
+  getMemberList: (id: number, page?: number, pageSize?: number) => Promise<OrganizationMember[]>;
 }
 
 const OrganizationContext = createContext<OrganizationContextType>({
@@ -21,13 +20,11 @@ const OrganizationContext = createContext<OrganizationContextType>({
   userRole: '',
   basicInfo: {} as Organization | undefined,
   updateBasicInfo: () => {},
-  memberList: [],
-  updateMemberList: () => {},
+  getMemberList: () => Promise.resolve([]),
 });
 
 export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [orgInfo, setOrgInfo] = useState(undefined);
-  const [memberList, setMemberList] = useState<OrganizationMember[]>([]);
   const [userRole, setUserRole] = useState(undefined);
   const router = useRouter();
   const toast = useToast();
@@ -44,10 +41,10 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
     }, 2000);
   };
 
-  const updateBasicInfo = async () => {
+  const updateBasicInfo = async (id: number) => {
     if (!router.query.id) return;
     try {
-      const res = await checkUserOrgPermission(Number(router.query.id));
+      const res = await checkUserOrgPermission(id);
       setUserRole(res.role);
       setOrgInfo(res.organization);
     } catch (error) {
@@ -65,11 +62,10 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
     }
   };
 
-  const updateMemberList = async () => {
-    if (!router.query.id) return;
+  const getMemberList = async (id: number, page: number = 1, pageSize: number = 20): Promise<OrganizationMember[]> => {
     try {
-      const res = await getOrganizationMembers(Number(router.query.id));
-      setMemberList(res);
+      const res = await getOrganizationMembers(id, page, pageSize);
+      return res.results as OrganizationMember[];
     } catch (error) {
       if (error.response && error.response.status === 403) {
         toastNoPermissionAndRedirect();
@@ -79,19 +75,16 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
           status: 'error'
         });
       }
-      setMemberList([]);
       console.error('Failed to update organization members:', error);
     }
   };
 
-  const updateAll = () => {
-    updateBasicInfo();
-    updateMemberList();
+  const updateAll = (id: number) => {
+    updateBasicInfo(id);
   }
 
   const cleanUp = () => {
     setOrgInfo(undefined);
-    setMemberList([]);
     setUserRole(undefined);
   };
 
@@ -101,8 +94,7 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
     userRole: userRole,
     basicInfo: orgInfo,
     updateBasicInfo,
-    memberList: memberList,
-    updateMemberList,
+    getMemberList
   }
 
   return (

@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -96,7 +97,14 @@ def check_user_organization_permission(request, id):
 
 
 @swagger_auto_schema(
-    method='get',
+    method='post',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'page': openapi.Schema(type=openapi.TYPE_INTEGER, default=1),
+            'page_size': openapi.Schema(type=openapi.TYPE_INTEGER, default=20),
+        }
+    ),
     responses={
         200: openapi.Response(
             description="List of members in the organization",
@@ -112,11 +120,22 @@ def check_user_organization_permission(request, id):
     operation_description="Retrieve a list of members in an organization.",
     tags=["organization"]
 )
-@api_view(['GET'])
+@api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner', 'Member'])
 def get_organization_members(request, id):
-    memberships = Membership.objects.filter(organization=request.organization)
-    serializer = MembershipSerializer(memberships, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    class MembersNumberPagination(PageNumberPagination):
+        page_size_query_param = 'page_size'
+
+    paginator = MembersNumberPagination()
+
+    request.query_params._mutable = True
+    request.query_params['page'] = request.data.get('page', 1)
+    request.query_params['page_size'] = request.data.get('page_size', 20)
+    request.query_params._mutable = False
+
+    memberships = Membership.objects.filter(organization=request.organization).order_by('joined_at')
+    result_page = paginator.paginate_queryset(memberships, request)
+    serializer = MembershipSerializer(result_page, many=True)
+    return paginator.get_paginated_response(serializer.data)

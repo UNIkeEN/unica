@@ -1,5 +1,6 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
+import { useRouter } from 'next/router';
 import {
   Button,
   VStack,
@@ -12,10 +13,26 @@ import { FiMoreHorizontal } from "react-icons/fi";
 import RichList from "@/components/rich-list";
 import { ISOtoDate } from "@/utils/datetime";
 import OrganizationContext from "@/contexts/organization";
+import { OrganizationMember } from "@/models/organization";
 
 const OrganizationMembersPage = () => {
   const orgCtx = useContext(OrganizationContext);
+  const [memberList, setMemberList] = useState<OrganizationMember[]>([]);
+  const [pageIndex, setPageIndex] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
+  const router = useRouter();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    const id = Number(router.query.id);
+    if (id) {
+      orgCtx.getMemberList(Number(router.query.id), pageIndex, pageSize)
+      .then((res) => {setMemberList(res);})
+      .catch((error) => {setMemberList([]);});
+    } else {
+      setMemberList([]);
+    }
+  }, [router.query.id]);
 
   return (
     <>
@@ -30,9 +47,9 @@ const OrganizationMembersPage = () => {
 
         <div>
           <Divider />
-          {orgCtx.memberList && orgCtx.memberList.length > 0 &&
+          {memberList && memberList.length > 0 &&
             <RichList
-              items={orgCtx.memberList.map((member) => ({
+              items={memberList.map((member) => ({
                 title: member.user.display_name,
                 subtitle: member.user.email,
                 lineExtra:

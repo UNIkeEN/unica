@@ -33,9 +33,12 @@ export async function checkUserOrgPermission(id: number) {
     }
 }
 
-export async function getOrganizationMembers(id: number) {
+export async function getOrganizationMembers(id: number, page: number, pageSize: number) {
     try {
-        const response = await request.get(`/api/organization/${id}/members/`);
+        const response = await request.post(`/api/organization/${id}/members/`, {
+            page: page,
+            page_size: pageSize
+        });
         return response.data;
     } catch (error) {
         console.error('Failed to get organization members:', error);
