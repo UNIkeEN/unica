@@ -53,6 +53,11 @@ const OrgLayoutContent: React.FC<{ children: React.ReactNode }> = ({ children })
               <HStack spacing={2}>
                 <Icon as={item.icon} />
                 <Text>{t(`OrganizationPages.${item.label}.title`)}</Text>
+                {item.label === 'members' && 
+                  <Text className='secondary-text' ml={-1.5}>
+                    ({orgCtx.basicInfo?.member_count})
+                  </Text>
+                }
               </HStack>
             ,
             value: `/organizations/${router.query.id}/${item.label}`,
