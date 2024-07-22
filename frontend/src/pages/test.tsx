@@ -40,8 +40,8 @@ const ComponentTestPage = () => {
       <Pagination
         current={currentPage}
         total={totalPage}
-        onChange={(pageId) => handlePageChange(pageId)}
-        pageNumColorScheme="green"
+        onPageChange={(pageId) => handlePageChange(pageId)}
+        colorScheme="green"
       />
     </VStack>
   );

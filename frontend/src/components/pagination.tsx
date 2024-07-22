@@ -1,4 +1,10 @@
-import { Button, HStack } from "@chakra-ui/react";
+import { 
+  Box,
+  BoxProps,
+  Button, 
+  HStack,
+  IconButton
+} from "@chakra-ui/react";
 import React from "react";
 import {
   FiChevronLeft,
@@ -6,88 +12,107 @@ import {
   FiMoreHorizontal,
 } from "react-icons/fi";
 
-export interface PaginationProps {
+interface PaginationProps extends BoxProps {
   current: number;
   total: number;
-  onChange: (pageId: number) => void;
-  pageNumVariant?: string;
-  pageNumColorScheme?: string;
+  pageBuffer?: number;
+  onPageChange: (page: number) => void;
+  colorScheme?: string;
+  size?: string;
+  spacing?: number;
+  variant?: string;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
   current,
   total,
-  onChange,
-  pageNumVariant = "subtle",
-  pageNumColorScheme = "gray",
+  pageBuffer = 2,
+  onPageChange,
+  colorScheme = "gray",
+  size = "md",
+  spacing = 1,
+  variant = "subtle",
+  ...boxProps
 }) => {
-  const getPages = () => {
-    const pages = [];
-    const maxVisible = 7;
+  
+  const renderPageButton = (page: number) => {
+    const isCurrent: boolean = (current === page);
+    return (
+      <Button
+        key={page}
+        size={size}
+        variant={isCurrent ? variant : "ghost"}
+        colorScheme={isCurrent ? colorScheme : "gray"}
+        pointerEvents={isCurrent ? "none" : "auto"}
+        onClick={() => onPageChange(page)}
+      >
+        {page}
+      </Button>
+    );
+  };
 
-    if (total < maxVisible) for (let i = 1; i <= total; i++) pages.push(i);
-    else {
-      const startPage = Math.max(2, current - 2);
-      const endPage = Math.min(total - 1, current + 2);
+  const renderEllipsis = (key: string) => (
+    <IconButton
+      size={size}
+      key={key}
+      variant="ghost"
+      colorScheme="gray"
+      aria-label="ellipsis"
+      icon={<FiMoreHorizontal/>}
+    />
+  );
 
-      pages.push(1);
+  const renderPages = () => {
+    const pages: React.ReactNode[] = [];
 
-      if (startPage > 2) {
-        pages.push("...");
-        if (endPage < total - 1) {
-          for (let i = startPage; i <= endPage; i++) pages.push(i);
-          pages.push("...");
-        } else {
-          for (let i = total - maxVisible + 2; i < total; i++) pages.push(i);
-        }
-      } else {
-        for (let i = 2; i < maxVisible; i++) pages.push(i);
-        pages.push("...");
+    if (total <= 2 * pageBuffer + 3) {
+      for (let i = 1; i <= total; i++) {
+        pages.push(renderPageButton(i));
       }
-
-      pages.push(total);
+    } else {
+      const start = Math.max(2, current - pageBuffer) - Math.max(0, 2 - total + current);
+      const end = Math.min(total - 1, current + pageBuffer) + Math.max(0, 3 - current);
+      pages.push(renderPageButton(1));
+      if (start > 2) {
+        pages.push(renderEllipsis("start-ellipsis"));
+      }
+      for (let i = start; i <= end; i++) {
+        pages.push(renderPageButton(i));
+      }
+      if (end < total - 1) {
+        pages.push(renderEllipsis("end-ellipsis"));
+      }
+      pages.push(renderPageButton(total));
     }
     return pages;
   };
 
   return (
-    <HStack>
-      <Button
-        variant="ghost"
-        colorScheme="gray"
-        isDisabled={current === 1}
-        onClick={() => onChange(current - 1)}
-        fontSize={20}
-      >
-        <FiChevronLeft />
-      </Button>
+    <Box {...boxProps}>
+      <HStack spacing={spacing}>
+        <IconButton
+          size={size}
+          variant="ghost"
+          colorScheme="gray"
+          aria-label="Previous"
+          isDisabled={current === 1}
+          onClick={() => onPageChange(current - 1)}
+          icon={<FiChevronLeft />}
+        />
 
-      {getPages().map((page, index) =>
-        typeof page === "number" ? (
-          <Button
-            key={index}
-            variant={current === page ? pageNumVariant : "ghost"}
-            colorScheme={current === page ? pageNumColorScheme : "gray"}
-            isDisabled={current === page}
-            onClick={() => onChange(page)}
-          >
-            {page}
-          </Button>
-        ) : (
-          <FiMoreHorizontal key={index} size={20} />
-        )
-      )}
+        {renderPages()}
 
-      <Button
-        variant="ghost"
-        colorScheme="gray"
-        isDisabled={current === total}
-        onClick={() => onChange(current + 1)}
-        fontSize={20}
-      >
-        <FiChevronRight />
-      </Button>
-    </HStack>
+        <IconButton
+          size={size}
+          variant="ghost"
+          colorScheme="gray"
+          aria-label="Next"
+          isDisabled={current === total}
+          onClick={() => onPageChange(current + 1)}
+          icon={<FiChevronRight />}
+        />
+      </HStack>
+    </Box>
   );
 };
 
