@@ -54,7 +54,7 @@ const OrganizationInvitationPage = () => {
             )}
           </Button>
           <Button onClick={() => {handleRespond(false)}}>
-            {t("OrganizationPages.invitation.button.reject")}
+            {t("OrganizationPages.invitation.button.decline")}
           </Button>
         </HStack>
       </VStack>

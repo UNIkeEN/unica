@@ -36,7 +36,7 @@ const OrganizationContext = createContext<OrganizationContextType>({
 });
 
 export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [mounted, setMounted] = useState(false);
+  // const [mounted, setMounted] = useState(false);
   const [orgInfo, setOrgInfo] = useState(undefined);
   const [userRole, setUserRole] = useState(undefined);
   const router = useRouter();
@@ -81,7 +81,6 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
       setUserRole(undefined);
       setOrgInfo(undefined);
       console.error('Failed to update user basic info:', error.request);
-      throw error;
     }
   };
 
@@ -92,7 +91,7 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
         if (prev) {
           return {
             ...prev,
-            members: res.results as OrganizationMember[]
+            member_count: res.count
           };
         }
         return undefined
@@ -131,7 +130,6 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
   const updateAll = (id: number) => {
     try{
       updateBasicInfo(id);
-      setMounted(true);
     } catch (error) {
       console.error('Failed to update organization:', error)
     }
@@ -142,10 +140,14 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
     setUserRole(undefined);
   };
 
+  const checkMounted = () => {
+    return orgInfo !== undefined && userRole !== undefined;
+  }
+
   const contextValue = {
     updateAll,
     cleanUp,
-    mounted: mounted,
+    mounted: checkMounted(),
     userRole: userRole,
     basicInfo: orgInfo,
     updateBasicInfo,

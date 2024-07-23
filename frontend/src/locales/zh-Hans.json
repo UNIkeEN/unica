@@ -105,7 +105,7 @@
             },
             "button": {
                 "accept": "加入 @{{orgName}}",
-                "reject": "拒绝"
+                "decline": "拒绝"
             },
             "toast": {
                 "error": "操作失败"
