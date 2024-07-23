@@ -16,6 +16,7 @@ import {
 interface OrganizationContextType {
   updateAll: (id: number) => void;
   cleanUp: () => void;
+  mounted: boolean;
   userRole: string;
   basicInfo: Organization;
   updateBasicInfo: (id: number) => void;
@@ -26,6 +27,7 @@ interface OrganizationContextType {
 const OrganizationContext = createContext<OrganizationContextType>({
   updateAll: () => {},
   cleanUp: () => {},
+  mounted: false,
   userRole: '',
   basicInfo: {} as Organization | undefined,
   updateBasicInfo: () => {},
@@ -34,6 +36,7 @@ const OrganizationContext = createContext<OrganizationContextType>({
 });
 
 export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [mounted, setMounted] = useState(false);
   const [orgInfo, setOrgInfo] = useState(undefined);
   const [userRole, setUserRole] = useState(undefined);
   const router = useRouter();
@@ -67,6 +70,7 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
       }
     } catch (error) {
       if (error.request && error.request.status === 403) {
+        // setMounted(true);
         toastNoPermissionAndRedirect(MemberRoleEnum.NO_PERMISSION);
       } else {
         toast({
@@ -77,6 +81,7 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
       setUserRole(undefined);
       setOrgInfo(undefined);
       console.error('Failed to update user basic info:', error.request);
+      throw error;
     }
   };
 
@@ -124,7 +129,12 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
   };
 
   const updateAll = (id: number) => {
-    updateBasicInfo(id);
+    try{
+      updateBasicInfo(id);
+      setMounted(true);
+    } catch (error) {
+      console.error('Failed to update organization:', error)
+    }
   }
 
   const cleanUp = () => {
@@ -135,6 +145,7 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
   const contextValue = {
     updateAll,
     cleanUp,
+    mounted: mounted,
     userRole: userRole,
     basicInfo: orgInfo,
     updateBasicInfo,

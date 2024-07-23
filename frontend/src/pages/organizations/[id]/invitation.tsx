@@ -12,19 +12,14 @@ const OrganizationInvitationPage = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const toast = useToast();
-  const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
     const { id } = router.query;
     if (id)
-      if (orgCtx.userRole && orgCtx.userRole !== MemberRoleEnum.PENDING) {
+      if (orgCtx.mounted && orgCtx.userRole !== MemberRoleEnum.PENDING) {
         router.push(`/organizations/${id}/overview/`);
-      } else {
-        if (orgCtx.basicInfo) setMounted(true);
       }
-  }, [router, orgCtx.basicInfo, orgCtx.userRole]);
-
-  if (!mounted) return <></>;
+  }, [router]);
 
   const handleRespond = (accept: boolean) => {
     const { id } = router.query;

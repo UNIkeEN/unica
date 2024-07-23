@@ -40,6 +40,8 @@ const OrgLayoutContent: React.FC<{ children: React.ReactNode }> = ({ children })
     { icon: FiUser, label: 'members' },
   ];
 
+  if (!orgCtx.mounted) return <></>;
+
   if (router.pathname === '/organizations/[id]/invitation') return (
     <>
       <Head>
