@@ -37,15 +37,25 @@ const OrganizationMembersPage = () => {
       orgCtx.getMemberList(Number(router.query.id), pageIndex, pageSize)
       .then((res) => {setMemberList(res);})
       .catch((error) => {setMemberList([]);});
-      if (orgCtx.userRole === MemberRoleEnum.OWNER) {
-        orgCtx.getInvitationList(Number(router.query.id), pageIndex, pageSize)
-        .then((res) => {setPendingList(res);})
-        .catch((error) => {setPendingList([]);});
-      }
     } else {
       setMemberList([]);
+      setPendingList([]);
     }
   }, [router.query.id]);
+
+  const handleListDomainChange = (value: string) => {
+    const id = Number(router.query.id);
+    if (value === "pending" && orgCtx.userRole === MemberRoleEnum.OWNER) {
+      orgCtx.getInvitationList(id, pageIndex, pageSize)
+      .then((res) => {setPendingList(res);})
+      .catch((error) => {setPendingList([]);});
+    } else if (value === "members") {
+      orgCtx.getMemberList(Number(router.query.id), pageIndex, pageSize)
+      .then((res) => {setMemberList(res);})
+      .catch((error) => {setMemberList([]);});
+    }
+    setListDomain(value);
+  }
 
   const listData = (ListDomain === 'members' ? memberList : pendingList);
 
@@ -62,7 +72,7 @@ const OrganizationMembersPage = () => {
                 <MenuOptionGroup
                   defaultValue={ListDomain}
                   type="radio"
-                  onChange={(value) => setListDomain(value as string)}
+                  onChange={(value) => handleListDomainChange(value as string)}
                 >
                   {ListDomainOptions.map((option) => (
                     <MenuItemOption key={option} value={option}>
