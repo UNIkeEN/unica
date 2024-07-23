@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from "next/router";
-import UserInfoPopover from "@/components/user-info-popover";
+import UserMenuArea from "@/components/user-menu-area";
 import NavMenu from '@/components/nav-menu';
 import SelectableButton from "@/components/selectable-button";
 import UserContext from '@/contexts/user';
@@ -41,8 +41,8 @@ const MainSider = () => {
     <Flex direction="column" h="100%" justifyContent="space-between">
       <VStack spacing={8} align="stretch" overflowY="auto">
         
-        <UserInfoPopover />
-        
+        <UserMenuArea/>
+                
         {/* Top Menu */}
         <NavMenu 
           items={topMenuItems.map((item) => ({

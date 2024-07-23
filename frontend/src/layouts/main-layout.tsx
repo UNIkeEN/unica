@@ -67,6 +67,7 @@ const MainLayout = ({ children }) => {
           onClose={onClose} 
           isOpen={isOpen} 
           size="xs"
+          autoFocus={false}
         >
           <DrawerOverlay />
           <DrawerContent>
@@ -101,7 +102,7 @@ const MainLayout = ({ children }) => {
                 onClick={onOpen}
               />
             </Hide>
-            <Text fontSize="lg" ml={2}>{headerTitle}</Text>
+            <Text fontSize="lg" ml={4}>{headerTitle}</Text>
           </Flex>
           <Box>
             {headerExtra}
