@@ -26,9 +26,11 @@ class Organization(models.Model):
 class Membership(models.Model):
     OWNER = 'Owner'
     MEMBER = 'Member'
+    PENDING = 'Pending'
     ROLE_CHOICES = [
         (OWNER, 'Owner'),
         (MEMBER, 'Member'),
+        (PENDING, 'Pending'),
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -38,6 +40,10 @@ class Membership(models.Model):
 
     class Meta:
         unique_together = ('user', 'organization')
+        indexes = [
+            models.Index(fields=['role']),
+            models.Index(fields=['user', 'organization']),
+        ]
 
     def __str__(self):
         return f"{self.user.username} - {self.organization.display_name} ({self.role})"
@@ -47,3 +53,15 @@ class Membership(models.Model):
 
     def is_member(self):
         return self.role == self.MEMBER
+    
+    def is_pending(self):
+        return self.role == self.PENDING
+    
+    def change_role(self, new_role):
+        if new_role in dict(self.ROLE_CHOICES).keys():
+            if self.role == self.PENDING:
+                self.joined_at = timezone.now()
+            self.role = new_role
+            self.save()
+            return True
+        return False

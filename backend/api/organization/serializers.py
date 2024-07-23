@@ -26,7 +26,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
         return membership.role if membership else None
     
     def get_member_count(self, obj):
-        return Membership.objects.filter(organization=obj).count()
+        return Membership.objects.filter(organization=obj).exclude(role=Membership.PENDING).count()
     
     def get_owner_count(self, obj):
         return Membership.objects.filter(organization=obj, role=Membership.OWNER).count()
