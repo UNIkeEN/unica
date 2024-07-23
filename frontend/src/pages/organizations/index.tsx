@@ -21,8 +21,8 @@ import AuthContext from "@/contexts/auth";
 import UserContext from "@/contexts/user";
 import { createOrganization } from "@/services/organization";
 import RichList from "@/components/rich-list";
-import { ChevronDownIcon } from "@chakra-ui/icons";
-import { Organization } from '@/models/organization';
+import { FiChevronDown } from "react-icons/fi";
+import { Organization, MemberRoleEnum } from '@/models/organization';
 
 const MyOrganizationsPage = () => {
   const authCtx = useContext(AuthContext);
@@ -64,7 +64,7 @@ const MyOrganizationsPage = () => {
       <VStack spacing={6} align="stretch">
         <HStack w="100%" justifyContent="flex-end" align="center" spacing={3}>
           <Menu closeOnSelect={true}>
-            <MenuButton as={Button} rightIcon={<ChevronDownIcon />} w="auto" style={{ textAlign: 'left' }}>
+            <MenuButton as={Button} rightIcon={<FiChevronDown/>} w="auto" style={{ textAlign: 'left' }}>
               {`${t('MyOrganizationsPage.select.sort_by')}${t(`MyOrganizationsPage.select.by_${orgSortBy}`)}`}
             </MenuButton>
             <MenuList>
@@ -98,8 +98,8 @@ const MyOrganizationsPage = () => {
                 href: `organizations/${item.id}/overview`,
                 subtitle: item.description,
                 titleExtra:
-                  <Tag fontWeight="normal" colorScheme={item.role === "Owner" ? "green" : "cyan"}>
-                    {item.role}
+                  <Tag fontWeight="normal" colorScheme={item.role === MemberRoleEnum.OWNER ? "green" : "cyan"}>
+                    {t(`Enums.organization.role.${item.role}`)}
                   </Tag>,
                 body:
                   <Text fontSize="sm" className="secondary-text">
@@ -109,11 +109,11 @@ const MyOrganizationsPage = () => {
                   <Show above="md">
                     <HStack spacing={2}>
                       {/* TODO: Button logic */}
-                      {item.role === "Owner" &&
+                      {item.role === MemberRoleEnum.OWNER &&
                         <Button size="sm">{t('MyOrganizationsPage.button.settings')}</Button>
                       }
                       <Button size="sm" colorScheme="red" variant="subtle"
-                        isDisabled={item.role === "Owner" && item.owner_count === 1}
+                        isDisabled={item.role === MemberRoleEnum.OWNER && item.owner_count === 1}
                       >
                         {t('MyOrganizationsPage.button.leave')}
                       </Button>

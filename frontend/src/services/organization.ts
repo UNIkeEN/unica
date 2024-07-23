@@ -45,3 +45,40 @@ export async function getOrganizationMembers(id: number, page: number, pageSize:
         throw error;
     }
 }
+
+export async function createInvitation(id: number, username: string) {
+    try {
+        const response = await request.post(`/api/organization/${id}/invite/create/`, {
+            username: username
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Failed to create invitation:', error);
+        throw error;
+    }
+}
+
+export async function getOrganizationInvitations(id: number, page: number, pageSize: number) {
+    try {
+        const response = await request.post(`/api/organization/${id}/invite/list/`, {
+            page: page,
+            page_size: pageSize
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Failed to get organization invitations:', error);
+        throw error;
+    }
+}
+
+export async function respondInvitation(id: number,  accept: boolean) {
+    try {
+        const response = await request.post(`/api/organization/${id}/invite/respond/`, {
+            accept: accept
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Failed to respond invitation:', error);
+        throw error;
+    }
+}

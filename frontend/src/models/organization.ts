@@ -16,3 +16,10 @@ export interface OrganizationMember {
   role: string;
   joined_at: string;
 }
+
+export const MemberRoleEnum = {
+  OWNER: "Owner",
+  MEMBER: "Member",
+  PENDING: "Pending",
+  NO_PERMISSION: "No Permission",
+};

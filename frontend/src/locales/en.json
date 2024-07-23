@@ -1,4 +1,13 @@
-{
+{   
+    "Enums": {
+        "organization": {
+            "role": {
+                "Owner": "Owner",
+                "Member": "Member",
+                "Pending": "Pending Invitation"
+            }
+        }
+    },
     "HomePage": {
         "title": "Home",
         "header": "Home"
@@ -64,7 +73,8 @@
         "toast": {
             "error-1": "You are not a member of this organization or do not have enough permissions",
             "error-2": "Failed to get organization information",
-            "error-3": "Failed to get member list"
+            "error-3": "Failed to get member list",
+            "error-4": "Failed to get pending invitations"
         }
     },
     "OrganizationPages": {
@@ -79,8 +89,26 @@
             "button": {
                 "invite": "Invite"
             },
+            "select": {
+                "permission_group": "Group: ",
+                "members": "Members",
+                "pending": "Pending Invitations"
+            },
             "list": {
-                "joined_at": "Joined At {{date}}"
+                "joined_at": "Joined At {{date}}",
+                "invited_at": "Invited At {{date}}"
+            }
+        },
+        "invitation": {
+            "text": {
+                "description": "The @{{orgName}} organization has invited you to join."
+            },
+            "button": {
+                "accept": "Join @{{orgName}}",
+                "decline": "Decline"
+            },
+            "toast": {
+                "error": "Failed to response invitation"
             }
         }
     },
