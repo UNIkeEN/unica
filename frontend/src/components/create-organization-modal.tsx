@@ -29,7 +29,7 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const isNameNull = name.trim() === "";
+  const [isNameNull, setIsNameNull] = useState(false);
 
   const handleSave = async () => {
     if (isNameNull) {
@@ -98,6 +98,8 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
                 onChange={(e) => {
                   setName(e.target.value);
                 }}
+                onBlur={()=>{setIsNameNull(name.trim() === "")}}
+                onFocus={()=>{setIsNameNull(false)}}
                 ref={initialRef}
               />
               {isNameNull && (
