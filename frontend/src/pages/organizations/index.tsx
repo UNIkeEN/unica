@@ -23,6 +23,7 @@ import { createOrganization } from "@/services/organization";
 import RichList from "@/components/rich-list";
 import { FiChevronDown } from "react-icons/fi";
 import { Organization, MemberRoleEnum } from '@/models/organization';
+import CreateOrganizationModal from "@/components/create-organization-modal";
 
 const MyOrganizationsPage = () => {
   const authCtx = useContext(AuthContext);
@@ -35,14 +36,14 @@ const MyOrganizationsPage = () => {
     if (!authCtx.checkLoginAndRedirect()) return;
   }, [authCtx]);
 
-  const handleCreateOrganization = async () => {
-    try {
-      await createOrganization("🦄 测试"); // only for test, @TODO: design a modal to input organization name
-      userCtx.updateOrganizations();
-    } catch (error) {
-      console.error('Failed to create organization:', error);
-    }
-  };
+  // const handleCreateOrganization = async () => {
+  //   try {
+  //     await createOrganization("🦄 测试"); // only for test, @TODO: design a modal to input organization name
+  //     userCtx.updateOrganizations();
+  //   } catch (error) {
+  //     console.error('Failed to create organization:', error);
+  //   }
+  // };
 
   const sortOrganizations = (orgs: Organization[], orgSortBy: string): Organization[] => {
     return [...orgs].sort((a, b) => {
@@ -81,12 +82,13 @@ const MyOrganizationsPage = () => {
               </MenuOptionGroup>
             </MenuList>
           </Menu>
-          <Button
+          {/* <Button
             colorScheme="blue"
             onClick={handleCreateOrganization}
           >
             {t('MyOrganizationsPage.button.create')}
-          </Button>
+          </Button> */}
+          <CreateOrganizationModal />
         </HStack>
 
         <div>

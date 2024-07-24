@@ -126,5 +126,24 @@
             "error-1": "获取用户信息失败",
             "error-2": "获取组织列表失败"
         }
+    },
+    "CreateOrganizationModal": {
+        "button": {
+            "create": "创建新组织"
+        },
+        "modal" : {
+            "title": "创建新组织",
+            "name": "组织名称",
+            "description": "组织描述",
+            "save": "保存",
+            "cancel": "取消"
+        },
+        "toast": {
+            "success": "创建组织成功",
+            "created": "成功创建组织：{{name}}",
+            "error": "创建组织失败",
+            "nameRequired": "组织名称不能为空",
+            "nameInvalid": "组织名称不可用"
+        }
     }
 }
