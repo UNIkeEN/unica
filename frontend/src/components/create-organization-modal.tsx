@@ -14,10 +14,10 @@ import {
   ModalHeader,
   ModalOverlay,
   Textarea,
-  useDisclosure,
-  useToast,
+  useDisclosure
 } from "@chakra-ui/react";
 import { useContext, useRef, useState } from "react";
+import { useToast } from '@/contexts/toast';
 import { useTranslation } from "react-i18next";
 
 const CreateOrganizationModal = ({ size = "lg" }) => {
@@ -32,17 +32,18 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
   const isNameNull = name.trim() === "";
 
   const handleSave = async () => {
-    if (name.trim() === "") {
+    if (isNameNull) {
       toast({
         title: t("CreateOrganizationModal.toast.error"),
         description: t("CreateOrganizationModal.toast.nameRequired"),
         status: "error",
       });
     } else {
-      await handleCreateOrganization(name, description);
+      await handleCreateOrganization(name.trim(), description);
       toast({
-        title: t("CreateOrganizationModal.toast.success"),
-        description: t("CreateOrganizationModal.toast.created", { name }),
+        // title: t("CreateOrganizationModal.toast.success"),
+        // description: t("CreateOrganizationModal.toast.created", { name }),
+        title: t("CreateOrganizationModal.toast.created", { name: name.trim() }),
         status: "success",
       });
       onClose();
@@ -73,15 +74,15 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
   return (
     <>
       <Button onClick={onOpen} colorScheme="blue">
-        {t("CreateOrganizationModal.button.create")}
+        {t("MyOrganizationsPage.button.create")}
       </Button>
 
       <Modal
-        closeOnOverlayClick={false}
         isOpen={isOpen}
         onClose={onClose}
         size={size}
         initialFocusRef={initialRef}
+        isCentered
       >
         <ModalOverlay />
         <ModalContent>

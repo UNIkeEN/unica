@@ -1,4 +1,20 @@
 {
+    "CreateOrganizationModal": {
+        "modal" : {
+            "title": "創建新組織",
+            "name": "組織名稱",
+            "description": "組織描述",
+            "save": "保存",
+            "cancel": "取消"
+        },
+        "toast": {
+            "success": "創建組織成功",
+            "created": "組織 “{{name}}” 已成功創建",
+            "error": "創建組織失敗",
+            "nameRequired": "組織名稱不能為空",
+            "nameInvalid": "組織名稱不可用"
+        }
+    },
     "HomePage": {
         "title": "主頁",
         "header": "主頁"
@@ -90,25 +106,6 @@
         "toast": {
             "error-1": "獲取用戶信息失敗",
             "error-2": "獲取組織列表失敗"
-        }
-    },
-    "CreateOrganizationModal": {
-        "button": {
-            "create": "創建新組織"
-        },
-        "modal" : {
-            "title": "創建新組織",
-            "name": "組織名稱",
-            "description": "組織描述",
-            "save": "保存",
-            "cancel": "取消"
-        },
-        "toast": {
-            "success": "創建組織成功",
-            "created": "成功創建組織 {{name}}",
-            "error": "創建組織失敗",
-            "nameRequired": "組織名稱不能為空",
-            "nameInvalid": "組織名稱不可用"
         }
     }
 }

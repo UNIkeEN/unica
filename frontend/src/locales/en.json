@@ -1,4 +1,20 @@
 {   
+    "CreateOrganizationModal": {
+        "modal" : {
+            "title": "Create New Organization",
+            "name": "Organization Name",
+            "description": "Description",
+            "save": "Save",
+            "cancel": "Cancel"
+        },
+        "toast": {
+            "success": "Created organization successfully",
+            "created": "Successfully created organization: {{name}}",
+            "error": "Failed to create organization",
+            "nameRequired": "Organization name is required",
+            "nameInvalid": "Organization name is invalid"
+        }
+    },
     "Enums": {
         "organization": {
             "role": {
@@ -125,25 +141,6 @@
         "toast": {
             "error-1": "Failed to get user information",
             "error-2": "Failed to get user organization list"
-        }
-    },
-    "CreateOrganizationModal": {
-        "button": {
-            "create": "Create New Organization"
-        },
-        "modal" : {
-            "title": "Create New Organization",
-            "name": "Organization Name",
-            "description": "Organization Description",
-            "save": "Save",
-            "cancel": "Cancel"
-        },
-        "toast": {
-            "success": "Created organization successfully",
-            "created": "Successfully created organization: {{name}}",
-            "error": "Failed to create organization",
-            "nameRequired": "Organization name is required",
-            "nameInvalid": "Organization name is invalid"
         }
     }
 }
