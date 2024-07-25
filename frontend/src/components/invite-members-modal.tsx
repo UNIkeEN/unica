@@ -36,22 +36,14 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
   const [isEmailValid, setIsEmailValid] = useState(true);
 
   const handleSave = async () => {
-    if (!isEmailValid) {
+    const success = await handleCreateInvitation(email.trim());
+    if (success) {
       toast({
-        title: t("InviteMembersModal.toast.error"),
-        description: t("InviteMembersModal.toast.emailInvalid"),
-        status: "error",
+        title: t("InviteMembersModal.toast.created", { email: email.trim() }),
+        status: "success",
       });
-    } else {
-      const success = await handleCreateInvitation(email.trim());
-      if (success) {
-        toast({
-          title: t("InviteMembersModal.toast.created", { email: email.trim() }),
-          status: "success",
-        });
-        onClose();
-        setEmail("");
-      }
+      onClose();
+      setEmail("");
     }
   };
 
@@ -134,7 +126,12 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleSave}>
+            <Button
+              colorScheme="blue"
+              mr={3}
+              onClick={handleSave}
+              isDisabled={!isEmailValid}
+            >
               {t("InviteMembersModal.modal.save")}
             </Button>
             <Button onClick={onClose}>

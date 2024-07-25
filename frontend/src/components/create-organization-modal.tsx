@@ -4,6 +4,7 @@ import {
   Button,
   FormControl,
   FormErrorMessage,
+  FormHelperText,
   FormLabel,
   Input,
   Modal,
@@ -14,10 +15,10 @@ import {
   ModalHeader,
   ModalOverlay,
   Textarea,
-  useDisclosure
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useContext, useRef, useState } from "react";
-import { useToast } from '@/contexts/toast';
+import { useToast } from "@/contexts/toast";
 import { useTranslation } from "react-i18next";
 
 const CreateOrganizationModal = ({ size = "lg" }) => {
@@ -30,20 +31,16 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [isNameNull, setIsNameNull] = useState(false);
+  const [nameTooLong, setNameTooLong] = useState(false);
+  const [descriptionTooLong, setDescriptionTooLong] = useState(false);
 
   const handleSave = async () => {
-    if (isNameNull) {
+    const success = await handleCreateOrganization(name.trim(), description);
+    if (success) {
       toast({
-        title: t("CreateOrganizationModal.toast.error"),
-        description: t("CreateOrganizationModal.toast.nameRequired"),
-        status: "error",
-      });
-    } else {
-      await handleCreateOrganization(name.trim(), description);
-      toast({
-        // title: t("CreateOrganizationModal.toast.success"),
-        // description: t("CreateOrganizationModal.toast.created", { name }),
-        title: t("CreateOrganizationModal.toast.created", { name: name.trim() }),
+        title: t("CreateOrganizationModal.toast.created", {
+          name: name.trim(),
+        }),
         status: "success",
       });
       onClose();
@@ -59,6 +56,7 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
     try {
       await createOrganization(name, description);
       userCtx.updateOrganizations();
+      return true;
     } catch (error) {
       console.error("Failed to create organization:", error);
       if (error.response.status === 400) {
@@ -68,6 +66,7 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
           status: "error",
         });
       }
+      return false;
     }
   };
 
@@ -90,7 +89,11 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
           <ModalCloseButton />
 
           <ModalBody pb={5}>
-            <FormControl pb={5} isInvalid={isNameNull} isRequired>
+            <FormControl
+              pb={5}
+              isInvalid={isNameNull || nameTooLong}
+              isRequired
+            >
               <FormLabel>{t("CreateOrganizationModal.modal.name")}</FormLabel>
               <Input
                 placeholder={t("CreateOrganizationModal.modal.name")}
@@ -98,8 +101,14 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
                 onChange={(e) => {
                   setName(e.target.value);
                 }}
-                onBlur={()=>{setIsNameNull(name.trim() === "")}}
-                onFocus={()=>{setIsNameNull(false)}}
+                onBlur={() => {
+                  setIsNameNull(name.trim() === "");
+                  setNameTooLong(name.trim().length > 20);
+                }}
+                onFocus={() => {
+                  setIsNameNull(false);
+                  setNameTooLong(false);
+                }}
                 ref={initialRef}
               />
               {isNameNull && (
@@ -107,9 +116,14 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
                   {t("CreateOrganizationModal.toast.nameRequired")}
                 </FormErrorMessage>
               )}
+              {nameTooLong && (
+                <FormErrorMessage>
+                  {t("CreateOrganizationModal.toast.nameTooLong")}
+                </FormErrorMessage>
+              )}
             </FormControl>
 
-            <FormControl>
+            <FormControl isInvalid={descriptionTooLong}>
               <FormLabel>
                 {t("CreateOrganizationModal.modal.description")}
               </FormLabel>
@@ -119,12 +133,29 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
                 onChange={(e) => {
                   setDescription(e.target.value);
                 }}
+                onBlur={() => {
+                  setDescriptionTooLong(description.length > 200);
+                }}
+                onFocus={() => {
+                  setDescriptionTooLong(false);
+                }}
               />
+              {descriptionTooLong && (
+                <FormErrorMessage>
+                  {t("CreateOrganizationModal.toast.descriptionTooLong")}
+                </FormErrorMessage>
+              )}
+              <FormHelperText></FormHelperText>
             </FormControl>
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleSave}>
+            <Button
+              colorScheme="blue"
+              mr={3}
+              onClick={handleSave}
+              isDisabled={isNameNull || nameTooLong || descriptionTooLong}
+            >
               {t("CreateOrganizationModal.modal.save")}
             </Button>
             <Button onClick={onClose}>

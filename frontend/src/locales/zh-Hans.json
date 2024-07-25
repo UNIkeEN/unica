@@ -12,7 +12,9 @@
             "created": "组织 “{{name}}” 已成功创建",
             "error": "创建组织失败",
             "nameRequired": "组织名称不能为空",
-            "nameInvalid": "组织名称不可用"
+            "nameInvalid": "组织名称不可用",
+            "nameTooLong": "组织名称过长",
+            "descriptionTooLong": "组织描述过长"
         }
     },
     "Enums": {
