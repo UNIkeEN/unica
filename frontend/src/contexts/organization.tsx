@@ -9,30 +9,29 @@ import {
 } from '@/models/organization';
 import { 
   checkUserOrgPermission, 
-  getOrganizationMembers,
-  getOrganizationInvitations
+  getOrganizationMembers
 } from '@/services/organization';
 
 interface OrganizationContextType {
   updateAll: (id: number) => void;
   cleanUp: () => void;
+  toastNoPermissionAndRedirect: (userRole?: string) => void;
   mounted: boolean;
   userRole: string;
   basicInfo: Organization;
   updateBasicInfo: (id: number) => void;
   getMemberList: (id: number, page?: number, pageSize?: number) => Promise<OrganizationMember[]>;
-  getInvitationList: (id: number, page?: number, pageSize?: number) => Promise<OrganizationMember[]>;
 }
 
 const OrganizationContext = createContext<OrganizationContextType>({
   updateAll: () => {},
   cleanUp: () => {},
+  toastNoPermissionAndRedirect: () => {},
   mounted: false,
   userRole: '',
   basicInfo: {} as Organization | undefined,
   updateBasicInfo: () => {},
-  getMemberList: () => Promise.resolve([]),
-  getInvitationList: () => Promise.resolve([])
+  getMemberList: () => Promise.resolve([])
 });
 
 export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -43,18 +42,24 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
   const toast = useToast();
   const { t } = useTranslation();
 
-  const toastNoPermissionAndRedirect = (userRole: string) => {
-    if (userRole === MemberRoleEnum.PENDING) {
+  const toastNoPermissionAndRedirect = (role: string = userRole) => {
+    if (role === MemberRoleEnum.PENDING) {
       router.push(`/organizations/${router.query.id}/invitation/`);
-    } else if (userRole === MemberRoleEnum.NO_PERMISSION) {
+    } else if (role === MemberRoleEnum.NO_PERMISSION || MemberRoleEnum.MEMBER) {
+      // Call to here when backend return 403, user has no membership in this organization or enough permission(e.g. the Owner)
       toast({
         title: t('OrganizationContext.toast.error-1'),
         status: 'error'
       });
-  
-      setTimeout(() => {
-        router.push('/home');
-      }, 2000);
+      if (role === MemberRoleEnum.NO_PERMISSION) {
+        setTimeout(() => {
+          router.push('/home');
+        }, 2000);
+      } else {
+        let id = Number(router.query.id);
+        updateBasicInfo(id); // Update user role
+        router.push(`/organizations/${id}/overview/`);
+      }
     }
   };
 
@@ -99,27 +104,10 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
       return res.results as OrganizationMember[];
     } catch (error) {
       if (error.request && error.request.status === 403) {
-        toastNoPermissionAndRedirect(userRole);
+        toastNoPermissionAndRedirect();
       } else {
         toast({
           title: t('OrganizationContext.toast.error-3'),
-          status: 'error'
-        });
-      }
-      console.error('Failed to update organization members:', error);
-    }
-  };
-
-  const getInvitationList = async (id: number, page: number = 1, pageSize: number = 20): Promise<OrganizationMember[]> => {
-    try {
-      const res = await getOrganizationInvitations(id, page, pageSize);
-      return res.results as OrganizationMember[];
-    } catch (error) {
-      if (error.request && error.request.status === 403) {
-        toastNoPermissionAndRedirect(userRole);
-      } else {
-        toast({
-          title: t('OrganizationContext.toast.error-4'),
           status: 'error'
         });
       }
@@ -147,12 +135,12 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
   const contextValue = {
     updateAll,
     cleanUp,
+    toastNoPermissionAndRedirect,
     mounted: checkMounted(),
     userRole: userRole,
     basicInfo: orgInfo,
     updateBasicInfo,
-    getMemberList,
-    getInvitationList
+    getMemberList
   }
 
   return (
