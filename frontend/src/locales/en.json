@@ -105,8 +105,7 @@
         "toast": {
             "error-1": "You are not a member of this organization or do not have enough permissions",
             "error-2": "Failed to get organization information",
-            "error-3": "Failed to get member list",
-            "error-4": "Failed to get pending invitations"
+            "error-3": "Failed to get member list"
         }
     },
     "OrganizationPages": {
@@ -129,6 +128,9 @@
             "list": {
                 "joined_at": "Joined At {{date}}",
                 "invited_at": "Invited At {{date}}"
+            },
+            "toast": {
+                "error": "Failed to get pending invitations"
             }
         },
         "invitation": {

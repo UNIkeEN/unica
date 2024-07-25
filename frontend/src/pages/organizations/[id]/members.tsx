@@ -18,8 +18,10 @@ import { FiMoreHorizontal, FiChevronDown} from "react-icons/fi";
 import RichList from "@/components/rich-list";
 import { ISOtoDate } from "@/utils/datetime";
 import OrganizationContext from "@/contexts/organization";
+import { useToast } from '@/contexts/toast';
 import { OrganizationMember, MemberRoleEnum } from "@/models/organization";
 import InviteMembersModal from "@/components/invite-members-modal";
+import { getOrganizationInvitations } from "@/services/organization";
 
 const OrganizationMembersPage = () => {
   const orgCtx = useContext(OrganizationContext);
@@ -29,6 +31,7 @@ const OrganizationMembersPage = () => {
   const ListDomainOptions = ['members', 'pending'];
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(20);
+  const toast = useToast();
   const router = useRouter();
   const { t } = useTranslation();
 
@@ -44,10 +47,27 @@ const OrganizationMembersPage = () => {
     }
   }, [router.query.id]);
 
+  const getInvitationList = async (id: number, page: number = 1, pageSize: number = 20): Promise<OrganizationMember[]> => {
+    try {
+      const res = await getOrganizationInvitations(id, page, pageSize);
+      return res.results as OrganizationMember[];
+    } catch (error) {
+      if (error.request && error.request.status === 403) {
+        orgCtx.toastNoPermissionAndRedirect();
+      } else {
+        toast({
+          title: t('OrganizationPages.members.toast.error'),
+          status: 'error'
+        });
+      }
+      console.error('Failed to update organization members:', error);
+    }
+  };
+
   const handleListDomainChange = (value: string) => {
     const id = Number(router.query.id);
     if (value === "pending" && orgCtx.userRole === MemberRoleEnum.OWNER) {
-      orgCtx.getInvitationList(id, pageIndex, pageSize)
+      getInvitationList(id, pageIndex, pageSize)
       .then((res) => {setPendingList(res);})
       .catch((error) => {setPendingList([]);});
     } else if (value === "members") {
