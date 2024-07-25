@@ -28,6 +28,22 @@
         "title": "主页",
         "header": "主页"
     },
+    "InviteMembersModal": {
+        "modal" : {
+            "title": "邀请新成员",
+            "email": "邮箱",
+            "save": "确定",
+            "cancel": "取消"
+        },
+        "toast": {
+            "created": "已成功向 {{email}} 发送邀请",
+            "error": "邀请成员失败",
+            "emailInvalid": "邮箱格式有误",
+            "error-403": "只有管理员可以邀请新成员",
+            "error-404": "未找到用户或组织",
+            "error-409": "该用户已经是组织成员"
+        }
+    },
     "LoginPage": {
         "title": "登录",
         "button": {

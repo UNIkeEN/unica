@@ -28,6 +28,22 @@
         "title": "Home",
         "header": "Home"
     },
+    "InviteMembersModal": {
+        "modal" : {
+            "title": "Invite New Members",
+            "email": "Email",
+            "save": "OK",
+            "cancel": "Cancel"
+        },
+        "toast": {
+            "created": "Invitation sent to {{email}} successfully",
+            "error": "Failed to invite member",
+            "emailInvalid": "Invalid email format",
+            "error-403": "Only owner can invite new members",
+            "error-404": "User or organization not found",
+            "error-409": "This user is already a member of the organization"
+        }
+    },
     "LoginPage": {
         "title": "Login",
         "button": {

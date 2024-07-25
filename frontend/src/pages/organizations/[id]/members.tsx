@@ -19,6 +19,7 @@ import RichList from "@/components/rich-list";
 import { ISOtoDate } from "@/utils/datetime";
 import OrganizationContext from "@/contexts/organization";
 import { OrganizationMember, MemberRoleEnum } from "@/models/organization";
+import InviteMembersModal from "@/components/invite-members-modal";
 
 const OrganizationMembersPage = () => {
   const orgCtx = useContext(OrganizationContext);
@@ -82,11 +83,7 @@ const OrganizationMembersPage = () => {
                 </MenuOptionGroup>
               </MenuList>
             </Menu>
-            <Button
-              colorScheme="blue"
-            >
-              {t('OrganizationPages.members.button.invite')}
-            </Button>
+            <InviteMembersModal id={Number(router.query.id)}/>
           </HStack>
         }
 
