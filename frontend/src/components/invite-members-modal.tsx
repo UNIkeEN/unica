@@ -43,7 +43,7 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
         status: "error",
       });
     } else {
-      const success = await handleCreateOrganization(email.trim());
+      const success = await handleCreateInvitation(email.trim());
       if (success) {
         toast({
           title: t("InviteMembersModal.toast.created", { email: email.trim() }),
@@ -55,7 +55,7 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
     }
   };
 
-  const handleCreateOrganization = async (email: string) => {
+  const handleCreateInvitation = async (email: string) => {
     try {
       await createInvitation(id, email);
       return true;

@@ -40,8 +40,8 @@
             "error": "Failed to invite member",
             "emailInvalid": "Invalid email format",
             "error-403": "Only owner can invite new members",
-            "error-404": "User or organization not found",
-            "error-409": "This user is already a member of the organization"
+            "error-404": "User not found",
+            "error-409": "User has been invited or is already a member"
         }
     },
     "LoginPage": {
