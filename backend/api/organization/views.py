@@ -156,10 +156,10 @@ def get_organization_members(request, id):
             description="Authenticated user are not an owner of this organization"
         ),
         404: openapi.Response(
-            description="Organization or user not found"
+            description="User not found"
         ),
         409: openapi.Response(
-            description="User is already a member of the organization"
+            description="User is already a member of the organization or has a pending invitation"
         ),
     },
     operation_description="Invite a user to join the organization.",
