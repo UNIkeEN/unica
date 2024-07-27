@@ -140,6 +140,88 @@ def get_organization_members(request, id):
     serializer = MembershipSerializer(result_page, many=True)
     return paginator.get_paginated_response(serializer.data)
 
+@swagger_auto_schema(
+    method='post',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'username': openapi.Schema(type=openapi.TYPE_STRING, description='username of the user to remove'),
+        },
+        required=['username']
+    ),
+    responses={
+        200: openapi.Response(description="User removed successfully"),
+        400: openapi.Response(description="Cannot remove the only owner of the organization"),
+        403: openapi.Response(description="Authenticated user is not an owner of this organization"),
+        404: openapi.Response(description="User not found in this organization"),
+    },
+    operation_description="Remove a user from the organization.",
+    tags=["organization"]
+)
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@organization_permission_classes(['Owner'])
+def remove_member(request, id):
+    username = request.data.get('username')
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+    try:
+        membership = Membership.objects.get(user=user, organization=request.organization)
+        if membership.is_owner():
+            if Membership.objects.filter(organization=request.organization, role=Membership.OWNER).count() <= 1:
+                return Response({"detail": "Cannot remove an owner"}, status=status.HTTP_400_BAD_REQUEST)
+        membership.delete()
+        return Response({"detail": "User removed successfully"}, status=status.HTTP_200_OK)
+    except Membership.DoesNotExist:
+        return Response({"detail": "User not found in this organization"}, status=status.HTTP_404_NOT_FOUND)
+
+
+@swagger_auto_schema(
+    method='post',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'username': openapi.Schema(type=openapi.TYPE_STRING, description='username of the user to modify role'),
+            'new_role': openapi.Schema(type=openapi.TYPE_STRING, enum=[Membership.OWNER, Membership.MEMBER], description='New role for the user'),
+        },
+        required=['username', 'new_role']
+    ),
+    responses={
+        200: openapi.Response(description="User role updated successfully"),
+        400: openapi.Response(description="Cannot change the only owner to a different role"),
+        403: openapi.Response(description="Authenticated user is not an owner of this organization"),
+        404: openapi.Response(description="User not found in this organization"),
+        418: openapi.Response(description="Invalid role"),
+    },
+    operation_description="Modify a user's role in the organization.",
+    tags=["organization"]
+)
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@organization_permission_classes(['Owner'])
+def modify_member_role(request, id):
+    username = request.data.get('username')
+    new_role = request.data.get('new_role')
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+    try:
+        membership = Membership.objects.get(user=user, organization=request.organization)
+        if new_role not in dict(Membership.ROLE_CHOICES):
+            return Response({"detail": "Invalid role"}, status=status.HTTP_418_IM_A_TEAPOT)
+        if membership.is_owner() and new_role != Membership.OWNER:
+            if Membership.objects.filter(organization=request.organization, role=Membership.OWNER).count() <= 1:
+                return Response({"detail": "Cannot change the only owner to a different role"}, status=status.HTTP_400_BAD_REQUEST)
+        membership.change_role(new_role)
+        return Response({"detail": "User role updated successfully"}, status=status.HTTP_200_OK)
+    except Membership.DoesNotExist:
+        return Response({"detail": "User not found in this organization"}, status=status.HTTP_404_NOT_FOUND)
+
 
 @swagger_auto_schema(
     method='post',
