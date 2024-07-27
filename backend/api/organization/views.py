@@ -76,7 +76,7 @@ def get_user_organizations(request):
             description="Organization not found"
         ),
         403: openapi.Response(
-            description="Authenticated user are not a member of this organization"
+            description="Authenticated user is not a member of this organization"
         ),
     },
     operation_description="Check if the authenticated user is a member of the organization and retrieve the user's role.",
@@ -114,7 +114,7 @@ def check_user_organization_permission(request, id):
             description="Organization not found"
         ),
         403: openapi.Response(
-            description="Authenticated user are not a member of this organization"
+            description="Authenticated user is not a member of this organization"
         ),
     },
     operation_description="Retrieve a list of members in an organization.",
@@ -146,14 +146,14 @@ def get_organization_members(request, id):
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
         properties={
-            'user_id': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID of the user to invite')
+            'username': openapi.Schema(type=openapi.TYPE_STRING, description='username of the user to invite')
         },
-        required=['user_id']
+        required=['username']
     ),
     responses={
         201: openapi.Response(description="Invitation sent successfully"),
         403: openapi.Response(
-            description="Authenticated user are not an owner of this organization"
+            description="Authenticated user is not an owner of this organization"
         ),
         404: openapi.Response(
             description="User not found"
@@ -201,7 +201,7 @@ def create_invitation(request, id):
             description="Organization not found"
         ),
         403: openapi.Response(
-            description="Authenticated user are not an owner of this organization"
+            description="Authenticated user is not an owner of this organization"
         ),
     },
     operation_description="Retrieve a list of pending invitations in an organization.",
