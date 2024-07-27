@@ -31,7 +31,7 @@
         "header": "Home"
     },
     "InviteMembersModal": {
-        "modal" : {
+        "modal": {
             "title": "Invite New Members",
             "email": "Email",
             "save": "OK",
@@ -146,6 +146,22 @@
             "toast": {
                 "error": "Failed to response invitation"
             }
+        }
+    },
+    "RemoveUserAlertDialog": {
+        "menu_item": "Remove from organization",
+        "dialog": {
+            "title": "Remove Member",
+            "content": "{{displayUsername}}({{email}}) will be removed from the organization {{orgName}}.",
+            "remove": "Remove",
+            "cancel": "Cancel"
+        },
+        "toast": {
+            "removed": "Removed successfully",
+            "error": "Failed to remove member",
+            "error-400": "Cannot remove the only owner of the organization, please delete the organization or set another owner before leaving",
+            "error-403": "Only owner can remove new members",
+            "error-404": "User not found or not a member of the organization"
         }
     },
     "SettingsPages": {

@@ -1,4 +1,5 @@
 import { request } from "@/services/request";
+import { MemberRoleEnum } from "@/models/organization";
 
 export async function createOrganization(name:string, description?:string) {
     try {
@@ -42,6 +43,31 @@ export async function getOrganizationMembers(id: number, page: number, pageSize:
         return response.data;
     } catch (error) {
         console.error('Failed to get organization members:', error);
+        throw error;
+    }
+}
+
+export async function removeMember(id: number, username: string) {
+    try {
+        const response = await request.post(`/api/organization/${id}/members/remove/`, {
+            username: username
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Failed to remove member:', error);
+        throw error;
+    }
+}
+
+export async function modifyMemberRole(id: number, username: string, new_role: string) {
+    try {
+        const response = await request.post(`/api/organization/${id}/members/role/`, {
+            username: username,
+            new_role: new_role
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Failed to modify member;s role:', error);
         throw error;
     }
 }

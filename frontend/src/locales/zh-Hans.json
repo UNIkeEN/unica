@@ -31,7 +31,7 @@
         "header": "主页"
     },
     "InviteMembersModal": {
-        "modal" : {
+        "modal": {
             "title": "邀请新成员",
             "email": "邮箱",
             "save": "确定",
@@ -41,7 +41,7 @@
             "created": "已成功向 {{email}} 发送邀请",
             "error": "邀请成员失败",
             "emailInvalid": "邮箱格式有误",
-            "error-403": "只有管理员可以邀请新成员",
+            "error-403": "权限不足，仅管理员可邀请新成员",
             "error-404": "未找到该用户",
             "error-409": "该用户已被邀请或已是组织成员"
         }
@@ -146,6 +146,22 @@
             "toast": {
                 "error": "操作失败"
             }
+        }
+    },
+    "RemoveUserAlertDialog": {
+        "menu_item": "从组织移除",
+        "dialog": {
+            "title": "移除用户",
+            "content": "{{displayUsername}}({{email}}) 将从 {{orgName}} 组织移除.",
+            "remove": "移除",
+            "cancel": "取消"
+        },
+        "toast": {
+            "removed": "已成功移除",
+            "error": "移除用户失败",
+            "error-400": "无法移除唯一管理员，请删除组织或设置其他管理员后退出",
+            "error-403": "权限不足，仅管理员可移除成员",
+            "error-404": "用户不存在或非该组织成员"
         }
     },
     "SettingsPages": {

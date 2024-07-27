@@ -7,6 +7,7 @@ import {
   MenuList,
   MenuOptionGroup,
   MenuItemOption,
+  MenuItem,
   Button,
   VStack,
   Divider,
@@ -20,7 +21,8 @@ import { ISOtoDate } from "@/utils/datetime";
 import OrganizationContext from "@/contexts/organization";
 import { useToast } from '@/contexts/toast';
 import { OrganizationMember, MemberRoleEnum } from "@/models/organization";
-import InviteMembersModal from "@/components/invite-members-modal";
+import InviteMembersModal from "@/components/modals/invite-members-modal";
+import RemoveUserAlertDialog from "@/components/modals/remove-user-alert-dialog";
 import { getOrganizationInvitations } from "@/services/organization";
 
 const OrganizationMembersPage = () => {
@@ -128,7 +130,16 @@ const OrganizationMembersPage = () => {
                         </Text>
                     }
                     {orgCtx.userRole === MemberRoleEnum.OWNER &&
-                      <IconButton size="sm" aria-label="Menu" icon={<FiMoreHorizontal />} />
+                      <Menu>
+                        <MenuButton as={IconButton} size="sm" aria-label="Menu" icon={<FiMoreHorizontal />} />
+                        <MenuList>
+                          <RemoveUserAlertDialog
+                            org_id={Number(router.query.id)}
+                            display_user_name={member.user.display_name}
+                            email={member.user.email}
+                          />
+                        </MenuList>
+                      </Menu>
                     }
                   </HStack>
               }))} 

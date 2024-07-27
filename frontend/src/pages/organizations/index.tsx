@@ -23,7 +23,7 @@ import { createOrganization } from "@/services/organization";
 import RichList from "@/components/rich-list";
 import { FiChevronDown } from "react-icons/fi";
 import { Organization, MemberRoleEnum } from '@/models/organization';
-import CreateOrganizationModal from "@/components/create-organization-modal";
+import CreateOrganizationModal from "@/components/modals/create-organization-modal";
 
 const MyOrganizationsPage = () => {
   const authCtx = useContext(AuthContext);
