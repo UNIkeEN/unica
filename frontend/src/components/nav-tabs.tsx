@@ -4,10 +4,13 @@ import { NavMenuProps as NavTabsProps } from '@/components/nav-menu';
 
 const NavTabs: React.FC<NavTabsProps> = ({
   items,
-  selectedKeys = [],
+  selectedKeys = [],    // always be [router.asPath]
   onClick,
 }) => {
-  const selectedIndex = items.findIndex(item => selectedKeys.includes(item.value));
+//   const selectedIndex = items.findIndex(item => selectedKeys.includes(item.value));
+  const selectedIndex = items.findIndex(item => 
+    selectedKeys.some(key => item.value.startsWith(key))
+  );
 
   return (
     <Tabs 
