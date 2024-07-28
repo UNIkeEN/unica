@@ -105,7 +105,14 @@ const OrganizationMembersPage = () => {
                 </MenuOptionGroup>
               </MenuList>
             </Menu>
-            <InviteMembersModal id={Number(router.query.id)}/>
+            <InviteMembersModal id={Number(router.query.id)}
+            onOKCallback={()=>{
+              if (ListDomain === "pending") {
+                getInvitationList(Number(router.query.id), pageIndex, pageSize)
+                .then((res) => {setPendingList(res);})
+                .catch((error) => {setPendingList([]);});
+              }
+            }}/>
           </HStack>
         }
 

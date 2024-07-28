@@ -21,11 +21,13 @@ import { useTranslation } from "react-i18next";
 interface InviteMembersModalProps {
   id: number;
   size?: string;
+  onOKCallback?: () => void;
 }
 
 const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
   id,
   size = "lg",
+  onOKCallback,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { t } = useTranslation();
@@ -43,6 +45,7 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
         status: "success",
       });
       onClose();
+      onOKCallback();
       setEmail("");
     }
   };
