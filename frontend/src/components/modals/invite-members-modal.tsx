@@ -1,9 +1,12 @@
+import { useToast } from "@/contexts/toast";
 import { createInvitation } from "@/services/organization";
 import {
   Button,
   FormControl,
   FormErrorMessage,
+  FormHelperText,
   FormLabel,
+  IconButton,
   Input,
   Modal,
   ModalBody,
@@ -15,8 +18,9 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
-import { useToast } from "@/contexts/toast";
 import { useTranslation } from "react-i18next";
+import { FiCopy } from "react-icons/fi";
+import copy from 'copy-to-clipboard';
 
 interface InviteMembersModalProps {
   id: number;
@@ -125,6 +129,26 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
                   {t("InviteMembersModal.toast.emailInvalid")}
                 </FormErrorMessage>
               )}
+              <FormHelperText>
+                {t("InviteMembersModal.modal.emailHelper-1", {
+                  base_uri: window.location.origin,
+                  id: id,
+                })}
+                <IconButton
+                  variant="ghost"
+                  colorScheme="gray"
+                  aria-label="copy"
+                  icon={<FiCopy />}
+                  onClick={() => {
+                    copy(`${window.location.origin}/organizations/${id}/invitation`);
+                    toast({
+                      title: t("InviteMembersModal.toast.copied"),
+                      status: "info",
+                    });
+                  }}
+                />
+                {t("InviteMembersModal.modal.emailHelper-2")}
+              </FormHelperText>
             </FormControl>
           </ModalBody>
 

@@ -35,7 +35,9 @@
             "title": "Invite New Members",
             "email": "Email",
             "save": "OK",
-            "cancel": "Cancel"
+            "cancel": "Cancel",
+            "emailHelper-1": "The invitee can access {{base_uri}}/organizations/{{id}}/invitation ",
+            "emailHelper-2": " to handle the invitation"
         },
         "toast": {
             "created": "Invitation sent to {{email}} successfully",
@@ -43,7 +45,8 @@
             "emailInvalid": "Invalid email format",
             "error-403": "Only owner can invite new members",
             "error-404": "User not found",
-            "error-409": "User has been invited or is already a member"
+            "error-409": "User has been invited or is already a member",
+            "copied": "Copied the address to clipboard"
         }
     },
     "LoginPage": {
