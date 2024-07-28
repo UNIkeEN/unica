@@ -129,7 +129,7 @@ const OrganizationMembersPage = () => {
                           {t('OrganizationPages.members.list.invited_at', { date: ISOtoDate(member.joined_at) })}
                         </Text>
                     }
-                    {orgCtx.userRole === MemberRoleEnum.OWNER &&
+                    {ListDomain === "members" && orgCtx.userRole === MemberRoleEnum.OWNER &&
                       <Menu>
                         <MenuButton as={IconButton} size="sm" aria-label="Menu" icon={<FiMoreHorizontal />} />
                         <MenuList>
@@ -137,9 +137,16 @@ const OrganizationMembersPage = () => {
                             org_id={Number(router.query.id)}
                             display_user_name={member.user.display_name}
                             email={member.user.email}
+                            onOKCallback={() => {
+                              orgCtx.getMemberList(Number(router.query.id), pageIndex, pageSize)
+                                .then((res) => {setMemberList(res);})
+                                .catch((error) => {setMemberList([]);});}}
                           />
                         </MenuList>
                       </Menu>
+                    }
+                    {ListDomain === "pending" && orgCtx.userRole === MemberRoleEnum.OWNER &&
+                        <></>
                     }
                   </HStack>
               }))} 

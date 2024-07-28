@@ -20,12 +20,14 @@ interface RemoveUserAlertDialogProps {
   org_id: number;
   display_user_name: string;
   email: string;
+  onOKCallback?: () => void;
 }
 
 const RemoveUserAlertDialog: React.FC<RemoveUserAlertDialogProps> = ({
   org_id,
   display_user_name,
   email,
+  onOKCallback,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
@@ -41,7 +43,7 @@ const RemoveUserAlertDialog: React.FC<RemoveUserAlertDialogProps> = ({
         status: "success",
       });
       onClose();
-      window.location.reload(); //TODO: perf
+      onOKCallback();
     } catch (error) {
       console.error("Failed to remove member:", error);
       if (
