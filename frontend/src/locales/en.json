@@ -132,7 +132,10 @@
             },
             "list": {
                 "joined_at": "Joined At {{date}}",
-                "invited_at": "Invited At {{date}}"
+                "invited_at": "Invited At {{date}}",
+                "menu": {
+                    "remove": "Remove from organization"
+                }
             },
             "toast": {
                 "error": "Failed to get pending invitations"
@@ -152,7 +155,6 @@
         }
     },
     "RemoveUserAlertDialog": {
-        "menu_item": "Remove from organization",
         "dialog": {
             "title": "Remove Member",
             "content": "{{displayUsername}}({{email}}) will be removed from the organization {{orgName}}.",

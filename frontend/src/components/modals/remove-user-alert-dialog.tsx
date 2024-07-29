@@ -7,7 +7,6 @@ import {
   AlertDialogContent,
   AlertDialogOverlay,
   AlertDialogCloseButton,
-  useDisclosure,
   Button,
   MenuItem
 } from '@chakra-ui/react';
@@ -17,19 +16,22 @@ import { removeMember } from "@/services/organization";
 import OrganizationContext from "@/contexts/organization";
 
 interface RemoveUserAlertDialogProps {
-  org_id: number;
-  display_user_name: string;
+  isOpen: boolean;
+  onClose: () => void;
+  orgId: number;
+  displayUserName: string;
   email: string;
   onOKCallback?: () => void;
 }
 
 const RemoveUserAlertDialog: React.FC<RemoveUserAlertDialogProps> = ({
-  org_id,
-  display_user_name,
+  isOpen,
+  onClose,
+  orgId,
+  displayUserName,
   email,
   onOKCallback,
 }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
   const { t } = useTranslation();
   const toast = useToast();
@@ -37,7 +39,7 @@ const RemoveUserAlertDialog: React.FC<RemoveUserAlertDialogProps> = ({
 
   const handleRemoveMember = async () => {
     try {
-      await removeMember(org_id, email);
+      await removeMember(orgId, email);
       toast({
         title: t("RemoveUserAlertDialog.toast.removed"),
         status: "success",
@@ -64,42 +66,36 @@ const RemoveUserAlertDialog: React.FC<RemoveUserAlertDialogProps> = ({
     }};
 
   return (
-    <>
-      <MenuItem onClick={onOpen}>
-        {t("RemoveUserAlertDialog.menu_item")}
-      </MenuItem>
-
-      <AlertDialog
-        isOpen={isOpen}
-        leastDestructiveRef={cancelRef}
-        onClose={onClose}
-        isCentered
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              {t("RemoveUserAlertDialog.dialog.title")}
-            </AlertDialogHeader>
-            <AlertDialogCloseButton />
-            <AlertDialogBody pb={5}>
-              {t("RemoveUserAlertDialog.dialog.content", {
-                displayUsername: display_user_name,
-                email: email,
-                orgName: orgCtx.basicInfo.display_name,
-              })}
-            </AlertDialogBody>
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
-                {t("RemoveUserAlertDialog.dialog.cancel")}
-              </Button>
-              <Button colorScheme='red' onClick={handleRemoveMember} ml={3}>
-                {t("RemoveUserAlertDialog.dialog.remove")}
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
-    </>
+    <AlertDialog
+      isOpen={isOpen}
+      leastDestructiveRef={cancelRef}
+      onClose={onClose}
+      isCentered
+    >
+      <AlertDialogOverlay>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            {t("RemoveUserAlertDialog.dialog.title")}
+          </AlertDialogHeader>
+          <AlertDialogCloseButton />
+          <AlertDialogBody pb={5}>
+            {t("RemoveUserAlertDialog.dialog.content", {
+              displayUsername: displayUserName,
+              email: email,
+              orgName: orgCtx.basicInfo.display_name,
+            })}
+          </AlertDialogBody>
+          <AlertDialogFooter>
+            <Button ref={cancelRef} onClick={onClose}>
+              {t("RemoveUserAlertDialog.dialog.cancel")}
+            </Button>
+            <Button colorScheme='red' onClick={handleRemoveMember} ml={3}>
+              {t("RemoveUserAlertDialog.dialog.remove")}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialogOverlay>
+    </AlertDialog>
   )
 }
 

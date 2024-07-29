@@ -132,7 +132,10 @@
             },
             "list": {
                 "joined_at": "于 {{date}} 加入",
-                "invited_at": "于 {{date}} 发送邀请"
+                "invited_at": "于 {{date}} 发送邀请",
+                "menu": {
+                    "remove": "从组织移除"
+                }
             },
             "toast": {
                 "error": "获取邀请列表失败"
@@ -152,7 +155,6 @@
         }
     },
     "RemoveUserAlertDialog": {
-        "menu_item": "从组织移除",
         "dialog": {
             "title": "移除用户",
             "content": "{{displayUsername}}({{email}}) 将从 {{orgName}} 组织移除.",

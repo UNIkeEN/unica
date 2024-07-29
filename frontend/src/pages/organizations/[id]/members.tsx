@@ -14,6 +14,7 @@ import {
   HStack,
   Text,
   IconButton,
+  useDisclosure
 } from "@chakra-ui/react";
 import { FiMoreHorizontal, FiChevronDown} from "react-icons/fi";
 import RichList from "@/components/rich-list";
@@ -36,6 +37,14 @@ const OrganizationMembersPage = () => {
   const toast = useToast();
   const router = useRouter();
   const { t } = useTranslation();
+
+  const [selectedMember, setSelectedMember] = useState<OrganizationMember | null>(null);
+
+  const {
+    isOpen: isRemoveDialogOpen,
+    onOpen: onRemoveDialogOpen,
+    onClose: onRemoveDialogClose
+  } = useDisclosure();
 
   useEffect(() => {
     const id = Number(router.query.id);
@@ -140,15 +149,12 @@ const OrganizationMembersPage = () => {
                       <Menu>
                         <MenuButton as={IconButton} size="sm" aria-label="Menu" icon={<FiMoreHorizontal />} />
                         <MenuList>
-                          <RemoveUserAlertDialog
-                            org_id={Number(router.query.id)}
-                            display_user_name={member.user.display_name}
-                            email={member.user.email}
-                            onOKCallback={() => {
-                              orgCtx.getMemberList(Number(router.query.id), pageIndex, pageSize)
-                                .then((res) => {setMemberList(res);})
-                                .catch((error) => {setMemberList([]);});}}
-                          />
+                          <MenuItem onClick={() => {
+                            setSelectedMember(member);
+                            onRemoveDialogOpen();
+                          }}>
+                            {t("OrganizationPages.members.list.menu.remove")}
+                          </MenuItem>
                         </MenuList>
                       </Menu>
                     }
@@ -160,8 +166,23 @@ const OrganizationMembersPage = () => {
             />
           }
         </div>
-
       </VStack>
+
+      {selectedMember && (
+        <RemoveUserAlertDialog
+          isOpen={isRemoveDialogOpen}
+          onClose={onRemoveDialogClose}
+          orgId={Number(router.query.id)}
+          displayUserName={selectedMember.user.display_name}
+          email={selectedMember.user.email}
+          onOKCallback={() => {
+            onRemoveDialogClose();
+            orgCtx.getMemberList(Number(router.query.id), pageIndex, pageSize)
+              .then((res) => {setMemberList(res);})
+              .catch((error) => {setMemberList([]);});
+          }}
+        />
+      )}
     </>
   );
 };
