@@ -23,7 +23,8 @@ import OrganizationContext from "@/contexts/organization";
 import { useToast } from '@/contexts/toast';
 import { OrganizationMember, MemberRoleEnum } from "@/models/organization";
 import InviteMembersModal from "@/components/modals/invite-members-modal";
-import RemoveUserAlertDialog from "@/components/modals/remove-user-alert-dialog";
+import RemoveMemberAlertDialog from "@/components/modals/remove-member-alert-dialog";
+import ChangeMemberRoleModal from "@/components/modals/change-member-role-modal";
 import { getOrganizationInvitations } from "@/services/organization";
 
 const OrganizationMembersPage = () => {
@@ -44,6 +45,12 @@ const OrganizationMembersPage = () => {
     isOpen: isRemoveDialogOpen,
     onOpen: onRemoveDialogOpen,
     onClose: onRemoveDialogClose
+  } = useDisclosure();
+
+  const {
+    isOpen: isChangeRoleModalOpen,
+    onOpen: onChangeRoleModalOpen,
+    onClose: onChangeRoleModalClose
   } = useDisclosure();
 
   useEffect(() => {
@@ -151,6 +158,12 @@ const OrganizationMembersPage = () => {
                         <MenuList>
                           <MenuItem onClick={() => {
                             setSelectedMember(member);
+                            onChangeRoleModalOpen();
+                          }}>
+                            {t("OrganizationPages.members.list.menu.change_role")}
+                          </MenuItem>
+                          <MenuItem onClick={() => {
+                            setSelectedMember(member);
                             onRemoveDialogOpen();
                           }}>
                             {t("OrganizationPages.members.list.menu.remove")}
@@ -168,8 +181,8 @@ const OrganizationMembersPage = () => {
         </div>
       </VStack>
 
-      {selectedMember && (
-        <RemoveUserAlertDialog
+      {selectedMember && 
+        <RemoveMemberAlertDialog
           isOpen={isRemoveDialogOpen}
           onClose={onRemoveDialogClose}
           orgId={Number(router.query.id)}
@@ -182,7 +195,22 @@ const OrganizationMembersPage = () => {
               .catch((error) => {setMemberList([]);});
           }}
         />
-      )}
+      }
+      {selectedMember && 
+        <ChangeMemberRoleModal
+          isOpen={isChangeRoleModalOpen}
+          onClose={onChangeRoleModalClose}
+          orgId={Number(router.query.id)}
+          displayUserName={selectedMember.user.display_name}
+          email={selectedMember.user.email}
+          onOKCallback={() => {
+            onChangeRoleModalClose();
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
+          }}
+        />
+      }
     </>
   );
 };

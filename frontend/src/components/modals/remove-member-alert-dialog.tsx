@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 import { removeMember } from "@/services/organization";
 import OrganizationContext from "@/contexts/organization";
 
-interface RemoveUserAlertDialogProps {
+interface RemoveMemberAlertDialogProps {
   isOpen: boolean;
   onClose: () => void;
   orgId: number;
@@ -24,7 +24,7 @@ interface RemoveUserAlertDialogProps {
   onOKCallback?: () => void;
 }
 
-const RemoveUserAlertDialog: React.FC<RemoveUserAlertDialogProps> = ({
+const RemoveMemberAlertDialog: React.FC<RemoveMemberAlertDialogProps> = ({
   isOpen,
   onClose,
   orgId,
@@ -99,4 +99,4 @@ const RemoveUserAlertDialog: React.FC<RemoveUserAlertDialogProps> = ({
   )
 }
 
-export default RemoveUserAlertDialog;
+export default RemoveMemberAlertDialog;

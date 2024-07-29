@@ -1,4 +1,20 @@
 {
+    "ChangeMemberRoleModal": {
+        "modal": {
+            "title": "修改 {{displayUserName}}({{email}}) 的身份",
+            "owner_description": "拥有对整个组织的完全管理权限",
+            "member_description": "可以查看组织内所有成员，可以创建新项目",
+            "cancel": "取消",
+            "change_role": "修改"
+        },
+        "toast": {
+            "changed": "已成功修改",
+            "error": "修改用户身份失败",
+            "error-400": "无法修改唯一管理员的身份",
+            "error-403": "权限不足，仅管理员可修改成员身份",
+            "error-404": "用户不存在或非该组织成员"
+        }
+    },
     "CreateOrganizationModal": {
         "modal" : {
             "title": "创建新组织",
@@ -134,6 +150,7 @@
                 "joined_at": "于 {{date}} 加入",
                 "invited_at": "于 {{date}} 发送邀请",
                 "menu": {
+                    "change_role": "修改身份",
                     "remove": "从组织移除"
                 }
             },
