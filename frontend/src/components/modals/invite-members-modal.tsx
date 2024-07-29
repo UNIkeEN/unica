@@ -129,7 +129,11 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
                   {t("InviteMembersModal.toast.emailInvalid")}
                 </FormErrorMessage>
               )}
-              <FormHelperText>
+              <FormHelperText
+                wordBreak='break-all'
+                overflowWrap='break-word'
+                lineHeight={1.5}
+              >
                 {t("InviteMembersModal.modal.emailHelper-1", {
                   base_uri: window.location.origin,
                   id: id,
@@ -137,9 +141,12 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
                 <IconButton
                   variant="ghost"
                   colorScheme="gray"
+                  size="xs"
                   aria-label="copy"
                   icon={<FiCopy />}
+                  mt={-0.5}
                   onClick={() => {
+                    initialRef.current.blur();
                     copy(`${window.location.origin}/organizations/${id}/invitation`);
                     toast({
                       title: t("InviteMembersModal.toast.copied"),
