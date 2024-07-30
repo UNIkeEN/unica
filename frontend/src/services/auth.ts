@@ -1,4 +1,3 @@
-import { Token } from "@/models/token";
 import { request } from "@/services/request";
 
 export async function jAccountLogin(next = "/", params = "") {
@@ -22,21 +21,6 @@ export async function jAccountAuth(code:string, state:string) {
         return response.data;
     } catch (error) {
         console.error('Failed to login:', error);
-        throw error;
-    }
-}
-
-export async function jAccountRefresh(refreshToken: string) {
-    try {
-        const response = await request.post("/auth/oidc_refresh/", {
-            refresh_token: refreshToken,
-        });
-        return ({
-            token: response.data.token,
-            refreshToken: response.data.refresh_token,
-        } as Token);
-    } catch (error) {
-        console.error('Failed to refresh token:', error);
         throw error;
     }
 }

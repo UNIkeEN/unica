@@ -1,4 +1,3 @@
-import os
 from django.http import JsonResponse
 from django.urls import reverse
 from django.contrib.auth import login, logout
@@ -7,7 +6,6 @@ from authlib.integrations.django_client import OAuth
 from authlib.jose import jwt
 from authlib.oidc.core import CodeIDToken
 from django.conf import settings
-import requests
 from rest_framework import status
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.authentication import SessionAuthentication
@@ -61,7 +59,6 @@ def auth_oauth(request, provider):
     )
     
     access_token = token.get('access_token')
-    refresh_token = token.get('refresh_token')
     id_token = token.get('id_token')
     user_info = {}
 
@@ -79,12 +76,10 @@ def auth_oauth(request, provider):
             user.email = user_info.get('email')
             user.display_name = user_info.get('name')
             user.save()
-        
         return JsonResponse({
                 "message": "login success", 
                 "next": next,
-                "token": access_token,
-                "refresh_token": refresh_token
+                "token": access_token
             }, status=status.HTTP_200_OK)
     return JsonResponse({"message": "login failed"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -93,41 +88,3 @@ def auth_oauth(request, provider):
 def logout(request):
     logout(request)
     return JsonResponse({'message': 'logout success'}, status=status.HTTP_200_OK)
-
-@api_view(['POST'])
-@authentication_classes([SessionAuthentication])
-@permission_classes([AllowAny])
-def oidc_refresh(request):
-    refresh_token = request.data.get('refresh_token')
-    if not refresh_token:
-        return JsonResponse({'message': 'No refresh token available'}, status=status.HTTP_401_UNAUTHORIZED)
-
-    provider = request.user.oauth_provider
-    client = oauth.create_client(provider)
-    client_id = client.client_id
-    client_secret = client.client_secret
-
-    data = {
-        'grant_type': 'refresh_token',
-        'refresh_token': refresh_token,
-        'client_id': client_id,
-        'client_secret': client_secret,
-    }
-    
-    try:
-        response = requests.post(os.getenv('JACCOUNT_TOKEN_URL'), data=data)
-        response.raise_for_status()
-
-        token_data = response.json()
-        new_access_token = token_data.get('access_token')
-        new_refresh_token = token_data.get('refresh_token')
-        next = request.session.get('next')
-
-        return JsonResponse({
-            "message": "refresh success",
-            "next": next,
-            "token": new_access_token,
-            "refreshToken": new_refresh_token
-        }, status=status.HTTP_200_OK)
-    except Exception as e:
-        return JsonResponse({'message': 'Refresh failed', 'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)

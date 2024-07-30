@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import { useToast } from '@/contexts/toast';
 import AuthContext from '@/contexts/auth';
 import { jAccountAuth } from '@/services/auth';
-import { Token } from '@/models/token';
 
 const OAuthRedirectBack = () => {
   const router = useRouter();
@@ -20,11 +19,7 @@ const OAuthRedirectBack = () => {
     if (provider === "jaccount") {
       jAccountAuth(code, state)
         .then((data) => {
-          console.log(data);
-          authCtx.onLogin({
-            token: data.token,
-            refreshToken: data.refresh_token
-          } as Token);
+          authCtx.onLogin(data.token);
           router.push(data.next);
         },(err)=>{
           toast({
