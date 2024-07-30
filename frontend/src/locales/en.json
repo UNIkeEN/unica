@@ -71,7 +71,8 @@
             "jaccount": "Login via jAccount"
         },
         "toast": {
-            "need-login": "Please login first"
+            "need-login": "Please login first",
+            "session-expired": "Session expired, please login again"
         }
     },
     "MainSider": {

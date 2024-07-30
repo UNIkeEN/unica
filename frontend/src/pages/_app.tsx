@@ -12,6 +12,7 @@ import { UserContextProvider } from '@/contexts/user';
 import MainLayout from '@/layouts/main-layout';
 import OrganizationLayout from '@/layouts/organization-layout';
 import SettingsLayout from '@/layouts/settings-layout';
+import { useAxiosInterceptors } from '@/services/request';
 import theme from '../theme';
 import '@/styles/globals.css';
 
@@ -28,6 +29,8 @@ i18n
 function App({ Component, pageProps }: AppProps) {
   const [mounted, setMounted] = useState<boolean>(false);
   const router = useRouter();
+
+  useAxiosInterceptors();
   
   useEffect(() => {
     // detect language in route (like '/[locale]/...')

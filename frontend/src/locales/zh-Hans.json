@@ -71,7 +71,8 @@
             "jaccount": "使用 jAccount 登录"
         },
         "toast": {
-            "need-login": "请先登录"
+            "need-login": "请先登录",
+            "session-expired": "会话已过期，请重新登录"
         }
     },
     "MainSider": {
