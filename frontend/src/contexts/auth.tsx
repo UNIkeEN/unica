@@ -42,7 +42,7 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const toast = useToast();
   const { t } = useTranslation();
 
-  const isLoggedIn = (!!token) && (calculateRemainDuration(exp) > 0);
+  const isLoggedIn = (!!token) && (exp <= 0 || calculateRemainDuration(exp) > 0);
 
   const doRefresh = () => {
     jAccountRefresh(refreshToken)
