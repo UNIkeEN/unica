@@ -20,6 +20,7 @@ import { FiMoreHorizontal, FiChevronDown} from "react-icons/fi";
 import RichList from "@/components/rich-list";
 import { ISOtoDate } from "@/utils/datetime";
 import OrganizationContext from "@/contexts/organization";
+import UserContext from "@/contexts/user";
 import { useToast } from '@/contexts/toast';
 import { OrganizationMember, MemberRoleEnum } from "@/models/organization";
 import InviteMembersModal from "@/components/modals/invite-members-modal";
@@ -29,6 +30,7 @@ import { getOrganizationInvitations } from "@/services/organization";
 
 const OrganizationMembersPage = () => {
   const orgCtx = useContext(OrganizationContext);
+  const userCtx = useContext(UserContext);
   const [memberList, setMemberList] = useState<OrganizationMember[]>([]);
   const [pendingList, setPendingList] = useState<OrganizationMember[]>([]);
   const [ListDomain, setListDomain] = useState<string>('members');
@@ -205,9 +207,15 @@ const OrganizationMembersPage = () => {
           email={selectedMember.user.email}
           onOKCallback={() => {
             onChangeRoleModalClose();
-            setTimeout(() => {
+            if (selectedMember.user.email === userCtx.basicInfo.email) {
+              setTimeout(() => {
               window.location.reload();
-            }, 1000);
+              }, 1000);
+            } else {
+              orgCtx.getMemberList(Number(router.query.id), pageIndex, pageSize)
+              .then((res) => {setMemberList(res);})
+              .catch((error) => {setMemberList([]);});
+            }
           }}
         />
       }

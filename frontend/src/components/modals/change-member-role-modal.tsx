@@ -11,6 +11,8 @@ import {
   RadioGroup,
   Radio,
   Stack,
+  Tag,
+  Text
 } from "@chakra-ui/react";
 import { useToast } from "@/contexts/toast";
 import { useTranslation } from "react-i18next";
@@ -78,14 +80,14 @@ const ChangeMemberRoleModal: React.FC<ChangeMemberRoleModalProps> = ({
         <ModalCloseButton />
         <ModalBody pb={5}>
           <RadioGroup onChange={setNewRole} value={newRole}>
-            <Stack>
+            <Stack spacing={4}>
               <Radio value={MemberRoleEnum.OWNER}>
-                {t("Enums.organization.role.Owner")}
-                <p>{t("ChangeMemberRoleModal.modal.owner_description")}</p>
+                <Tag fontWeight="normal" colorScheme="green">{t("Enums.organization.role.Owner")}</Tag>
+                <Text fontSize="sm" mt={0.5}>{t("ChangeMemberRoleModal.modal.owner_description")}</Text>
               </Radio>
               <Radio value={MemberRoleEnum.MEMBER}>
-                {t("Enums.organization.role.Member")}
-                <p>{t("ChangeMemberRoleModal.modal.member_description")}</p>
+                <Tag fontWeight="normal" colorScheme="cyan">{t("Enums.organization.role.Member")}</Tag>
+                <Text fontSize="sm" mt={0.5}>{t("ChangeMemberRoleModal.modal.member_description")}</Text>
               </Radio>
             </Stack>
           </RadioGroup>
