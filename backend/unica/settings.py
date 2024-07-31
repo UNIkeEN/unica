@@ -108,7 +108,16 @@ DATABASES = {
     }
 }
 
+# Session
+
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+
+SESSION_COOKIE_AGE = 1800
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+SESSION_SAVE_EVERY_REQUEST = False
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
