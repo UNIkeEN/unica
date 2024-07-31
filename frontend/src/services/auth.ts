@@ -27,7 +27,7 @@ export async function jAccountAuth(code:string, state:string) {
 
 export async function Logout() {
     try {
-        await request.post('/oauth/logout/');
+        await request.post('/auth/logout/');
     } catch (error) {
         console.error('Failed to logout:', error);
     }
