@@ -85,6 +85,6 @@ def auth_oauth(request, provider):
 
 @api_view(['POST'])
 @login_required
-def logout(request):
+def logout_view(request):
     logout(request)
     return JsonResponse({'message': 'logout success'}, status=status.HTTP_200_OK)
