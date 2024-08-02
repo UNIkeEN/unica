@@ -117,6 +117,10 @@
         "title": "我的项目",
         "header": "项目"
     },
+    "NotFoundPage": {
+        "title": "页面不存在",
+        "text": "页面不存在，即将在 {{seconds}} 秒后跳转"
+    },
     "OAuthRedirectBack": {
         "title": "认证中",
         "toast": {

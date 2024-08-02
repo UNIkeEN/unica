@@ -117,6 +117,10 @@
         "title": "My Projects",
         "header": "My Projects"
     },
+    "NotFoundPage": {
+        "title": "Page Not Found",
+        "text": "Page not found, redirecting to home page in {{seconds}} seconds..."
+    },
     "OAuthRedirectBack": {
         "title": "Authenticating",
         "toast": {
