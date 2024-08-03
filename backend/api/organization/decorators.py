@@ -11,7 +11,7 @@ def organization_permission_classes(required_roles=None):
         @wraps(func)
         def wrapper(request, *args, **kwargs):
             try:
-                organization = Organization.objects.get(id=kwargs['id'])
+                organization = Organization.objects.get(id=kwargs.get('id'))
             except Organization.DoesNotExist:
                 return Response({"detail": "Organization not found."}, status=status.HTTP_404_NOT_FOUND)
 

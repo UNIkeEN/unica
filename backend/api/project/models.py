@@ -17,14 +17,14 @@ class Project(models.Model):
 
     # Generic foreign key to support both User and Organization
     owner_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    owner_id = models.PositiveIntegerField()
+    owner_id = models.BigIntegerField()
     owner = GenericForeignKey('owner_type', 'owner_id')
 
     def save(self, *args, **kwargs):
         # Generate id if not set
         if self.pk is None:
             timestamp = timezone.now().strftime('%Y%m%d%H%M%S%f')
-            self.id = mmh3.hash(str(self.name + timestamp), signed=False)
+            self.id = mmh3.hash(str(self.display_name + timestamp), signed=False)
         super().save(*args, **kwargs)
 
     def __str__(self):

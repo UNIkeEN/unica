@@ -125,10 +125,10 @@ def check_user_organization_permission(request, id):
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner', 'Member'])
 def get_organization_members(request, id):
-    class MembersNumberPagination(PageNumberPagination):
+    class CustomPagination(PageNumberPagination):
         page_size_query_param = 'page_size'
 
-    paginator = MembersNumberPagination()
+    paginator = CustomPagination()
 
     request.query_params._mutable = True
     request.query_params['page'] = request.data.get('page', 1)
@@ -294,10 +294,10 @@ def create_invitation(request, id):
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner'])
 def get_organization_invitations(request, id):
-    class MembersNumberPagination(PageNumberPagination):
+    class CustomPagination(PageNumberPagination):
         page_size_query_param = 'page_size'
 
-    paginator = MembersNumberPagination()
+    paginator = CustomPagination()
 
     request.query_params._mutable = True
     request.query_params['page'] = request.data.get('page', 1)
