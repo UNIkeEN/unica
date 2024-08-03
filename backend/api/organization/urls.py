@@ -8,7 +8,7 @@ urlpatterns = [
 
     # Membership CRUD
     path('<int:id>/permission/', check_user_organization_permission, name='check_user_organization_permission'),
-    path('<int:id>/members/', get_organization_members, name='get_organization_members'),
+    path('<int:id>/members/list/', get_organization_members, name='get_organization_members'),
     path('<int:id>/members/remove/', remove_member, name='remove_member'),
     path('<int:id>/members/role/', modify_member_role, name='modify_member_role'),
 

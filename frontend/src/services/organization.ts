@@ -36,7 +36,7 @@ export async function checkUserOrgPermission(id: number) {
 
 export async function getOrganizationMembers(id: number, page: number, pageSize: number) {
     try {
-        const response = await request.post(`/api/organization/${id}/members/`, {
+        const response = await request.post(`/api/organization/${id}/members/list/`, {
             page: page,
             page_size: pageSize
         });
