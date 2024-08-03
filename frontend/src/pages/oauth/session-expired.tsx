@@ -12,13 +12,14 @@ const IndexPage = () => {
 
   useEffect(() => {
     authCtx.onLogout();
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       router.push('/login');
       toast({
         title: t('LoginPage.toast.session-expired'),
         status: 'warning',
         });
     }, 100);
+    return () => clearTimeout(timer);
   }, [router]);
 
   return null;

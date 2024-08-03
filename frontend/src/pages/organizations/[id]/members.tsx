@@ -213,7 +213,6 @@ const OrganizationMembersPage = () => {
               onPageChange={handlePageChange}
               colorScheme="blue"
               variant="subtle"
-              mr={70}
             />
           </Flex>
         )}

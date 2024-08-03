@@ -19,6 +19,8 @@ export const setupInterceptors = (
       if (error.config.url.startsWith('/api/')) {
         if (error.response && error.response.data.detail === "身份认证信息未提供。") {  // Error Detail is from Django
           window.location.href = "/oauth/session-expired";
+        } else {
+          return Promise.reject(error);
         }
       }
       else {
