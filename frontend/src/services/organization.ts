@@ -1,5 +1,4 @@
 import { request } from "@/services/request";
-import { MemberRoleEnum } from "@/models/organization";
 
 export async function createOrganization(name:string, description?:string) {
     try {
