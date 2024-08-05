@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, use } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
 	Box,
 	Flex,
@@ -8,7 +8,6 @@ import {
 	DrawerContent,
 	useDisclosure,
 	IconButton,
-  Text,
   Show, 
   Hide
 } from '@chakra-ui/react';
@@ -16,6 +15,7 @@ import { HamburgerIcon } from '@chakra-ui/icons';
 import AuthContext from '@/contexts/auth';
 import UserContext from '@/contexts/user';
 import MainSider from '@/components/main-sider';
+import MainHeader from '@/components/main-header';
 
 const MainLayout = ({ children }) => {
   const authCtx = useContext(AuthContext);
@@ -23,17 +23,32 @@ const MainLayout = ({ children }) => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [headerTitle, setHeaderTitle] = useState('');
+  const [headerBreadcrumbs, setHeaderBreadcrumbs] = useState(null);
   const [headerExtra, setHeaderExtra] = useState(null);
 
   useEffect(() => {
-    const updateHeaderTitle = () => {
+    const updateHeader = () => {
       const headerTitleMeta = document.querySelector('meta[name="headerTitle"]') as HTMLMetaElement;
+      const headerBreadcrumbsMeta = document.querySelector('meta[name="headerBreadcrumbs"]') as HTMLMetaElement;
       if (headerTitleMeta) {
         setHeaderTitle(headerTitleMeta.content);
+      } else {
+        setHeaderTitle('')
+      }
+      if (headerBreadcrumbsMeta) {
+        try {
+          const breadcrumbs = JSON.parse(headerBreadcrumbsMeta.content);
+          setHeaderBreadcrumbs(breadcrumbs);
+        } catch (error) {
+          console.error("Invalid breadcrumbs format:", error);
+          setHeaderBreadcrumbs(null);
+        }
+      } else {
+        setHeaderBreadcrumbs(null);
       }
     };
-    updateHeaderTitle();
-    const timer = setTimeout(updateHeaderTitle, 100); // wait for the meta tag to be updated, for some meta tag is depend on async state, TODO: perf!
+    updateHeader();
+    const timer = setTimeout(updateHeader, 100); // wait for the meta tag to be updated, for some meta tag is depend on async state, TODO: perf!
     return () => clearTimeout(timer);
   }, [children]);
 
@@ -102,7 +117,7 @@ const MainLayout = ({ children }) => {
                 onClick={onOpen}
               />
             </Hide>
-            <Text fontSize="lg" ml={4}>{headerTitle}</Text>
+            <MainHeader title={headerTitle} breadcrumbs={headerBreadcrumbs} />
           </Flex>
           <Box>
             {headerExtra}
