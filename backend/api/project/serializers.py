@@ -25,3 +25,10 @@ class ProjectSerializer(serializers.ModelSerializer):
                 'display_name': organization.display_name
             }
         return None
+    
+  
+class ProjectCreationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = ['id', 'display_name', 'description', 'created_at', 'updated_at', 'owner_type', 'owner_id']
+        read_only_fields = ['id']

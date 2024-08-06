@@ -38,14 +38,14 @@ class OrganizationCreationSerializer(serializers.ModelSerializer):
         fields = ['id', 'display_name', 'description', 'created_at', 'updated_at']
         read_only_fields = ['id']
 
-    def validate(self, data):
-        display_name = data.get('display_name')
-        if not display_name:
-            raise serializers.ValidationError("Name is required.")
-        if len(display_name) > 20:
-            raise serializers.ValidationError("Name cannot be longer than 20 characters.")
-        description = data.get('description', '')
-        if len(description) > 200:
-            raise serializers.ValidationError("Description cannot be longer than 200 characters.")
+    # def validate(self, data):
+    #     display_name = data.get('display_name')
+    #     if not display_name:
+    #         raise serializers.ValidationError("Name is required.")
+    #     if len(display_name) > 20:
+    #         raise serializers.ValidationError("Name cannot be longer than 20 characters.")
+    #     description = data.get('description', '')
+    #     if len(description) > 200:
+    #         raise serializers.ValidationError("Description cannot be longer than 200 characters.")
         
-        return data
+    #     return data

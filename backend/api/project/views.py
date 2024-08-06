@@ -11,7 +11,7 @@ from django.contrib.auth import get_user_model
 from ..organization.models import Organization
 from ..organization.decorators import organization_permission_classes
 from .models import Project
-from .serializers import ProjectSerializer
+from .serializers import ProjectSerializer, ProjectCreationSerializer
 
 User = get_user_model()
 
@@ -29,6 +29,7 @@ User = get_user_model()
     ),
     responses={
         201: openapi.Response(description="Project created successfully"),
+        400: openapi.Response(description="Invalid input data"),
         403: openapi.Response(description="You do not have the required permissions to create a project"),
         404: openapi.Response(description="Organization not found"),
     },
@@ -59,14 +60,16 @@ def create_project(request):
 
     owner_type, owner_id = owner_info
 
-    project = Project.objects.create(
-        display_name=display_name,
-        description=description,
-        owner_type=owner_type,
-        owner_id=owner_id
-    )
-
-    return Response(ProjectSerializer(project).data, status=status.HTTP_201_CREATED)
+    serializer = ProjectCreationSerializer(data={
+        'display_name': display_name,
+        'description': description,
+        'owner_type': owner_type.pk,
+        'owner_id': owner_id
+    })
+    if serializer.is_valid():
+        project = serializer.save()
+        return Response(ProjectSerializer(project).data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @swagger_auto_schema(
