@@ -112,11 +112,11 @@ DATABASES = {
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
-SESSION_COOKIE_AGE = 1800
+SESSION_COOKIE_AGE = 3600
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
-SESSION_SAVE_EVERY_REQUEST = False
+SESSION_SAVE_EVERY_REQUEST = True
 
 
 # Password validation

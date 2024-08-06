@@ -28,9 +28,9 @@
             "created": "Successfully created organization: {{name}}",
             "error": "Failed to create organization",
             "nameRequired": "Organization name is required",
-            "nameInvalid": "Organization name is invalid",
             "nameTooLong": "Organization name is too long",
-            "descriptionTooLong": "Description is too long"
+            "descriptionTooLong": "Description is too long",
+            "invalidInput": "Invalid input"
         }
     },
     "Enums": {
