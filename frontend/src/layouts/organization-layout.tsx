@@ -2,8 +2,8 @@ import React, { use, useContext, useEffect } from 'react';
 import { VStack, Text, HStack, Icon } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from "next/router";
-import { FiHome, FiBook, FiUser } from 'react-icons/fi';
-import AuthContext from "@/contexts/auth";
+import { FiHome, FiBook, FiUser, FiSettings } from 'react-icons/fi';
+import { MemberRoleEnum } from "@/models/organization";
 import OrganizationContext, { OrganizationContextProvider } from '@/contexts/organization';
 import NavTabs from '@/components/nav-tabs';
 import Head from 'next/head';
@@ -35,9 +35,10 @@ const OrgLayoutContent: React.FC<{ children: React.ReactNode }> = ({ children })
   }, [router.query.id]);
 
   const orgMenuItems = [
-    { icon: FiHome, label: 'overview' },
-    { icon: FiBook, label: 'projects' },
-    { icon: FiUser, label: 'members' },
+    { icon: FiHome, label: 'overview', owner_only: false },
+    { icon: FiBook, label: 'projects', owner_only: false },
+    { icon: FiUser, label: 'members', owner_only: false },
+    { icon: FiSettings, label: 'settings', owner_only: true },
   ];
 
   if (!orgCtx.mounted) return <></>;
@@ -60,19 +61,21 @@ const OrgLayoutContent: React.FC<{ children: React.ReactNode }> = ({ children })
       </Head>
       <VStack spacing={6} align="stretch">
         <NavTabs
-          items={orgMenuItems.map((item) => ({
-            label:
-              <HStack spacing={2}>
-                <Icon as={item.icon} />
-                <Text>{t(`OrganizationPages.${item.label}.title`)}</Text>
-                {item.label === 'members' && 
-                  <Text className='secondary-text' ml={-1.5}>
-                    ({orgCtx.basicInfo?.member_count})
-                  </Text>
-                }
-              </HStack>
-            ,
-            value: `/organizations/${router.query.id}/${item.label}`,
+          items={orgMenuItems
+            .filter(item => !item.owner_only || (item.owner_only && orgCtx.userRole === MemberRoleEnum.OWNER))
+            .map((item) => ({
+              label:
+                <HStack spacing={2}>
+                  <Icon as={item.icon} />
+                  <Text>{t(`OrganizationPages.${item.label}.title`)}</Text>
+                  {item.label === 'members' && 
+                    <Text className='secondary-text' ml={-1.5}>
+                      ({orgCtx.basicInfo?.member_count})
+                    </Text>
+                  }
+                </HStack>
+              ,
+              value: `/organizations/${router.query.id}/${item.label}`,
           }))}
           onClick={(value) => { router.push(value) }}
           selectedKeys={[router.asPath]}

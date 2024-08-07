@@ -163,6 +163,9 @@
                 "error": "Failed to get pending invitations"
             }
         },
+        "settings": {
+          "title": "Settings"
+        },
         "invitation": {
             "text": {
                 "description": "The @{{orgName}} organization has invited you to join."

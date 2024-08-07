@@ -163,6 +163,9 @@
                 "error": "获取邀请列表失败"
             }
         },
+        "settings": {
+          "title": "设置"
+        },
         "invitation": {
             "text": {
                 "description": "@{{orgName}} 组织已向您发送邀请。"

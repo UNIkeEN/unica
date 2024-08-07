@@ -19,7 +19,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import AuthContext from "@/contexts/auth";
 import UserContext from "@/contexts/user";
-import { createOrganization } from "@/services/organization";
+import { useRouter } from "next/router";
 import RichList from "@/components/rich-list";
 import { FiChevronDown } from "react-icons/fi";
 import { Organization, MemberRoleEnum } from '@/models/organization';
@@ -28,6 +28,7 @@ import CreateOrganizationModal from "@/components/modals/create-organization-mod
 const MyOrganizationsPage = () => {
   const authCtx = useContext(AuthContext);
   const userCtx = useContext(UserContext);
+  const router = useRouter();
   const { t } = useTranslation();
   const [orgSortBy, setOrgSortBy] = useState<string>('updated_at'); // updated_at, created_at, display_name
   const sortOptions = ['created_at', 'updated_at', 'display_name'];
@@ -112,7 +113,12 @@ const MyOrganizationsPage = () => {
                     <HStack spacing={2}>
                       {/* TODO: Button logic */}
                       {item.role === MemberRoleEnum.OWNER &&
-                        <Button size="sm">{t('MyOrganizationsPage.button.settings')}</Button>
+                        <Button 
+                          size="sm"
+                          onClick={()=>{router.push(`organizations/${item.id}/settings`)}}
+                        >
+                          {t('MyOrganizationsPage.button.settings')}
+                        </Button>
                       }
                       <Button size="sm" colorScheme="red" variant="subtle"
                         isDisabled={item.role === MemberRoleEnum.OWNER && item.owner_count === 1}
