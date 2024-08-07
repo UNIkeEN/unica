@@ -6,3 +6,4 @@ Authlib
 requests
 mmh3
 drf-yasg
+jsonschema
