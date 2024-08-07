@@ -205,5 +205,17 @@
             "error-1": "Failed to get user information",
             "error-2": "Failed to get user organization list"
         }
+    },
+    "Utils": {
+      "datetime": {
+        "formatRelativeTime": {
+          "now": "now",
+          "minutes-ago": "{{count}} minutes ago",
+          "last-hour": "last hour",
+          "hours-ago": "{{count}} hours ago",
+          "yesterday": "yesterday",
+          "others": "on {{time}}"
+        }
+      }
     }
 }

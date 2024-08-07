@@ -205,5 +205,17 @@
             "error-1": "获取用户信息失败",
             "error-2": "获取组织列表失败"
         }
+    },
+    "Utils": {
+      "datetime": {
+        "formatRelativeTime": {
+          "now": "现在",
+          "minutes-ago": "{{count}} 分钟前",
+          "last-hour": "1 小时前",
+          "hours-ago": "{{count}} 小时前",
+          "yesterday": "昨天",
+          "others": "{{time}}"
+        }
+      }
     }
 }
