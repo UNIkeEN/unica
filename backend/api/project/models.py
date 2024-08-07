@@ -26,12 +26,41 @@ class Project(models.Model):
             timestamp = timezone.now().strftime('%Y%m%d%H%M%S%f')
             self.id = mmh3.hash(str(self.display_name + timestamp), signed=False)
         super().save(*args, **kwargs)
+        # Automatically create the associated board
+        if not hasattr(self, 'board'):
+            Board.objects.create(project=self)
 
     def __str__(self):
-        return self.name
+        return self.display_name
 
     def is_user_project(self):
         return self.owner_type == ContentType.objects.get_for_model(User)
 
     def is_organization_project(self):
         return self.owner_type == ContentType.objects.get_for_model(Organization)
+    
+
+class Board(models.Model):
+    project = models.OneToOneField(Project, related_name='board', on_delete=models.CASCADE)
+    global_properties = models.JSONField(default=list)  # global property definitions
+
+
+class Task(models.Model):
+    board = models.ForeignKey(Board, related_name='tasks', on_delete=models.CASCADE)
+    # static properties
+    title = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    # dynamic properties
+    global_properties = models.JSONField(default=dict)  # global property values
+    local_properties = models.JSONField(default=dict)  # local property definitions and values
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # Update the parent project's updated_at field
+        self.board.project.updated_at = timezone.now()
+        self.board.project.save()
+
+    def __str__(self):
+        return f"#{self.id} {self.title}"
