@@ -6,7 +6,7 @@ from .schemas import PROPERTY_SCHEMA
 class BoardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Board
-        fields = '__all__'
+        fields = ['global_properties']
 
     def validate_global_properties(self, value):
         for prop in value:

@@ -18,7 +18,10 @@ from ..project.decorators import project_basic_permission_required
         additional_properties=openapi.Schema(type=openapi.TYPE_OBJECT)
     ),
     responses={
-        200: openapi.Response(description="Global property added or updated successfully"),
+        200: openapi.Response(
+            description="Global property added or updated successfully",
+            schema=BoardSerializer
+        ),
         400: openapi.Response(description="Invalid input"),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
         404: openapi.Response(description="Project or board not found")
@@ -38,7 +41,7 @@ def add_or_update_global_property(request, id):
     except ValueError as e:
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
     serializer = BoardSerializer(board)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.data)
 
 
 @swagger_auto_schema(
@@ -51,7 +54,10 @@ def add_or_update_global_property(request, id):
         required=['name']
     ),
     responses={
-        200: openapi.Response(description="Global property removed successfully"),
+        200: openapi.Response(
+            description="Global property removed successfully",
+            schema=BoardSerializer
+        ),
         400: openapi.Response(description="Invalid input"),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
         404: openapi.Response(description="Project or board not found")
