@@ -74,13 +74,10 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
           status: "error",
         });
       }
-      if (
-        error.response &&
-        error.response.status !== 404 &&
-        error.response.status !== 409
-      ) {
+      if (error.response && error.response.status === 403) {
+        onClose();
         setTimeout(() => {
-          onClose();
+          window.location.reload();
         }, 2000);
       }
       return false;

@@ -245,7 +245,7 @@ const OrganizationMembersPage = () => {
             onChangeRoleModalClose();
             if (selectedMember.user.email === userCtx.basicInfo.email) {
               setTimeout(() => {
-              window.location.reload();
+                window.location.reload();
               }, 1000);
             } else {
               orgCtx.getMemberList(Number(router.query.id), pageIndex, pageSize)

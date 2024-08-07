@@ -63,6 +63,11 @@ const RemoveMemberAlertDialog: React.FC<RemoveMemberAlertDialogProps> = ({
         });
       }
       onClose();
+      if (error.response && error.response.status === 403) {
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      }
     }};
 
   return (

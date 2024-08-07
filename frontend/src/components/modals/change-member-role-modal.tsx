@@ -67,6 +67,11 @@ const ChangeMemberRoleModal: React.FC<ChangeMemberRoleModalProps> = ({
         });
       }
       onClose();
+      if (error.response && error.response.status === 403) {
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      }
     }
   };
 
