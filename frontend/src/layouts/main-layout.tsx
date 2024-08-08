@@ -26,30 +26,32 @@ const MainLayout = ({ children }) => {
   const [headerBreadcrumbs, setHeaderBreadcrumbs] = useState(null);
   const [headerExtra, setHeaderExtra] = useState(null);
 
-  useEffect(() => {
-    const updateHeader = () => {
-      const headerTitleMeta = document.querySelector('meta[name="headerTitle"]') as HTMLMetaElement;
-      const headerBreadcrumbsMeta = document.querySelector('meta[name="headerBreadcrumbs"]') as HTMLMetaElement;
-      if (headerTitleMeta) {
-        setHeaderTitle(headerTitleMeta.content);
-      } else {
-        setHeaderTitle('')
-      }
-      if (headerBreadcrumbsMeta) {
-        try {
-          const breadcrumbs = JSON.parse(headerBreadcrumbsMeta.content);
-          setHeaderBreadcrumbs(breadcrumbs);
-        } catch (error) {
-          console.error("Invalid breadcrumbs format:", error);
-          setHeaderBreadcrumbs(null);
-        }
-      } else {
+  const updateHeader = () => {
+    const headerTitleMeta = document.querySelector('meta[name="headerTitle"]') as HTMLMetaElement;
+    const headerBreadcrumbsMeta = document.querySelector('meta[name="headerBreadcrumbs"]') as HTMLMetaElement;
+    if (headerTitleMeta) {
+      setHeaderTitle(headerTitleMeta.content);
+    } else {
+      setHeaderTitle('')
+    }
+    if (headerBreadcrumbsMeta) {
+      try {
+        const breadcrumbs = JSON.parse(headerBreadcrumbsMeta.content);
+        setHeaderBreadcrumbs(breadcrumbs);
+      } catch (error) {
+        console.error("Invalid breadcrumbs format:", error);
         setHeaderBreadcrumbs(null);
       }
-    };
-    updateHeader();
-    const timer = setTimeout(updateHeader, 100); // wait for the meta tag to be updated, for some meta tag is depend on async state, TODO: perf!
-    return () => clearTimeout(timer);
+    } else {
+      setHeaderBreadcrumbs(null);
+    }
+  };
+
+  useEffect(() => {
+    // updateHeader();
+    const observer = new MutationObserver(updateHeader);
+    observer.observe(document.head, { childList: true, subtree: true });
+    return () => observer.disconnect();
   }, [children]);
 
   useEffect(() => {
