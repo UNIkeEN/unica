@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-
 export const ISOtoDate = (isoString: string): string => {
   const date = new Date(isoString);
   const year = date.getFullYear();
@@ -8,8 +6,7 @@ export const ISOtoDate = (isoString: string): string => {
   return `${year}-${month}-${day}`;
 };
 
-export const formatRelativeTime = (isoString: string): string => {
-  const { t } = useTranslation();
+export const formatRelativeTime = (isoString: string, t: (key: string, options?: any) => string): string => {
   const date = new Date(isoString);
   const now = new Date();
   const diffMilliseconds = now.getTime() - date.getTime();
