@@ -28,7 +28,7 @@ import { OrganizationMember, MemberRoleEnum } from "@/models/organization";
 import InviteMembersModal from "@/components/modals/invite-members-modal";
 import RemoveMemberAlertDialog from "@/components/modals/remove-member-alert-dialog";
 import ChangeMemberRoleModal from "@/components/modals/change-member-role-modal";
-import { getOrganizationInvitations } from "@/services/organization";
+import { getOrganizationInvitations, getOrganizationMembers } from "@/services/organization";
 import Pagination from "@/components/pagination";
 
 const OrganizationMembersPage = () => {
@@ -62,7 +62,7 @@ const OrganizationMembersPage = () => {
   useEffect(() => {
     const id = Number(router.query.id);
     if (id) {
-      orgCtx.getMemberList(Number(router.query.id), pageIndex, pageSize)
+      getMemberList(Number(router.query.id), pageIndex, pageSize)
       .then((res) => {setMemberList(res);})
       .catch((error) => {setMemberList([]);});
     } else {
@@ -70,6 +70,27 @@ const OrganizationMembersPage = () => {
       setPendingList([]);
     }
   }, [router.query.id]);
+
+  const getMemberList = async (id: number, page: number = 1, pageSize: number = 20): Promise<OrganizationMember[]> => {
+    try {
+      const res = await getOrganizationMembers(id, page, pageSize);
+      orgCtx.setBasicInfo({
+        ...orgCtx.basicInfo,
+        member_count: res.count
+      });
+      return res.results as OrganizationMember[];
+    } catch (error) {
+      if (error.request && error.request.status === 403) {
+        orgCtx.toastNoPermissionAndRedirect();
+      } else {
+        toast({
+          title: t('OrganizationContext.toast.error-3'),
+          status: 'error'
+        });
+      }
+      console.error('Failed to update organization members:', error);
+    }
+  };
 
   const getInvitationList = async (id: number, page: number = 1, pageSize: number = 20): Promise<OrganizationMember[]> => {
     try {
@@ -97,7 +118,7 @@ const OrganizationMembersPage = () => {
       .then((res) => {setPendingList(res);})
       .catch((error) => {setPendingList([]);});
     } else if (value === "members") {
-      orgCtx.getMemberList(Number(router.query.id), 1, pageSize)
+      getMemberList(Number(router.query.id), 1, pageSize)
       .then((res) => {setMemberList(res);})
       .catch((error) => {setMemberList([]);});
     }
@@ -109,7 +130,7 @@ const OrganizationMembersPage = () => {
   const handlePageChange = (page: number) => {
     setPageIndex(page);
     if (ListDomain === "members") {
-      orgCtx.getMemberList(Number(router.query.id), page, pageSize)
+      getMemberList(Number(router.query.id), page, pageSize)
       .then((res) => {setMemberList(res);})
       .catch((error) => {setMemberList([]);});
     } else if (ListDomain === "pending") {
@@ -228,7 +249,7 @@ const OrganizationMembersPage = () => {
           email={selectedMember.user.email}
           onOKCallback={() => {
             onRemoveDialogClose();
-            orgCtx.getMemberList(Number(router.query.id), pageIndex, pageSize)
+            getMemberList(Number(router.query.id), pageIndex, pageSize)
               .then((res) => {setMemberList(res);})
               .catch((error) => {setMemberList([]);});
           }}
@@ -248,7 +269,7 @@ const OrganizationMembersPage = () => {
                 window.location.reload();
               }, 1000);
             } else {
-              orgCtx.getMemberList(Number(router.query.id), pageIndex, pageSize)
+              getMemberList(Number(router.query.id), pageIndex, pageSize)
               .then((res) => {setMemberList(res);})
               .catch((error) => {setMemberList([]);});
             }
