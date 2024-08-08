@@ -34,6 +34,18 @@
         }
     },
     "Enums": {
+        "chakra-colors": {
+            "gray": "灰色",
+            "red": "红色",
+            "orange": "橙色",
+            "yellow": "黄色",
+            "green": "绿色",
+            "teal": "蓝绿色",
+            "blue": "蓝色",
+            "cyan": "青色",
+            "purple": "紫色",
+            "pink": "粉色"
+        },
         "organization": {
             "role": {
                 "Owner": "管理员",

@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Head from 'next/head';
 import { Button, VStack, Badge } from "@chakra-ui/react";
 import Pagination from "@/components/pagination";
+import ChakraColorSelector from "@/components/color-selector";
 
 const ComponentTestPage = () => {
   const router = useRouter();
@@ -14,13 +15,19 @@ const ComponentTestPage = () => {
     }
   }, []);
 
-  //Pagination
+  // Pagination
   const [currentPage, setCurrentPage] = React.useState(1);
   const totalPage = 10;
   const handlePageChange = (pageId: number) => {
     console.log(pageId);
     setCurrentPage(pageId);
   };
+
+  // Color Selector
+  const [selectedColor, setSelectedColor] = React.useState("gray");
+  const handleColorChange = (color: string) => {
+    setSelectedColor(color);
+  }
 
   const breadcrumbs = [
     { text: "Item1", link: "/" },
@@ -53,6 +60,13 @@ const ComponentTestPage = () => {
           total={totalPage}
           onPageChange={(pageId) => handlePageChange(pageId)}
           colorScheme="green"
+        />
+
+        <ChakraColorSelector
+          current={selectedColor}
+          onColorSelect={(color) => handleColorChange(color)}
+          size="md"
+          w="60%"
         />
       </VStack>
     </>

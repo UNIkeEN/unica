@@ -34,6 +34,18 @@
         }
     },
     "Enums": {
+        "chakra-colors": {
+            "gray": "Gray",
+            "red": "Red",
+            "orange": "Orange",
+            "yellow": "Yellow",
+            "green": "Green",
+            "teal": "Teal",
+            "blue": "Blue",
+            "cyan": "Cyan",
+            "purple": "Purple",
+            "pink": "Pink"
+        },
         "organization": {
             "role": {
                 "Owner": "Owner",
