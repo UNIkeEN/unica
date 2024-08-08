@@ -23,8 +23,8 @@ const ChakraColorSelector: React.FC<ChakraColorSelectorProps> =({
 }) => {
 
   const { t } = useTranslation();
-  const ChakraColorEnums = ["gray", "red", "orange", "yellow", "green", "teal", "blue", "cyan", "purple", "pink"];
-  
+  const ChakraColorEnums = ["gray", "red", "orange", "yellow", "green", "teal", "blue", "purple", "pink"];
+
   return (
     <Box {...boxProps}>
       <Flex>

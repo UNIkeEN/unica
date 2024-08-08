@@ -4,11 +4,13 @@ import { useToast } from '@/contexts/toast';
 import { useRouter } from 'next/router';
 import { VStack, HStack, Text, Button } from '@chakra-ui/react';
 import OrganizationContext from "@/contexts/organization";
+import UserContext from "@/contexts/user";
 import { MemberRoleEnum } from "@/models/organization";
 import { respondInvitation } from "@/services/organization";
 
 const OrganizationInvitationPage = () => {
   const orgCtx = useContext(OrganizationContext);
+  const userCtx = useContext(UserContext);
   const { t } = useTranslation();
   const router = useRouter();
   const toast = useToast();
@@ -28,6 +30,7 @@ const OrganizationInvitationPage = () => {
         .then(() => {
           if (accept) {
             orgCtx.updateAll(Number(id));
+            userCtx.updateOrganizations();
             router.push(`/organizations/${id}/overview/`);
           } else {
             router.push('/home');
