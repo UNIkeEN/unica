@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.models import ContentType
 from rest_framework import status
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.authentication import SessionAuthentication
@@ -8,6 +9,7 @@ from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from .models import Organization, Membership
+from ..project.models import Project
 from .serializers import OrganizationCreationSerializer, OrganizationSerializer, MembershipSerializer
 from .decorators import organization_permission_classes
 
@@ -27,7 +29,7 @@ User = get_user_model()
         ),
     },
     operation_description="Create a new organization. The user creating the organization will automatically be assigned the role of OWNER.",
-    tags=["organization"]
+    tags=["Organization"]
 )
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
@@ -50,7 +52,7 @@ def create_organization(request):
         )
     },
     operation_description="Retrieve a list of organizations the authenticated user belongs to.",
-    tags=["organization"]
+    tags=["Organization"]
 )
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication])
@@ -79,8 +81,8 @@ def get_user_organizations(request):
             description="Authenticated user is not a member of this organization"
         ),
     },
-    operation_description="Check if the authenticated user is a member of the organization and retrieve the user's role.",
-    tags=["organization"]
+    operation_description="Check if the authenticated user is a member of the organization and retrieve organization's basic info and user's role.",
+    tags=["Organization/Membership"]
 )
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication])
@@ -94,6 +96,55 @@ def check_user_organization_permission(request, id):
         'organization': organization
     }
     return Response(data, status=status.HTTP_200_OK)
+
+
+@swagger_auto_schema(
+    method='patch',
+    request_body=OrganizationCreationSerializer(partial=True),
+    responses={
+        200: openapi.Response(
+            description="Organization updated successfully",
+            schema=OrganizationCreationSerializer()
+        ),
+        400: openapi.Response(description="Invalid input data"),
+        403: openapi.Response(description="Authenticated user is not an owner of this organization"),
+        404: openapi.Response(description="Organization not found"),
+    },
+    operation_description="Partially update an organization's model field(e.g. name or description). Need 'Owner' permission.",
+    tags=["Organization"]
+)
+@api_view(['PATCH'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@organization_permission_classes(required_roles=['Owner'])
+def update_organization(request, id):
+    serializer = OrganizationCreationSerializer(request.organization, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@swagger_auto_schema(
+    method='delete',
+    responses={
+        204: openapi.Response(description="Organization and associated projects deleted successfully"),
+        403: openapi.Response(description="Authenticated user is not an owner of this organization"),
+        404: openapi.Response(description="Organization not found"),
+    },
+    operation_description="Delete an organization by its ID(and associated projects). Need 'Owner' permission.",
+    tags=["Organization"]
+)
+@api_view(['DELETE'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@organization_permission_classes(required_roles=['Owner'])
+def delete_organization(request, id):
+    organization = request.organization
+    # delete all projects associated with the organization(it will not auto delete cascadly)
+    Project.objects.filter(owner_type=ContentType.objects.get_for_model(Organization), owner_id=organization.id).delete()
+    organization.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @swagger_auto_schema(
@@ -118,7 +169,7 @@ def check_user_organization_permission(request, id):
         ),
     },
     operation_description="Retrieve a list of members in an organization.",
-    tags=["organization"]
+    tags=["Organization/Membership"]
 )
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
@@ -155,8 +206,8 @@ def get_organization_members(request, id):
         403: openapi.Response(description="Authenticated user is not an owner of this organization"),
         404: openapi.Response(description="User not found in this organization"),
     },
-    operation_description="Remove a user from the organization.",
-    tags=["organization"]
+    operation_description="Remove a user from the organization. Need 'Owner' permission.",
+    tags=["Organization/Membership"]
 )
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
@@ -196,8 +247,8 @@ def remove_member(request, id):
         404: openapi.Response(description="User not found in this organization"),
         418: openapi.Response(description="Invalid role"),
     },
-    operation_description="Modify a user's role in the organization.",
-    tags=["organization"]
+    operation_description="Modify a user's role in the organization. Need 'Owner' permission.",
+    tags=["Organization/Membership"]
 )
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
@@ -244,8 +295,8 @@ def modify_member_role(request, id):
             description="User is already a member of the organization or has a pending invitation"
         ),
     },
-    operation_description="Invite a user to join the organization.",
-    tags=["organization"]
+    operation_description="Invite a user to join the organization. Need 'Owner' permission.",
+    tags=["Organization/Membership"]
 )
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
@@ -286,8 +337,8 @@ def create_invitation(request, id):
             description="Authenticated user is not an owner of this organization"
         ),
     },
-    operation_description="Retrieve a list of pending invitations in an organization.",
-    tags=["organization"]
+    operation_description="Retrieve a list of pending invitations in an organization. Need 'Owner' permission.",
+    tags=["Organization/Membership"]
 )
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
@@ -325,7 +376,7 @@ def get_organization_invitations(request, id):
         404: openapi.Response(description="Organization not found"),
     },
     operation_description="Accept or decline an invitation to join the organization.",
-    tags=["organization"]
+    tags=["Organization/Membership"]
 )
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])

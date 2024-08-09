@@ -16,7 +16,7 @@ from .serializers import UserBasicInfoSerializer
         )
     },
     operation_description="Get the authenticated user's basic information",
-    tags=["user"],
+    tags=["User"],
 )
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication])

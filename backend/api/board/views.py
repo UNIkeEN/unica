@@ -27,7 +27,7 @@ from ..project.decorators import project_basic_permission_required
         404: openapi.Response(description="Project or board not found")
     },
     operation_description="Add or update a global property for the board.",
-    tags=["project board"]
+    tags=["Project/Board"]
 )
 @api_view(['PATCH'])
 @authentication_classes([SessionAuthentication])
@@ -63,7 +63,7 @@ def add_or_update_global_property(request, id):
         404: openapi.Response(description="Project or board not found")
     },
     operation_description="Remove a global property from the board.",
-    tags=["project board"]
+    tags=["Project/Board"]
 )
 @api_view(['PATCH'])
 @authentication_classes([SessionAuthentication])

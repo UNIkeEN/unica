@@ -34,7 +34,7 @@ User = get_user_model()
         404: openapi.Response(description="Organization not found"),
     },
     operation_description="Create a new project.",
-    tags=["project management"]
+    tags=["Project"]
 )
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
@@ -88,7 +88,7 @@ def create_project(request):
         403: openapi.Response(description="You do not have the required permissions to view projects in this organization"),
     },
     operation_description="Retrieve a list of projects with pagination.",
-    tags=["project management"]
+    tags=["Project"]
 )
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])

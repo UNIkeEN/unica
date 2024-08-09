@@ -5,6 +5,8 @@ urlpatterns = [
     # Organization CRUD
     path('create/', create_organization, name='create_organization'),
     path('list/', get_user_organizations, name='get_user_organizations'),
+    path('<int:id>/update/', update_organization, name='update_organization'),
+    path('<int:id>/delete/', delete_organization, name='delete_organization'),
 
     # Membership CRUD
     path('<int:id>/permission/', check_user_organization_permission, name='check_user_organization_permission'),
