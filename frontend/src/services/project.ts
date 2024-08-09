@@ -27,3 +27,13 @@ export async function getProjects(page: number, pageSize: number, organizationId
       throw error;
   }
 }
+
+export async function getProjectInfo(id: number) {
+  try {
+      const response = await request.get(`/api/project/${id}/info/`);
+      return response.data;
+  } catch (error) {
+      console.error('Failed to get project info:', error);
+      throw error;
+  }
+}

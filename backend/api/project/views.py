@@ -12,6 +12,7 @@ from ..organization.models import Organization
 from ..organization.decorators import organization_permission_classes
 from .models import Project
 from .serializers import ProjectSerializer, ProjectCreationSerializer
+from .decorators import project_basic_permission_required
 
 User = get_user_model()
 
@@ -83,9 +84,9 @@ def create_project(request):
         }
     ),
     responses={
-        200: openapi.Response(description="List of projects", schema=ProjectSerializer(many=True)),
+        200: openapi.Response(description="Successfully get list of projects", schema=ProjectSerializer(many=True)),
         404: openapi.Response(description="Organization not found"),
-        403: openapi.Response(description="You do not have the required permissions to view projects in this organization"),
+        403: openapi.Response(description="Authenticated user is not a member of this organization"),
     },
     operation_description="Retrieve a list of projects with pagination.",
     tags=["Project"]
@@ -122,3 +123,23 @@ def get_projects(request):
     result_page = paginator.paginate_queryset(projects, request)
     serializer = ProjectSerializer(result_page, many=True)
     return paginator.get_paginated_response(serializer.data)
+
+
+@swagger_auto_schema(
+    method='get',
+    responses={
+        200: openapi.Response(description="Successfully get project basic info", schema=ProjectSerializer()),
+        404: openapi.Response(description="Project not found"),
+        403: openapi.Response(description="Authenticated user does not have permission of this project"),
+    },
+    operation_description="Retrieve details of a project by its ID.",
+    tags=["Project"]
+)
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@project_basic_permission_required
+def get_project_info(request, id):
+    project = request.project
+    serializer = ProjectSerializer(project)
+    return Response(serializer.data, status=status.HTTP_200_OK)
