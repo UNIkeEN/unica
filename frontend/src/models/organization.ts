@@ -9,6 +9,7 @@ export interface Organization {
   role?: string;
   member_count?: number;
   owner_count?: number;
+  project_count?: number;
 }
 
 export interface OrganizationMember {

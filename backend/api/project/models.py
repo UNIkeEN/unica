@@ -19,7 +19,7 @@ class Project(models.Model):
     # Generic foreign key to support both User and Organization
     owner_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     owner_id = models.BigIntegerField()
-    owner = GenericForeignKey('owner_type', 'owner_id')
+    owner = GenericForeignKey('owner_type', 'owner_id') # it will not auto delete cascadly when owner is deleted!
 
     def save(self, *args, **kwargs):
         # Generate id if not set

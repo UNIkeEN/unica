@@ -1,5 +1,7 @@
 from rest_framework import serializers
+from django.contrib.contenttypes.models import ContentType
 from .models import Organization, Membership
+from ..project.models import Project
 from ..user.serializers import UserBasicInfoSerializer
 
 class MembershipSerializer(serializers.ModelSerializer):
@@ -14,10 +16,11 @@ class OrganizationSerializer(serializers.ModelSerializer):
     role = serializers.SerializerMethodField()
     member_count = serializers.SerializerMethodField()  # All members, include owner
     owner_count = serializers.SerializerMethodField()
+    project_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Organization
-        fields = ['id', 'display_name', 'description', 'created_at', 'updated_at', 'role', 'member_count', 'owner_count']
+        fields = ['id', 'display_name', 'description', 'created_at', 'updated_at', 'role', 'member_count', 'owner_count', 'project_count']
         read_only_fields = ['id']
 
     def get_role(self, obj):
@@ -30,6 +33,9 @@ class OrganizationSerializer(serializers.ModelSerializer):
     
     def get_owner_count(self, obj):
         return Membership.objects.filter(organization=obj, role=Membership.OWNER).count()
+    
+    def get_project_count(self, obj):
+        return Project.objects.filter(owner_type=ContentType.objects.get_for_model(Organization), owner_id=obj.id).count()
 
 
 class OrganizationCreationSerializer(serializers.ModelSerializer):

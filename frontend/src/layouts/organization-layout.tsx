@@ -68,6 +68,11 @@ const OrgLayoutContent: React.FC<{ children: React.ReactNode }> = ({ children })
                 <HStack spacing={2}>
                   <Icon as={item.icon} />
                   <Text>{t(`OrganizationPages.${item.label}.title`)}</Text>
+                  {item.label === 'projects' && 
+                    <Text className='secondary-text' ml={-1.5}>
+                      ({orgCtx.basicInfo?.project_count})
+                    </Text>
+                  }
                   {item.label === 'members' && 
                     <Text className='secondary-text' ml={-1.5}>
                       ({orgCtx.basicInfo?.member_count})
