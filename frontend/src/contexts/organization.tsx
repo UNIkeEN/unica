@@ -40,21 +40,16 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
   const toastNoPermissionAndRedirect = (role: string = userRole) => {
     if (role === MemberRoleEnum.PENDING) {
       router.push(`/organizations/${router.query.id}/invitation/`);
-    } else if (role === MemberRoleEnum.NO_PERMISSION || MemberRoleEnum.MEMBER) {
+    } else if (role !== undefined) {
       // Call to here when backend return 403, user has no membership in this organization or enough permission(e.g. the Owner)
       toast({
         title: t('OrganizationContext.toast.error-1'),
         status: 'error'
       });
-      if (role === MemberRoleEnum.NO_PERMISSION) {
-        setTimeout(() => {
-          router.push('/home');
-        }, 2000);
-      } else {
-        let id = Number(router.query.id);
-        updateBasicInfo(id); // Update user role
-        router.push(`/organizations/${id}/overview/`);
-      }
+      setTimeout(() => {
+        if (role === MemberRoleEnum.NO_PERMISSION) window.location.assign('/home');
+        else window.location.reload();
+      }, 2000);
     }
   };
 

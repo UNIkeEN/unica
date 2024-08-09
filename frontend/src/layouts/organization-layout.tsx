@@ -27,12 +27,18 @@ const OrgLayoutContent: React.FC<{ children: React.ReactNode }> = ({ children })
 
   useEffect(() => {
     const id = Number(router.query.id);
-    if (id) {
-      orgCtx.updateAll(id);
-    } else {
-      orgCtx.cleanUp();
-    }
+    if (id) orgCtx.updateAll(id);
+    else orgCtx.cleanUp();
   }, [router.query.id]);
+
+  // TODO: whether to updateBasicInfo depend on children here:
+  // if enable, user's role will be updated immediately when switching tabs in the same organization, but increase the times of api call.
+  // if disable, user's role will be updated only when organization-id (in router) is changed.
+
+  // useEffect(() => {
+  //   const id = Number(router.query.id);
+  //   if (id) orgCtx.updateBasicInfo(id);
+  // }, [children]); 
 
   const orgMenuItems = [
     { icon: FiHome, label: 'overview', owner_only: false },
