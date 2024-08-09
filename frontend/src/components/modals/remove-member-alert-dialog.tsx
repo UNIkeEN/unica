@@ -50,9 +50,7 @@ const RemoveMemberAlertDialog: React.FC<RemoveMemberAlertDialogProps> = ({
       console.error("Failed to remove member:", error);
       if (
         error.response &&
-        (error.response.status === 400 ||
-          error.response.status === 403 ||
-          error.response.status === 404)
+        (error.response.status === 400 || error.response.status === 404)
       ) {
         toast({
           title: t("RemoveUserAlertDialog.toast.error"),
@@ -64,9 +62,7 @@ const RemoveMemberAlertDialog: React.FC<RemoveMemberAlertDialogProps> = ({
       }
       onClose();
       if (error.response && error.response.status === 403) {
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+        orgCtx.toastNoPermissionAndRedirect();
       }
     }};
 
