@@ -191,6 +191,17 @@
             }
         }
     },
+    "ProjectPages": {
+        "board": {
+            "title": "Kanban"
+        },
+        "wiki": {
+            "title": "Wiki"
+        },
+        "settings": {
+            "title": "Settings"
+        }
+    },
     "RemoveUserAlertDialog": {
         "dialog": {
             "title": "Remove Member",

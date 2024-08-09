@@ -191,6 +191,17 @@
             }
         }
     },
+    "ProjectPages": {
+        "board": {
+            "title": "看板"
+        },
+        "wiki": {
+            "title": "知识库"
+        },
+        "settings": {
+            "title": "设置"
+        }
+    },
     "RemoveUserAlertDialog": {
         "dialog": {
             "title": "移除用户",
