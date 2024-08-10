@@ -15,7 +15,6 @@ const SelectableButton: React.FC<SelectableButtonProps> = ({ isSelected = false,
   return (
     <Button
       variant='ghost'
-      size='sm'
       bg={isSelected ? selectedBg : 'transparent'}
       color={isSelected ? selectedColor : defaultColor}
       textAlign="left"
