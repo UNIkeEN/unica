@@ -127,7 +127,10 @@
     },
     "MyProjectsPage": {
         "title": "My Projects",
-        "header": "My Projects"
+        "header": "My Projects",
+        "list": {
+            "updated_at": "Updated {{time}}"
+        }
     },
     "NotFoundPage": {
         "title": "Page Not Found",
@@ -151,7 +154,10 @@
             "title": "Overview"
         },
         "projects": {
-            "title": "Projects"
+            "title": "Projects",
+            "list": {
+                "updated_at": "Updated {{time}}"
+            }
         },
         "members": {
             "title": "Members",
@@ -215,6 +221,13 @@
             "error-400": "Cannot remove the only owner of the organization, please delete the organization or set another owner before leaving",
             "error-403": "Only owner can remove members",
             "error-404": "User not found or not a member of the organization"
+        }
+    },
+    "Services": {
+        "projects": {
+            "getProjects": {
+                "error": "Failed to get project list"
+            }
         }
     },
     "SettingsPages": {
