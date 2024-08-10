@@ -186,7 +186,7 @@ def get_organization_members(request, id):
     request.query_params['page_size'] = request.data.get('page_size', 20)
     request.query_params._mutable = False
 
-    memberships = Membership.objects.filter(organization=request.organization).exclude(role=Membership.PENDING).order_by('joined_at')
+    memberships = Membership.objects.filter(organization=request.organization).exclude(role=Membership.PENDING).order_by('-joined_at')
     result_page = paginator.paginate_queryset(memberships, request)
     serializer = MembershipSerializer(result_page, many=True)
     return paginator.get_paginated_response(serializer.data)
@@ -355,7 +355,7 @@ def get_organization_invitations(request, id):
     request.query_params['page_size'] = request.data.get('page_size', 20)
     request.query_params._mutable = False
 
-    memberships = Membership.objects.filter(organization=request.organization, role=Membership.PENDING).order_by('joined_at')
+    memberships = Membership.objects.filter(organization=request.organization, role=Membership.PENDING).order_by('-joined_at')
     result_page = paginator.paginate_queryset(memberships, request)
     serializer = MembershipSerializer(result_page, many=True)
     return paginator.get_paginated_response(serializer.data)

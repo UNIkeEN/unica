@@ -101,11 +101,11 @@ def get_projects(request):
         if org_id:
             @organization_permission_classes(['Owner', 'Member'])
             def __internal_func(request, id):
-                return Project.objects.filter(owner_type=ContentType.objects.get_for_model(Organization), owner_id=id)
+                return Project.objects.filter(owner_type=ContentType.objects.get_for_model(Organization), owner_id=id).order_by('-updated_at')
             
             return __internal_func(request, id = org_id)
         else:
-            return Project.objects.filter(owner_type=ContentType.objects.get_for_model(User), owner_id=request.user.id)
+            return Project.objects.filter(owner_type=ContentType.objects.get_for_model(User), owner_id=request.user.id).order_by('-updated_at')
 
     projects = _get_projects()
     if isinstance(projects, Response):  # return 403 or 404 response from @organization_permission_classes
