@@ -38,7 +38,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
       });
     } catch (error) {
       toast({
-        title: t('UserContext.toast.error-1'),
+        title: t('Services.user.getUserBasicInfo.error'),
         status: 'error'
       })
       setUserInfo(undefined);
