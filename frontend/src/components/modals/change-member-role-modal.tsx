@@ -47,7 +47,7 @@ const ChangeMemberRoleModal: React.FC<ChangeMemberRoleModalProps> = ({
     try {
       await modifyMemberRole(orgId, email, newRole);
       toast({
-        title: t("ChangeMemberRoleModal.toast.changed"),
+        title: t("Services.organization.modifyMemberRole.changed"),
         status: "success",
       });
       onClose();
@@ -59,9 +59,9 @@ const ChangeMemberRoleModal: React.FC<ChangeMemberRoleModalProps> = ({
         (error.response.status === 400 || error.response.status === 404)
       ) {
         toast({
-          title: t("ChangeMemberRoleModal.toast.error"),
+          title: t("Services.organization.modifyMemberRole.error"),
           description: t(
-            `ChangeMemberRoleModal.toast.error-${error.response.status}`
+            `Services.organization.modifyMemberRole.error-${error.response.status}`
           ),
           status: "error",
         });

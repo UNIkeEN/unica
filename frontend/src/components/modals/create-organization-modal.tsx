@@ -38,7 +38,7 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
     const success = await handleCreateOrganization(name.trim(), description);
     if (success) {
       toast({
-        title: t("CreateOrganizationModal.toast.created", {
+        title: t("Services.organization.createOrganization.created", {
           name: name.trim(),
         }),
         status: "success",
@@ -61,7 +61,7 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
       console.error("Failed to create organization:", error);
       if (error.response.status === 400) {
         toast({
-          title: t("CreateOrganizationModal.toast.error"),
+          title: t("Services.organization.createOrganization.error"),
           description: t("CreateOrganizationModal.toast.invalidInput"),
           status: "error",
         });
