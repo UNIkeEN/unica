@@ -17,7 +17,7 @@ const SettingsOption: React.FC<SettingsOptionProps> = ({
 }) => {
   return (
       <Flex justify="space-between" alignItems="center" {...boxProps}>
-        <VStack spacing={1} alignItems="start" overflow="hidden">
+        <VStack spacing={1} mr={2} alignItems="start" overflow="hidden">
           <HStack spacing={2} flexWrap="wrap">
             <Text fontSize="md">
               {title}
