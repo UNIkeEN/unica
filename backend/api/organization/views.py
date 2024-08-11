@@ -191,6 +191,30 @@ def get_organization_members(request, id):
     serializer = MembershipSerializer(result_page, many=True)
     return paginator.get_paginated_response(serializer.data)
 
+
+@swagger_auto_schema(
+    method='delete',
+    responses={
+        200: openapi.Response(description="Left the organization successfully"),
+        400: openapi.Response(description="Cannot remove the only owner"),
+        403: openapi.Response(description="Authenticated user is not a member of this organization"),
+        404: openapi.Response(description="Organization not found"),
+    },
+    tags=["Organization/Membership"]
+)
+@api_view(['DELETE'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@organization_permission_classes(required_roles=['Owner', 'Member'])
+def leave_organization(request, id):
+    membership = request.membership
+    if membership.is_owner():
+        if Membership.objects.filter(organization=request.organization, role=Membership.OWNER).count() <= 1:
+            return Response({"detail": "Cannot remove the only owner"}, status=status.HTTP_400_BAD_REQUEST)
+    membership.delete()
+    return Response({"detail": "Left the organization successfully"}, status=status.HTTP_200_OK)
+
+
 @swagger_auto_schema(
     method='post',
     request_body=openapi.Schema(
@@ -204,7 +228,7 @@ def get_organization_members(request, id):
         200: openapi.Response(description="User removed successfully"),
         400: openapi.Response(description="Cannot remove the only owner of the organization"),
         403: openapi.Response(description="Authenticated user is not an owner of this organization"),
-        404: openapi.Response(description="User not found in this organization"),
+        404: openapi.Response(description="User not found in this organization, or organization not found"),
     },
     operation_description="Remove a user from the organization. Need 'Owner' permission.",
     tags=["Organization/Membership"]
@@ -223,7 +247,7 @@ def remove_member(request, id):
         membership = Membership.objects.get(user=user, organization=request.organization)
         if membership.is_owner():
             if Membership.objects.filter(organization=request.organization, role=Membership.OWNER).count() <= 1:
-                return Response({"detail": "Cannot remove an owner"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"detail": "Cannot remove the only owner"}, status=status.HTTP_400_BAD_REQUEST)
         membership.delete()
         return Response({"detail": "User removed successfully"}, status=status.HTTP_200_OK)
     except Membership.DoesNotExist:
@@ -244,7 +268,7 @@ def remove_member(request, id):
         200: openapi.Response(description="User role updated successfully"),
         400: openapi.Response(description="Cannot change the only owner to a different role"),
         403: openapi.Response(description="Authenticated user is not an owner of this organization"),
-        404: openapi.Response(description="User not found in this organization"),
+        404: openapi.Response(description="User not found in this organization, or organization not found"),
         418: openapi.Response(description="Invalid role"),
     },
     operation_description="Modify a user's role in the organization. Need 'Owner' permission.",
@@ -289,7 +313,7 @@ def modify_member_role(request, id):
             description="Authenticated user is not an owner of this organization"
         ),
         404: openapi.Response(
-            description="User not found"
+            description="User not found, or organization not found"
         ),
         409: openapi.Response(
             description="User is already a member of the organization or has a pending invitation"

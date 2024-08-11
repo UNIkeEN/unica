@@ -28,9 +28,19 @@ export async function checkUserOrgPermission(id: number) {
         const response = await request.get(`/api/organization/${id}/permission/`);
         return response.data;
     } catch (error) {
-        console.error('Failed to get organization members:', error);
+        console.error('Failed to check permission and get organization basic info:', error);
         throw error;
     }
+}
+
+export async function leaveOrganization(id: number) {
+  try {
+      const response = await request.delete(`/api/organization/${id}/leave/`);
+      return response.data;
+  } catch (error) {
+      console.error('Failed to leave organization:', error);
+      throw error;
+  }
 }
 
 export async function getOrganizationMembers(id: number, page: number, pageSize: number) {
@@ -66,7 +76,7 @@ export async function modifyMemberRole(id: number, username: string, new_role: s
         });
         return response.data;
     } catch (error) {
-        console.error('Failed to modify member;s role:', error);
+        console.error('Failed to modify member\'s role:', error);
         throw error;
     }
 }
