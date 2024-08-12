@@ -82,7 +82,9 @@ ROOT_URLCONF = 'unica.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'utils', 'mails', 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -113,9 +115,7 @@ DATABASES = {
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 SESSION_COOKIE_AGE = 3600
-
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
-
 SESSION_SAVE_EVERY_REQUEST = True
 
 
@@ -184,3 +184,14 @@ for name in OAUTH_PROVIDERS:
         'authorize_url': os.getenv(f'{name}_AUTHORIZE_URL'),
         'token_url': os.getenv(f'{name}_TOKEN_URL'),
     }
+
+# E-mail Settings
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')
+
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')

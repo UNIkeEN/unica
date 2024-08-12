@@ -1,0 +1,5 @@
+UNICA
+
+The <strong>@{{ org_name }}</strong> organization has invited you to join.
+
+You can accept or decline this invitation by viewing {{ invitation_link }}.

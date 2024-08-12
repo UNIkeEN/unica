@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f6f6f6;
+        margin: 0;
+        padding: 20px;
+        }
+        .header {
+            text-align: center;
+            font-size: 28px;
+            background: linear-gradient(to left, #C080E0, #7FACD9);
+            -webkit-background-clip: text;
+            color: transparent;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            padding: 15px;
+        }
+        .content {
+            text-align: center;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #ffffff;
+            background-color: #4183C4;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .note {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #888888;
+        }
+    </style>
+</head>
+<body>
+  <div class="header">UNICA</div>
+    <div class="email-container">
+        <div class="content">
+            <p>The <strong>@{{ org_name }}</strong> organization has invited you to join.</p>
+            <p>You can accept or decline this invitation.</p>
+            <a href="{{ invitation_link }}" class="button">View invitation</a>
+        </div>
+        <div class="note">
+            <p>Getting a 404 error? Make sure you're signed in as the correct user.</p>
+            <p>Button not working? Copy and paste this link into your browser: <a href="{{ invitation_link }}">{{ invitation_link }}</a></p>
+        </div>
+    </div>
+</body>
+</html>
