@@ -29,7 +29,7 @@ class Project(models.Model):
         super().save(*args, **kwargs)
         # Automatically create the associated board
         if not hasattr(self, 'board'):
-            from ..board.models import Board
+            from board.models import Board
             Board.objects.create(project=self)
 
     def __str__(self):
@@ -40,3 +40,16 @@ class Project(models.Model):
 
     def is_organization_project(self):
         return self.owner_type == ContentType.objects.get_for_model(Organization)
+    
+
+class AbstractComment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return f'{self.user.username}: {self.content}'

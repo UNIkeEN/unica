@@ -2,7 +2,7 @@ from django.utils import timezone
 from django.db import models
 from jsonschema import validate, ValidationError as JSONSchemaValidationError
 from .schemas import PROPERTY_SCHEMA
-from ..project.models import Project
+from ..models import Project, AbstractComment
 
 class Board(models.Model):
     project = models.OneToOneField(Project, related_name='board', on_delete=models.CASCADE)
@@ -48,3 +48,7 @@ class Task(models.Model):
 
     def __str__(self):
         return f"#{self.id} {self.title}"
+    
+
+class TaskComment(AbstractComment):
+    task = models.ForeignKey(Task, related_name='comments', on_delete=models.CASCADE)
