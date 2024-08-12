@@ -41,7 +41,7 @@ const RemoveMemberAlertDialog: React.FC<RemoveMemberAlertDialogProps> = ({
     try {
       await removeMember(orgId, email);
       toast({
-        title: t("RemoveUserAlertDialog.toast.removed"),
+        title: t("Services.organization.removeMember.removed"),
         status: "success",
       });
       onClose();
@@ -53,9 +53,9 @@ const RemoveMemberAlertDialog: React.FC<RemoveMemberAlertDialogProps> = ({
         (error.response.status === 400 || error.response.status === 404)
       ) {
         toast({
-          title: t("RemoveUserAlertDialog.toast.error"),
+          title: t("Services.organization.removeMember.error"),
           description: t(
-            `RemoveUserAlertDialog.toast.error-${error.response.status}`
+            `Services.organization.removeMember.error-${error.response.status}`
           ),
           status: "error",
         });

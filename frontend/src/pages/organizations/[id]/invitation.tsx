@@ -38,7 +38,7 @@ const OrganizationInvitationPage = () => {
         })
         .catch(() => {
           toast({
-            title: t('OrganizationPages.invitation.toast.error'),
+            title: t('Services.organization.respondInvitation.error'),
             status: 'error'
           });
         });

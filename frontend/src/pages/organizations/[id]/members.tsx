@@ -82,7 +82,7 @@ const OrganizationMembersPage = () => {
         orgCtx.toastNoPermissionAndRedirect();
       } else {
         toast({
-          title: t('OrganizationContext.toast.error-3'),
+          title: t('Services.organization.getOrganizationMembers.error'),
           status: 'error'
         });
       }
@@ -101,7 +101,7 @@ const OrganizationMembersPage = () => {
         orgCtx.toastNoPermissionAndRedirect();
       } else {
         toast({
-          title: t('OrganizationPages.members.toast.error'),
+          title: t('Services.organization.getOrganizationInvitations.error'),
           status: 'error'
         });
       }

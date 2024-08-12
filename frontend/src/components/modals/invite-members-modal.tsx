@@ -51,7 +51,7 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
     const success = await handleCreateInvitation(email.trim());
     if (success) {
       toast({
-        title: t("InviteMembersModal.toast.created", { email: email.trim() }),
+        title: t("Services.organization.createInvitation.created", { email: email.trim() }),
         status: "success",
       });
       onClose();
@@ -73,9 +73,9 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
         (error.response.status === 404 || error.response.status === 409)
       ) {
         toast({
-          title: t("InviteMembersModal.toast.error"),
+          title: t("Services.organization.createInvitation.error"),
           description: t(
-            `InviteMembersModal.toast.error-${error.response.status}`
+            `Services.organization.createInvitation.error-${error.response.status}`
           ),
           status: "error",
         });
@@ -127,7 +127,7 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
               />
               {!isEmailValid && (
                 <FormErrorMessage>
-                  {t("InviteMembersModal.toast.emailInvalid")}
+                  {t("InviteMembersModal.FormErrorMessage.emailInvalid")}
                 </FormErrorMessage>
               )}
               <FormHelperText
