@@ -15,7 +15,7 @@ const ComponentTestPage = () => {
     }
   }, []);
 
-  // Pagination
+  //Pagination
   const [currentPage, setCurrentPage] = React.useState(1);
   const totalPage = 10;
   const handlePageChange = (pageId: number) => {

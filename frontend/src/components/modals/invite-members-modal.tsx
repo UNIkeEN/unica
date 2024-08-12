@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import { useToast } from "@/contexts/toast";
 import { createInvitation } from "@/services/organization";
 import {
@@ -21,6 +22,7 @@ import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FiCopy } from "react-icons/fi";
 import copy from 'copy-to-clipboard';
+import OrganizationContext from "@/contexts/organization";
 
 interface InviteMembersModalProps {
   id: number;
@@ -36,6 +38,7 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { t } = useTranslation();
   const toast = useToast();
+  const orgCtx = useContext(OrganizationContext);
   const initialRef = useRef(null);
 
   const [email, setEmail] = useState("");
@@ -62,9 +65,7 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
       console.error("Failed to create invitation:", error);
       if (
         error.response &&
-        (error.response.status === 403 ||
-          error.response.status === 404 ||
-          error.response.status === 409)
+        (error.response.status === 404 || error.response.status === 409)
       ) {
         toast({
           title: t("InviteMembersModal.toast.error"),
@@ -76,9 +77,7 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
       }
       if (error.response && error.response.status === 403) {
         onClose();
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+        orgCtx.toastNoPermissionAndRedirect();
       }
       return false;
     }

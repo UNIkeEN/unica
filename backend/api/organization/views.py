@@ -1,6 +1,9 @@
+from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.models import ContentType
 from rest_framework import status
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.decorators import authentication_classes, permission_classes
+from adrf.decorators import api_view
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
@@ -8,6 +11,7 @@ from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from .models import Organization, Membership
+from ..project.models import Project
 from .serializers import OrganizationCreationSerializer, OrganizationSerializer, MembershipSerializer
 from .decorators import organization_permission_classes
 
@@ -27,19 +31,27 @@ User = get_user_model()
         ),
     },
     operation_description="Create a new organization. The user creating the organization will automatically be assigned the role of OWNER.",
-    tags=["organization"]
+    tags=["Organization"]
 )
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
-def create_organization(request):
+async def create_organization(request):
     serializer = OrganizationCreationSerializer(data=request.data)
     if serializer.is_valid():
-        organization = serializer.save()
-        Membership.objects.create(user=request.user, organization=organization, role=Membership.OWNER)
+        organization = await sync_to_async(serializer.save)()
+        await Membership.objects.acreate(user=request.user, organization=organization, role=Membership.OWNER)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+@sync_to_async
+def sort_organizations(memberships):
+    return sorted(
+        (membership.organization for membership in memberships),
+        key=lambda org: org.updated_at,
+        reverse=True
+    )
 
 @swagger_auto_schema(
     method='get',
@@ -50,13 +62,15 @@ def create_organization(request):
         )
     },
     operation_description="Retrieve a list of organizations the authenticated user belongs to.",
-    tags=["organization"]
+    tags=["Organization"]
 )
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
-def get_user_organizations(request):
-    memberships = Membership.objects.filter(user=request.user).exclude(role=Membership.PENDING)
+async def get_user_organizations(request):
+    memberships = [membership async for membership in
+                   Membership.objects.filter(user=request.user).exclude(role=Membership.PENDING)]
+
     organizations = sorted(
         (membership.organization for membership in memberships),
         key=lambda org: org.updated_at,
@@ -79,14 +93,14 @@ def get_user_organizations(request):
             description="Authenticated user is not a member of this organization"
         ),
     },
-    operation_description="Check if the authenticated user is a member of the organization and retrieve the user's role.",
-    tags=["organization"]
+    operation_description="Check if the authenticated user is a member of the organization and retrieve organization's basic info and user's role.",
+    tags=["Organization/Membership"]
 )
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(required_roles=['Owner', 'Member', 'Pending'])
-def check_user_organization_permission(request, id):
+async def check_user_organization_permission(request, id):
     membership = MembershipSerializer(request.membership, context={'request': request}).data
     organization = OrganizationSerializer(request.organization, context={'request': request}).data
     data = {
@@ -94,6 +108,59 @@ def check_user_organization_permission(request, id):
         'organization': organization
     }
     return Response(data, status=status.HTTP_200_OK)
+
+
+@swagger_auto_schema(
+    method='patch',
+    request_body=OrganizationCreationSerializer(partial=True),
+    responses={
+        200: openapi.Response(
+            description="Organization updated successfully",
+            schema=OrganizationCreationSerializer()
+        ),
+        400: openapi.Response(description="Invalid input data"),
+        403: openapi.Response(description="Authenticated user is not an owner of this organization"),
+        404: openapi.Response(description="Organization not found"),
+    },
+    operation_description="Partially update an organization's model field(e.g. name or description). Need 'Owner' permission.",
+    tags=["Organization"]
+)
+@api_view(['PATCH'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@organization_permission_classes(required_roles=['Owner'])
+async def update_organization(request, id):
+    serializer = OrganizationCreationSerializer(request.organization, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@swagger_auto_schema(
+    method='delete',
+    responses={
+        204: openapi.Response(description="Organization and associated projects deleted successfully"),
+        403: openapi.Response(description="Authenticated user is not an owner of this organization"),
+        404: openapi.Response(description="Organization not found"),
+    },
+    operation_description="Delete an organization by its ID(and associated projects). Need 'Owner' permission.",
+    tags=["Organization"]
+)
+@api_view(['DELETE'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@organization_permission_classes(required_roles=['Owner'])
+async def delete_organization(request, id):
+    organization = request.organization
+    [await project.adelete() async for project in
+     Project.objects.filter(
+         owner_type=ContentType.objects.get_for_model(Organization),
+         owner_id=organization.id)]
+
+    await organization.adelete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @swagger_auto_schema(
@@ -118,13 +185,13 @@ def check_user_organization_permission(request, id):
         ),
     },
     operation_description="Retrieve a list of members in an organization.",
-    tags=["organization"]
+    tags=["Organization/Membership"]
 )
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner', 'Member'])
-def get_organization_members(request, id):
+async def get_organization_members(request, id):
     class CustomPagination(PageNumberPagination):
         page_size_query_param = 'page_size'
 
@@ -135,7 +202,8 @@ def get_organization_members(request, id):
     request.query_params['page_size'] = request.data.get('page_size', 20)
     request.query_params._mutable = False
 
-    memberships = Membership.objects.filter(organization=request.organization).exclude(role=Membership.PENDING).order_by('joined_at')
+    memberships = [membership async for membership in
+                   Membership.objects.filter(organization=request.organization).exclude(role=Membership.PENDING).order_by('-joined_at')]
     result_page = paginator.paginate_queryset(memberships, request)
     serializer = MembershipSerializer(result_page, many=True)
     return paginator.get_paginated_response(serializer.data)
@@ -155,25 +223,28 @@ def get_organization_members(request, id):
         403: openapi.Response(description="Authenticated user is not an owner of this organization"),
         404: openapi.Response(description="User not found in this organization"),
     },
-    operation_description="Remove a user from the organization.",
-    tags=["organization"]
+    operation_description="Remove a user from the organization. Need 'Owner' permission.",
+    tags=["Organization/Membership"]
 )
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner'])
-def remove_member(request, id):
+async def remove_member(request, id):
     username = request.data.get('username')
+    print(username)
     try:
-        user = User.objects.get(username=username)
+        user = await User.objects.aget(username=username)
     except User.DoesNotExist:
         return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
     try:
-        membership = Membership.objects.get(user=user, organization=request.organization)
+        membership = await Membership.objects.aget(user=user, organization=request.organization)
         if membership.is_owner():
-            if Membership.objects.filter(organization=request.organization, role=Membership.OWNER).count() <= 1:
+            memberships = [membership async for membership in
+                           Membership.objects.filter(organization=request.organization, role=Membership.OWNER)]
+            if len(memberships) <= 1:
                 return Response({"detail": "Cannot remove an owner"}, status=status.HTTP_400_BAD_REQUEST)
-        membership.delete()
+        await membership.adelete()
         return Response({"detail": "User removed successfully"}, status=status.HTTP_200_OK)
     except Membership.DoesNotExist:
         return Response({"detail": "User not found in this organization"}, status=status.HTTP_404_NOT_FOUND)
@@ -196,28 +267,30 @@ def remove_member(request, id):
         404: openapi.Response(description="User not found in this organization"),
         418: openapi.Response(description="Invalid role"),
     },
-    operation_description="Modify a user's role in the organization.",
-    tags=["organization"]
+    operation_description="Modify a user's role in the organization. Need 'Owner' permission.",
+    tags=["Organization/Membership"]
 )
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner'])
-def modify_member_role(request, id):
+async def modify_member_role(request, id):
     username = request.data.get('username')
     new_role = request.data.get('new_role')
     try:
-        user = User.objects.get(username=username)
+        user = await User.objects.aget(username=username)
     except User.DoesNotExist:
         return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
     try:
-        membership = Membership.objects.get(user=user, organization=request.organization)
+        membership = await Membership.objects.aget(user=user, organization=request.organization)
         if new_role not in dict(Membership.ROLE_CHOICES):
             return Response({"detail": "Invalid role"}, status=status.HTTP_418_IM_A_TEAPOT)
         if membership.is_owner() and new_role != Membership.OWNER:
-            if Membership.objects.filter(organization=request.organization, role=Membership.OWNER).count() <= 1:
+            memberships = [membership async for membership in
+                           Membership.objects.filter(organization=request.organization, role=Membership.OWNER)]
+            if len(memberships) <= 1:
                 return Response({"detail": "Cannot change the only owner to a different role"}, status=status.HTTP_400_BAD_REQUEST)
-        membership.change_role(new_role)
+        await membership.change_role(new_role)
         return Response({"detail": "User role updated successfully"}, status=status.HTTP_200_OK)
     except Membership.DoesNotExist:
         return Response({"detail": "User not found in this organization"}, status=status.HTTP_404_NOT_FOUND)
@@ -244,24 +317,26 @@ def modify_member_role(request, id):
             description="User is already a member of the organization or has a pending invitation"
         ),
     },
-    operation_description="Invite a user to join the organization.",
-    tags=["organization"]
+    operation_description="Invite a user to join the organization. Need 'Owner' permission.",
+    tags=["Organization/Membership"]
 )
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner'])
-def create_invitation(request, id):
+async def create_invitation(request, id):
     username = request.data.get('username')
     try:
-        user = User.objects.get(username=username)
+        user = await User.objects.aget(username=username)
     except User.DoesNotExist:
         return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
     
-    organization = Organization.objects.get(id=id)
-    if Membership.objects.filter(user=user, organization=organization).exists():
+    organization = await Organization.objects.aget(id=id)
+    memberships = [membership async for membership in
+                     Membership.objects.filter(user=user, organization=organization)]
+    if memberships:
         return Response({"detail": "User is already a member of the organization"}, status=status.HTTP_409_CONFLICT)
-    Membership.objects.create(user=user, organization=organization, role=Membership.PENDING)
+    await Membership.objects.acreate(user=user, organization=organization, role=Membership.PENDING)
     return Response({"detail": "Invitation sent successfully"}, status=status.HTTP_201_CREATED)
 
 
@@ -286,14 +361,14 @@ def create_invitation(request, id):
             description="Authenticated user is not an owner of this organization"
         ),
     },
-    operation_description="Retrieve a list of pending invitations in an organization.",
-    tags=["organization"]
+    operation_description="Retrieve a list of pending invitations in an organization. Need 'Owner' permission.",
+    tags=["Organization/Membership"]
 )
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner'])
-def get_organization_invitations(request, id):
+async def get_organization_invitations(request, id):
     class CustomPagination(PageNumberPagination):
         page_size_query_param = 'page_size'
 
@@ -304,7 +379,9 @@ def get_organization_invitations(request, id):
     request.query_params['page_size'] = request.data.get('page_size', 20)
     request.query_params._mutable = False
 
-    memberships = Membership.objects.filter(organization=request.organization, role=Membership.PENDING).order_by('joined_at')
+    memberships = [membership async for membership in
+                     Membership.objects.filter(organization=request.organization, role=Membership.PENDING)
+                     .order_by('-joined_at')]
     result_page = paginator.paginate_queryset(memberships, request)
     serializer = MembershipSerializer(result_page, many=True)
     return paginator.get_paginated_response(serializer.data)
@@ -325,19 +402,19 @@ def get_organization_invitations(request, id):
         404: openapi.Response(description="Organization not found"),
     },
     operation_description="Accept or decline an invitation to join the organization.",
-    tags=["organization"]
+    tags=["Organization/Membership"]
 )
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Pending'])
-def respond_invitation(request, id):
+async def respond_invitation(request, id):
     accept = request.data.get('accept')
     membership = request.membership
     if accept:
-        membership.change_role(Membership.MEMBER)
+        await membership.change_role(Membership.MEMBER)
         return Response({"detail": "Invitation accepted successfully"}, status=status.HTTP_200_OK)
     else:
-        membership.delete()
+        await membership.adelete()
         return Response({"detail": "Invitation declined successfully"}, status=status.HTTP_200_OK)
     

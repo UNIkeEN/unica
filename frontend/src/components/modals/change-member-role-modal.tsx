@@ -15,6 +15,7 @@ import {
   Text
 } from "@chakra-ui/react";
 import { useToast } from "@/contexts/toast";
+import OrganizationContext from "@/contexts/organization";
 import { useTranslation } from "react-i18next";
 import { modifyMemberRole } from "@/services/organization";
 import { MemberRoleEnum } from "@/models/organization";
@@ -39,6 +40,7 @@ const ChangeMemberRoleModal: React.FC<ChangeMemberRoleModalProps> = ({
   const cancelRef = useRef();
   const { t } = useTranslation();
   const toast = useToast();
+  const orgCtx = useContext(OrganizationContext);
   const [newRole, setNewRole] = useState(null);
 
   const handleChangeMemberRole = async () => {
@@ -54,9 +56,7 @@ const ChangeMemberRoleModal: React.FC<ChangeMemberRoleModalProps> = ({
       console.error("Failed to change user role:", error);
       if (
         error.response &&
-        (error.response.status === 400 ||
-          error.response.status === 403 ||
-          error.response.status === 404)
+        (error.response.status === 400 || error.response.status === 404)
       ) {
         toast({
           title: t("ChangeMemberRoleModal.toast.error"),
@@ -68,9 +68,7 @@ const ChangeMemberRoleModal: React.FC<ChangeMemberRoleModalProps> = ({
       }
       onClose();
       if (error.response && error.response.status === 403) {
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+        orgCtx.toastNoPermissionAndRedirect();
       }
     }
   };

@@ -4,6 +4,7 @@ import { NavMenuProps as NavTabsProps } from '@/components/nav-menu';
 
 const NavTabs: React.FC<NavTabsProps> = ({
   items,
+  size = 'sm',
   selectedKeys = [],    // always be [router.asPath]
   onClick,
 }) => {
@@ -15,7 +16,7 @@ const NavTabs: React.FC<NavTabsProps> = ({
   return (
     <Tabs 
       variant='soft-rounded'
-      size='sm'
+      size={size}
       index={selectedIndex}
     >
       <TabList>

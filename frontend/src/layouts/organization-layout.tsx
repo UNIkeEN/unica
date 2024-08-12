@@ -1,4 +1,4 @@
-import React, { use, useContext, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { VStack, Text, HStack, Icon } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from "next/router";
@@ -8,11 +8,7 @@ import OrganizationContext, { OrganizationContextProvider } from '@/contexts/org
 import NavTabs from '@/components/nav-tabs';
 import Head from 'next/head';
 
-interface OrganizationLayoutProps {
-  children: React.ReactNode;
-}
-
-const OrganizationLayout: React.FC<OrganizationLayoutProps> = ({ children }) => {
+const OrganizationLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <OrganizationContextProvider>
       <OrgLayoutContent>{children}</OrgLayoutContent>

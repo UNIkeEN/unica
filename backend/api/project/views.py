@@ -1,4 +1,5 @@
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.decorators import authentication_classes, permission_classes
+from adrf.decorators import api_view
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -12,6 +13,7 @@ from ..organization.models import Organization
 from ..organization.decorators import organization_permission_classes
 from .models import Project
 from .serializers import ProjectSerializer, ProjectCreationSerializer
+from .decorators import project_basic_permission_required
 
 User = get_user_model()
 
@@ -34,27 +36,27 @@ User = get_user_model()
         404: openapi.Response(description="Organization not found"),
     },
     operation_description="Create a new project.",
-    tags=["project management"]
+    tags=["Project"]
 )
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
-def create_project(request):
+async def create_project(request):
     display_name = request.data.get('display_name')
     description = request.data.get('description')
     org_id = request.data.get('org_id')
 
-    def _get_owner_info():
+    async def _get_owner_info():
         if org_id:
             @organization_permission_classes(['Owner', 'Member'])
-            def __internal_func(request, id):
+            async def __internal_func(request, id):
                 return ContentType.objects.get_for_model(Organization), id
             
-            return __internal_func(request, id = org_id)
+            return await __internal_func(request, id = org_id)
         else:
             return ContentType.objects.get_for_model(User), request.user.id
 
-    owner_info = _get_owner_info()
+    owner_info = await _get_owner_info()
     if isinstance(owner_info, Response):  # return 403 or 404 response from @organization_permission_classes
         return owner_info
 
@@ -83,30 +85,32 @@ def create_project(request):
         }
     ),
     responses={
-        200: openapi.Response(description="List of projects", schema=ProjectSerializer(many=True)),
+        200: openapi.Response(description="Successfully get list of projects", schema=ProjectSerializer(many=True)),
         404: openapi.Response(description="Organization not found"),
-        403: openapi.Response(description="You do not have the required permissions to view projects in this organization"),
+        403: openapi.Response(description="Authenticated user is not a member of this organization"),
     },
     operation_description="Retrieve a list of projects with pagination.",
-    tags=["project management"]
+    tags=["Project"]
 )
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
-def get_projects(request):
+async def get_projects(request):
     org_id = request.data.get('org_id')
 
-    def _get_projects():
+    async def _get_projects():
         if org_id:
             @organization_permission_classes(['Owner', 'Member'])
-            def __internal_func(request, id):
-                return Project.objects.filter(owner_type=ContentType.objects.get_for_model(Organization), owner_id=id)
-            
-            return __internal_func(request, id = org_id)
-        else:
-            return Project.objects.filter(owner_type=ContentType.objects.get_for_model(User), owner_id=request.user.id)
+            async def __internal_func(request, id):
+                # return Project.objects.filter(owner_type=ContentType.objects.get_for_model(Organization), owner_id=id).order_by('-updated_at')
+                return [project async for project in Project.objects.filter(owner_type=ContentType.objects.get_for_model(Organization), owner_id=id).order_by('-updated_at')]
 
-    projects = _get_projects()
+            return await __internal_func(request, id = org_id)
+        else:
+            # return Project.objects.filter(owner_type=ContentType.objects.get_for_model(User), owner_id=request.user.id).order_by('-updated_at')
+            return [project async for project in Project.objects.filter(owner_type=ContentType.objects.get_for_model(User), owner_id=request.user.id).order_by('-updated_at')]
+
+    projects = await _get_projects()
     if isinstance(projects, Response):  # return 403 or 404 response from @organization_permission_classes
         return projects
 
@@ -122,3 +126,23 @@ def get_projects(request):
     result_page = paginator.paginate_queryset(projects, request)
     serializer = ProjectSerializer(result_page, many=True)
     return paginator.get_paginated_response(serializer.data)
+
+
+@swagger_auto_schema(
+    method='get',
+    responses={
+        200: openapi.Response(description="Successfully get project basic info", schema=ProjectSerializer()),
+        404: openapi.Response(description="Project not found"),
+        403: openapi.Response(description="Authenticated user does not have permission of this project"),
+    },
+    operation_description="Retrieve details of a project by its ID.",
+    tags=["Project"]
+)
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@project_basic_permission_required
+async def get_project_info(request, id):
+    project = request.project
+    serializer = ProjectSerializer(project)
+    return Response(serializer.data, status=status.HTTP_200_OK)

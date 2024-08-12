@@ -7,10 +7,12 @@ from authlib.jose import jwt
 from authlib.oidc.core import CodeIDToken
 from django.conf import settings
 from rest_framework import status
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.decorators import authentication_classes, permission_classes
+from adrf.decorators import api_view
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import get_user_model
+from asgiref.sync import sync_to_async
 
 oauth = OAuth()
 
@@ -39,7 +41,7 @@ def login_oauth(request, provider):
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([AllowAny])
-def auth_oauth(request, provider):    
+async def auth_oauth(request, provider):
     code = request.data.get('code')
     state = request.data.get('state')
     redirect_uri = request.session.get('redirect_uri')
@@ -86,5 +88,5 @@ def auth_oauth(request, provider):
 @api_view(['POST'])
 @login_required
 def logout_view(request):
-    logout(request)
+    sync_to_async(logout)(request)
     return JsonResponse({'message': 'logout success'}, status=status.HTTP_200_OK)

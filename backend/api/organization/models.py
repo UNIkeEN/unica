@@ -57,11 +57,11 @@ class Membership(models.Model):
     def is_pending(self):
         return self.role == self.PENDING
     
-    def change_role(self, new_role):
+    async def change_role(self, new_role):
         if new_role in dict(self.ROLE_CHOICES).keys():
-            if self.role == self.PENDING:
+            if self.role == self.PENDING or self.joined_at is None:
                 self.joined_at = timezone.now()
             self.role = new_role
-            self.save()
+            await self.asave()
             return True
         return False

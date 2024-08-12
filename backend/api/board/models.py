@@ -8,7 +8,7 @@ class Board(models.Model):
     project = models.OneToOneField(Project, related_name='board', on_delete=models.CASCADE)
     global_properties = models.JSONField(default=list)  # global property definitions
 
-    def add_or_update_global_property(self, new_prop):
+    async def add_or_update_global_property(self, new_prop):
         try:
             validate(instance=new_prop, schema=PROPERTY_SCHEMA)
         except JSONSchemaValidationError as e:
@@ -18,14 +18,14 @@ class Board(models.Model):
                 if prop['type'] != new_prop['type']:
                     raise ValueError(f"Property already exists with different type")
                 prop.update(new_prop)
-                self.save()
+                await self.asave()
                 return
         self.global_properties.append(new_prop)
-        self.save()
+        await self.asave()
 
-    def remove_global_property(self, property_name):
+    async def remove_global_property(self, property_name):
         self.global_properties = [prop for prop in self.global_properties if prop['name'] != property_name]
-        self.save()
+        await self.asave()
 
 
 class Task(models.Model):

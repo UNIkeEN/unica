@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import { ChakraProvider } from '@chakra-ui/react';
@@ -11,6 +11,7 @@ import { AuthContextProvider } from '@/contexts/auth';
 import { UserContextProvider } from '@/contexts/user';
 import MainLayout from '@/layouts/main-layout';
 import OrganizationLayout from '@/layouts/organization-layout';
+import ProjectLayout from '@/layouts/project-layout';
 import SettingsLayout from '@/layouts/settings-layout';
 import { useAxiosInterceptors } from '@/services/request';
 import theme from '../theme';
@@ -46,8 +47,17 @@ function App({ Component, pageProps }: AppProps) {
 
   if (!mounted) return <></>;
 
-  const isOrganizationPage = router.pathname.startsWith('/organizations/[id]/');
-  const isSettingsPage = router.pathname.startsWith('/settings/');
+  const layoutMappings: { prefix: string; layout: React.ComponentType<{ children: React.ReactNode }> }[] = [
+    { prefix: '/organizations/[id]/', layout: OrganizationLayout },
+    { prefix: '/projects/[id]/', layout: ProjectLayout },
+    { prefix: '/settings/', layout: SettingsLayout },
+  ];
+
+  let SpecLayout: React.ComponentType<{ children: React.ReactNode }> = React.Fragment;
+
+  for (const mapping of layoutMappings) {
+    if (router.pathname.startsWith(mapping.prefix)) { SpecLayout = mapping.layout; break; }
+  }
 
   return (
     <ChakraProvider theme={theme}>
@@ -55,17 +65,9 @@ function App({ Component, pageProps }: AppProps) {
         <UserContextProvider>
           <AuthContextProvider>
             <MainLayout>
-              {isOrganizationPage ? (
-                <OrganizationLayout>
-                  <Component {...pageProps} />
-                </OrganizationLayout>
-              ) : isSettingsPage ? (
-                <SettingsLayout>
-                  <Component {...pageProps} />
-                </SettingsLayout>
-              ) : (
+              <SpecLayout>
                 <Component {...pageProps} />
-              )}
+              </SpecLayout>
             </MainLayout>
           </AuthContextProvider>
         </UserContextProvider>   

@@ -34,6 +34,8 @@ if os.environ.get('CSRF_TRUSTED_ORIGINS', None):
 
 AUTH_USER_MODEL = 'oauth.UnicaUser'
 
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -60,7 +62,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'drf_yasg',
-    # 'adrf',
+    'adrf',
     'api',
     'oauth',
     'django.contrib.admin',

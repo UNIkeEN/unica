@@ -19,17 +19,17 @@ import {
   Spacer
 } from "@chakra-ui/react";
 import { FiMoreHorizontal, FiChevronDown} from "react-icons/fi";
-import RichList from "@/components/rich-list";
 import { ISOtoDate } from "@/utils/datetime";
 import OrganizationContext from "@/contexts/organization";
 import UserContext from "@/contexts/user";
 import { useToast } from '@/contexts/toast';
 import { OrganizationMember, MemberRoleEnum } from "@/models/organization";
+import { getOrganizationInvitations, getOrganizationMembers } from "@/services/organization";
+import RichList from "@/components/rich-list";
+import Pagination from "@/components/pagination";
 import InviteMembersModal from "@/components/modals/invite-members-modal";
 import RemoveMemberAlertDialog from "@/components/modals/remove-member-alert-dialog";
 import ChangeMemberRoleModal from "@/components/modals/change-member-role-modal";
-import { getOrganizationInvitations, getOrganizationMembers } from "@/services/organization";
-import Pagination from "@/components/pagination";
 
 const OrganizationMembersPage = () => {
   const orgCtx = useContext(OrganizationContext);
@@ -62,23 +62,21 @@ const OrganizationMembersPage = () => {
   useEffect(() => {
     const id = Number(router.query.id);
     if (id) {
-      getMemberList(Number(router.query.id), pageIndex, pageSize)
-      .then((res) => {setMemberList(res);})
-      .catch((error) => {setMemberList([]);});
+      getMemberList(Number(router.query.id), pageIndex, pageSize);
     } else {
       setMemberList([]);
       setPendingList([]);
     }
   }, [router.query.id]);
 
-  const getMemberList = async (id: number, page: number = 1, pageSize: number = 20): Promise<OrganizationMember[]> => {
+  const getMemberList = async (id: number, page: number = 1, pageSize: number = 20) => {
     try {
       const res = await getOrganizationMembers(id, page, pageSize);
       orgCtx.setBasicInfo({
         ...orgCtx.basicInfo,
         member_count: res.count
       });
-      return res.results as OrganizationMember[];
+      setMemberList(res.results as OrganizationMember[]);
     } catch (error) {
       if (error.request && error.request.status === 403) {
         orgCtx.toastNoPermissionAndRedirect();
@@ -89,14 +87,15 @@ const OrganizationMembersPage = () => {
         });
       }
       console.error('Failed to update organization members:', error);
+      setMemberList([]);
     }
   };
 
-  const getInvitationList = async (id: number, page: number = 1, pageSize: number = 20): Promise<OrganizationMember[]> => {
+  const getInvitationList = async (id: number, page: number = 1, pageSize: number = 20) => {
     try {
       const res = await getOrganizationInvitations(id, page, pageSize);
       setPendingCount(res.total);
-      return res.results as OrganizationMember[];
+      setPendingList(res.results as OrganizationMember[]);
     } catch (error) {
       if (error.request && error.request.status === 403) {
         orgCtx.toastNoPermissionAndRedirect();
@@ -107,6 +106,8 @@ const OrganizationMembersPage = () => {
         });
       }
       console.error('Failed to update organization members:', error);
+      setPendingCount(0);
+      setPendingList([]);
     }
   };
 
@@ -115,12 +116,8 @@ const OrganizationMembersPage = () => {
     const id = Number(router.query.id);
     if (value === "pending" && orgCtx.userRole === MemberRoleEnum.OWNER) {
       getInvitationList(id, 1, pageSize)
-      .then((res) => {setPendingList(res);})
-      .catch((error) => {setPendingList([]);});
     } else if (value === "members") {
       getMemberList(Number(router.query.id), 1, pageSize)
-      .then((res) => {setMemberList(res);})
-      .catch((error) => {setMemberList([]);});
     }
     setListDomain(value);
   }
@@ -131,12 +128,8 @@ const OrganizationMembersPage = () => {
     setPageIndex(page);
     if (ListDomain === "members") {
       getMemberList(Number(router.query.id), page, pageSize)
-      .then((res) => {setMemberList(res);})
-      .catch((error) => {setMemberList([]);});
     } else if (ListDomain === "pending") {
       getInvitationList(Number(router.query.id), page, pageSize)
-      .then((res) => {setPendingList(res);})
-      .catch((error) => {setPendingList([]);});
     }
   };
 
@@ -166,9 +159,7 @@ const OrganizationMembersPage = () => {
             <InviteMembersModal id={Number(router.query.id)}
             onOKCallback={()=>{
               if (ListDomain === "pending") {
-                getInvitationList(Number(router.query.id), pageIndex, pageSize)
-                .then((res) => {setPendingList(res);})
-                .catch((error) => {setPendingList([]);});
+                getInvitationList(Number(router.query.id), pageIndex, pageSize);
               }
             }}/>
           </HStack>
@@ -249,9 +240,7 @@ const OrganizationMembersPage = () => {
           email={selectedMember.user.email}
           onOKCallback={() => {
             onRemoveDialogClose();
-            getMemberList(Number(router.query.id), pageIndex, pageSize)
-              .then((res) => {setMemberList(res);})
-              .catch((error) => {setMemberList([]);});
+            getMemberList(Number(router.query.id), pageIndex, pageSize);
           }}
         />
       }
@@ -269,9 +258,7 @@ const OrganizationMembersPage = () => {
                 window.location.reload();
               }, 1000);
             } else {
-              getMemberList(Number(router.query.id), pageIndex, pageSize)
-              .then((res) => {setMemberList(res);})
-              .catch((error) => {setMemberList([]);});
+              getMemberList(Number(router.query.id), pageIndex, pageSize);
             }
           }}
         />

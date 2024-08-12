@@ -127,7 +127,10 @@
     },
     "MyProjectsPage": {
         "title": "我的项目",
-        "header": "项目"
+        "header": "项目",
+        "list": {
+            "updated_at": "更新于 {{time}}"
+        }
     },
     "NotFoundPage": {
         "title": "页面不存在",
@@ -151,7 +154,10 @@
             "title": "概览"
         },
         "projects": {
-            "title": "项目"
+            "title": "项目",
+            "list": {
+                "updated_at": "更新于 {{time}}"
+            }
         },
         "members": {
             "title": "成员",
@@ -191,6 +197,17 @@
             }
         }
     },
+    "ProjectPages": {
+        "board": {
+            "title": "看板"
+        },
+        "wiki": {
+            "title": "知识库"
+        },
+        "settings": {
+            "title": "设置"
+        }
+    },
     "RemoveUserAlertDialog": {
         "dialog": {
             "title": "移除用户",
@@ -204,6 +221,13 @@
             "error-400": "无法移除唯一管理员，请删除组织或设置其他管理员后退出",
             "error-403": "权限不足，仅管理员可移除成员",
             "error-404": "用户不存在或非该组织成员"
+        }
+    },
+    "Services": {
+        "projects": {
+            "getProjects": {
+                "error": "获取项目列表失败"
+            }
         }
     },
     "SettingsPages": {

@@ -31,7 +31,7 @@ const OrganizationContext = createContext<OrganizationContextType>({
 
 export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // const [mounted, setMounted] = useState(false);
-  const [orgInfo, setOrgInfo] = useState(undefined);
+  const [orgInfo, setOrgInfo] = useState<Organization | undefined>(undefined);
   const [userRole, setUserRole] = useState(undefined);
   const router = useRouter();
   const toast = useToast();
@@ -47,7 +47,7 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
         status: 'error'
       });
       setTimeout(() => {
-        if (role === MemberRoleEnum.NO_PERMISSION) window.location.assign('/home');
+        if (role === MemberRoleEnum.NO_PERMISSION) window.location.assign('/home'); // use location.assign instead router.push to reload main layout
         else window.location.reload();
       }, 2000);
     }
@@ -63,6 +63,7 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
         router.push(`/organizations/${id}/invitation/`);
       }
     } catch (error) {
+      console.error('Failed to update user basic info:', error.request);
       if (error.request && error.request.status === 403) {
         toastNoPermissionAndRedirect(MemberRoleEnum.NO_PERMISSION);
       } else {
@@ -70,10 +71,10 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
           title: t('OrganizationContext.toast.error-2'),
           status: 'error'
         });
+        setTimeout(() => { router.push('/home'); }, 2000);
       }
       setUserRole(undefined);
       setOrgInfo(undefined);
-      console.error('Failed to update user basic info:', error.request);
     }
   };
 
