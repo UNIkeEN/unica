@@ -19,8 +19,7 @@
         "FormErrorMessage": {
             "nameRequired": "组织名称不能为空",
             "nameTooLong": "组织名称不得超过 20 字",
-            "descriptionTooLong": "组织描述不得超过 200 字",
-            "invalidInput": "无效的输入"
+            "descriptionTooLong": "组织描述不得超过 200 字"
         }
     },
     "Enums": {
@@ -215,7 +214,8 @@
             "createOrganization": {
                 "success": "创建组织成功",
                 "created": "组织 “{{name}}” 已成功创建",
-                "error": "创建组织失败"
+                "error": "创建组织失败",
+                "invalidInput": "无效的输入"
             },
             "getUserOrganizations": {
                 "error": "获取组织列表失败"

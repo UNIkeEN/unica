@@ -62,7 +62,7 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
       if (error.response.status === 400) {
         toast({
           title: t("Services.organization.createOrganization.error"),
-          description: t("CreateOrganizationModal.FormErrorMessage.invalidInput"),
+          description: t("Services.organization.createOrganization.invalidInput"),
           status: "error",
         });
       }

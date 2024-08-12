@@ -19,8 +19,7 @@
         "FormErrorMessage": {
             "nameRequired": "Organization name is required",
             "nameTooLong": "Organization name is too long",
-            "descriptionTooLong": "Description is too long",
-            "invalidInput": "Invalid input"
+            "descriptionTooLong": "Description is too long"
         }
     },
     "Enums": {
@@ -215,7 +214,8 @@
             "createOrganization": {
                 "success": "Created organization successfully",
                 "created": "Successfully created organization: {{name}}",
-                "error": "Failed to create organization"
+                "error": "Failed to create organization",
+                "invalidInput": "Invalid input"
             },
             "getUserOrganizations": {
                 "error": "Failed to get user organization list"
