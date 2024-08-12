@@ -68,7 +68,7 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
         toastNoPermissionAndRedirect(MemberRoleEnum.NO_PERMISSION);
       } else {
         toast({
-          title: t('OrganizationContext.toast.error-2'),
+          title: t('Services.organization.checkUserOrgPermission.error'),
           status: 'error'
         });
         setTimeout(() => { router.push('/home'); }, 2000);

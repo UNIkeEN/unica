@@ -122,7 +122,7 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
               />
               {!isEmailValid && (
                 <FormErrorMessage>
-                  {t("InviteMembersModal.toast.emailInvalid")}
+                  {t("InviteMembersModal.FormErrorMessage.emailInvalid")}
                 </FormErrorMessage>
               )}
               <FormHelperText

@@ -9,14 +9,14 @@
         }
     },
     "CreateOrganizationModal": {
-        "modal" : {
+        "modal": {
             "title": "创建新组织",
             "name": "组织名称",
             "description": "组织描述",
             "save": "保存",
             "cancel": "取消"
         },
-        "toast": {
+        "FormErrorMessage": {
             "nameRequired": "组织名称不能为空",
             "nameTooLong": "组织名称不得超过 20 字",
             "descriptionTooLong": "组织描述不得超过 200 字",
@@ -57,8 +57,10 @@
             "emailHelper-1": "被邀请人可访问 {{base_uri}}/organizations/{{id}}/invitation ",
             "emailHelper-2": "以处理邀请"
         },
+        "FormErrorMessage": {
+            "emailInvalid": "邮件格式无效"
+        },
         "toast": {
-            "emailInvalid": "邮箱格式有误",
             "copied": "已复制该地址至剪贴板"
         }
     },
@@ -126,9 +128,7 @@
     },
     "OrganizationContext": {
         "toast": {
-            "error-1": "您未加入此组织或权限不足",
-            "error-2": "获取组织信息失败",
-            "error-3": "获取成员列表失败"
+            "error-1": "您未加入此组织或权限不足"
         }
     },
     "OrganizationPages": {
@@ -158,13 +158,10 @@
                     "change_role": "修改身份",
                     "remove": "从组织移除"
                 }
-            },
-            "toast": {
-                "error": "获取邀请列表失败"
             }
         },
         "settings": {
-          "title": "设置"
+            "title": "设置"
         },
         "invitation": {
             "text": {
@@ -214,34 +211,49 @@
                 "error": "获取用户信息失败"
             }
         },
-        "organization":{
-            "modifyMemberRole":{
+        "organization": {
+            "createOrganization": {
+                "success": "创建组织成功",
+                "created": "组织 “{{name}}” 已成功创建",
+                "error": "创建组织失败"
+            },
+            "getUserOrganizations": {
+                "error": "获取组织列表失败"
+            },
+            "checkUserOrgPermission": {
+                "error": "获取组织信息失败"
+            },
+            "leaveOrganization": {},
+            "getOrganizationMembers": {
+                "error": "获取成员列表失败"
+            },
+            "removeMember": {
+                "removed": "已成功移除",
+                "error": "移除用户失败",
+                "error-400": "无法移除唯一管理员，请删除组织或设置其他管理员后退出",
+                "error-403": "权限不足，仅管理员可移除成员",
+                "error-404": "用户不存在或非该组织成员"
+            },
+            "modifyMemberRole": {
                 "changed": "已成功修改",
                 "error": "修改用户身份失败",
                 "error-400": "无法修改唯一管理员的身份",
                 "error-403": "权限不足，仅管理员可修改成员身份",
                 "error-404": "用户不存在或非该组织成员"
             },
-          "createOrganization":{
-            "success": "创建组织成功",
-            "created": "组织 “{{name}}” 已成功创建",
-            "error": "创建组织失败"
-          },
-          "createInvitation":{
-            "created": "已成功向 {{email}} 发送邀请",
-            "error": "邀请成员失败",
-            "error-403": "权限不足，仅管理员可邀请新成员",
-            "error-404": "未找到该用户",
-            "error-409": "该用户已被邀请或已是组织成员"
-          }
-          ,
-          "removeMember":{
-            "removed": "已成功移除",
-            "error": "移除用户失败",
-            "error-400": "无法移除唯一管理员，请删除组织或设置其他管理员后退出",
-            "error-403": "权限不足，仅管理员可移除成员",
-            "error-404": "用户不存在或非该组织成员"
-          }
+            "createInvitation": {
+                "created": "已成功向 {{email}} 发送邀请",
+                "error": "邀请成员失败",
+                "error-403": "权限不足，仅管理员可邀请新成员",
+                "error-404": "未找到该用户",
+                "error-409": "该用户已被邀请或已是组织成员"
+            },
+            "getOrganizationInvitations": {
+                "error": "未能获得待处理的邀请"
+            },
+            "respondInvitation": {
+                "error": "未能回应邀请"
+            }
         }
     },
     "SettingsPages": {
@@ -259,15 +271,15 @@
         }
     },
     "Utils": {
-      "datetime": {
-        "formatRelativeTime": {
-          "now": "现在",
-          "minutes-ago": "{{count}} 分钟前",
-          "last-hour": "1 小时前",
-          "hours-ago": "{{count}} 小时前",
-          "yesterday": "昨天",
-          "others": "{{time}}"
+        "datetime": {
+            "formatRelativeTime": {
+                "now": "现在",
+                "minutes-ago": "{{count}} 分钟前",
+                "last-hour": "1 小时前",
+                "hours-ago": "{{count}} 小时前",
+                "yesterday": "昨天",
+                "others": "{{time}}"
+            }
         }
-      }
     }
 }
