@@ -29,7 +29,7 @@ const RichList: React.FC<RichListProps> = ({ titleAsLink = false, items }) => {
       {items.map((item) => (
         <>
           <Flex px={4} py={4} justify="space-between" alignItems="center">
-            <VStack spacing={2} align="start" overflow="hidden">
+            <VStack spacing={2} mr={2} align="start" overflow="hidden">
               <HStack spacing={2} flexWrap="wrap">
                 {titleAsLink ? (
                   <Link 
@@ -59,7 +59,7 @@ const RichList: React.FC<RichListProps> = ({ titleAsLink = false, items }) => {
                 <Text 
                   fontSize="sm" 
                   className="secondary-text" 
-                  mt={-1.5}
+                  mt={-1}
                   wordBreak="break-all"
                 >
                   {item.subtitle}

@@ -102,9 +102,7 @@ async def get_projects(request):
         if org_id:
             @organization_permission_classes(['Owner', 'Member'])
             async def __internal_func(request, id):
-                # return Project.objects.filter(owner_type=ContentType.objects.get_for_model(Organization), owner_id=id).order_by('-updated_at')
                 return [project async for project in Project.objects.filter(owner_type=ContentType.objects.get_for_model(Organization), owner_id=id).order_by('-updated_at')]
-
             return await __internal_func(request, id = org_id)
         else:
             # return Project.objects.filter(owner_type=ContentType.objects.get_for_model(User), owner_id=request.user.id).order_by('-updated_at')

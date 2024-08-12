@@ -1,23 +1,67 @@
 {
+    "ChangeMemberRoleModal": {
+        "modal": {
+            "title": "修改 {{displayUserName}} ({{email}}) 的身份",
+            "owner_description": "擁有對整個組織的完全管理權限",
+            "member_description": "可以查看組織內所有成員，可以創建新項目",
+            "cancel": "取消",
+            "change_role": "修改"
+        }
+    },
     "CreateOrganizationModal": {
-        "modal" : {
+        "modal": {
             "title": "創建新組織",
             "name": "組織名稱",
             "description": "組織描述",
             "save": "保存",
             "cancel": "取消"
         },
-        "toast": {
-            "success": "創建組織成功",
-            "created": "組織 “{{name}}” 已成功創建",
-            "error": "創建組織失敗",
+        "FormErrorMessage": {
             "nameRequired": "組織名稱不能為空",
-            "nameInvalid": "組織名稱不可用"
+            "nameTooLong": "組織名稱不得超過 20 字",
+            "descriptionTooLong": "組織描述不得超過 200 字"
+        }
+    },
+    "Enums": {
+        "chakra-colors": {
+            "gray": "灰色",
+            "red": "紅色",
+            "orange": "橙色",
+            "yellow": "黃色",
+            "green": "綠色",
+            "teal": "藍綠色",
+            "blue": "藍色",
+            "cyan": "青色",
+            "purple": "紫色",
+            "pink": "粉色"
+        },
+        "organization": {
+            "role": {
+                "Owner": "管理員",
+                "Member": "成員",
+                "Pending": "正在邀請"
+            }
         }
     },
     "HomePage": {
         "title": "主頁",
         "header": "主頁"
+    },
+    "InviteMembersModal": {
+        "modal": {
+            "title": "邀請新成員",
+            "email": "郵箱",
+            "save": "確定",
+            "cancel": "取消",
+            "emailHelper-1": "被邀請人可訪問 {{base_uri}}/organizations/{{id}}/invitation",
+            "emailHelper-2": "以處理邀請"
+        },
+        "FormErrorMessage": {
+            "emailInvalid": "郵件格式無效"
+        },
+        "toast": {
+            "copied": "已複製該地址至剪貼板"
+        }
     },
     "LoginPage": {
         "title": "登入",
@@ -25,7 +69,8 @@
             "jaccount": "使用 jAccount 登入"
         },
         "toast": {
-            "need-login": "請先登入"
+            "need-login": "請先登入",
+            "session-expired": "會話已過期，請重新登入"
         }
     },
     "MainSider": {
@@ -43,7 +88,7 @@
         "my-organizations": {
             "title": "我的組織",
             "button": {
-                "more": "展示全部"
+                "more": "顯示全部"
             }
         }
     },
@@ -68,12 +113,21 @@
     },
     "MyProjectsPage": {
         "title": "我的項目",
-        "header": "項目"
+        "header": "項目",
+        "list": {
+            "updated_at": "更新於 {{time}}"
+        }
+    },
+    "NotFoundPage": {
+        "title": "頁面不存在",
+        "text": "頁面不存在，即將在 {{seconds}} 秒後跳轉"
     },
     "OAuthRedirectBack": {
-        "title": "認證中",
+        "title": "認證中"
+    },
+    "OrganizationContext": {
         "toast": {
-            "error": "認證失敗"
+            "error-1": "您未加入此組織或權限不足"
         }
     },
     "OrganizationPages": {
@@ -81,16 +135,125 @@
             "title": "概覽"
         },
         "projects": {
-            "title": "項目"
+            "title": "項目",
+            "list": {
+                "updated_at": "更新於 {{time}}"
+            }
         },
         "members": {
-          "title": "成員",
-          "button": {
-            "invite": "邀請新成員"
-          },
-          "list": {
-            "joined_at": "於 {{date}} 加入"
-          }
+            "title": "成員",
+            "button": {
+                "invite": "邀請新成員"
+            },
+            "select": {
+                "permission_group": "分組：",
+                "members": "已加入",
+                "pending": "正在邀請"
+            },
+            "list": {
+                "joined_at": "於 {{date}} 加入",
+                "invited_at": "於 {{date}} 發送邀請",
+                "menu": {
+                    "change_role": "修改身份",
+                    "remove": "從組織移除"
+                }
+            }
+        },
+        "settings": {
+            "title": "設置"
+        },
+        "invitation": {
+            "text": {
+                "description": "@{{orgName}} 組織已向您發送邀請。"
+            },
+            "button": {
+                "accept": "加入 @{{orgName}}",
+                "decline": "拒絕"
+            },
+            "toast": {
+                "error": "操作失敗"
+            }
+        }
+    },
+    "ProjectPages": {
+        "board": {
+            "title": "看板"
+        },
+        "wiki": {
+            "title": "知識庫"
+        },
+        "settings": {
+            "title": "設置"
+        }
+    },
+    "RemoveUserAlertDialog": {
+        "dialog": {
+            "title": "移除用戶",
+            "content": "{{displayUsername}} ({{email}}) 將從 {{orgName}} 組織移除。",
+            "remove": "移除",
+            "cancel": "取消"
+        }
+    },
+    "Services": {
+        "auth": {
+            "jAccountAuth": {
+                "error": "認證失敗"
+            }
+        },
+        "projects": {
+            "getProjects": {
+                "error": "獲取項目列表失敗"
+            }
+        },
+        "user": {
+            "getUserBasicInfo": {
+                "error": "獲取用戶信息失敗"
+            }
+        },
+        "organization": {
+            "createOrganization": {
+                "success": "創建組織成功",
+                "created": "組織 “{{name}}” 已成功創建",
+                "error": "創建組織失敗",
+                "invalidInput": "無效的輸入"
+            },
+            "getUserOrganizations": {
+                "error": "獲取組織列表失敗"
+            },
+            "checkUserOrgPermission": {
+                "error": "獲取組織信息失敗"
+            },
+            "leaveOrganization": {},
+            "getOrganizationMembers": {
+                "error": "獲取成員列表失敗"
+            },
+            "removeMember": {
+                "removed": "已成功移除",
+                "error": "移除用戶失敗",
+                "error-400": "無法移除唯一管理員，請刪除組織或設置其他管理員後退出",
+                "error-403": "權限不足，僅管理員可移除成員",
+                "error-404": "用戶不存在或非該組織成員"
+            },
+            "modifyMemberRole": {
+                "changed": "已成功修改",
+                "error": "修改用戶身份失敗",
+                "error-400": "無法修改唯一管理員的身份",
+                "error-403": "權限不足，僅管理員可修改成員身份",
+                "error-404": "用戶不存在或非該組織成員"
+            },
+            "createInvitation": {
+                "created": "已成功向 {{email}} 發送邀請",
+                "error": "邀請成員失敗",
+                "error-403": "權限不足，僅管理員可邀請新成員",
+                "error-404": "未找到該用戶",
+                "error-409": "該用戶已被邀請或已是組織成員"
+            },
+            "getOrganizationInvitations": {
+                "error": "未能獲得待處理的邀請"
+            },
+            "respondInvitation": {
+                "error": "未能回應邀請"
+            }
         }
     },
     "SettingsPages": {
@@ -104,8 +267,21 @@
     },
     "UserContext": {
         "toast": {
-            "error-1": "獲取用戶信息失敗",
             "error-2": "獲取組織列表失敗"
         }
+    },
+    "Utils": {
+        "datetime": {
+            "updated_at": "{{time}} 更新",
+            "joined_at": "{{date}} 加入",
+            "invited_at": "{{date}} 發送邀請"
+        },
+        "error": {
+            "unknown": "未知錯誤"
+        }
+    },
+    "ValidateMessage": {
+        "error": "參數錯誤",
+        "invalidInput": "無效的輸入"
     }
 }

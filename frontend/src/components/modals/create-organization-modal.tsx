@@ -38,7 +38,7 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
     const success = await handleCreateOrganization(name.trim(), description);
     if (success) {
       toast({
-        title: t("CreateOrganizationModal.toast.created", {
+        title: t("Services.organization.createOrganization.created", {
           name: name.trim(),
         }),
         status: "success",
@@ -61,8 +61,8 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
       console.error("Failed to create organization:", error);
       if (error.response.status === 400) {
         toast({
-          title: t("CreateOrganizationModal.toast.error"),
-          description: t("CreateOrganizationModal.toast.invalidInput"),
+          title: t("Services.organization.createOrganization.error"),
+          description: t("Services.organization.createOrganization.invalidInput"),
           status: "error",
         });
       }
@@ -113,12 +113,12 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
               />
               {isNameNull && (
                 <FormErrorMessage>
-                  {t("CreateOrganizationModal.toast.nameRequired")}
+                  {t("CreateOrganizationModal.FormErrorMessage.nameRequired")}
                 </FormErrorMessage>
               )}
               {nameTooLong && (
                 <FormErrorMessage>
-                  {t("CreateOrganizationModal.toast.nameTooLong")}
+                  {t("CreateOrganizationModal.FormErrorMessage.nameTooLong")}
                 </FormErrorMessage>
               )}
             </FormControl>
@@ -142,7 +142,7 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
               />
               {descriptionTooLong && (
                 <FormErrorMessage>
-                  {t("CreateOrganizationModal.toast.descriptionTooLong")}
+                  {t("CreateOrganizationModal.FormErrorMessage.descriptionTooLong")}
                 </FormErrorMessage>
               )}
               <FormHelperText></FormHelperText>

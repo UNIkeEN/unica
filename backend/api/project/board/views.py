@@ -9,7 +9,7 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .models import Board
 from .serializers import BoardSerializer
-from ..project.decorators import project_basic_permission_required
+from ..decorators import project_basic_permission_required
 
 
 @swagger_auto_schema(

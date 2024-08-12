@@ -1,4 +1,4 @@
-{   
+{
     "ChangeMemberRoleModal": {
         "modal": {
             "title": "Change the role of {{displayUserName}}({{email}})",
@@ -6,31 +6,20 @@
             "member_description": "Can see every member in the organization, and can create new projects.",
             "cancel": "Cancel",
             "change_role": "Change Role"
-        },
-        "toast": {
-            "changed": "Changed successfully",
-            "error": "Failed to change member's role",
-            "error-400": "Cannot change the only owner's role of the organization.",
-            "error-403": "Only owner can change member's role",
-            "error-404": "User not found or not a member of the organization"
         }
     },
     "CreateOrganizationModal": {
-        "modal" : {
+        "modal": {
             "title": "Create New Organization",
             "name": "Organization Name",
             "description": "Description",
             "save": "Save",
             "cancel": "Cancel"
         },
-        "toast": {
-            "success": "Created organization successfully",
-            "created": "Successfully created organization: {{name}}",
-            "error": "Failed to create organization",
+        "FormErrorMessage": {
             "nameRequired": "Organization name is required",
             "nameTooLong": "Organization name is too long",
-            "descriptionTooLong": "Description is too long",
-            "invalidInput": "Invalid input"
+            "descriptionTooLong": "Description is too long"
         }
     },
     "Enums": {
@@ -67,13 +56,10 @@
             "emailHelper-1": "The invitee can access {{base_uri}}/organizations/{{id}}/invitation ",
             "emailHelper-2": " to handle the invitation"
         },
+        "FormErrorMessage": {
+            "emailInvalid": "Invalid email format"
+        },
         "toast": {
-            "created": "Invitation sent to {{email}} successfully",
-            "error": "Failed to invite member",
-            "emailInvalid": "Invalid email format",
-            "error-403": "Only owner can invite new members",
-            "error-404": "User not found",
-            "error-409": "User has been invited or is already a member",
             "copied": "Copied the address to clipboard"
         }
     },
@@ -137,16 +123,11 @@
         "text": "Page not found, redirecting to home page in {{seconds}} seconds..."
     },
     "OAuthRedirectBack": {
-        "title": "Authenticating",
-        "toast": {
-            "error": "Authentication failed"
-        }
+        "title": "Authenticating"
     },
     "OrganizationContext": {
         "toast": {
-            "error-1": "You are not a member of this organization or do not have enough permissions",
-            "error-2": "Failed to get organization information",
-            "error-3": "Failed to get member list"
+            "error-1": "You are not a member of this organization or do not have enough permissions"
         }
     },
     "OrganizationPages": {
@@ -176,13 +157,10 @@
                     "change_role": "Change Role",
                     "remove": "Remove from organization"
                 }
-            },
-            "toast": {
-                "error": "Failed to get pending invitations"
             }
         },
         "settings": {
-          "title": "Settings"
+            "title": "Settings"
         },
         "invitation": {
             "text": {
@@ -214,13 +192,68 @@
             "content": "{{displayUsername}}({{email}}) will be removed from the organization {{orgName}}.",
             "remove": "Remove",
             "cancel": "Cancel"
+        }
+    },
+    "Services": {
+        "auth": {
+            "jAccountAuth": {
+                "error": "Authentication failed"
+            }
         },
-        "toast": {
-            "removed": "Removed successfully",
-            "error": "Failed to remove member",
-            "error-400": "Cannot remove the only owner of the organization, please delete the organization or set another owner before leaving",
-            "error-403": "Only owner can remove members",
-            "error-404": "User not found or not a member of the organization"
+        "projects": {
+            "getProjects": {
+                "error": "Failed to get project list"
+            }
+        },
+        "user": {
+            "getUserBasicInfo": {
+                "error": "Failed to get user information"
+            }
+        },
+        "organization": {
+            "createOrganization": {
+                "success": "Created organization successfully",
+                "created": "Successfully created organization: {{name}}",
+                "error": "Failed to create organization",
+                "invalidInput": "Invalid input"
+            },
+            "getUserOrganizations": {
+                "error": "Failed to get user organization list"
+            },
+            "checkUserOrgPermission": {
+                "error": "Failed to get organization information"
+            },
+            "leaveOrganization": {},
+            "getOrganizationMembers": {
+                "error": "Failed to get member list"
+            },
+            "removeMember": {
+                "removed": "Removed successfully",
+                "error": "Failed to remove member",
+                "error-400": "Cannot remove the only owner of the organization, please delete the organization or set another owner before leaving",
+                "error-403": "Only owner can remove members",
+                "error-404": "User not found or not a member of the organization"
+            },
+            "modifyMemberRole": {
+                "changed": "Changed successfully",
+                "error": "Failed to change member's role",
+                "error-400": "Cannot change the only owner's role of the organization.",
+                "error-403": "Only owner can change member's role",
+                "error-404": "User not found or not a member of the organization"
+            },
+            "createInvitation": {
+                "created": "Invitation sent to {{email}} successfully",
+                "error": "Failed to invite member",
+                "error-403": "Only owner can invite new members",
+                "error-404": "User not found",
+                "error-409": "User has been invited or is already a member"
+            },
+            "getOrganizationInvitations": {
+                "error": "Failed to get pending invitations"
+            },
+            "respondInvitation": {
+                "error": "Failed to response invitation"
+            }
         }
     },
     "Services": {
@@ -241,20 +274,19 @@
     },
     "UserContext": {
         "toast": {
-            "error-1": "Failed to get user information",
             "error-2": "Failed to get user organization list"
         }
     },
     "Utils": {
-      "datetime": {
-        "formatRelativeTime": {
-          "now": "now",
-          "minutes-ago": "{{count}} minutes ago",
-          "last-hour": "last hour",
-          "hours-ago": "{{count}} hours ago",
-          "yesterday": "yesterday",
-          "others": "on {{time}}"
+        "datetime": {
+            "formatRelativeTime": {
+                "now": "now",
+                "minutes-ago": "{{count}} minutes ago",
+                "last-hour": "last hour",
+                "hours-ago": "{{count}} hours ago",
+                "yesterday": "yesterday",
+                "others": "on {{time}}"
+            }
         }
-      }
     }
 }

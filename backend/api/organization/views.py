@@ -10,10 +10,11 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from .models import Organization, Membership
-from ..project.models import Project
+from api.organization.models import Organization, Membership
+from api.project.models import Project
 from .serializers import OrganizationCreationSerializer, OrganizationSerializer, MembershipSerializer
 from .decorators import organization_permission_classes
+from utils.mails import send_email
 
 User = get_user_model()
 
@@ -137,7 +138,6 @@ async def update_organization(request, id):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 @swagger_auto_schema(
     method='delete',
     responses={
@@ -208,6 +208,30 @@ async def get_organization_members(request, id):
     serializer = MembershipSerializer(result_page, many=True)
     return paginator.get_paginated_response(serializer.data)
 
+
+@swagger_auto_schema(
+    method='delete',
+    responses={
+        200: openapi.Response(description="Left the organization successfully"),
+        400: openapi.Response(description="Cannot remove the only owner"),
+        403: openapi.Response(description="Authenticated user is not a member of this organization"),
+        404: openapi.Response(description="Organization not found"),
+    },
+    tags=["Organization/Membership"]
+)
+@api_view(['DELETE'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@organization_permission_classes(required_roles=['Owner', 'Member'])
+def leave_organization(request, id):
+    membership = request.membership
+    if membership.is_owner():
+        if Membership.objects.filter(organization=request.organization, role=Membership.OWNER).count() <= 1:
+            return Response({"detail": "Cannot remove the only owner"}, status=status.HTTP_400_BAD_REQUEST)
+    membership.delete()
+    return Response({"detail": "Left the organization successfully"}, status=status.HTTP_200_OK)
+
+
 @swagger_auto_schema(
     method='post',
     request_body=openapi.Schema(
@@ -221,7 +245,7 @@ async def get_organization_members(request, id):
         200: openapi.Response(description="User removed successfully"),
         400: openapi.Response(description="Cannot remove the only owner of the organization"),
         403: openapi.Response(description="Authenticated user is not an owner of this organization"),
-        404: openapi.Response(description="User not found in this organization"),
+        404: openapi.Response(description="User not found in this organization, or organization not found"),
     },
     operation_description="Remove a user from the organization. Need 'Owner' permission.",
     tags=["Organization/Membership"]
@@ -264,7 +288,7 @@ async def remove_member(request, id):
         200: openapi.Response(description="User role updated successfully"),
         400: openapi.Response(description="Cannot change the only owner to a different role"),
         403: openapi.Response(description="Authenticated user is not an owner of this organization"),
-        404: openapi.Response(description="User not found in this organization"),
+        404: openapi.Response(description="User not found in this organization, or organization not found"),
         418: openapi.Response(description="Invalid role"),
     },
     operation_description="Modify a user's role in the organization. Need 'Owner' permission.",
@@ -311,7 +335,7 @@ async def modify_member_role(request, id):
             description="Authenticated user is not an owner of this organization"
         ),
         404: openapi.Response(
-            description="User not found"
+            description="User not found, or organization not found"
         ),
         409: openapi.Response(
             description="User is already a member of the organization or has a pending invitation"
@@ -337,6 +361,15 @@ async def create_invitation(request, id):
     if memberships:
         return Response({"detail": "User is already a member of the organization"}, status=status.HTTP_409_CONFLICT)
     await Membership.objects.acreate(user=user, organization=organization, role=Membership.PENDING)
+    send_email(
+        'organization-invitation',
+        f'The {organization.display_name} organization has invited you to join - UNICA',
+        [user.email],
+        {
+            'org_name': organization.display_name,
+            'invitation_link': request.build_absolute_uri(f'/organizations/{organization.id}/invitation')
+        }
+    )
     return Response({"detail": "Invitation sent successfully"}, status=status.HTTP_201_CREATED)
 
 
@@ -382,6 +415,7 @@ async def get_organization_invitations(request, id):
     memberships = [membership async for membership in
                      Membership.objects.filter(organization=request.organization, role=Membership.PENDING)
                      .order_by('-joined_at')]
+
     result_page = paginator.paginate_queryset(memberships, request)
     serializer = MembershipSerializer(result_page, many=True)
     return paginator.get_paginated_response(serializer.data)

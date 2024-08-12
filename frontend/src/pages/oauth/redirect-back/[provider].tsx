@@ -23,7 +23,7 @@ const OAuthRedirectBack = () => {
           router.push(data.next);
         },(err)=>{
           toast({
-            title: t('OAuthRedirectBack.toast.error'),
+            title: t('Services.auth.jAccountAuth.error'),
             status: 'error',
           })
           router.push('/login');
