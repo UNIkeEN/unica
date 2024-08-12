@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { useToast } from "@/contexts/toast";
+import { BeatLoader } from 'react-spinners';
 import { createInvitation } from "@/services/organization";
 import {
   Button,
@@ -43,8 +44,10 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
 
   const [email, setEmail] = useState("");
   const [isEmailValid, setIsEmailValid] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSave = async () => {
+    setIsLoading(true);
     const success = await handleCreateInvitation(email.trim());
     if (success) {
       toast({
@@ -54,6 +57,7 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
       onClose();
       onOKCallback();
       setEmail("");
+      setIsLoading(false);
     }
   };
 
@@ -63,6 +67,7 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
       return true;
     } catch (error) {
       console.error("Failed to create invitation:", error);
+      setIsLoading(false);
       if (
         error.response &&
         (error.response.status === 404 || error.response.status === 409)
@@ -161,6 +166,8 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
               mr={3}
               onClick={handleSave}
               isDisabled={!isEmailValid}
+              isLoading={isLoading}
+              spinner={<BeatLoader size={8} color='white' />}
             >
               {t("InviteMembersModal.modal.save")}
             </Button>

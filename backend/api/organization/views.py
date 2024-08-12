@@ -8,10 +8,11 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from .models import Organization, Membership
-from ..project.models import Project
+from api.organization.models import Organization, Membership
+from api.project.models import Project
 from .serializers import OrganizationCreationSerializer, OrganizationSerializer, MembershipSerializer
 from .decorators import organization_permission_classes
+from utils.mails import send_email
 
 User = get_user_model()
 
@@ -336,7 +337,17 @@ def create_invitation(request, id):
     organization = Organization.objects.get(id=id)
     if Membership.objects.filter(user=user, organization=organization).exists():
         return Response({"detail": "User is already a member of the organization"}, status=status.HTTP_409_CONFLICT)
+    
     Membership.objects.create(user=user, organization=organization, role=Membership.PENDING)
+    send_email(
+        'organization-invitation',
+        f'The {organization.display_name} organization has invited you to join - UNICA',
+        [user.email],
+        {
+            'org_name': organization.display_name,
+            'invitation_link': request.build_absolute_uri(f'/organizations/{organization.id}/invitation')
+        }
+    )
     return Response({"detail": "Invitation sent successfully"}, status=status.HTTP_201_CREATED)
 
 
