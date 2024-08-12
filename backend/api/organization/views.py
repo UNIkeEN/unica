@@ -40,19 +40,11 @@ User = get_user_model()
 async def create_organization(request):
     serializer = OrganizationCreationSerializer(data=request.data)
     if serializer.is_valid():
-        organization = await sync_to_async(serializer.save)()
+        organization = serializer.save()
         await Membership.objects.acreate(user=request.user, organization=organization, role=Membership.OWNER)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-@sync_to_async
-def sort_organizations(memberships):
-    return sorted(
-        (membership.organization for membership in memberships),
-        key=lambda org: org.updated_at,
-        reverse=True
-    )
 
 @swagger_auto_schema(
     method='get',
@@ -68,16 +60,17 @@ def sort_organizations(memberships):
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
-async def get_user_organizations(request):
-    memberships = [membership async for membership in
-                   Membership.objects.filter(user=request.user).exclude(role=Membership.PENDING)]
-
-    organizations = sorted(
-        (membership.organization for membership in memberships),
-        key=lambda org: org.updated_at,
-        reverse=True
+def get_user_organizations(request):
+    memberships = list(
+        Membership.objects.filter(user=request.user).exclude(role=Membership.PENDING)
+        .select_related('organization')
     )
-    serializer = OrganizationSerializer(organizations, many=True, context={'request': request})
+
+    organizations = [membership.organization for membership in memberships]
+    organizations_sorted = sorted(organizations, key=lambda org: org.updated_at, reverse=True)
+    serializer = OrganizationSerializer(
+        organizations_sorted, many=True, context={'request': request}
+    )
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -154,10 +147,12 @@ async def update_organization(request, id):
 @organization_permission_classes(required_roles=['Owner'])
 async def delete_organization(request, id):
     organization = request.organization
-    [await project.adelete() async for project in
-     Project.objects.filter(
-         owner_type=ContentType.objects.get_for_model(Organization),
-         owner_id=organization.id)]
+    projects = Project.objects.filter(
+        owner_type=ContentType.objects.get_for_model(Organization),
+        owner_id=organization.id
+    )
+    async for project in projects:
+        await project.adelete()
 
     await organization.adelete()
     return Response(status=status.HTTP_204_NO_CONTENT)
