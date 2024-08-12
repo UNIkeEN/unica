@@ -256,13 +256,6 @@
             }
         }
     },
-    "Services": {
-        "projects": {
-            "getProjects": {
-                "error": "Failed to get project list"
-            }
-        }
-    },
     "SettingsPages": {
         "header": "Settings",
         "profile": {

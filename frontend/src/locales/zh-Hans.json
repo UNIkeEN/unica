@@ -256,13 +256,6 @@
             }
         }
     },
-    "Services": {
-        "projects": {
-            "getProjects": {
-                "error": "获取项目列表失败"
-            }
-        }
-    },
     "SettingsPages": {
         "header": "设置",
         "profile": {
