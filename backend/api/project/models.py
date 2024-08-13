@@ -4,8 +4,7 @@ from django.utils import timezone
 from django.db import models
 import mmh3
 from django.contrib.auth import get_user_model
-# from ..board.models import Board
-from ..organization.models import Organization
+from api.organization.models import Organization
 
 User = get_user_model()
 
@@ -40,16 +39,3 @@ class Project(models.Model):
 
     def is_organization_project(self):
         return self.owner_type == ContentType.objects.get_for_model(Organization)
-    
-
-class AbstractComment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        abstract = True
-
-    def __str__(self):
-        return f'{self.user.username}: {self.content}'

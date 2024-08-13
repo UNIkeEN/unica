@@ -2,7 +2,9 @@ from django.utils import timezone
 from django.db import models
 from jsonschema import validate, ValidationError as JSONSchemaValidationError
 from .schemas import PROPERTY_SCHEMA
-from ..models import Project, AbstractComment
+from api.project.models import Project
+from api.models import AbstractComment
+
 
 class Board(models.Model):
     project = models.OneToOneField(Project, related_name='board', on_delete=models.CASCADE)

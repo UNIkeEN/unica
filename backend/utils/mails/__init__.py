@@ -1,11 +1,11 @@
 import os
-from typing import List
+from typing import List, Dict, Any
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.conf import settings
 
 
-def send_email(template_name, subject, to: List, params):
+def send_email(template_name: str, subject: str, to: List[str], params: Dict[str, Any]) -> None:
     """
     Sends an email using a specified template.
 
@@ -14,6 +14,9 @@ def send_email(template_name, subject, to: List, params):
     :param to: The recipients' email address.
     :param params: A dictionary containing the parameters to be rendered in the template.
     """
+    use_html = os.path.exists(os.path.join('templates', f'{template_name}.html'))
+    if not os.path.exists(os.path.join('templates', f'{template_name}.txt')):
+        return  # return silently
     html_content = render_to_string(f'{template_name}.html', params)
     text_content = render_to_string(f'{template_name}.txt', params)
 
@@ -23,6 +26,7 @@ def send_email(template_name, subject, to: List, params):
         settings.DEFAULT_FROM_EMAIL, 
         to
     )
-    email.attach_alternative(html_content, "text/html")
+    if use_html:
+        email.attach_alternative(html_content, "text/html")
 
     email.send()

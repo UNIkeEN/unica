@@ -6,7 +6,7 @@ User = get_user_model()
 class UserBasicInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['display_name', 'biography']
+        fields = ['id', 'display_name', 'biography', 'email']
         read_only_fields = ['id', 'email']
 
     def validate(self, data):
