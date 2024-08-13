@@ -5,6 +5,8 @@ class UnicaUser(AbstractUser):
     
     # use email as unique username in AbstractUser
     display_name = models.CharField(max_length=50, blank=True, null=True)
+    biography = models.CharField(blank=True, max_length=200)
+
     oauth_provider = models.CharField(max_length=20, blank=True, null=True)
 
     def __str__(self):
