@@ -1,5 +1,5 @@
 from django.utils import timezone
-from django.db import models
+from django.db import models, transaction
 from jsonschema import validate, ValidationError as JSONSchemaValidationError
 from .schemas import PROPERTY_SCHEMA
 from api.project.models import Project
@@ -37,16 +37,37 @@ class Task(models.Model):
     description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    local_id = models.IntegerField(editable=False)  # local id, in the same discussion(organization) scope
     archived = models.BooleanField(default=False)
+    deleted = models.BooleanField(default=False) # soft delete
     # dynamic properties
     global_properties = models.JSONField(default=dict)  # global property values
     local_properties = models.JSONField(default=dict)  # local property definitions and values
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+        with transaction.atomic():
+            if not self.local_id:
+                max_local_id = Task.objects.filter(
+                    board = self.board
+                ).select_for_update().aggregate(models.Max('local_id'))['local_id__max']
+                
+                if max_local_id is not None:
+                    self.local_id = max_local_id + 1 # Generate local_id at max+1
+                else:
+                    self.local_id = 1
+            super().save(*args, **kwargs)
+
         # Update the parent project's updated_at field
         self.board.project.updated_at = timezone.now()
         self.board.project.save()
+
+    def archive(self):
+        self.archived = True
+        self.save()
+        
+    def delete(self):
+        self.deleted = True
+        self.save()
 
     def __str__(self):
         return f"#{self.id} {self.title}"

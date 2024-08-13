@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, transaction
 from django.utils import timezone
 from api.models import AbstractComment
 from api.organization.models import Organization
@@ -17,14 +17,34 @@ class DiscussionTopic(models.Model):
     discussion = models.ForeignKey(Discussion, on_delete=models.CASCADE, related_name='topics')
     title = models.CharField(max_length=100)
     category_id = models.IntegerField()
+    local_id = models.IntegerField(editable=False)  # local id, in the same discussion(organization) scope
+    deleted = models.BooleanField(default=False) # soft delete
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('discussion', 'local_id')
     
     def save(self, *args, **kwargs):
-        # Validate category_id exists
+
         if not any(cat['id'] == self.category_id for cat in self.discussion.categories):
             raise ValueError("Invalid category_id.")
-        super().save(*args, **kwargs)
+        
+        with transaction.atomic():
+            if not self.local_id:
+                max_local_id = DiscussionTopic.objects.filter(
+                    discussion=self.discussion
+                ).select_for_update().aggregate(models.Max('local_id'))['local_id__max']
+                
+                if max_local_id is not None:
+                    self.local_id = max_local_id + 1 # Generate local_id at max+1
+                else:
+                    self.local_id = 1
+            super().save(*args, **kwargs)
+
+    def delete(self):
+        self.deleted = True
+        self.save()
 
     def __str__(self):
         return self.title
