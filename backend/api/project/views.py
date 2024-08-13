@@ -1,4 +1,5 @@
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.decorators import authentication_classes, permission_classes
+from adrf.decorators import api_view
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -40,22 +41,22 @@ User = get_user_model()
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
-def create_project(request):
+async def create_project(request):
     display_name = request.data.get('display_name')
     description = request.data.get('description')
     org_id = request.data.get('org_id')
 
-    def _get_owner_info():
+    async def _get_owner_info():
         if org_id:
             @organization_permission_classes(['Owner', 'Member'])
-            def __internal_func(request, id):
+            async def __internal_func(request, id):
                 return ContentType.objects.get_for_model(Organization), id
             
-            return __internal_func(request, id = org_id)
+            return await __internal_func(request, id = org_id)
         else:
             return ContentType.objects.get_for_model(User), request.user.id
 
-    owner_info = _get_owner_info()
+    owner_info = await _get_owner_info()
     if isinstance(owner_info, Response):  # return 403 or 404 response from @organization_permission_classes
         return owner_info
 
@@ -94,20 +95,20 @@ def create_project(request):
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
-def get_projects(request):
+async def get_projects(request):
     org_id = request.data.get('org_id')
 
-    def _get_projects():
+    async def _get_projects():
         if org_id:
             @organization_permission_classes(['Owner', 'Member'])
-            def __internal_func(request, id):
-                return Project.objects.filter(owner_type=ContentType.objects.get_for_model(Organization), owner_id=id).order_by('-updated_at')
-            
-            return __internal_func(request, id = org_id)
+            async def __internal_func(request, id):
+                return [project async for project in Project.objects.filter(owner_type=ContentType.objects.get_for_model(Organization), owner_id=id).order_by('-updated_at')]
+            return await __internal_func(request, id = org_id)
         else:
-            return Project.objects.filter(owner_type=ContentType.objects.get_for_model(User), owner_id=request.user.id).order_by('-updated_at')
+            # return Project.objects.filter(owner_type=ContentType.objects.get_for_model(User), owner_id=request.user.id).order_by('-updated_at')
+            return [project async for project in Project.objects.filter(owner_type=ContentType.objects.get_for_model(User), owner_id=request.user.id).order_by('-updated_at')]
 
-    projects = _get_projects()
+    projects = await _get_projects()
     if isinstance(projects, Response):  # return 403 or 404 response from @organization_permission_classes
         return projects
 
@@ -139,7 +140,7 @@ def get_projects(request):
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @project_basic_permission_required
-def get_project_info(request, id):
+async def get_project_info(request, id):
     project = request.project
     serializer = ProjectSerializer(project)
     return Response(serializer.data, status=status.HTTP_200_OK)

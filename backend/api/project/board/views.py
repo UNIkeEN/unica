@@ -1,4 +1,5 @@
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.decorators import authentication_classes, permission_classes
+from adrf.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
@@ -33,11 +34,11 @@ from ..decorators import project_basic_permission_required
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @project_basic_permission_required
-def add_or_update_global_property(request, id):
+async def add_or_update_global_property(request, id):
     board = get_object_or_404(Board, project=request.project)
     new_property = request.data
     try:
-        board.add_or_update_global_property(new_property)
+        await board.add_or_update_global_property(new_property)
     except ValueError as e:
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
     serializer = BoardSerializer(board)
@@ -69,12 +70,12 @@ def add_or_update_global_property(request, id):
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @project_basic_permission_required
-def remove_global_property(request, id):
+async def remove_global_property(request, id):
     board = get_object_or_404(Board, project=request.project)
     property_name = request.data.get('name')
     if not property_name:
         return Response({'error': 'Property name is required.'}, status=status.HTTP_400_BAD_REQUEST)
-    board.remove_global_property(property_name)
+    await remove_global_property(property_name)
     # TODO: clear the property values from all tasks
     serializer = BoardSerializer(board)
     return Response(serializer.data)

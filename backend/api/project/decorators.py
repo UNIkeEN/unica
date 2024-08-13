@@ -7,9 +7,9 @@ from ..organization.models import Membership
 
 def project_basic_permission_required(func):
     @wraps(func)
-    def wrapper(request, *args, **kwargs):
+    async def wrapper(request, *args, **kwargs):
         try:
-            project = Project.objects.get(id=kwargs.get('id'))
+            project = await Project.objects.aget(id=kwargs.get('id'))
         except Project.DoesNotExist:
             return Response({"detail": "Project not found."}, status=status.HTTP_404_NOT_FOUND)
         
@@ -19,13 +19,16 @@ def project_basic_permission_required(func):
                 return Response({"detail": "You do not have the required permissions."}, status=status.HTTP_403_FORBIDDEN)
         elif project.is_organization_project():
             organization = project.owner
-            membership = Membership.objects.filter(organization=organization, user=user).exclude(role=Membership.PENDING)
-            if not membership.exists():
+            # membership = Membership.objects.filter(organization=organization, user=user).exclude(role=Membership.PENDING)
+            memberships = [membership async for membership in
+                           Membership.objects.filter(organization=organization, user=user)
+                           .exclude(role=Membership.PENDING)]
+            if not memberships:
                 return Response({"detail": "You do not have the required permissions."}, status=status.HTTP_403_FORBIDDEN)
         
         request.project = project
 
-        return func(request, *args, **kwargs)
+        return await func(request, *args, **kwargs)
     return wrapper
 
 

@@ -7,6 +7,7 @@ urlpatterns = [
     path('list/', get_projects, name='list_projects'),
     path('<int:id>/info/', get_project_info, name='get_project_info'),
 
+
     # Board
     path('<int:id>/board/', include('api.project.board.urls')),
 ]
