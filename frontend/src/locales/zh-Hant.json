@@ -206,7 +206,7 @@
             }
         },
         "user": {
-            "getUserBasicInfo": {
+            "getUserProfile": {
                 "error": "獲取用戶信息失敗"
             }
         },

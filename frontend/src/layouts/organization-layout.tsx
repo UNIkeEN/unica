@@ -43,7 +43,14 @@ const OrgLayoutContent: React.FC<{ children: React.ReactNode }> = ({ children })
     { icon: FiSettings, label: 'settings', owner_only: true },
   ];
 
-  if (!orgCtx.mounted) return <></>;
+  if (!orgCtx.mounted) return (
+    <>
+      <Head>
+        <title>{`${t('General.loading')} - Unica`}</title>
+        <meta name="headerTitle" content={t(`General.loading`)}/>
+      </Head>
+    </>
+  );
 
   if (router.pathname === '/organizations/[id]/invitation') return (
     <>

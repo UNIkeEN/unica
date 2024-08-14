@@ -253,7 +253,7 @@ const OrganizationMembersPage = () => {
           email={selectedMember.user.email}
           onOKCallback={() => {
             onChangeRoleModalClose();
-            if (selectedMember.user.email === userCtx.basicInfo.email) {
+            if (selectedMember.user.email === userCtx.profile.email) {
               setTimeout(() => {
                 window.location.reload();
               }, 1000);

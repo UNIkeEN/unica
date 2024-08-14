@@ -32,7 +32,14 @@ const OrgLayoutContent: React.FC<{ children: React.ReactNode }> = ({ children })
     { icon: FiSettings, label: 'settings' },
   ];
 
-  if (!projCtx.mounted) return <></>;
+  if (!projCtx.mounted) return (
+    <>
+      <Head>
+        <title>{`${t('General.loading')} - Unica`}</title>
+        <meta name="headerTitle" content={t(`General.loading`)}/>
+      </Head>
+    </>
+  );
 
   return (
     <>

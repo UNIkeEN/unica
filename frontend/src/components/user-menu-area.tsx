@@ -51,7 +51,7 @@ const UserMenuArea = () => {
             >
               <HStack spacing={3}>
                 <Avatar size="xs"/>
-                <Text fontSize="lg" fontWeight="normal">{userCtx.basicInfo?.display_name}</Text>
+                <Text fontSize="lg" fontWeight="normal">{userCtx.profile?.display_name}</Text>
               </HStack>
             </Button>
           </PopoverTrigger>
@@ -62,8 +62,8 @@ const UserMenuArea = () => {
                   spacing={2} 
                   align="stretch"
                 >
-                  <Text fontSize="xs" fontWeight="normal" px={2} className="secondary-text">{userCtx.basicInfo?.email}</Text>
-                  <Text fontSize="lg" fontWeight="normal" px={2} mt={-2}>{userCtx.basicInfo?.display_name}</Text>
+                  <Text fontSize="xs" fontWeight="normal" px={2} className="secondary-text">{userCtx.profile?.email}</Text>
+                  <Text fontSize="lg" fontWeight="normal" px={2} mt={-2}>{userCtx.profile?.display_name}</Text>
                   <Divider/>
                     <SelectableButton
                       size="xs"
@@ -92,7 +92,7 @@ const UserMenuArea = () => {
           >
             <HStack spacing={3}>
               <Avatar size="xs"/>
-              <Text fontSize="lg" fontWeight="normal">{userCtx.basicInfo?.display_name}</Text>
+              <Text fontSize="lg" fontWeight="normal">{userCtx.profile?.display_name}</Text>
             </HStack>
           </Button>
           <IconButton 

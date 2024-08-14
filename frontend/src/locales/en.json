@@ -43,6 +43,9 @@
             }
         }
     },
+    "General": {
+        "loading": "Loading"
+    },
     "HomePage": {
         "title": "Home",
         "header": "Home"
@@ -206,7 +209,7 @@
             }
         },
         "user": {
-            "getUserBasicInfo": {
+            "getUserProfile": {
                 "error": "Failed to get user information"
             }
         },

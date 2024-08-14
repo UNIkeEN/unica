@@ -1,17 +1,17 @@
 import React, { createContext, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '@/contexts/toast';
-import { UserBasicInfo } from '@/models/user';
+import { UserProfile } from '@/models/user';
 import { Organization } from '@/models/organization';
-import { getUserBasicInfo } from '@/services/user';
+import { getUserProfile } from '@/services/user';
 import { getUserOrganizations } from '@/services/organization';
 
 
 interface UserContextType {
   updateAll: () => void;
   cleanUp: () => void;
-  basicInfo: UserBasicInfo;
-  updateBasicInfo: () => void;
+  profile: UserProfile | undefined;
+  updateProfile: () => void;
   organizations: Organization[];
   updateOrganizations: () => void;
 }
@@ -19,30 +19,30 @@ interface UserContextType {
 const UserContext = createContext<UserContextType>({
   updateAll: () => {},
   cleanUp: () => {},
-  basicInfo: {} as UserBasicInfo | undefined,
-  updateBasicInfo: () => {},
+  profile: {} as UserProfile | undefined,
+  updateProfile: () => {},
   organizations: [],
   updateOrganizations: () => {},
 });
 
 export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [userInfo, setUserInfo] = useState(undefined);
+  const [profile, setProfile] = useState(undefined);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const toast = useToast();
   const { t } = useTranslation();
 
-  const updateBasicInfo = useCallback(() => {
+  const updateProfile = useCallback(() => {
     try {
-      getUserBasicInfo().then((res) => {
-        setUserInfo(res);
+      getUserProfile().then((res) => {
+        setProfile(res);
       });
     } catch (error) {
       toast({
-        title: t('Services.user.getUserBasicInfo.error'),
+        title: t('Services.user.getUserProfile.error'),
         status: 'error'
       })
-      setUserInfo(undefined);
-      console.error('Failed to update user basic info:', error);
+      setProfile(undefined);
+      console.error('Failed to update user profile:', error);
     }    
   }, [toast, t]);
 
@@ -61,20 +61,20 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
   }, [toast, t]);
 
   const updateAll = useCallback(() => {
-    updateBasicInfo();
+    updateProfile();
     updateOrganizations();
-  }, [updateBasicInfo, updateOrganizations]);
+  }, [updateProfile, updateOrganizations]);
 
   const cleanUp = useCallback(() => {
-    setUserInfo(undefined);
+    setProfile(undefined);
     setOrganizations([]);
   }, [toast, t]);
 
   const contextValue = {
     updateAll,
     cleanUp,
-    basicInfo: userInfo,
-    updateBasicInfo,
+    profile: profile,
+    updateProfile,
     organizations: organizations,
     updateOrganizations
   };
