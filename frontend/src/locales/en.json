@@ -133,6 +133,11 @@
             "noPermission": "You are not a member of this organization or do not have enough permissions"
         }
     },
+    "ProjectContext":{
+        "toast":{
+            "noPermission":"You do not have access to this project"
+        }
+    },
     "OrganizationPages": {
         "overview": {
             "title": "Overview"

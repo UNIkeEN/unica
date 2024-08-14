@@ -133,6 +133,11 @@
             "noPermission": "您未加入此组织或权限不足"
         }
     },
+    "ProjectContext":{
+        "toast":{
+            "noPermission":"您没有访问此项目的权限"
+        }
+    },
     "OrganizationPages": {
         "overview": {
             "title": "概览"
