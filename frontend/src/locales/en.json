@@ -130,7 +130,7 @@
     },
     "OrganizationContext": {
         "toast": {
-            "error-1": "You are not a member of this organization or do not have enough permissions"
+            "noPermission": "You are not a member of this organization or do not have enough permissions"
         }
     },
     "OrganizationPages": {
@@ -206,6 +206,9 @@
         "projects": {
             "getProjects": {
                 "error": "Failed to get project list"
+            },
+            "getProjectInfo":{
+                "error":"Failed to get project infomation"
             }
         },
         "user": {

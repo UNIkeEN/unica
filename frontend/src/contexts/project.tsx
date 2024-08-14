@@ -32,20 +32,37 @@ export const ProjectContextProvider: React.FC<{ children: React.ReactNode }> = (
   const { t } = useTranslation();
 
   const toastNoPermissionAndRedirect = () => {
-    //TODO
-  };
+    toast({
+        title: t('ProjectContext.toast.noPermission'),
+        status: 'error'
+    });
 
-  const updateBasicInfo = async (id: number) => {
-    if (!id) return;
-    try {
+    setTimeout(() => {
+        router.push('/home');
+    }, 2000);
+};
+
+const updateBasicInfo = async (id: number) => {
+  if (!id) return;
+  try {
       const res = await getProjectInfo(id);
       setProjectInfo(res);
-    } catch (error) {
-      //TODO: toast
-      setTimeout(() => { router.push('/home'); }, 2000);
+  } catch (error) {
+      console.error('Failed to update project basic info:', error.request);
+      if (error.request && error.request.status === 403) {
+          toastNoPermissionAndRedirect();
+      } else {
+          toast({
+              title: t('Services.projects.getProjectInfo.error'),
+              status: 'error'
+          });
+          setTimeout(() => { router.push('/home'); }, 2000);
+      }
+      
       setProjectInfo(undefined);
-    }
-  };
+  }
+};
+
 
   const updateAll = (id: number) => {
     try{

@@ -130,7 +130,7 @@
     },
     "OrganizationContext": {
         "toast": {
-            "error-1": "您未加入此组织或权限不足"
+            "noPermission": "您未加入此组织或权限不足"
         }
     },
     "OrganizationPages": {
@@ -206,6 +206,9 @@
         "projects": {
             "getProjects": {
                 "error": "获取项目列表失败"
+            },
+            "getProjectInfo":{
+                "error":"获取项目信息失败"
             }
         },
         "user": {

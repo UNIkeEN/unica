@@ -43,7 +43,7 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
     } else if (role !== undefined) {
       // Call to here when backend return 403, user has no membership in this organization or enough permission(e.g. the Owner)
       toast({
-        title: t('OrganizationContext.toast.error-1'),
+        title: t('OrganizationContext.toast.noPermission'),
         status: 'error'
       });
       setTimeout(() => {
