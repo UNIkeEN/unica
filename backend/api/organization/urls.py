@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from .views import *
 
 urlpatterns = [
@@ -19,4 +19,7 @@ urlpatterns = [
     path('<int:id>/invite/create/', create_invitation, name='create_invitation'),
     path('<int:id>/invite/list/', get_organization_invitations, name='get_organization_invitations'),
     path('<int:id>/invite/respond/', respond_invitation, name='respond_invitation'),
+
+    # Discussion
+    path('<int:id>/discussion/', include('api.organization.discussion.urls')),
 ]
