@@ -162,6 +162,15 @@
                 }
             }
         },
+        "discussion": {
+            "title": "Discussion",
+            "text": {
+                "notEnabled": "The Discussion feature is currently disabled for this organization. Enabling it will allow you to broadcast announcements, advance task progress, and hold conversations for the entire organization."
+            },
+            "button": {
+                "enable": "Enable Discussion"
+            }
+        },
         "settings": {
             "title": "Settings"
         },
@@ -201,6 +210,12 @@
         "auth": {
             "jAccountAuth": {
                 "error": "Authentication failed"
+            }
+        },
+        "discussion": {
+            "enableDiscussion": {
+                "success": "Discussion enabled",
+                "error": "Operation failed"
             }
         },
         "projects": {

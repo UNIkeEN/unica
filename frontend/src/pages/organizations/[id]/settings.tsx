@@ -10,7 +10,7 @@ const OrganizationSettingsPage = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (orgCtx.userRole !==MemberRoleEnum.OWNER) {
+    if (orgCtx.userRole !== MemberRoleEnum.OWNER) {
       router.push(`/organizations/${router.query.id}/overview/`);
     }
   }, []);

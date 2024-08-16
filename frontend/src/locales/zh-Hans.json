@@ -162,6 +162,15 @@
                 }
             }
         },
+        "discussion": {
+            "title": "讨论",
+            "text": {
+                "notEnabled": "当前组织的讨论功能尚未启用。启用后，此处将可用于广播通知、推进任务进度，为整个组织开展讨论。"
+            },
+            "button": {
+                "enable": "启用讨论"
+            }
+        },
         "settings": {
             "title": "设置"
         },
@@ -201,6 +210,12 @@
         "auth": {
             "jAccountAuth": {
                 "error": "认证失败"
+            }
+        },
+        "discussion": {
+            "enableDiscussion": {
+                "success": "讨论功能已启用",
+                "error": "操作失败"
             }
         },
         "projects": {
