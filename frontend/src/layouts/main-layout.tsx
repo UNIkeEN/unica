@@ -67,7 +67,7 @@ const MainLayout = ({ children }) => {
       {/* Desktop Sidebar */}
       <Show above='md'>
         <Box
-          display={{ base: 'none', md: 'block' }}
+          display='block'
           w="2xs"
           bg="gray.50"
           p={4}
