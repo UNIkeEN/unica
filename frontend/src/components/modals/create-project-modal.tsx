@@ -79,7 +79,6 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         title: t("Services.projects.createProject.error"),
         status: "error",
       });
-      console.error("Failed to create project:", error);
       return false;
     }
   };

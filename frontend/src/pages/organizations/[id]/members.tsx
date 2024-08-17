@@ -94,7 +94,7 @@ const OrganizationMembersPage = () => {
   const getInvitationList = async (id: number, page: number = 1, pageSize: number = 20) => {
     try {
       const res = await getOrganizationInvitations(id, page, pageSize);
-      setPendingCount(res.total);
+      setPendingCount(res.count);
       setPendingList(res.results as OrganizationMember[]);
     } catch (error) {
       if (error.request && error.request.status === 403) {
