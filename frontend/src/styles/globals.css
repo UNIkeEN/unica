@@ -12,8 +12,18 @@ body {
   height: 6px;
 }
 
+.no-scrollbar::-webkit-scrollbar{
+  width: 0px;
+  height: 0px;
+}
+
 ::-webkit-scrollbar-thumb {
   border-radius: 2px;
+  background-color: var(--chakra-colors-gray-200);
+}
+
+::-webkit-scrollbar-thumb:hover{
+  background-color: var(--chakra-colors-gray-300);
 }
 
 
