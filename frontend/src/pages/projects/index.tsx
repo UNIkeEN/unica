@@ -15,6 +15,7 @@ import RichList from "@/components/rich-list";
 import Pagination from "@/components/pagination";
 import { getProjects } from "@/services/project";
 import { formatRelativeTime } from "@/utils/datetime";
+import CreateProjectModal from "@/components/modals/create-project-modal";
 
 const MyProjectsPage = () => {
   const authCtx = useContext(AuthContext);
@@ -57,7 +58,7 @@ const MyProjectsPage = () => {
         <meta name="headerTitle" content={t('MyProjectsPage.header')} />
       </Head>
       <VStack spacing={6} align="stretch">
-      {/* TODO: Create Project Button and Modal */}
+        <CreateProjectModal isPersonal={true} />
         <div>
           <Divider />
           {projectList && projectList.length > 0 &&

@@ -16,6 +16,7 @@ import RichList from "@/components/rich-list";
 import Pagination from "@/components/pagination";
 import { getProjects } from "@/services/project";
 import { formatRelativeTime } from "@/utils/datetime";
+import CreateProjectModal from "@/components/modals/create-project-modal";
 
 const OrganizationProjectsPage = () => {
   const orgCtx = useContext(OrganizationContext);
@@ -60,7 +61,7 @@ const OrganizationProjectsPage = () => {
   return (
     <>
       <VStack spacing={6} align="stretch">
-      {/* TODO: Create Project Button and Modal */}
+      <CreateProjectModal isPersonal={false} organizationId={Number(router.query.id)}/>
         <div>
           <Divider />
           {projectList && projectList.length > 0 &&

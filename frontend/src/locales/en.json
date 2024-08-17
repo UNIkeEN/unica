@@ -22,6 +22,20 @@
             "descriptionTooLong": "Description is too long"
         }
     },
+    "CreateProjectModal": {
+        "modal": {
+            "title": "Create New Project",
+            "name": "Project Name",
+            "description": "Description",
+            "save": "Save",
+            "cancel": "Cancel"
+        },
+        "FormErrorMessage": {
+            "nameRequired": "Project name is required",
+            "nameTooLong": "Project name is too long",
+            "descriptionTooLong": "Description is too long"
+        }
+    },
     "Enums": {
         "chakra-colors": {
             "gray": "Gray",
@@ -119,6 +133,9 @@
         "header": "My Projects",
         "list": {
             "updated_at": "Updated {{time}}"
+        },
+        "button": {
+            "create": "New Project"
         }
     },
     "NotFoundPage": {
@@ -214,6 +231,11 @@
             },
             "getProjectInfo":{
                 "error":"Failed to get project infomation"
+            },
+            "createProject": {
+                "success": "Created project successfully",
+                "created": "Successfully created project: {{name}}",
+                "error": "Failed to create project"
             }
         },
         "user": {
