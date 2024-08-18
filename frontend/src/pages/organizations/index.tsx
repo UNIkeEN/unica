@@ -37,15 +37,6 @@ const MyOrganizationsPage = () => {
     if (!authCtx.checkLoginAndRedirect()) return;
   }, [authCtx]);
 
-  // const handleCreateOrganization = async () => {
-  //   try {
-  //     await createOrganization("🦄 测试"); // only for test, @TODO: design a modal to input organization name
-  //     userCtx.updateOrganizations();
-  //   } catch (error) {
-  //     console.error('Failed to create organization:', error);
-  //   }
-  // };
-
   const sortOrganizations = (orgs: Organization[], orgSortBy: string): Organization[] => {
     return [...orgs].sort((a, b) => {
       if (orgSortBy === 'created_at' || orgSortBy === 'updated_at') {
