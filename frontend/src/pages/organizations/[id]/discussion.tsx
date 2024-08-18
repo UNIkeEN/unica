@@ -63,11 +63,7 @@ const OrganizationDiscussionPage = () => {
       <EnableDiscussionConfirmModal
         isOpen={isModalOpen}
         onClose={onCloseModal}
-        onConfirm={handleEnableDiscussion}
-        title={t("OrganizationPages.discussion.modal.title")}
-        body={t("OrganizationPages.discussion.modal.body")}
-        confirmText={t("OrganizationPages.discussion.modal.confirm")}
-        cancelText={t("OrganizationPages.discussion.modal.cancel")}
+        onConfirm={handleEnableDiscussion} title={""} body={""}       
       />
     </>
   );

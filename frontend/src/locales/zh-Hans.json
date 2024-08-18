@@ -43,6 +43,14 @@
             }
         }
     },
+    "EnableDiscussionConfirmModal":{
+        "modal": {
+            "title": "确认启用讨论？",
+            "body": " ",
+            "cancel": "取消",
+            "confirm": "确认"
+        }
+    },
     "General": {
         "loading": "加载中"
     },
@@ -163,12 +171,6 @@
             }
         },
         "discussion": {
-            "modal": {
-                "title": "确认启用讨论？",
-                "body": " ",
-                "cancel": "取消",
-                "confirm": "确认"
-            },
             "title": "讨论",
             "text": {
                 "notEnabled": "当前组织的讨论功能尚未启用。启用后，此处将可用于广播通知、推进任务进度，为整个组织开展讨论。"

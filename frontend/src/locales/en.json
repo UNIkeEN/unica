@@ -43,6 +43,14 @@
             }
         }
     },
+    "EnableDiscussionConfirmModal":{
+        "modal": {
+            "title": "Confirm to enable Discussion?",
+            "body": " ",
+            "cancel": "Cancel",
+            "confirm": "Confirm"
+        }
+    },
     "General": {
         "loading": "Loading"
     },
@@ -163,12 +171,6 @@
             }
         },
         "discussion": {
-            "modal": {
-                "title": "Confirm Discussion Activation?",
-                "body": "body",
-                "cancel": "Cancel",
-                "confirm": "Confirm"
-            },
             "title": "Discussion",
             "text": {
                 "notEnabled": "The Discussion feature is currently disabled for this organization. Enabling it will allow you to broadcast announcements, advance task progress, and hold conversations for the entire organization."
