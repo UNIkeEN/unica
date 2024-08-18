@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { Button, VStack, Badge } from "@chakra-ui/react";
 import Pagination from "@/components/pagination";
 import ChakraColorSelector from "@/components/color-selector";
+import MarkdownRenderer from "@/components/markdown-renderer";
 
 const ComponentTestPage = () => {
   const router = useRouter();
@@ -33,6 +34,25 @@ const ComponentTestPage = () => {
     { text: "Item1", link: "/" },
     { text: "Item2", link: "/projects" },
   ];
+
+  // Markdown
+  const exampleMarkdown = `
+  \`\`\`js
+import React from 'react'
+import ReactDOM from 'react-dom'
+import Markdown from 'react-markdown'
+import rehypeHighlight from 'rehype-highlight'
+
+const markdown = \`
+# Your markdown here
+\`
+
+ReactDOM.render(
+  <Markdown rehypePlugins={[rehypeHighlight]}>{markdown}</Markdown>,
+  document.querySelector('#content')
+)
+  \`\`\`
+  `
 
   return (
     <>
@@ -68,6 +88,10 @@ const ComponentTestPage = () => {
           size="md"
           w="60%"
         />
+
+        {/* MarkdownRenderer */}
+        <MarkdownRenderer content={exampleMarkdown}/>
+          
       </VStack>
     </>
   );
