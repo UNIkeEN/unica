@@ -14,6 +14,8 @@ const MyProjectsPage = () => {
   const userCtx = useContext(UserContext);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(20);
+  const [projectList, setProjectList] = useState([]);
+  const [projectCount, setProjectCount] = useState<number>(0);
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -21,12 +23,16 @@ const MyProjectsPage = () => {
   }, [authCtx]);
 
   useEffect(() => {
-    getProjectList(pageIndex, pageSize);
+    userCtx.getProjectList(pageIndex, pageSize)
+    .then((res) => {
+      setProjectList(res.results);
+      setProjectCount(res.count);
+    })
+    .catch((error) => {
+      setProjectList([]);
+      setProjectCount(0);
+    })
   }, [pageIndex, pageSize]);
-
-  const getProjectList = async (page: number = 1, pageSize: number = 20) => {
-    userCtx.updateProjects(page, pageSize);
-  };
 
   return (
     <>
@@ -36,19 +42,15 @@ const MyProjectsPage = () => {
       </Head>
       <VStack spacing={6} align="stretch">
         <HStack w="100%" justifyContent="flex-end" align="center" spacing={3}>
-          <CreateProjectModal
-            isPersonal={true}
-            page={pageIndex}
-            pageSize={pageSize}
-          />
+          <CreateProjectModal isPersonal/>
         </HStack>
 
         <div>
           <Divider />
-          {userCtx.projects && userCtx.projects.length > 0 && (
+          {projectList && projectList.length > 0 && (
             <RichList
               titleAsLink
-              items={userCtx.projects.map((project) => ({
+              items={projectList.map((project) => ({
                 title: project.display_name,
                 href: `/projects/${project.id}/board`,
                 body: (
@@ -62,11 +64,11 @@ const MyProjectsPage = () => {
             />
           )}
         </div>
-        {userCtx.projects && userCtx.projects.length > 0 && (
+        {projectList && projectList.length > 0 && (
           <Flex>
             <Spacer />
             <Pagination
-              total={Math.ceil(userCtx.projectCount / pageSize)}
+              total={Math.ceil(projectCount / pageSize)}
               current={pageIndex}
               onPageChange={(page) => setPageIndex(page)}
               colorScheme="blue"

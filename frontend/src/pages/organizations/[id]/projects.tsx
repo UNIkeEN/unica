@@ -21,7 +21,10 @@ const OrganizationProjectsPage = () => {
     .then((res) => {
       setProjectList(res.results);
       orgCtx.setBasicInfo({...orgCtx.basicInfo, project_count: res.count});
-    });
+    })
+    .catch((error) => {
+      setProjectList([]);
+    })
   }, [pageIndex, pageSize, router.query.id]);
 
   return (
