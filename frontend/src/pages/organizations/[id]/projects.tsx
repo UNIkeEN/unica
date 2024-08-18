@@ -5,7 +5,8 @@ import {
   Divider,
   Text,
   Flex,
-  Spacer
+  Spacer,
+  HStack
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { useTranslation } from 'react-i18next';
@@ -61,7 +62,11 @@ const OrganizationProjectsPage = () => {
   return (
     <>
       <VStack spacing={6} align="stretch">
-      <CreateProjectModal isPersonal={false} organizationId={Number(router.query.id)}/>
+
+      <HStack w="100%" justifyContent="flex-end" align="center" spacing={3}>
+        <CreateProjectModal isPersonal={false} organizationId={Number(router.query.id)}/>
+      </HStack>
+      
         <div>
           <Divider />
           {projectList && projectList.length > 0 &&

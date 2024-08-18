@@ -4,7 +4,8 @@ import {
   Divider,
   Text,
   Flex,
-  Spacer
+  Spacer,
+  HStack
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { useTranslation } from 'react-i18next';
@@ -16,11 +17,11 @@ import Pagination from "@/components/pagination";
 import { getProjects } from "@/services/project";
 import { formatRelativeTime } from "@/utils/datetime";
 import CreateProjectModal from "@/components/modals/create-project-modal";
+import UserContext from "@/contexts/user";
 
 const MyProjectsPage = () => {
   const authCtx = useContext(AuthContext);
-  const [projectList, setProjectList] = useState<Project[]>([]);
-  const [projectCount, setProjectCount] = useState<number>(0);
+  const userCtx = useContext(UserContext);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(20);
   const toast = useToast();
@@ -35,20 +36,7 @@ const MyProjectsPage = () => {
   }, [pageIndex, pageSize]);
 
   const getProjectList = async (page: number = 1, pageSize: number = 20) => {
-    try {
-      const res = await getProjects(page, pageSize);
-      console.warn(res);
-      setProjectCount(res.count);
-      setProjectList(res.results);
-    } catch (error) {
-      console.error('Failed to get project list:', error);
-      toast ({
-        title: t('Services.projects.getProjects.error'),
-        status: 'error'
-      })
-      setProjectCount(0);
-      setProjectList([]);
-    }
+      userCtx.updateProjects(page, pageSize);
   }
 
   return (
@@ -58,14 +46,18 @@ const MyProjectsPage = () => {
         <meta name="headerTitle" content={t('MyProjectsPage.header')} />
       </Head>
       <VStack spacing={6} align="stretch">
-        <CreateProjectModal isPersonal={true} />
+        
+        <HStack w="100%" justifyContent="flex-end" align="center" spacing={3}>
+          <CreateProjectModal isPersonal={true} page={pageIndex} pageSize={pageSize}/>
+        </HStack>
+
         <div>
           <Divider />
-          {projectList && projectList.length > 0 &&
+          {userCtx.projects && userCtx.projects.length > 0 &&
             <RichList
               titleAsLink
               items={
-                projectList.map((project) => ({
+                userCtx.projects.map((project) => ({
                   title: project.display_name,
                   href: `/projects/${project.id}/board`,
                   body:
@@ -79,11 +71,11 @@ const MyProjectsPage = () => {
             />
           }
         </div>
-        {projectList && projectList.length > 0 &&
+        {userCtx.projects && userCtx.projects.length > 0 &&
           <Flex>
             <Spacer />
             <Pagination
-              total={Math.ceil(projectCount / pageSize)}
+              total={Math.ceil(userCtx.projectCount / pageSize)}
               current={pageIndex}
               onPageChange={(page)=>setPageIndex(page)}
               colorScheme="blue"

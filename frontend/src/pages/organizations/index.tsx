@@ -83,12 +83,6 @@ const MyOrganizationsPage = () => {
               </MenuOptionGroup>
             </MenuList>
           </Menu>
-          {/* <Button
-            colorScheme="blue"
-            onClick={handleCreateOrganization}
-          >
-            {t('MyOrganizationsPage.button.create')}
-          </Button> */}
           <CreateOrganizationModal />
         </HStack>
 

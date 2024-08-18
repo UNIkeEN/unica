@@ -1,4 +1,5 @@
 import { useToast } from "@/contexts/toast";
+import UserContext from "@/contexts/user";
 import { createProject } from "@/services/project";
 import {
   Button,
@@ -16,20 +17,25 @@ import {
   Textarea,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 interface CreateProjectModalProps {
   isPersonal: boolean;
   organizationId?: number;
   size?: string;
+  page?: number;
+  pageSize?: number;
 }
 
 const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
   isPersonal,
   organizationId,
   size = "lg",
+  page = 1,
+  pageSize = 20,
 }) => {
+  const userCtx = useContext(UserContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { t } = useTranslation();
   const toast = useToast();
@@ -73,6 +79,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
       } else {
         await createProject(name, description, organizationId);
       }
+      userCtx.updateProjects(page, pageSize);
       return true;
     } catch (error) {
       toast({
