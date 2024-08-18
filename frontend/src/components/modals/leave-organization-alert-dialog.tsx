@@ -70,20 +70,20 @@ const LeaveOrganizationAlertDialog: React.FC<
       <AlertDialogOverlay>
         <AlertDialogContent>
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            {t("Services.organization.leaveOrganization.title")}
+            {t("LeaveOrganizationAlertDialog.dialog.title")}
           </AlertDialogHeader>
           <AlertDialogCloseButton />
 
           <AlertDialogBody pb={5}>
-            {t("Services.organization.leaveOrganization.confirm", { orgName })}
+            {t("LeaveOrganizationAlertDialog.dialog.confirm", { orgName })}
           </AlertDialogBody>
 
           <AlertDialogFooter>
             <Button ref={cancelRef} onClick={onClose}>
-              {t("Services.organization.leaveOrganization.cancel")}
+              {t("LeaveOrganizationAlertDialog.dialog.cancel")}
             </Button>
             <Button colorScheme="red" onClick={handleLeaveOrganization} ml={3}>
-              {t("Services.organization.leaveOrganization.leave")}
+              {t("LeaveOrganizationAlertDialog.dialog.leave")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

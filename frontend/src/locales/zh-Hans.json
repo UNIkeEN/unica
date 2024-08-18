@@ -2,7 +2,7 @@
     "CancelInvitationDialog": {
         "dialog": {
             "title": "取消邀请",
-            "content": "{{displayUsername}}({{email}}) 将从 {{orgName}} 邀请列表中移除.",
+            "content": "{{displayUsername}}({{email}}) 将从 {{orgName}} 邀请列表中移除",
             "remove": "移除",
             "cancel": "取消"
         }
@@ -88,6 +88,14 @@
             "copied": "已复制该地址至剪贴板"
         }
     },
+    "LeaveOrganizationAlertDialog": {
+        "dialog": {
+            "title": "退出组织",
+            "confirm": "确定要退出 {{orgName}} 吗？",
+            "leave": "退出",
+            "cancel": "取消"
+        }
+    },
     "LoginPage": {
         "title": "登录",
         "button": {
@@ -158,11 +166,6 @@
             "noPermission": "您未加入此组织或权限不足"
         }
     },
-    "ProjectContext":{
-        "toast":{
-            "noPermission":"您没有访问此项目的权限"
-        }
-    },
     "OrganizationPages": {
         "overview": {
             "title": "概览"
@@ -207,6 +210,11 @@
             "toast": {
                 "error": "操作失败"
             }
+        }
+    },
+    "ProjectContext":{
+        "toast":{
+            "noPermission":"您没有访问此项目的权限"
         }
     },
     "ProjectPages": {
@@ -270,11 +278,7 @@
                 "error": "退出组织失败",
                 "error-400": "无法退出作为唯一管理员的组织",
                 "error-403": "不是该组织的成员",
-                "error-404": "组织不存在",
-                "title": "退出组织",
-                "confirm": "确定要退出 {{orgName}} 吗？",
-                "leave": "退出",
-                "cancel": "取消"
+                "error-404": "组织不存在"
             },
             "getOrganizationMembers": {
                 "error": "获取成员列表失败"
@@ -285,12 +289,6 @@
                 "error-400": "无法移除唯一管理员，请删除组织或设置其他管理员后退出",
                 "error-403": "权限不足，仅管理员可移除成员",
                 "error-404": "用户不存在或非该组织成员"
-            },
-            "cancelInvitation": {
-                "cancelSuccess": "已成功取消邀请",
-                "error": "取消邀请失败",
-                "error-403": "权限不足，仅管理员可取消邀请",
-                "error-404": "未找到该邀请"
             },
             "modifyMemberRole": {
                 "changed": "已成功修改",
@@ -311,6 +309,12 @@
             },
             "respondInvitation": {
                 "error": "未能回应邀请"
+            },
+            "cancelInvitation": {
+                "cancelSuccess": "已成功取消邀请",
+                "error": "取消邀请失败",
+                "error-403": "权限不足，仅管理员可取消邀请",
+                "error-404": "未找到该邀请"
             }
         }
     },
