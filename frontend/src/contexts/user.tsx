@@ -84,7 +84,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
       setProjectCount(0);
       console.error('Failed to update user projects:', error);
     }
-  }, []);
+  }, [toast, t]);
 
   const updateAll = useCallback(() => {
     updateProfile();

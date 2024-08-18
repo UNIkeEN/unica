@@ -1,3 +1,4 @@
+import OrganizationContext from "@/contexts/organization";
 import { useToast } from "@/contexts/toast";
 import UserContext from "@/contexts/user";
 import { createProject } from "@/services/project";
@@ -36,6 +37,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
   pageSize = 20,
 }) => {
   const userCtx = useContext(UserContext);
+  const orgCtx = useContext(OrganizationContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { t } = useTranslation();
   const toast = useToast();
@@ -56,6 +58,11 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
           organizationId as number
         );
     if (success) {
+      if (isPersonal) {
+        userCtx.updateProjects(page, pageSize);
+      } else {
+        orgCtx.updateProjects(page, pageSize, organizationId as number);
+      }
       toast({
         title: t("Services.projects.createProject.created", {
           name: name.trim(),
@@ -79,7 +86,6 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
       } else {
         await createProject(name, description, organizationId);
       }
-      userCtx.updateProjects(page, pageSize);
       return true;
     } catch (error) {
       toast({

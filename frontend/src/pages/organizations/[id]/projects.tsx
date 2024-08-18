@@ -21,8 +21,6 @@ import CreateProjectModal from "@/components/modals/create-project-modal";
 
 const OrganizationProjectsPage = () => {
   const orgCtx = useContext(OrganizationContext);
-  const [projectList, setProjectList] = useState<Project[]>([]);
-  const [projectCount, setProjectCount] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(20);
   const toast = useToast();
@@ -30,33 +28,13 @@ const OrganizationProjectsPage = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    const id = Number(router.query.id);
-    if (id) getProjectList(pageIndex, pageSize, id);
-    else {
-      setProjectList([]);
-      setProjectCount(0);
+    if (router.query.id) {
+      orgCtx.updateProjects(pageIndex, pageSize, Number(router.query.id));
     }
   }, [pageIndex, pageSize, router.query.id]);
 
   const getProjectList = async (page: number = 1, pageSize: number = 20, org_id: number) => {
-    try {
-      const res = await getProjects(page, pageSize, org_id);
-      console.warn(res);
-      setProjectCount(res.count);
-      setProjectList(res.results);
-    } catch (error) {
-      console.error('Failed to get project list:', error);
-      if (error.request && error.request.status === 403) {
-        orgCtx.toastNoPermissionAndRedirect();
-      } else {
-        toast ({
-          title: t('Services.projects.getProjects.error'),
-          status: 'error'
-        })
-      }
-      setProjectCount(0);
-      setProjectList([]);
-    }
+      orgCtx.updateProjects(page, pageSize, org_id);
   }
 
   return (
@@ -64,16 +42,16 @@ const OrganizationProjectsPage = () => {
       <VStack spacing={6} align="stretch">
 
       <HStack w="100%" justifyContent="flex-end" align="center" spacing={3}>
-        <CreateProjectModal isPersonal={false} organizationId={Number(router.query.id)}/>
+        <CreateProjectModal isPersonal={false} organizationId={Number(router.query.id)} page={pageIndex} pageSize={pageSize}/>
       </HStack>
-      
+
         <div>
           <Divider />
-          {projectList && projectList.length > 0 &&
+          {orgCtx.projects && orgCtx.projects.length > 0 &&
             <RichList
               titleAsLink
               items={
-                projectList.map((project) => ({
+                orgCtx.projects.map((project) => ({
                   title: project.display_name,
                   href: `/projects/${project.id}/board`,
                   body:
@@ -87,11 +65,11 @@ const OrganizationProjectsPage = () => {
             />
           }
         </div>
-        {projectList && projectList.length > 0 &&
+        {orgCtx.projects && orgCtx.projects.length > 0 &&
           <Flex>
             <Spacer />
             <Pagination
-              total={Math.ceil(projectCount / pageSize)}
+              total={Math.ceil(orgCtx.projectCount / pageSize)}
               current={pageIndex}
               onPageChange={(page)=>setPageIndex(page)}
               colorScheme="blue"
