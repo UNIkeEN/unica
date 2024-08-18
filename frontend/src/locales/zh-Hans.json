@@ -1,4 +1,12 @@
 {
+    "CancelInvitationDialog": {
+        "dialog": {
+            "title": "取消邀请",
+            "content": "{{displayUsername}}({{email}}) 将从 {{orgName}} 邀请列表中移除.",
+            "remove": "移除",
+            "cancel": "取消"
+        }
+    },
     "ChangeMemberRoleModal": {
         "modal": {
             "title": "修改 {{displayUserName}}({{email}}) 的身份",
@@ -180,7 +188,8 @@
                 "invited_at": "于 {{date}} 发送邀请",
                 "menu": {
                     "change_role": "修改身份",
-                    "remove": "从组织移除"
+                    "remove": "从组织移除",
+                    "cancel_invitation": "取消邀请"
                 }
             }
         },
@@ -266,6 +275,12 @@
                 "error-400": "无法移除唯一管理员，请删除组织或设置其他管理员后退出",
                 "error-403": "权限不足，仅管理员可移除成员",
                 "error-404": "用户不存在或非该组织成员"
+            },
+            "cancelInvitation": {
+                "cancelSuccess": "已成功取消邀请",
+                "error": "取消邀请失败",
+                "error-403": "权限不足，仅管理员可取消邀请",
+                "error-404": "未找到该邀请"
             },
             "modifyMemberRole": {
                 "changed": "已成功修改",

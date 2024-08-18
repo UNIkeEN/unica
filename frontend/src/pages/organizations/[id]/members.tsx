@@ -30,6 +30,7 @@ import Pagination from "@/components/pagination";
 import InviteMembersModal from "@/components/modals/invite-members-modal";
 import RemoveMemberAlertDialog from "@/components/modals/remove-member-alert-dialog";
 import ChangeMemberRoleModal from "@/components/modals/change-member-role-modal";
+import CancelInvitationAlertDialog from "@/components/modals/cancel-invitation-alert-dialog";
 
 const OrganizationMembersPage = () => {
   const orgCtx = useContext(OrganizationContext);
@@ -57,6 +58,12 @@ const OrganizationMembersPage = () => {
     isOpen: isChangeRoleModalOpen,
     onOpen: onChangeRoleModalOpen,
     onClose: onChangeRoleModalClose
+  } = useDisclosure();
+
+  const {
+    isOpen: isCancelInviteModalOpen,
+    onOpen: onCancelInviteModalOpen,
+    onClose: onCancelInviteModalClose
   } = useDisclosure();
 
   useEffect(() => {
@@ -205,7 +212,17 @@ const OrganizationMembersPage = () => {
                       </Menu>
                     }
                     {ListDomain === "pending" && orgCtx.userRole === MemberRoleEnum.OWNER &&
-                        <></>
+                        <Menu>
+                        <MenuButton as={IconButton} size="sm" aria-label="Menu" icon={<FiMoreHorizontal />} />
+                        <MenuList>
+                          <MenuItem onClick={() => {
+                            setSelectedMember(member);
+                            onCancelInviteModalOpen();
+                          }}>
+                            {t("OrganizationPages.members.list.menu.cancel_invitation")}
+                          </MenuItem>
+                        </MenuList>
+                      </Menu>
                     }
                   </HStack>
               }))} 
@@ -241,6 +258,19 @@ const OrganizationMembersPage = () => {
           onOKCallback={() => {
             onRemoveDialogClose();
             getMemberList(Number(router.query.id), pageIndex, pageSize);
+          }}
+        />
+      }
+      {selectedMember && 
+        <CancelInvitationAlertDialog
+          isOpen={isCancelInviteModalOpen}
+          onClose={onCancelInviteModalClose}
+          orgId={Number(router.query.id)}
+          displayUserName={selectedMember.user.display_name}
+          email={selectedMember.user.email}
+          onOKCallback={() => {
+            onCancelInviteModalClose();
+            getInvitationList(Number(router.query.id), pageIndex, pageSize)
           }}
         />
       }
