@@ -254,6 +254,39 @@ def remove_member(request, id):
     except Membership.DoesNotExist:
         return Response({"detail": "User not found in this organization"}, status=status.HTTP_404_NOT_FOUND)
 
+@swagger_auto_schema(
+    method='post',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'email': openapi.Schema(type=openapi.TYPE_STRING, description='email of the user to cancel invitation'),
+        },
+        required=['email']
+    ),
+    responses={
+        200: openapi.Response(description="Cancel invitation successfully"),
+        403: openapi.Response(description="Authenticated user is not an owner of this organization"),
+        404: openapi.Response(description="User not found, or invitation not found"),
+    },
+    operation_description="Cancel a member invitation. Need 'Owner' permission.",
+    tags=["Organization/Membership"]
+)
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@organization_permission_classes(['Owner'])
+def cancel_invitation(request, id):
+    email = request.data.get('email')
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+    try:
+        membership = Membership.objects.get(user=user, organization=request.organization, role=Membership.PENDING)
+        membership.delete()
+        return Response({"detail": "Cancel Invitation successfully"}, status=status.HTTP_200_OK)
+    except Membership.DoesNotExist:
+        return Response({"detail": "Invitation not found in this organization"}, status=status.HTTP_404_NOT_FOUND)
 
 @swagger_auto_schema(
     method='post',

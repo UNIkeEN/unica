@@ -19,4 +19,5 @@ urlpatterns = [
     path('<int:id>/invite/create/', create_invitation, name='create_invitation'),
     path('<int:id>/invite/list/', get_organization_invitations, name='get_organization_invitations'),
     path('<int:id>/invite/respond/', respond_invitation, name='respond_invitation'),
+    path('<int:id>/invite/cancel/', cancel_invitation, name='cancel_invitation'),
 ]
