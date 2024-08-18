@@ -1,7 +1,7 @@
 {
     "CancelInvitationDialog": {
         "dialog": {
-            "title": "Cancel Invitation",
+            "title": "Delete",
             "content": "{{displayUsername}}({{email}}) will be removed from the invitation list of {{orgName}}.",
             "remove": "Remove",
             "cancel": "Cancel"
@@ -189,7 +189,7 @@
                 "menu": {
                     "change_role": "Change Role",
                     "remove": "Remove from organization",
-                    "cancel_invitation": "Cancel Invitation"
+                    "cancel_invitation": "Delete"
                 }
             }
         },

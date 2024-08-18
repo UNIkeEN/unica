@@ -189,7 +189,7 @@
                 "menu": {
                     "change_role": "修改身份",
                     "remove": "从组织移除",
-                    "cancel_invitation": "取消邀请"
+                    "cancel_invitation": "删除"
                 }
             }
         },

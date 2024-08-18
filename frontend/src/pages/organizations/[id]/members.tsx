@@ -212,17 +212,16 @@ const OrganizationMembersPage = () => {
                       </Menu>
                     }
                     {ListDomain === "pending" && orgCtx.userRole === MemberRoleEnum.OWNER &&
-                        <Menu>
-                        <MenuButton as={IconButton} size="sm" aria-label="Menu" icon={<FiMoreHorizontal />} />
-                        <MenuList>
-                          <MenuItem onClick={() => {
+                          <Button onClick={() => {
                             setSelectedMember(member);
                             onCancelInviteModalOpen();
-                          }}>
+                          }}
+                          size={'sm'}
+                          variant={'subtle'}
+                          colorScheme={'red'}
+                          >
                             {t("OrganizationPages.members.list.menu.cancel_invitation")}
-                          </MenuItem>
-                        </MenuList>
-                      </Menu>
+                          </Button>
                     }
                   </HStack>
               }))} 
