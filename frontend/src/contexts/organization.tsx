@@ -4,7 +4,6 @@ import { useToast } from '@/contexts/toast';
 import { useRouter } from 'next/router';
 import { Organization, MemberRoleEnum } from '@/models/organization';
 import { checkUserOrgPermission } from '@/services/organization';
-import { Project } from '@/models/project';
 import { getProjects } from '@/services/project';
 
 interface OrganizationContextType {
@@ -17,9 +16,7 @@ interface OrganizationContextType {
   updateBasicInfo: (id: number) => void;
   setUserRole: (role: string) => void;
   setBasicInfo: (org: Organization) => void;
-  projects: Project[];
-  updateProjects: (page: number, pageSize: number, org_id: number) => void;
-  projectCount: number;
+  getProjectList: (page: number, pageSize: number, org_id: number) => Promise<any>;
 }
 
 const OrganizationContext = createContext<OrganizationContextType>({
@@ -32,17 +29,13 @@ const OrganizationContext = createContext<OrganizationContextType>({
   updateBasicInfo: () => {},
   setUserRole: () => {},
   setBasicInfo: () => {},
-  projects: [],
-  updateProjects: (page: number, pageSize: number, org_id: number) => {},
-  projectCount: 0
+  getProjectList: (page: number, pageSize: number, org_id: number) => null,
 });
 
 export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // const [mounted, setMounted] = useState(false);
   const [orgInfo, setOrgInfo] = useState<Organization | undefined>(undefined);
   const [userRole, setUserRole] = useState(undefined);
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [projectCount, setProjectCount] = useState<number>(0);
   const router = useRouter();
   const toast = useToast();
   const { t } = useTranslation();
@@ -88,19 +81,18 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
     }
   };
 
-  const updateProjects = useCallback(async (page: number, pageSize: number, org_id: number) => {
+  const getProjectList = useCallback(async (page: number, pageSize: number, org_id: number) => {
+    if (!org_id) return null;
     try {
       const projectList = await getProjects(page, pageSize, org_id);
-      setProjects(projectList.results);
-      setProjectCount(projectList.count);
+      return projectList;
     } catch (error) {
       toast({
         title: t('Services.projects.getProjects.error'),
         status: 'error'
       })
-      setProjects([]);
-      setProjectCount(0);
-      console.error('Failed to update user projects:', error);
+      console.error('Failed to update organization projects:', error);
+      throw error;
     }
   }, [toast, t]);
 
@@ -131,9 +123,7 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
     updateBasicInfo,
     setUserRole: (role: string) => setUserRole(role),
     setBasicInfo: (org: Organization) => setOrgInfo(org),
-    projects: projects,
-    updateProjects,
-    projectCount: projectCount
+    getProjectList,
   }
 
   return (

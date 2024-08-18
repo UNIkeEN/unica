@@ -79,7 +79,7 @@ const OrgLayoutContent: React.FC<{ children: React.ReactNode }> = ({ children })
                   <Text>{t(`OrganizationPages.${item.label}.title`)}</Text>
                   {item.label === 'projects' && 
                     <Text className='secondary-text' ml={-1.5}>
-                      ({orgCtx.projectCount})
+                      ({orgCtx.basicInfo?.project_count})
                     </Text>
                   }
                   {item.label === 'members' && 
