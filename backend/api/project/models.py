@@ -25,11 +25,11 @@ class Project(models.Model):
         if self.pk is None:
             timestamp = timezone.now().strftime('%Y%m%d%H%M%S%f')
             self.id = mmh3.hash(str(self.display_name + timestamp), signed=False)
+        super().save(*args, **kwargs)
         # Automatically create the associated board
         if not hasattr(self, 'board'):
             from .board.models import Board
             Board.objects.create(project=self)
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.display_name
