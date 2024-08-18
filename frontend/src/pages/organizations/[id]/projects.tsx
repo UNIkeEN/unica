@@ -2,7 +2,6 @@ import CreateProjectModal from "@/components/modals/create-project-modal";
 import Pagination from "@/components/pagination";
 import RichList from "@/components/rich-list";
 import OrganizationContext from "@/contexts/organization";
-import { useToast } from "@/contexts/toast";
 import { formatRelativeTime } from "@/utils/datetime";
 import { Divider, Flex, HStack, Spacer, Text, VStack } from "@chakra-ui/react";
 import { useRouter } from "next/router";
@@ -13,14 +12,19 @@ const OrganizationProjectsPage = () => {
   const orgCtx = useContext(OrganizationContext);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(20);
-  const toast = useToast();
+  const [projectList, setProjectList] = useState([]);
   const router = useRouter();
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (router.query.id) {
-      orgCtx.updateProjects(pageIndex, pageSize, Number(router.query.id));
-    }
+    orgCtx.getProjectList(pageIndex, pageSize, Number(router.query.id))
+    .then((res) => {
+      setProjectList(res.results);
+      orgCtx.setBasicInfo({...orgCtx.basicInfo, project_count: res.count});
+    })
+    .catch((error) => {
+      setProjectList([]);
+    })
   }, [pageIndex, pageSize, router.query.id]);
 
   return (
@@ -28,19 +32,16 @@ const OrganizationProjectsPage = () => {
       <VStack spacing={6} align="stretch">
         <HStack w="100%" justifyContent="flex-end" align="center" spacing={3}>
           <CreateProjectModal
-            isPersonal={false}
             organizationId={Number(router.query.id)}
-            page={pageIndex}
-            pageSize={pageSize}
           />
         </HStack>
 
         <div>
           <Divider />
-          {orgCtx.projects && orgCtx.projects.length > 0 && (
+          {projectList && projectList.length > 0 && (
             <RichList
               titleAsLink
-              items={orgCtx.projects.map((project) => ({
+              items={projectList.map((project) => ({
                 title: project.display_name,
                 href: `/projects/${project.id}/board`,
                 body: (
@@ -54,11 +55,11 @@ const OrganizationProjectsPage = () => {
             />
           )}
         </div>
-        {orgCtx.projects && orgCtx.projects.length > 0 && (
+        {projectList && projectList.length > 0 && (
           <Flex>
             <Spacer />
             <Pagination
-              total={Math.ceil(orgCtx.projectCount / pageSize)}
+              total={Math.ceil(orgCtx.basicInfo?.project_count / pageSize)}
               current={pageIndex}
               onPageChange={(page) => setPageIndex(page)}
               colorScheme="blue"

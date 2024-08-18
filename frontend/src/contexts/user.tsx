@@ -16,9 +16,7 @@ interface UserContextType {
   updateProfile: () => void;
   organizations: Organization[];
   updateOrganizations: () => void;
-  projects: Project[];
-  updateProjects: (page: number, pageSize: number) => void;
-  projectCount: number;
+  getProjectList: (page: number, pageSize: number) => Promise<any>;
 }
 
 const UserContext = createContext<UserContextType>({
@@ -28,16 +26,12 @@ const UserContext = createContext<UserContextType>({
   updateProfile: () => {},
   organizations: [],
   updateOrganizations: () => {},
-  projects: [],
-  updateProjects: (page: number, pageSize: number) => {},
-  projectCount: 0
+  getProjectList: (page: number, pageSize: number) => null,
 });
 
 export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [profile, setProfile] = useState(undefined);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [projectCount, setProjectCount] = useState<number>(0);
   const toast = useToast();
   const { t } = useTranslation();
 
@@ -70,19 +64,17 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   }, [toast, t]);
 
-  const updateProjects = useCallback(async (page: number, pageSize: number) => {
+  const getProjectList = useCallback(async (page: number, pageSize: number) => {
     try {
       const projectList = await getProjects(page, pageSize);
-      setProjects(projectList.results);
-      setProjectCount(projectList.count);
+      return projectList;
     } catch (error) {
       toast({
         title: t('Services.projects.getProjects.error'),
         status: 'error'
       })
-      setProjects([]);
-      setProjectCount(0);
       console.error('Failed to update user projects:', error);
+      throw error;
     }
   }, [toast, t]);
 
@@ -103,9 +95,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     updateProfile,
     organizations: organizations,
     updateOrganizations,
-    projects: projects,
-    updateProjects,
-    projectCount: projectCount
+    getProjectList,
   };
 
   return (
