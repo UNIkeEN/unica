@@ -19,7 +19,11 @@ const NavTabs: React.FC<NavTabsProps> = ({
       size={size}
       index={selectedIndex}
     >
-      <TabList>
+      <TabList 
+        className="no-scrollbar"
+        overflowX="auto"
+        whiteSpace="nowrap"
+      >
         {items.map((item, index) => (
           <Tab 
             key={item.value}
