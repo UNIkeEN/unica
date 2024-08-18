@@ -163,6 +163,12 @@
             }
         },
         "discussion": {
+            "modal": {
+                "title": "Confirm Discussion Activation?",
+                "body": "body",
+                "cancel": "Cancel",
+                "confirm": "Confirm"
+            },
             "title": "Discussion",
             "text": {
                 "notEnabled": "The Discussion feature is currently disabled for this organization. Enabling it will allow you to broadcast announcements, advance task progress, and hold conversations for the entire organization."
@@ -222,8 +228,8 @@
             "getProjects": {
                 "error": "Failed to get project list"
             },
-            "getProjectInfo":{
-                "error":"Failed to get project infomation"
+            "getProjectInfo": {
+                "error": "Failed to get project infomation"
             }
         },
         "user": {
