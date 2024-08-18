@@ -265,7 +265,17 @@
             "checkUserOrgPermission": {
                 "error": "获取组织信息失败"
             },
-            "leaveOrganization": {},
+            "leaveOrganization": {
+                "left": "已成功退出该组织",
+                "error": "退出组织失败",
+                "error-400": "无法退出作为唯一管理员的组织",
+                "error-403": "不是该组织的成员",
+                "error-404": "组织不存在",
+                "title": "退出组织",
+                "confirm": "确定要退出 {{orgName}} 吗？",
+                "leave": "退出",
+                "cancel": "取消"
+            },
             "getOrganizationMembers": {
                 "error": "获取成员列表失败"
             },

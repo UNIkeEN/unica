@@ -265,7 +265,17 @@
             "checkUserOrgPermission": {
                 "error": "Failed to get organization information"
             },
-            "leaveOrganization": {},
+            "leaveOrganization": {
+                "left": "Left successfully",
+                "error": "Failed to leave organization",
+                "error-400": "Cannot leave as the only owner of the organization",
+                "error-403": "Not a member of the organization",
+                "error-404": "Organization not found",
+                "title": "Leave Organization",
+                "confirm": "Are you sure you want to leave {{orgName}}?",
+                "leave": "Leave",
+                "cancel": "Cancel"
+            },
             "getOrganizationMembers": {
                 "error": "Failed to get member list"
             },
