@@ -25,7 +25,7 @@ interface ChangeMemberRoleModalProps {
   onClose: () => void;
   orgId: number;
   displayUserName: string;
-  email: string;
+  username: string;
   onOKCallback?: () => void;
 }
 
@@ -34,7 +34,7 @@ const ChangeMemberRoleModal: React.FC<ChangeMemberRoleModalProps> = ({
   onClose,
   orgId,
   displayUserName,
-  email,
+  username,
   onOKCallback,
 }) => {
   const cancelRef = useRef();
@@ -45,7 +45,7 @@ const ChangeMemberRoleModal: React.FC<ChangeMemberRoleModalProps> = ({
 
   const handleChangeMemberRole = async () => {
     try {
-      await modifyMemberRole(orgId, email, newRole);
+      await modifyMemberRole(orgId, username, newRole);
       toast({
         title: t("Services.organization.modifyMemberRole.changed"),
         status: "success",
@@ -78,7 +78,7 @@ const ChangeMemberRoleModal: React.FC<ChangeMemberRoleModalProps> = ({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
-          {t("ChangeMemberRoleModal.modal.title", { displayUserName: displayUserName, email:email })}
+          {t("ChangeMemberRoleModal.modal.title", { displayUserName: displayUserName, username:username })}
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={5}>

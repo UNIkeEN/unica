@@ -178,7 +178,7 @@ const OrganizationMembersPage = () => {
             <RichList
               items={listData.map((member) => ({
                 title: member.user.display_name,
-                subtitle: member.user.email,
+                subtitle: member.user.username,
                 lineExtra:
                   <HStack spacing={4}>
                     <Text fontSize="sm" className="secondary-text">
@@ -253,7 +253,7 @@ const OrganizationMembersPage = () => {
           onClose={onRemoveDialogClose}
           orgId={Number(router.query.id)}
           displayUserName={selectedMember.user.display_name}
-          email={selectedMember.user.email}
+          username={selectedMember.user.username}
           onOKCallback={() => {
             onRemoveDialogClose();
             getMemberList(Number(router.query.id), pageIndex, pageSize);
@@ -266,7 +266,7 @@ const OrganizationMembersPage = () => {
           onClose={onCancelInviteModalClose}
           orgId={Number(router.query.id)}
           displayUserName={selectedMember.user.display_name}
-          email={selectedMember.user.email}
+          username={selectedMember.user.username}
           onOKCallback={() => {
             onCancelInviteModalClose();
             getInvitationList(Number(router.query.id), pageIndex, pageSize)
@@ -279,10 +279,10 @@ const OrganizationMembersPage = () => {
           onClose={onChangeRoleModalClose}
           orgId={Number(router.query.id)}
           displayUserName={selectedMember.user.display_name}
-          email={selectedMember.user.email}
+          username={selectedMember.user.username}
           onOKCallback={() => {
             onChangeRoleModalClose();
-            if (selectedMember.user.email === userCtx.profile.email) {
+            if (selectedMember.user.username === userCtx.profile.username) {
               setTimeout(() => {
                 window.location.reload();
               }, 1000);

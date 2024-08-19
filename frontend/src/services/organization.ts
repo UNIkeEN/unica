@@ -118,10 +118,10 @@ export async function respondInvitation(id: number,  accept: boolean) {
     }
 }
 
-export async function cancelInvitation(id: number, email: string) {
+export async function cancelInvitation(id: number, username: string) {
     try {
         const response = await request.post(`/api/organization/${id}/invite/cancel/`, {
-            email: email
+            username: username
         });
         return response.data;
     } catch (error) {

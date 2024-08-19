@@ -2,14 +2,14 @@
     "CancelInvitationDialog": {
         "dialog": {
             "title": "Delete",
-            "content": "{{displayUsername}}({{email}}) will be removed from the invitation list of {{orgName}}.",
+            "content": "{{displayUsername}}({{username}}) will be removed from the invitation list of {{orgName}}.",
             "remove": "Remove",
             "cancel": "Cancel"
         }
     },
     "ChangeMemberRoleModal": {
         "modal": {
-            "title": "Change the role of {{displayUserName}}({{email}})",
+            "title": "Change the role of {{displayUserName}}({{username}})",
             "owner_description": "Has full administrative access to the entire organization.",
             "member_description": "Can see every member in the organization, and can create new projects.",
             "cancel": "Cancel",
@@ -75,14 +75,15 @@
     "InviteMembersModal": {
         "modal": {
             "title": "Invite New Members",
-            "email": "Email",
+            "username": "Username",
             "save": "OK",
             "cancel": "Cancel",
-            "emailHelper-1": "The invitee can access {{base_uri}}/organizations/{{id}}/invitation ",
-            "emailHelper-2": " to handle the invitation"
+            "usernameHelper-1": "The invitee can access {{base_uri}}/organizations/{{id}}/invitation ",
+            "usernameHelper-2": " to handle the invitation"
         },
         "FormErrorMessage": {
-            "emailInvalid": "Invalid email format"
+            "usernameNull": "Username is required",
+            "usernameTooLong": "Username is too long"
         },
         "toast": {
             "copied": "Copied the address to clipboard"
@@ -231,7 +232,7 @@
     "RemoveUserAlertDialog": {
         "dialog": {
             "title": "Remove Member",
-            "content": "{{displayUsername}}({{email}}) will be removed from the organization {{orgName}}.",
+            "content": "{{displayUsername}}({{username}}) will be removed from the organization {{orgName}}.",
             "remove": "Remove",
             "cancel": "Cancel"
         }
@@ -298,7 +299,7 @@
                 "error-404": "User not found or not a member of the organization"
             },
             "createInvitation": {
-                "created": "Invitation sent to {{email}} successfully",
+                "created": "Invitation sent to {{username}} successfully",
                 "error": "Failed to invite member",
                 "error-403": "Only owner can invite new members",
                 "error-404": "User not found",

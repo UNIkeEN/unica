@@ -19,7 +19,7 @@ interface CancelInvitationAlertDialogProps {
   onClose: () => void;
   orgId: number;
   displayUserName: string;
-  email: string;
+  username: string;
   onOKCallback?: () => void;
 }
 
@@ -28,7 +28,7 @@ const CancelInvitationAlertDialog: React.FC<CancelInvitationAlertDialogProps> = 
   onClose,
   orgId,
   displayUserName,
-  email,
+  username,
   onOKCallback,
 }) => {
   const cancelRef = useRef();
@@ -38,7 +38,7 @@ const CancelInvitationAlertDialog: React.FC<CancelInvitationAlertDialogProps> = 
 
   const handleCancelInvitation = async () => {
     try {
-      await cancelInvitation(orgId, email);
+      await cancelInvitation(orgId, username);
       toast({
         title: t("Services.organization.cancelInvitation.cancelSuccess"),
         status: "success",
@@ -81,7 +81,7 @@ const CancelInvitationAlertDialog: React.FC<CancelInvitationAlertDialogProps> = 
           <AlertDialogBody pb={5}>
             {t("CancelInvitationDialog.dialog.content", {
               displayUsername: displayUserName,
-              email: email,
+              username: username,
               orgName: orgCtx.basicInfo.display_name,
             })}
           </AlertDialogBody>

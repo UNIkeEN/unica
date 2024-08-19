@@ -20,7 +20,7 @@ interface RemoveMemberAlertDialogProps {
   onClose: () => void;
   orgId: number;
   displayUserName: string;
-  email: string;
+  username: string;
   onOKCallback?: () => void;
 }
 
@@ -29,7 +29,7 @@ const RemoveMemberAlertDialog: React.FC<RemoveMemberAlertDialogProps> = ({
   onClose,
   orgId,
   displayUserName,
-  email,
+  username,
   onOKCallback,
 }) => {
   const cancelRef = useRef();
@@ -39,7 +39,7 @@ const RemoveMemberAlertDialog: React.FC<RemoveMemberAlertDialogProps> = ({
 
   const handleRemoveMember = async () => {
     try {
-      await removeMember(orgId, email);
+      await removeMember(orgId, username);
       toast({
         title: t("Services.organization.removeMember.removed"),
         status: "success",
@@ -82,7 +82,7 @@ const RemoveMemberAlertDialog: React.FC<RemoveMemberAlertDialogProps> = ({
           <AlertDialogBody pb={5}>
             {t("RemoveUserAlertDialog.dialog.content", {
               displayUsername: displayUserName,
-              email: email,
+              username: username,
               orgName: orgCtx.basicInfo.display_name,
             })}
           </AlertDialogBody>
