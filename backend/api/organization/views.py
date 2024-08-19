@@ -259,9 +259,9 @@ def remove_member(request, id):
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
         properties={
-            'email': openapi.Schema(type=openapi.TYPE_STRING, description='email of the user to cancel invitation'),
+            'username': openapi.Schema(type=openapi.TYPE_STRING, description='username of the user to cancel invitation'),
         },
-        required=['email']
+        required=['username']
     ),
     responses={
         200: openapi.Response(description="Cancel invitation successfully"),
@@ -276,9 +276,9 @@ def remove_member(request, id):
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner'])
 def cancel_invitation(request, id):
-    email = request.data.get('email')
+    username = request.data.get('username')
     try:
-        user = User.objects.get(email=email)
+        user = User.objects.get(username=username)
     except User.DoesNotExist:
         return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
     try:
