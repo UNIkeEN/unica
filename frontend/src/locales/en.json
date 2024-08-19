@@ -43,6 +43,14 @@
             }
         }
     },
+    "EnableDiscussionConfirmModal":{
+        "modal": {
+            "title": "Confirm to enable Discussion?",
+            "body": " ",
+            "cancel": "Cancel",
+            "confirm": "Confirm"
+        }
+    },
     "General": {
         "loading": "Loading"
     },
@@ -222,8 +230,8 @@
             "getProjects": {
                 "error": "Failed to get project list"
             },
-            "getProjectInfo":{
-                "error":"Failed to get project infomation"
+            "getProjectInfo": {
+                "error": "Failed to get project infomation"
             }
         },
         "user": {

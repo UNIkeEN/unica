@@ -6,6 +6,7 @@ import { VStack, Text, Button } from '@chakra-ui/react';
 import OrganizationContext from "@/contexts/organization";
 import { MemberRoleEnum } from "@/models/organization";
 import { enableDiscussion } from "@/services/discussion";
+import EnableDiscussionConfirmModal from "@/components/modals/enable-discussion-confirm-modal";
 
 const OrganizationDiscussionPage = () => {
   const orgCtx = useContext(OrganizationContext);
@@ -17,44 +18,18 @@ const OrganizationDiscussionPage = () => {
     if (!orgCtx.basicInfo?.is_discussion_enabled && orgCtx.userRole !== MemberRoleEnum.OWNER) {
       router.push(`/organizations/${router.query.id}/overview/`);
     }
-  }, []);
-
-  const handleEnableDiscussion = async () => {
-    try {
-      await enableDiscussion(orgCtx.basicInfo.id);
-      toast({
-        title: t("Services.discussion.enableDiscussion.success"),
-        status: "success",
-      });
-      orgCtx.setBasicInfo({
-        ...orgCtx.basicInfo,
-        is_discussion_enabled: true,
-      });
-    } catch (error) {
-      console.error("Failed to enable discussion:", error);
-      if (error.response && error.response.status === 403) {
-        orgCtx.toastNoPermissionAndRedirect();
-      }
-       else toast({
-        title: t("Services.discussion.enableDiscussion.error"),
-        status: "error",
-      });
-    }
-  }
+  }, [orgCtx.basicInfo?.is_discussion_enabled, orgCtx.userRole, router]);
 
   if (!orgCtx.basicInfo?.is_discussion_enabled) return (
     <>
       <VStack spacing={6} align="start" flexWrap="wrap">
         <Text>{t("OrganizationPages.discussion.text.notEnabled")}</Text>
-        <Button 
-          colorScheme="blue"
-          onClick={handleEnableDiscussion}
-        >
-          {t("OrganizationPages.discussion.button.enable")}
-        </Button>
+        <EnableDiscussionConfirmModal />
       </VStack>
     </>
   );
-}
+
+};
+
 
 export default OrganizationDiscussionPage;

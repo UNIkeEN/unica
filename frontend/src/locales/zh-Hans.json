@@ -43,6 +43,14 @@
             }
         }
     },
+    "EnableDiscussionConfirmModal":{
+        "modal": {
+            "title": "确认启用讨论？",
+            "body": " ",
+            "cancel": "取消",
+            "confirm": "确认"
+        }
+    },
     "General": {
         "loading": "加载中"
     },
@@ -222,8 +230,8 @@
             "getProjects": {
                 "error": "获取项目列表失败"
             },
-            "getProjectInfo":{
-                "error":"获取项目信息失败"
+            "getProjectInfo": {
+                "error": "获取项目信息失败"
             }
         },
         "user": {
