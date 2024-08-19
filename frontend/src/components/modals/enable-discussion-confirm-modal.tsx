@@ -7,50 +7,76 @@ import {
   ModalBody,
   ModalCloseButton,
   Button,
+  useDisclosure,
 } from '@chakra-ui/react';
-import { ReactNode } from 'react';
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'next-i18next';
+import { useToast } from "@/contexts/toast";
+import { enableDiscussion } from '@/services/discussion';
+import { useContext } from "react";
+import OrganizationContext from '@/contexts/organization';
 
-interface EnableDiscussionConfirmModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title: string;
-  body: ReactNode;
-  confirmText?: string;
-  cancelText?: string;
-}
-const EnableDiscussionConfirmModal: React.FC<EnableDiscussionConfirmModalProps> = ({
-  isOpen,
-  onClose,
-  onConfirm,
-  title,
-  body,
-  confirmText,
-  cancelText,
-}) => {
+const EnableDiscussionConfirmModal = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { t } = useTranslation();
+  const toast = useToast();
+  const orgCtx = useContext(OrganizationContext);
+
+  const handleEnableDiscussion = async () => {
+    try {
+      await enableDiscussion(orgCtx.basicInfo.id);
+      toast({
+        title: t("Services.discussion.enableDiscussion.success"),
+        status: "success",
+      });
+      orgCtx.setBasicInfo({
+        ...orgCtx.basicInfo,
+        is_discussion_enabled: true,
+      });
+      onClose();
+    } catch (error) {
+      console.error("Failed to enable discussion:", error);
+      if (error.response && error.response.status === 403) {
+        orgCtx.toastNoPermissionAndRedirect();
+      } else {
+        toast({
+          title: t("Services.discussion.enableDiscussion.error"),
+          status: "error",
+        });
+      }
+    }
+  };
+
   return (
     <>
-    
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      <Button onClick={onOpen} colorScheme="blue">
+        {t("OrganizationPages.discussion.button.enable")}
+      </Button>
+
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        isCentered
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{t("EnableDiscussionConfirmModal.modal.title")}</ModalHeader>
           <ModalCloseButton />
+
           <ModalBody>{t("EnableDiscussionConfirmModal.modal.body")}</ModalBody>
+
           <ModalFooter>
-            <Button variant="ghost" onClick={onClose}>
+            <Button onClick={onClose} mr={3} >
               {t("EnableDiscussionConfirmModal.modal.cancel")}
             </Button>
-            <Button colorScheme="blue" onClick={onConfirm} ml={3}>
+            <Button colorScheme="blue" onClick={handleEnableDiscussion}>
               {t("EnableDiscussionConfirmModal.modal.confirm")}
             </Button>
-
           </ModalFooter>
+
         </ModalContent>
       </Modal>
     </>
   );
 };
+
 export default EnableDiscussionConfirmModal;
