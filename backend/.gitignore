@@ -15,3 +15,4 @@ db.sqlite3
 build
 
 /.idea
+.DS_Store

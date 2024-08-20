@@ -26,16 +26,12 @@ class DiscussionTopic(models.Model):
         unique_together = ('discussion', 'local_id')
     
     def save(self, *args, **kwargs):
-
-        if not any(cat['id'] == self.category_id for cat in self.discussion.categories):
-            raise ValueError("Invalid category_id.")
-        
         with transaction.atomic():
             if not self.local_id:
                 max_local_id = DiscussionTopic.objects.filter(
                     discussion=self.discussion
                 ).select_for_update().aggregate(models.Max('local_id'))['local_id__max']
-                
+
                 if max_local_id is not None:
                     self.local_id = max_local_id + 1 # Generate local_id at max+1
                 else:
