@@ -7,7 +7,6 @@ import {
   Flex,
   Spacer
 } from "@chakra-ui/react";
-import Head from "next/head";
 import { useTranslation } from 'react-i18next';
 import OrganizationContext from "@/contexts/organization";
 import { useToast } from '@/contexts/toast';
@@ -39,7 +38,6 @@ const OrganizationProjectsPage = () => {
   const getProjectList = async (page: number = 1, pageSize: number = 20, org_id: number) => {
     try {
       const res = await getProjects(page, pageSize, org_id);
-      console.warn(res);
       setProjectCount(res.count);
       setProjectList(res.results);
     } catch (error) {

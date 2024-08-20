@@ -15,7 +15,7 @@ class Discussion(models.Model):
 
 class DiscussionTopic(models.Model):
     discussion = models.ForeignKey(Discussion, on_delete=models.CASCADE, related_name='topics')
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=40)
     category_id = models.IntegerField()
     local_id = models.IntegerField(editable=False)  # local id, in the same discussion(organization) scope
     deleted = models.BooleanField(default=False) # soft delete

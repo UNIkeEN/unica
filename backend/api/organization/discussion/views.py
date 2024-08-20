@@ -97,7 +97,7 @@ def create_topic(request, id):
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
-@organization_permission_classes()
+@organization_permission_classes(['Owner', 'Member'])
 def list_topics(request, id):
     class CustomPagination(PageNumberPagination):
         page_size_query_param = 'page_size'
