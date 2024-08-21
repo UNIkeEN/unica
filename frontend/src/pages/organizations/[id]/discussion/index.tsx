@@ -5,8 +5,6 @@ import { useToast } from "@/contexts/toast";
 import { 
   VStack, 
   Text, 
-  Card,
-  CardBody,
   Flex,
   Spacer
 } from '@chakra-ui/react';
@@ -17,6 +15,7 @@ import { listTopics } from "@/services/discussion";
 import EnableDiscussionConfirmModal from "@/components/modals/enable-discussion-confirm-modal";
 import RichList from "@/components/rich-list";
 import Pagination from "@/components/pagination";
+import { formatRelativeTime } from "@/utils/datetime";
 
 const OrganizationDiscussionPage = () => {
   const orgCtx = useContext(OrganizationContext);
@@ -77,29 +76,35 @@ const OrganizationDiscussionPage = () => {
 
   return (
     <VStack spacing={6} align="stretch">
-      <Card>
-        <CardBody>
+      {topicList && topicList.length > 0 &&
+        <>
           <RichList
+            titleAsLink
+            titleProps={{color: "black"}}
             items={
               topicList.map((topic) => ({
                 title: topic.title,
-                // TODO
+                href: `/organizations/${router.query.id}/discussion/${topic.local_id}`,
+                body:
+                  <Text fontSize="sm" className="secondary-text">
+                    {t("General.updated_at", {
+                      time: formatRelativeTime(topic.updated_at, t)
+                    })}
+                  </Text>
               }))
             }
           />
-        </CardBody>
-      </Card>
-      {topicList && topicList.length > 0 &&
-        <Flex>
-          <Spacer />
-          <Pagination
-            total={Math.ceil(topicCount / pageSize)}
-            current={pageIndex}
-            onPageChange={(page)=>setPageIndex(page)}
-            colorScheme="blue"
-            variant="subtle"
-          />
-        </Flex>
+          <Flex>
+            <Spacer />
+            <Pagination
+              total={Math.ceil(topicCount / pageSize)}
+              current={pageIndex}
+              onPageChange={(page)=>setPageIndex(page)}
+              colorScheme="blue"
+              variant="subtle"
+            />
+          </Flex>
+        </>
       }
     </VStack>
   )

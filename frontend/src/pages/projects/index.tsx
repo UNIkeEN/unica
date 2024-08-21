@@ -58,9 +58,8 @@ const MyProjectsPage = () => {
       </Head>
       <VStack spacing={6} align="stretch">
       {/* TODO: Create Project Button and Modal */}
-        <div>
-          <Divider />
-          {projectList && projectList.length > 0 &&
+        {projectList && projectList.length > 0 &&
+          <>
             <RichList
               titleAsLink
               items={
@@ -76,19 +75,17 @@ const MyProjectsPage = () => {
                 }))
               }
             />
-          }
-        </div>
-        {projectList && projectList.length > 0 &&
-          <Flex>
-            <Spacer />
-            <Pagination
-              total={Math.ceil(projectCount / pageSize)}
-              current={pageIndex}
-              onPageChange={(page)=>setPageIndex(page)}
-              colorScheme="blue"
-              variant="subtle"
-            />
-          </Flex>
+            <Flex>
+              <Spacer />
+              <Pagination
+                total={Math.ceil(projectCount / pageSize)}
+                current={pageIndex}
+                onPageChange={(page)=>setPageIndex(page)}
+                colorScheme="blue"
+                variant="subtle"
+              />
+            </Flex>
+          </>
         }
       </VStack>
     </>

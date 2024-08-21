@@ -165,9 +165,8 @@ const OrganizationMembersPage = () => {
           </HStack>
         }
 
-        <div>
-          <Divider />
-          {listData && listData.length > 0 &&
+        {listData && listData.length > 0 &&
+          <>
             <RichList
               items={listData.map((member) => ({
                 title: member.user.display_name,
@@ -210,24 +209,22 @@ const OrganizationMembersPage = () => {
                   </HStack>
               }))} 
             />
-          }
-        </div>
-        {listData && listData.length > 0 && (
-          <Flex>
-            <Spacer />
-            <Pagination
-              total={
-                ListDomain === "members"
-                  ? Math.ceil(orgCtx.basicInfo.member_count / pageSize)
-                  : Math.ceil(pendingCount / pageSize)
-              }
-              current={pageIndex}
-              onPageChange={handlePageChange}
-              colorScheme="blue"
-              variant="subtle"
-            />
-          </Flex>
-        )}
+            <Flex>
+              <Spacer />
+              <Pagination
+                total={
+                  ListDomain === "members"
+                    ? Math.ceil(orgCtx.basicInfo.member_count / pageSize)
+                    : Math.ceil(pendingCount / pageSize)
+                }
+                current={pageIndex}
+                onPageChange={handlePageChange}
+                colorScheme="blue"
+                variant="subtle"
+              />
+            </Flex>
+          </>
+        }
 
       </VStack>
 
