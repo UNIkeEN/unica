@@ -104,6 +104,15 @@
             }
         }
     },
+    "MarkdownEditor": {
+        "tab": {
+            "edit": "Edit",
+            "preview": "Preview"
+        },
+        "button": {
+            "support-markdown": "Markdown is supported"
+        }
+    },
     "MyOrganizationsPage": {
         "title": "My Organizations",
         "header": "My Organizations",

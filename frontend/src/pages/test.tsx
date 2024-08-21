@@ -5,6 +5,7 @@ import { Button, VStack, Badge } from "@chakra-ui/react";
 import Pagination from "@/components/pagination";
 import ChakraColorSelector from "@/components/color-selector";
 import MarkdownRenderer from "@/components/markdown-renderer";
+import MarkdownEditor from "@/components/markdown-editor";
 
 const ComponentTestPage = () => {
   const router = useRouter();
@@ -30,14 +31,8 @@ const ComponentTestPage = () => {
     setSelectedColor(color);
   }
 
-  const breadcrumbs = [
-    { text: "Item1", link: "/" },
-    { text: "Item2", link: "/projects" },
-  ];
-
-  // Markdown
-  const exampleMarkdown = `
-  \`\`\`js
+  // Markdown Editor
+  const exampleMarkdown = `\`\`\`js
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Markdown from 'react-markdown'
@@ -51,8 +46,14 @@ ReactDOM.render(
   <Markdown rehypePlugins={[rehypeHighlight]}>{markdown}</Markdown>,
   document.querySelector('#content')
 )
-  \`\`\`
-  `
+  \`\`\``
+
+  const [markdown, setMarkdown] = React.useState(exampleMarkdown);
+
+  const breadcrumbs = [
+    { text: "Item1", link: "/" },
+    { text: "Item2", link: "/projects" },
+  ];
 
   return (
     <>
@@ -89,8 +90,12 @@ ReactDOM.render(
           w="60%"
         />
 
-        {/* MarkdownRenderer */}
-        <MarkdownRenderer content={exampleMarkdown}/>
+        {/* Markdown */}
+        <MarkdownEditor 
+          content={markdown} 
+          onContentChange={(content) => setMarkdown(content)} 
+          w="60%"
+        />
           
       </VStack>
     </>

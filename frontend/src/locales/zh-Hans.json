@@ -104,6 +104,15 @@
             }
         }
     },
+    "MarkdownEditor": {
+        "tab": {
+            "edit": "编辑",
+            "preview": "预览"
+        },
+        "button": {
+            "support-markdown": "支持 Markdown 语法"
+        }
+    },
     "MyOrganizationsPage": {
         "title": "我的组织",
         "header": "组织",

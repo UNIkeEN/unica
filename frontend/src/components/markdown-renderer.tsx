@@ -9,7 +9,7 @@ import {
   BoxProps,
 } from "@chakra-ui/react";
 
-import 'github-markdown-css/github-markdown.css';
+import 'github-markdown-css/github-markdown-light.css';
 import 'highlight.js/styles/github.css';
 
 interface MdRendererProps extends BoxProps {
