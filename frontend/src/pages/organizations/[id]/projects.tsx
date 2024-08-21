@@ -70,7 +70,7 @@ const OrganizationProjectsPage = () => {
                   href: `/projects/${project.id}/board`,
                   body:
                   <Text fontSize="sm" className="secondary-text">
-                    {t("OrganizationPages.projects.list.updated_at", {
+                    {t("General.updated_at", {
                       time: formatRelativeTime(project.updated_at, t)
                     })}
                   </Text>

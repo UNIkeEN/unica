@@ -10,7 +10,7 @@ const NavTabs: React.FC<NavTabsProps> = ({
 }) => {
 //   const selectedIndex = items.findIndex(item => selectedKeys.includes(item.value));
   const selectedIndex = items.findIndex(item => 
-    selectedKeys.some(key => item.value.startsWith(key))
+    selectedKeys.some(key => key.startsWith(item.value))
   );
 
   return (

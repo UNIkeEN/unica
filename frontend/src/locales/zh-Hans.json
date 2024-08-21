@@ -52,7 +52,8 @@
         }
     },
     "General": {
-        "loading": "加载中"
+        "loading": "加载中",
+        "updated_at": "更新于 {{time}}"
     },
     "HomePage": {
         "title": "主页",
@@ -124,10 +125,7 @@
     },
     "MyProjectsPage": {
         "title": "我的项目",
-        "header": "项目",
-        "list": {
-            "updated_at": "更新于 {{time}}"
-        }
+        "header": "项目"
     },
     "NotFoundPage": {
         "title": "页面不存在",
@@ -146,10 +144,7 @@
             "title": "概览"
         },
         "projects": {
-            "title": "项目",
-            "list": {
-                "updated_at": "更新于 {{time}}"
-            }
+            "title": "项目"
         },
         "members": {
             "title": "成员",
@@ -224,6 +219,9 @@
             "enableDiscussion": {
                 "success": "讨论功能已启用",
                 "error": "操作失败"
+            },
+            "listTopics": {
+                "error": "获取话题列表失败"
             }
         },
         "projects": {

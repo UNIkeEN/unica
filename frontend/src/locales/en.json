@@ -52,7 +52,8 @@
         }
     },
     "General": {
-        "loading": "Loading"
+        "loading": "Loading",
+        "updated_at": "Updated {{time}}"
     },
     "HomePage": {
         "title": "Home",
@@ -124,10 +125,7 @@
     },
     "MyProjectsPage": {
         "title": "My Projects",
-        "header": "My Projects",
-        "list": {
-            "updated_at": "Updated {{time}}"
-        }
+        "header": "My Projects"
     },
     "NotFoundPage": {
         "title": "Page Not Found",
@@ -146,10 +144,7 @@
             "title": "Overview"
         },
         "projects": {
-            "title": "Projects",
-            "list": {
-                "updated_at": "Updated {{time}}"
-            }
+            "title": "Projects"
         },
         "members": {
             "title": "Members",
@@ -224,6 +219,9 @@
             "enableDiscussion": {
                 "success": "Discussion enabled",
                 "error": "Operation failed"
+            },
+            "listTopics": {
+                "error": "Failed to get discussion list"
             }
         },
         "projects": {
