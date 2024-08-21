@@ -8,7 +8,7 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from .models import Discussion
 from api.organization.decorators import organization_permission_classes
-from .serializers import DiscussionTopicSerializer, DiscussionSerializer, DiscussionCommentSerializer
+from .serializers import *
 
 
 @swagger_auto_schema(
@@ -36,23 +36,14 @@ def enable_discussion(request, id):
 #create_topic
 @swagger_auto_schema(
     method='post',
-    request_body=openapi.Schema(
-        type=openapi.TYPE_OBJECT,
-        properties={
-            'title': openapi.Schema(type=openapi.TYPE_STRING),
-            'category_id': openapi.Schema(type=openapi.TYPE_INTEGER)
-        },
-        required=['title', 'category_id']
-    ),
+    request_body=TopicCreationSerializer,
     responses={
-        201: openapi.Response(
-            description="Discussion topic created successfully",
-        ),
+        201: openapi.Response(description="Discussion topic created successfully"),
         400: openapi.Response(description="Invalid input"),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
         404: openapi.Response(description="Organization not found"),
     },
-    operation_description="Create a new discussion topic in this organization.",
+    operation_description="Create a new discussion topic in this organization, with an optional initial comment.",
     tags=["Organization/Discussion"]
 )
 @api_view(['POST'])
@@ -65,11 +56,12 @@ def create_topic(request, id):
         return Response({'detail': 'Discussion not enabled in this organization'}, status=status.HTTP_404_NOT_FOUND)
 
     data = request.data
-    serializer = DiscussionTopicSerializer(data=data, context={'discussion': organization.discussion})
+    serializer = TopicCreationSerializer(data=data, context={'discussion': organization.discussion, 'request': request})
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
@@ -153,4 +145,120 @@ def delete_topic(request, id):
 
     topic.deleted = True
     topic.save()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@swagger_auto_schema(
+    method='post',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'topic_local_id': openapi.Schema(type=openapi.TYPE_INTEGER),
+            'content': openapi.Schema(type=openapi.TYPE_STRING, max_length=200)
+        },
+        required=['topic_local_id', 'content']
+    ),
+    responses={
+        201: openapi.Response(description="Comment added successfully"),
+        400: openapi.Response(description="Invalid input"),
+        403: openapi.Response(description="Authenticated user does not have the required permissions"),
+        404: openapi.Response(description="Topic not found or has been deleted"),
+    },
+    operation_description="Add a comment to an existing discussion topic.",
+    tags=["Organization/Discussion"]
+)
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@organization_permission_classes(['Owner', 'Member'])
+def create_comment(request, id):
+    organization = request.organization
+    topic_local_id = request.data.get('topic_local_id')
+
+    try:
+        topic = DiscussionTopic.objects.get(discussion=organization.discussion, local_id=topic_local_id, deleted=False)
+    except DiscussionTopic.DoesNotExist:
+        return Response({'detail': 'Topic not found or has been deleted'}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = CommentCreationSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save(topic=topic, user=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@swagger_auto_schema(
+    method='post',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'topic_local_id': openapi.Schema(type=openapi.TYPE_INTEGER),
+        },
+        required=['topic_local_id']
+    ),
+    responses={
+        200: openapi.Response(description="List of comments retrieved successfully"),
+        403: openapi.Response(description="Authenticated user does not have the required permissions"),
+        404: openapi.Response(description="Topic not found or has been deleted"),
+    },
+    operation_description="Retrieve a list of comments for an existing discussion topic.",
+    tags=["Organization/Discussion"]
+)
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@organization_permission_classes(['Owner', 'Member'])
+def list_comment(request, id):
+    organization = request.organization
+    topic_local_id = request.data.get('topic_local_id')
+
+    try:
+        topic = DiscussionTopic.objects.get(discussion=organization.discussion, local_id=topic_local_id, deleted=False)
+    except DiscussionTopic.DoesNotExist:
+        return Response({'detail': 'Topic not found or has been deleted'}, status=status.HTTP_404_NOT_FOUND)
+
+    comments = topic.comments.order_by('created_at')
+    serializer = DiscussionCommentSerializer(comments, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@swagger_auto_schema(
+    method='delete',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'topic_local_id': openapi.Schema(type=openapi.TYPE_INTEGER),
+            'comment_id': openapi.Schema(type=openapi.TYPE_INTEGER)
+        },
+        required=['topic_local_id']
+    ),
+    responses={
+        204: openapi.Response(description="Comment deleted successfully"),
+        403: openapi.Response(description="Authenticated user does not have the required permissions"),
+        404: openapi.Response(description="Comment not found"),
+    },
+    operation_description="Delete a comment from an existing discussion topic.",
+    tags=["Organization/Discussion"]
+)
+@api_view(['DELETE'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@organization_permission_classes(['Owner'])
+def delete_comment(request, id):
+    organization = request.organization
+    topic_local_id = request.data.get('topic_local_id')
+    comment_id = request.data.get('comment_id')
+
+    try:
+        topic = DiscussionTopic.objects.get(discussion=organization.discussion, local_id=topic_local_id, deleted=False)
+    except DiscussionTopic.DoesNotExist:
+        return Response({'detail': 'Topic not found or has been deleted'}, status=status.HTTP_404_NOT_FOUND)
+
+    try:
+        comment = DiscussionComment.objects.get(topic=topic, id=comment_id, deleted=False)
+    except DiscussionComment.DoesNotExist:
+        return Response({'detail': 'Comment not found'}, status=status.HTTP_404_NOT_FOUND)
+    comment.delete()
+
     return Response(status=status.HTTP_204_NO_CONTENT)
