@@ -11,12 +11,14 @@ import {
   BoxProps,
   Textarea,
   VStack,
-  HStack
+  HStack,
+  Divider
 } from '@chakra-ui/react';
 import MarkdownRenderer from '@/components/markdown-renderer';
 import { useTranslation } from 'next-i18next';
 import { FaMarkdown } from "react-icons/fa";
-import { FiBold, FiItalic, FiCode } from 'react-icons/fi';
+import { FiBold, FiItalic, FiCode, FiList, FiCheckSquare } from 'react-icons/fi';
+import { LuTextQuote, LuListChecks } from "react-icons/lu";
 
 interface MarkdownEditorProps extends BoxProps {
   content: string;
@@ -103,6 +105,81 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       textarea.selectionEnd = newSelectionEnd;
     });
   };
+
+  const handleListOperation = (prefix: string, checkOtherLists: boolean = true) => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+  
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = content.substring(start, end);
+    const lines = selectedText.split('\n');
+  
+    const allStartWithPrefix = lines.every(line => line.startsWith(prefix));
+    const allStartWithOtherLists = checkOtherLists && lines.every(line => line.startsWith('- [ ] ') || line.startsWith('- [x] ') || line.startsWith('* ') || line.startsWith('1. '));
+  
+    let newText: string;
+  
+    if (allStartWithPrefix) {
+      newText = lines.map(line => line.slice(prefix.length)).join('\n');
+    } else if (allStartWithOtherLists) {
+      newText = lines.map(line => line.replace(/^- \[ \] |^- \[x\] |\* |^\d+\. /, prefix)).join('\n');
+    } else {
+      newText = lines.map(line => prefix + line).join('\n');
+    }
+  
+    onContentChange(content.substring(0, start) + newText + content.substring(end));
+    requestAnimationFrame(() => {
+      textarea.focus();
+      textarea.selectionStart = start;
+      textarea.selectionEnd = start + newText.length;
+    });
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+  
+    if (e.key === 'Enter') {
+      const start = textarea.selectionStart;
+      const lines = content.substring(0, start).split('\n');
+      const lastLine = lines[lines.length - 1];
+  
+      let newLinePrefix = '';
+      const unorderedListMatch = lastLine.match(/^(\s*)\* /);
+      const orderedListMatch = lastLine.match(/^(\s*)(\d+)\. /);
+      const taskListMatch = lastLine.match(/^(\s*)- \[(x| )\] /);
+  
+      if (unorderedListMatch) {
+        newLinePrefix = unorderedListMatch[1] + '* ';
+      } else if (orderedListMatch) {
+        const number = parseInt(orderedListMatch[2], 10) + 1;
+        newLinePrefix = orderedListMatch[1] + number + '. ';
+      } else if (taskListMatch) {
+        newLinePrefix = taskListMatch[1] + '- [ ] ';
+      }
+  
+      if (newLinePrefix) {
+        e.preventDefault();
+        const newText = content.substring(0, start) + '\n' + newLinePrefix + content.substring(start);
+        onContentChange(newText);
+        requestAnimationFrame(() => {
+          textarea.focus();
+          textarea.selectionStart = textarea.selectionEnd = start + newLinePrefix.length + 1;
+        });
+      }
+    }
+  
+    if (e.ctrlKey || e.metaKey) {
+      if (e.key === 'b') {
+        e.preventDefault();
+        handleTextFormatting("**");
+      } else if (e.key === 'i') {
+        e.preventDefault();
+        handleTextFormatting("_");
+      }
+    }
+  };
   
 
   const ToolBar = () => {
@@ -118,15 +195,32 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         onClick: () => handleTextFormatting("~"),
       },
       {
+        label: "quote",
+        icon: <LuTextQuote />,
+        onClick: () => handleListOperation("> ", false),
+      },
+      {
         label: "code",
         icon: <FiCode />,
         onClick: () => handleTextFormatting("`"),
       },
+      { label: "divider" },
+      {
+        label: "unordered-list",
+        icon: <FiList/>,
+        onClick: () => handleListOperation("* "),
+      },
+      {
+        label: "task-list",
+        icon: <LuListChecks />,
+        onClick: () => handleListOperation("- [ ] "),
+      }
     ];
 
     return (
       <HStack ml="auto" mr={2} spacing={0}>
         {btnList.map((btn) => (
+          btn.label === "divider" ? <Divider orientation='vertical' mx={1}/> :
           <IconButton
             aria-label={btn.label}
             icon={btn.icon}
@@ -173,17 +267,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
                 minHeight={'200px'}
                 resize="vertical"
                 overflow="auto"
-                onKeyDown={(e) => {
-                  if (e.ctrlKey || e.metaKey) {
-                    if (e.key === 'b') {
-                      e.preventDefault();
-                      handleTextFormatting("**");
-                    } else if (e.key === 'i') {
-                      e.preventDefault();
-                      handleTextFormatting("~");
-                    }
-                  }
-                }}
+                onKeyDown={handleKeyDown}
               />
               <Button 
                 variant="ghost" 
