@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from .models import Discussion, DiscussionTopic, DiscussionComment
-
+from api.user.serializers import UserBasicInfoSerializer
 
 
 class DiscussionSerializer(serializers.ModelSerializer):
@@ -14,9 +14,10 @@ class DiscussionSerializer(serializers.ModelSerializer):
 
 
 class DiscussionTopicSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
     class Meta:
         model = DiscussionTopic
-        fields = ['id', 'title', 'category_id', 'local_id', 'deleted', 'created_at', 'updated_at']
+        fields = ['id', 'title', 'category_id', 'local_id', 'deleted', 'created_at', 'updated_at', 'user']
         read_only_fields = ['created_at', 'updated_at']
         depth = 1
 
@@ -31,11 +32,18 @@ class DiscussionTopicSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Invalid category_id.")
         return data
 
+    def get_user(self, obj):
+        earliest_comment = obj.comments.order_by('created_at').first()
+        if earliest_comment:
+            return UserBasicInfoSerializer(earliest_comment.user).data
+        return None
+
 
 class DiscussionCommentSerializer(serializers.ModelSerializer):
+    user = UserBasicInfoSerializer()
     class Meta:
         model = DiscussionComment
-        fields = ['id', 'user', 'topic', 'content', 'created_at', 'updated_at']
+        fields = ['id', 'user', 'topic', 'content', 'created_at', 'updated_at', 'user']
 
 class CommentCreationSerializer(serializers.ModelSerializer):
     class Meta:
