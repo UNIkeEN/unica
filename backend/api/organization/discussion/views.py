@@ -33,12 +33,16 @@ def enable_discussion(request, id):
     Discussion.objects.create(organization=organization)
     return Response({'detail': 'Discussion enabled in this organization'}, status=status.HTTP_200_OK)
 
+
 #create_topic
 @swagger_auto_schema(
     method='post',
     request_body=TopicCreationSerializer,
     responses={
-        201: openapi.Response(description="Discussion topic created successfully"),
+        201: openapi.Response(
+            description="Discussion topic created successfully",
+            schema=TopicCreationSerializer
+        ),
         400: openapi.Response(description="Invalid input"),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
         404: openapi.Response(description="Organization not found"),
@@ -61,8 +65,6 @@ def create_topic(request, id):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 
 
 # topic list
@@ -111,9 +113,10 @@ def list_topics(request, id):
     serializer = DiscussionTopicSerializer(result_page, many=True)
     return paginator.get_paginated_response(serializer.data)
 
+
 # delete_topic
 @swagger_auto_schema(
-    method='delete',
+    method='post',
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
         properties={
@@ -129,7 +132,7 @@ def list_topics(request, id):
     operation_description="Delete a discussion topic in this organization.",
     tags=["Organization/Discussion"]
 )
-@api_view(['DELETE'])
+@api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner'])
@@ -159,7 +162,10 @@ def delete_topic(request, id):
         required=['topic_local_id', 'content']
     ),
     responses={
-        201: openapi.Response(description="Comment added successfully"),
+        201: openapi.Response(
+            description="Comment added successfully",
+            schema=CommentCreationSerializer
+        ),
         400: openapi.Response(description="Invalid input"),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
         404: openapi.Response(description="Topic not found or has been deleted"),
@@ -187,7 +193,6 @@ def create_comment(request, id):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 @swagger_auto_schema(
     method='post',
     request_body=openapi.Schema(
@@ -198,7 +203,10 @@ def create_comment(request, id):
         required=['topic_local_id']
     ),
     responses={
-        200: openapi.Response(description="List of comments retrieved successfully"),
+        200: openapi.Response(
+            description="List of comments retrieved successfully",
+            schema=DiscussionCommentSerializer(many=True)
+        ),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
         404: openapi.Response(description="Topic not found or has been deleted"),
     },
@@ -224,7 +232,7 @@ def list_comment(request, id):
 
 
 @swagger_auto_schema(
-    method='delete',
+    method='post',
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
         properties={
@@ -241,7 +249,7 @@ def list_comment(request, id):
     operation_description="Delete a comment from an existing discussion topic.",
     tags=["Organization/Discussion"]
 )
-@api_view(['DELETE'])
+@api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner'])
