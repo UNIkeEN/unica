@@ -9,21 +9,28 @@ import {
   Divider,
   Drawer,
   DrawerBody,
-  DrawerCloseButton,
   DrawerContent,
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
+  Flex,
   HStack,
   Heading,
   IconButton,
+  Spacer,
+  Text,
   VStack,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FiMaximize2, FiMinimize2, FiMessageCircle } from "react-icons/fi";
+import {
+  FiChevronDown,
+  FiMaximize2,
+  FiMessageCircle,
+  FiMinimize2,
+} from "react-icons/fi";
 
 const DiscussionTopicPage = () => {
   const router = useRouter();
@@ -34,7 +41,7 @@ const DiscussionTopicPage = () => {
   const [topic, setTopic] = useState<DiscussionTopic | null>(null);
   const [comments, setComments] = useState<DiscussionComment[]>([]);
   const [newComment, setNewComment] = useState<string>("");
-  const [fullheight, setFullheight] = useState<boolean>(false);
+  const [fullHeight, setFullHeight] = useState<boolean>(false);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -101,21 +108,28 @@ const DiscussionTopicPage = () => {
   return (
     <>
       <HStack>
-        <VStack>
+        <VStack spacing={6} align="stretch">
           <Heading>{topic?.title}</Heading>
-          <VStack>
-            {comments && comments.length > 0 && (
-              <RichList
-                items={comments.map((comment) => ({
-                  title: comment.user.display_name,
-                  subtitle: t("General.updated_at", {
-                    time: formatRelativeTime(comment.updated_at, t),
-                  }),
-                  body: <MarkdownRenderer content={comment.content} />,
-                }))}
-              />
-            )}
-          </VStack>
+          {comments && comments.length > 0 && (
+            <RichList
+              items={comments.map((comment) => ({
+                title: comment.user.display_name,
+                subtitle: comment.user.email,
+                titleExtra: (
+                  <Text
+                    fontSize="sm"
+                    className="secondary-text"
+                    wordBreak="break-all"
+                  >
+                    {t("General.updated_at", {
+                      time: formatRelativeTime(comment.updated_at, t),
+                    })}
+                  </Text>
+                ),
+                body: <MarkdownRenderer content={comment.content} />,
+              }))}
+            />
+          )}
           <AddCommentButton />
         </VStack>
         <Center height="50px">
@@ -130,20 +144,36 @@ const DiscussionTopicPage = () => {
         onClose={onClose}
         blockScrollOnMount={false}
         closeOnOverlayClick={false}
-        isFullHeight={fullheight}
+        isFullHeight={fullHeight}
       >
         <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>Add Comment</DrawerHeader>
-          <IconButton
-            aria-label="Full Height"
-            variant={"subtle"}
-            icon={fullheight ? <FiMinimize2 /> : <FiMaximize2 />}
-            onClick={() => {
-              setFullheight(!fullheight);
-            }}
-          />
+        <DrawerContent width={fullHeight ? "100%" : "50%"} margin={"0 auto"}>
+          <Flex>
+            <VStack>
+              <DrawerHeader>
+                {t("DiscussionTopicPage.drawer.title")}
+              </DrawerHeader>
+            </VStack>
+            <Spacer />
+            <IconButton
+              aria-label="Full Height"
+              variant={"ghost"}
+              icon={fullHeight ? <FiMinimize2 /> : <FiMaximize2 />}
+              onClick={() => {
+                setFullHeight(!fullHeight);
+              }}
+              size={"lg"}
+            />
+            <IconButton
+              aria-label="Close Drawer"
+              variant={"ghost"}
+              size={"lg"}
+              icon={<FiChevronDown />}
+              onClick={() => {
+                onClose();
+              }}
+            />
+          </Flex>
           <DrawerBody>
             <MarkdownEditor
               content={newComment}
@@ -155,10 +185,10 @@ const DiscussionTopicPage = () => {
 
           <DrawerFooter>
             <Button onClick={onClose}>
-              {t("ChangeMemberRoleModal.modal.cancel")}
+              {t("DiscussionTopicPage.drawer.cancel")}
             </Button>
             <Button colorScheme="blue" onClick={handleSubmission} ml={3}>
-              {t("ChangeMemberRoleModal.modal.change_role")}
+              {t("DiscussionTopicPage.drawer.submit")}
             </Button>
           </DrawerFooter>
         </DrawerContent>
