@@ -1,10 +1,11 @@
-import React, { use, useContext, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import Head from "next/head";
 import { useRouter } from 'next/router';
-import { Button, useToast } from '@chakra-ui/react';
+import { Button } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { jAccountLogin } from '@/services/auth';
 import AuthContext from '@/contexts/auth';
+import { useToast } from '@/contexts/toast';
 
 const LoginPage = () => {
   const router = useRouter();
@@ -13,33 +14,24 @@ const LoginPage = () => {
   const toast = useToast();
 
   useEffect(() => {
-    if (authCtx.isLoggedIn) {
-      router.push(router.query.next as string || '/');
-    }
-
     const { next, expired } = router.query;
+
+    if (authCtx.isLoggedIn) {
+      router.push(next as string || '/');
+    }
 
     if (expired === 'true') {
       toast({
         title: t('LoginPage.toast.session-expired'),
         status: 'warning',
-        duration: 5000,
-        position: "top",
-        isClosable: true,
       });
-
-      router.replace({
-        pathname: router.pathname, query: next ? { next } : {},
-      }, undefined, { shallow: true });
-    }
-
-    else if (next && !authCtx.isLoggedIn) {
+      let url = new URL(window.location.href);
+      url.searchParams.delete('expired');
+      window.history.replaceState(null, null, url.toString());
+    } else if (next && !authCtx.isLoggedIn) {
       toast({
         title: t('LoginPage.toast.need-login'),
-        status: 'info',
-        duration: 5000,
-        position: "top",
-        isClosable: true,
+        status: 'warning',
       });
     }
   }, [authCtx.isLoggedIn, router, toast, t]);
