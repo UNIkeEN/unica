@@ -45,13 +45,13 @@ class DiscussionCommentSerializer(serializers.ModelSerializer):
         model = DiscussionComment
         fields = ['id', 'user', 'topic', 'content', 'created_at', 'updated_at', 'user']
 
-class CommentCreationSerializer(serializers.ModelSerializer):
+class DiscussionCommentCreationSerializer(serializers.ModelSerializer):
     class Meta:
         model = DiscussionComment
         fields = ['content']
 
-class TopicCreationSerializer(serializers.ModelSerializer):
-    comment = CommentCreationSerializer(required=False)
+class DiscussionTopicCreationSerializer(serializers.ModelSerializer):
+    comment = DiscussionCommentCreationSerializer(required=False)
 
     class Meta:
         model = DiscussionTopic

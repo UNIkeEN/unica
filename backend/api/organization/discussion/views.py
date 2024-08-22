@@ -37,11 +37,11 @@ def enable_discussion(request, id):
 #create_topic
 @swagger_auto_schema(
     method='post',
-    request_body=TopicCreationSerializer,
+    request_body=DiscussionTopicCreationSerializer,
     responses={
         201: openapi.Response(
             description="Discussion topic created successfully",
-            schema=TopicCreationSerializer
+            schema=DiscussionTopicCreationSerializer
         ),
         400: openapi.Response(description="Invalid input"),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
@@ -60,7 +60,7 @@ def create_topic(request, id):
         return Response({'detail': 'Discussion not enabled in this organization'}, status=status.HTTP_404_NOT_FOUND)
 
     data = request.data
-    serializer = TopicCreationSerializer(data=data, context={'discussion': organization.discussion, 'request': request})
+    serializer = DiscussionTopicCreationSerializer(data=data, context={'discussion': organization.discussion, 'request': request})
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -164,7 +164,7 @@ def delete_topic(request, id):
     responses={
         201: openapi.Response(
             description="Comment added successfully",
-            schema=CommentCreationSerializer
+            schema=DiscussionCommentCreationSerializer
         ),
         400: openapi.Response(description="Invalid input"),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
@@ -186,7 +186,7 @@ def create_comment(request, id):
     except DiscussionTopic.DoesNotExist:
         return Response({'detail': 'Topic not found or has been deleted'}, status=status.HTTP_404_NOT_FOUND)
 
-    serializer = CommentCreationSerializer(data=request.data)
+    serializer = DiscussionCommentCreationSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save(topic=topic, user=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)

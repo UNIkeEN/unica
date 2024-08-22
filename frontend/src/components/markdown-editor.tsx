@@ -17,7 +17,7 @@ import {
 import MarkdownRenderer from '@/components/markdown-renderer';
 import { useTranslation } from 'next-i18next';
 import { FaMarkdown } from "react-icons/fa";
-import { FiBold, FiItalic, FiCode, FiList, FiCheckSquare } from 'react-icons/fi';
+import { FiBold, FiItalic, FiCode, FiList } from 'react-icons/fi';
 import { LuTextQuote, LuListChecks } from "react-icons/lu";
 
 interface MarkdownEditorProps extends BoxProps {
