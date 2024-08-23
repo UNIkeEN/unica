@@ -11,8 +11,10 @@ export interface DiscussionTopic {
 export interface DiscussionComment {
   id: number;
   user: UserBasicInfo;
-  local_id: number;
+  topic: number;
   content: string;
   created_at: string;
   updated_at: string;
+  local_id: number;
+  deleted: boolean;
 }

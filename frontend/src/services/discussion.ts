@@ -22,3 +22,30 @@ export async function listTopics(id: number, page: number, pageSize: number) {
     throw error;
   }
 }
+
+export async function listComments(id: number, page: number, pageSize: number, local_id: number) {
+  try {
+    const response = await request.post(`/api/organization/${id}/discussion/comment/list` ,{
+      topic_local_id: local_id,
+      page: page,
+      page_size: pageSize
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to get comment list', error);
+    throw error;
+  }
+}
+
+export async function createComment(id: number, local_id: number, content: string) {
+  try {
+    const response = await request.post(`/api/organization/${id}/discussion/comment/create/`, {
+      topic_local_id: local_id,
+      content: content
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to create topic', error);
+    throw error;
+  }
+}

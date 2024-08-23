@@ -238,6 +238,13 @@
             },
             "listTopics": {
                 "error": "Failed to get discussion list"
+            },
+            "listComments": {
+                "error": "Failed to get comment list"
+            },
+            "createComment": {
+                "error": "Failed to create comment",
+                "success": "Comment created successfully"
             }
         },
         "projects": {

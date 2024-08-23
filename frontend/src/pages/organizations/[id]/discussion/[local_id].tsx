@@ -1,7 +1,10 @@
 import MarkdownRenderer from "@/components/markdown-renderer";
 import NewDiscussionDrawer from "@/components/new-discussion-drawer";
 import RichList from "@/components/rich-list";
+import OrganizationContext from "@/contexts/organization";
+import { useToast } from "@/contexts/toast";
 import { DiscussionComment, DiscussionTopic } from "@/models/discussion";
+import { createComment, listComments } from "@/services/discussion";
 import { formatRelativeTime } from "@/utils/datetime";
 import {
   Center,
@@ -13,73 +16,93 @@ import {
   Show,
   Text,
   VStack,
-  useDisclosure
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  FiMessageCircle
-} from "react-icons/fi";
+import { FiMessageCircle } from "react-icons/fi";
 
 const DiscussionTopicPage = () => {
   const router = useRouter();
   const org_id = Number(router.query.id);
   const local_id = Number(router.query.local_id);
   const { t } = useTranslation();
+  const orgCtx = useContext(OrganizationContext);
+  const toast = useToast();
 
   const [topic, setTopic] = useState<DiscussionTopic | null>(null);
   const [comments, setComments] = useState<DiscussionComment[]>([]);
   const [newComment, setNewComment] = useState<string>("");
   const [fullHeight, setFullHeight] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(20);
+  const [commentCount, setCommentCount] = useState<number>(0);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
-    if (local_id) {
-      // Fetch topic and comments
-      setTopic({
-        id: 1,
-        local_id: local_id,
-        title: "Test Topic",
-        created_at: "2021-10-01T00:00:00",
-        updated_at: "2021-10-01T00:00:00",
-      });
-      setComments([
-        {
-          id: 1,
-          user: {
-            id: 1,
-            display_name: "Test User1",
-            biography: "Test User1 Bio",
-            email: "1@test.com",
-          },
-          local_id: local_id,
-          content: "Test Comment",
-          created_at: "2021-10-01T00:00:00",
-          updated_at: "2024-08-21T00:00:00",
-        },
-        {
-          id: 2,
-          user: {
-            id: 2,
-            display_name: "Test User2",
-            biography: "Test User2 Bio",
-            email: "2@test.com",
-          },
-          local_id: local_id,
-          content: "Test Comment 2",
-          created_at: "2021-10-01T00:00:00",
-          updated_at: "2023-08-01T00:00:00",
-        },
-      ]);
-    }
-  }, [local_id]);
+    //TODO: get topic from backend
+    setTopic({
+      id: 1,
+      local_id: local_id,
+      title: "Test Topic",
+      created_at: "2021-10-01T00:00:00",
+      updated_at: "2021-10-01T00:00:00",
+    });
+    getCommentsList(page, pageSize);
+  }, [page, pageSize]);
 
-  const handleSubmission = () => {
-    console.log("Submitting comment", newComment);
-    setNewComment("");
-    onClose();
+  const getCommentsList = async (page: number = 1, pageSize: number = 20) => {
+    try {
+      const res = await listComments(org_id, page, pageSize, local_id);
+      console.warn(res);
+      setComments(res.results);
+      setCommentCount(res.count);
+    } catch (error) {
+      console.error("Failed to get comment list:", error);
+      if (error.request && error.request.status === 403) {
+        orgCtx.toastNoPermissionAndRedirect();
+      } else {
+        toast({
+          title: t("Services.discussion.listComments.error"),
+          status: "error",
+        });
+      }
+      setComments([]);
+      setCommentCount(0);
+    }
+  };
+
+  const handleSubmission = async () => {
+    const success = await handleAddComment();
+    if (success) {
+      toast({
+        title: t("Services.discussion.createComment.success"),
+        status: "success",
+      });
+      setNewComment("");
+      onClose();
+    }
+  };
+
+  const handleAddComment = async () => {
+    try {
+      await createComment(org_id, local_id, newComment);
+      getCommentsList(page, pageSize);
+      return true;
+    } catch (error) {
+      console.error("Failed to create topic:", error);
+      if (error.request && error.request.status === 403) {
+        orgCtx.toastNoPermissionAndRedirect();
+      } else {
+        toast({
+          title: t("Services.discussion.createComment.error"),
+          status: "error",
+        });
+      }
+      return false;
+    }
   };
 
   const AddCommentButton = () => {

@@ -238,6 +238,13 @@
             },
             "listTopics": {
                 "error": "获取话题列表失败"
+            },
+            "listComments": {
+                "error": "获取评论列表失败"
+            },
+            "createComment": {
+                "error": "创建评论失败",
+                "success": "评论已成功创建"
             }
         },
         "projects": {
