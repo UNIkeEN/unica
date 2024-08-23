@@ -165,6 +165,7 @@ const DiscussionTopicPage = () => {
           setFullHeightReverse={() => setFullHeight(!fullHeight)}
           onOKCallback={handleSubmission}
           mobileSize={false}
+          children={<></>}
         />
       </Show>
 
@@ -182,6 +183,7 @@ const DiscussionTopicPage = () => {
           setFullHeightReverse={() => setFullHeight(!fullHeight)}
           onOKCallback={handleSubmission}
           mobileSize={true}
+          children={<></>}
         />
       </Hide>
     </>

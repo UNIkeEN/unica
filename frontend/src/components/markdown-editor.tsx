@@ -12,7 +12,8 @@ import {
   Textarea,
   VStack,
   HStack,
-  Divider
+  Divider,
+  Tooltip
 } from '@chakra-ui/react';
 import MarkdownRenderer from '@/components/markdown-renderer';
 import { useTranslation } from 'next-i18next';
@@ -185,33 +186,33 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   const ToolBar = () => {
     const btnList = [
       {
-        label: "bold",
+        label: "Bold",
         icon: <FiBold />,
         onClick: () => handleTextFormatting("**"),
       },
       {
-        label: "italic",
+        label: "Italic",
         icon: <FiItalic />,
-        onClick: () => handleTextFormatting("~"),
+        onClick: () => handleTextFormatting("_"),
       },
       {
-        label: "quote",
+        label: "Quote",
         icon: <LuTextQuote />,
         onClick: () => handleListOperation("> ", false),
       },
       {
-        label: "code",
+        label: "Code",
         icon: <FiCode />,
         onClick: () => handleTextFormatting("`"),
       },
       { label: "divider" },
       {
-        label: "unordered-list",
+        label: "Unordered-list",
         icon: <FiList/>,
         onClick: () => handleListOperation("* "),
       },
       {
-        label: "task-list",
+        label: "Task-list",
         icon: <LuListChecks />,
         onClick: () => handleListOperation("- [ ] "),
       }
@@ -221,14 +222,16 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       <HStack ml="auto" mr={2} spacing={0}>
         {btnList.map((btn) => (
           btn.label === "divider" ? <Divider orientation='vertical' mx={1}/> :
-          <IconButton
-            aria-label={btn.label}
-            icon={btn.icon}
-            variant="ghost"
-            colorScheme="gray"
-            size="sm"
-            onClick={btn.onClick}
+          <Tooltip label={btn.label}>
+            <IconButton
+          aria-label={btn.label}
+          icon={btn.icon}
+          variant="ghost"
+          colorScheme="gray"
+          size="sm"
+          onClick={btn.onClick}
           />
+        </Tooltip>
         ))}
       </HStack>
     );

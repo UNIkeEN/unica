@@ -42,7 +42,7 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
       <DrawerContent
         width={drawerProps.isFullHeight || mobileSize ? "100%" : "50%"}
         margin={"0 auto"}
-        rounded={"md"}
+        rounded={"lg"}
       >
         <Flex>
           <VStack>
