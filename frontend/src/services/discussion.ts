@@ -45,7 +45,7 @@ export async function createComment(id: number, local_id: number, content: strin
     });
     return response.data;
   } catch (error) {
-    console.error('Failed to create topic', error);
+    console.error('Failed to create comment', error);
     throw error;
   }
 }

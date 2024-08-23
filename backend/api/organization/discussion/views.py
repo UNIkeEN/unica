@@ -45,7 +45,7 @@ def enable_discussion(request, id):
         ),
         400: openapi.Response(description="Invalid input"),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
-        404: openapi.Response(description="Organization not found"),
+        404: openapi.Response(description="Organization not found, or discussion not enabled in this organization"),
     },
     operation_description="Create a new discussion topic in this organization, with an optional initial comment.",
     tags=["Organization/Discussion"]
@@ -82,7 +82,7 @@ def create_topic(request, id):
             description="List of discussion topics in the organization",
             schema=DiscussionTopicSerializer(many=True)
         ),
-        404: openapi.Response(description="Organization not found"),
+        404: openapi.Response(description="Organization not found, or discussion not enabled in this organization"),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
     },
     operation_description="Retrieve a paginated list of discussion topics in this organization.",
