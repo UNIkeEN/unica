@@ -19,18 +19,22 @@ import MarkdownRenderer from '@/components/markdown-renderer';
 import { useTranslation } from 'next-i18next';
 import { FaMarkdown } from "react-icons/fa";
 import { FiBold, FiItalic, FiCode, FiList } from 'react-icons/fi';
-import { LuTextQuote, LuListChecks } from "react-icons/lu";
+import { LuTextQuote, LuListChecks, LuStrikethrough, LuListOrdered } from "react-icons/lu";
 
 interface MarkdownEditorProps extends BoxProps {
   content: string;
   onContentChange: (content: string) => void;
   size?: string;
+  colorScheme?: string;
+  resize?: "none" | "vertical"
 }
 
 const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ 
   content, 
   onContentChange, 
   size = "md",
+  colorScheme = "blue",
+  resize = "vertical",
   ...boxProps 
 }) => {
   const [selectedTab, setSelectedTab] = useState(0);
@@ -111,22 +115,40 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     const textarea = textareaRef.current;
     if (!textarea) return;
   
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
+    let start = textarea.selectionStart;
+    let end = textarea.selectionEnd;
+    while (start > 0 && content[start - 1] !== '\n') start--;
+    while (end < content.length && content[end] !== '\n') end++;
     const selectedText = content.substring(start, end);
     const lines = selectedText.split('\n');
   
-    const allStartWithPrefix = lines.every(line => line.startsWith(prefix));
-    const allStartWithOtherLists = checkOtherLists && lines.every(line => line.startsWith('- [ ] ') || line.startsWith('- [x] ') || line.startsWith('* ') || line.startsWith('1. '));
+    const isOrderedList = /^\d+\.\s/.test(prefix);
+    const allStartWithPrefix = lines.every(line => 
+      isOrderedList ? /^\d+\.\s/.test(line) : line.startsWith(prefix)
+    );
+    const allStartWithOtherLists = checkOtherLists && lines.every(line =>
+      line.startsWith('- [ ] ') ||
+      line.startsWith('- [x] ') ||
+      line.startsWith('* ') ||
+      /^\d+\. /.test(line)
+    );
   
     let newText: string;
   
     if (allStartWithPrefix) {
-      newText = lines.map(line => line.slice(prefix.length)).join('\n');
-    } else if (allStartWithOtherLists) {
-      newText = lines.map(line => line.replace(/^- \[ \] |^- \[x\] |\* |^\d+\. /, prefix)).join('\n');
+      newText = lines.map(line => 
+        isOrderedList 
+        ? line.replace(/^\d+\.\s/, '') 
+        : line.slice(prefix.length)
+      ).join('\n');
     } else {
-      newText = lines.map(line => prefix + line).join('\n');
+      let counter = 1;
+      newText = lines.map(line => {
+        const cleanedLine = allStartWithOtherLists 
+        ? line.replace(/^- \[ \] |^- \[x\] |\* |^\d+\.\s/, '') 
+        : line;
+        return isOrderedList ? `${counter++}. ${cleanedLine}` : prefix + cleanedLine;
+      }).join('\n');
     }
   
     onContentChange(content.substring(0, start) + newText + content.substring(end));
@@ -196,6 +218,11 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         onClick: () => handleTextFormatting("_"),
       },
       {
+        label: "Strikethrough",
+        icon: <LuStrikethrough/>,
+        onClick: () => handleTextFormatting("~"),
+      },
+      {
         label: "Quote",
         icon: <LuTextQuote />,
         onClick: () => handleListOperation("> ", false),
@@ -207,12 +234,17 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       },
       { label: "divider" },
       {
-        label: "Unordered-list",
+        label: "Unordered list",
         icon: <FiList/>,
         onClick: () => handleListOperation("* "),
       },
       {
-        label: "Task-list",
+        label: "Ordered list",
+        icon: <LuListOrdered/>,
+        onClick: () => handleListOperation("1. "),
+      },
+      {
+        label: "Task list",
         icon: <LuListChecks />,
         onClick: () => handleListOperation("- [ ] "),
       }
@@ -224,12 +256,12 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
           btn.label === "divider" ? <Divider orientation='vertical' mx={1}/> :
           <Tooltip label={btn.label}>
             <IconButton
-          aria-label={btn.label}
-          icon={btn.icon}
-          variant="ghost"
-          colorScheme="gray"
-          size="sm"
-          onClick={btn.onClick}
+              aria-label={btn.label}
+              icon={btn.icon}
+              variant="ghost"
+              colorScheme="gray"
+              size="sm"
+              onClick={btn.onClick}
           />
         </Tooltip>
         ))}
@@ -242,12 +274,15 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       border="1px solid"
       borderColor="gray.200"
       borderRadius={size}
+      display="flex" flexDirection="column" height="100%"
       {...boxProps}
     >
       <Tabs 
         variant="enclosed"
         size={size}
+        colorScheme={colorScheme}
         onChange={(index) => handleTabSwitch(index)}
+        display="flex" flexDirection="column" height="100%"
       >
         <TabList m="-1px">
           <Tab>{t("MarkdownEditor.tab.edit")}</Tab>
@@ -255,20 +290,21 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
           <ToolBar/>
         </TabList>
 
-        <TabPanels>
-          <TabPanel>
+        <TabPanels flex="1" display="flex" flexDirection="column">
+          <TabPanel flex="1" display="flex" flexDirection="column">
             <VStack
               ref={vstackRef}
               align="start"
-              flexWrap="wrap"
+              flex="1"
               mb={-2}
             >
               <Textarea
                 ref={textareaRef}
                 value={content}
                 onChange={(e) => onContentChange(e.target.value)}
-                minHeight={'200px'}
-                resize="vertical"
+                minHeight="200px"
+                h={resize==="none" ? "100%" : "auto"}
+                resize={resize}
                 overflow="auto"
                 onKeyDown={handleKeyDown}
               />
