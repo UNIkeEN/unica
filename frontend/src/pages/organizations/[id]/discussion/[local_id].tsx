@@ -1,35 +1,25 @@
-import MarkdownEditor from "@/components/markdown-editor";
 import MarkdownRenderer from "@/components/markdown-renderer";
+import NewDiscussionDrawer from "@/components/new-discussion-drawer";
 import RichList from "@/components/rich-list";
 import { DiscussionComment, DiscussionTopic } from "@/models/discussion";
 import { formatRelativeTime } from "@/utils/datetime";
 import {
-  Button,
   Center,
   Divider,
-  Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerOverlay,
-  Flex,
   HStack,
   Heading,
+  Hide,
   IconButton,
-  Spacer,
+  Show,
   Text,
   VStack,
-  useDisclosure,
+  useDisclosure
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  FiChevronDown,
-  FiMaximize2,
-  FiMessageCircle,
-  FiMinimize2,
+  FiMessageCircle
 } from "react-icons/fi";
 
 const DiscussionTopicPage = () => {
@@ -138,61 +128,39 @@ const DiscussionTopicPage = () => {
         <AddCommentButton />
       </HStack>
 
-      <Drawer
-        isOpen={isOpen}
-        placement="bottom"
-        onClose={onClose}
-        blockScrollOnMount={false}
-        closeOnOverlayClick={false}
-        isFullHeight={fullHeight}
-      >
-        <DrawerOverlay />
-        <DrawerContent width={fullHeight ? "100%" : "50%"} margin={"0 auto"}>
-          <Flex>
-            <VStack>
-              <DrawerHeader>
-                {t("DiscussionTopicPage.drawer.title")}
-              </DrawerHeader>
-            </VStack>
-            <Spacer />
-            <IconButton
-              aria-label="Full Height"
-              variant={"ghost"}
-              icon={fullHeight ? <FiMinimize2 /> : <FiMaximize2 />}
-              onClick={() => {
-                setFullHeight(!fullHeight);
-              }}
-              size={"lg"}
-            />
-            <IconButton
-              aria-label="Close Drawer"
-              variant={"ghost"}
-              size={"lg"}
-              icon={<FiChevronDown />}
-              onClick={() => {
-                onClose();
-              }}
-            />
-          </Flex>
-          <DrawerBody>
-            <MarkdownEditor
-              content={newComment}
-              onContentChange={(content) => {
-                setNewComment(content);
-              }}
-            />
-          </DrawerBody>
+      <Show above="md">
+        <NewDiscussionDrawer
+          isOpen={isOpen}
+          placement="bottom"
+          onClose={onClose}
+          blockScrollOnMount={false}
+          closeOnOverlayClick={false}
+          isFullHeight={fullHeight}
+          pageName="DiscussionTopicPage"
+          newContent={newComment}
+          setNewContent={(content) => setNewComment(content)}
+          setFullHeightReverse={() => setFullHeight(!fullHeight)}
+          onOKCallback={handleSubmission}
+          mobileSize={false}
+        />
+      </Show>
 
-          <DrawerFooter>
-            <Button onClick={onClose}>
-              {t("DiscussionTopicPage.drawer.cancel")}
-            </Button>
-            <Button colorScheme="blue" onClick={handleSubmission} ml={3}>
-              {t("DiscussionTopicPage.drawer.submit")}
-            </Button>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
+      <Hide above="md">
+        <NewDiscussionDrawer
+          isOpen={isOpen}
+          placement="bottom"
+          onClose={onClose}
+          blockScrollOnMount={false}
+          closeOnOverlayClick={false}
+          isFullHeight={fullHeight}
+          pageName="DiscussionTopicPage"
+          newContent={newComment}
+          setNewContent={(content) => setNewComment(content)}
+          setFullHeightReverse={() => setFullHeight(!fullHeight)}
+          onOKCallback={handleSubmission}
+          mobileSize={true}
+        />
+      </Hide>
     </>
   );
 };
