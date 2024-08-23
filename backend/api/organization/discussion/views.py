@@ -238,7 +238,7 @@ def list_comment(request, id):
     request.query_params['page_size'] = request.data.get('page_size', 20)
     request.query_params._mutable = False
 
-    comments = topic.comments.order_by('created_at')
+    comments = topic.comments.filter(deleted=False).order_by('created_at')
     result_page = paginator.paginate_queryset(comments, request)
     serializer = DiscussionCommentSerializer(result_page, many=True)
 
@@ -251,14 +251,14 @@ def list_comment(request, id):
         type=openapi.TYPE_OBJECT,
         properties={
             'topic_local_id': openapi.Schema(type=openapi.TYPE_INTEGER),
-            'comment_id': openapi.Schema(type=openapi.TYPE_INTEGER)
+            'comment_local_id': openapi.Schema(type=openapi.TYPE_INTEGER),
         },
-        required=['topic_local_id']
+        required=['topic_local_id', 'comment_local_id']
     ),
     responses={
         204: openapi.Response(description="Comment deleted successfully"),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
-        404: openapi.Response(description="Comment not found"),
+        404: openapi.Response(description="Comment or topic not found"),
     },
     operation_description="Delete a comment from an existing discussion topic.",
     tags=["Organization/Discussion"]
@@ -270,7 +270,7 @@ def list_comment(request, id):
 def delete_comment(request, id):
     organization = request.organization
     topic_local_id = request.data.get('topic_local_id')
-    comment_id = request.data.get('comment_id')
+    comment_local_id = request.data.get('comment_local_id')
 
     try:
         topic = DiscussionTopic.objects.get(discussion=organization.discussion, local_id=topic_local_id, deleted=False)
@@ -278,9 +278,13 @@ def delete_comment(request, id):
         return Response({'detail': 'Topic not found or has been deleted'}, status=status.HTTP_404_NOT_FOUND)
 
     try:
-        comment = DiscussionComment.objects.get(topic=topic, id=comment_id)
+        comment = DiscussionComment.objects.get(topic=topic, local_id=comment_local_id, deleted=False)
     except DiscussionComment.DoesNotExist:
         return Response({'detail': 'Comment not found'}, status=status.HTTP_404_NOT_FOUND)
-    comment.delete()
+
+    # Mark the comment as deleted
+    comment.deleted = True
+    comment.save()
 
     return Response(status=status.HTTP_204_NO_CONTENT)
+
