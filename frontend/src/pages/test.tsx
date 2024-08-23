@@ -4,7 +4,6 @@ import Head from 'next/head';
 import { Button, VStack, Badge } from "@chakra-ui/react";
 import Pagination from "@/components/pagination";
 import ChakraColorSelector from "@/components/color-selector";
-import MarkdownRenderer from "@/components/markdown-renderer";
 import MarkdownEditor from "@/components/markdown-editor";
 
 const ComponentTestPage = () => {

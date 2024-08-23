@@ -11,9 +11,7 @@ import {
   Divider,
   HStack,
   Heading,
-  Hide,
   IconButton,
-  Show,
   Text,
   VStack,
   useDisclosure,
@@ -34,7 +32,6 @@ const DiscussionTopicPage = () => {
   const [topic, setTopic] = useState<DiscussionTopic | null>(null);
   const [comments, setComments] = useState<DiscussionComment[]>([]);
   const [newComment, setNewComment] = useState<string>("");
-  const [fullHeight, setFullHeight] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(20);
   const [commentCount, setCommentCount] = useState<number>(0);
@@ -151,41 +148,15 @@ const DiscussionTopicPage = () => {
         <AddCommentButton />
       </HStack>
 
-      <Show above="md">
-        <NewDiscussionDrawer
-          isOpen={isOpen}
-          placement="bottom"
-          onClose={onClose}
-          blockScrollOnMount={false}
-          closeOnOverlayClick={false}
-          isFullHeight={fullHeight}
-          pageName="DiscussionTopicPage"
-          newContent={newComment}
-          setNewContent={(content) => setNewComment(content)}
-          setFullHeightReverse={() => setFullHeight(!fullHeight)}
-          onOKCallback={handleSubmission}
-          mobileSize={false}
-          children={<></>}
-        />
-      </Show>
-
-      <Hide above="md">
-        <NewDiscussionDrawer
-          isOpen={isOpen}
-          placement="bottom"
-          onClose={onClose}
-          blockScrollOnMount={false}
-          closeOnOverlayClick={false}
-          isFullHeight={fullHeight}
-          pageName="DiscussionTopicPage"
-          newContent={newComment}
-          setNewContent={(content) => setNewComment(content)}
-          setFullHeightReverse={() => setFullHeight(!fullHeight)}
-          onOKCallback={handleSubmission}
-          mobileSize={true}
-          children={<></>}
-        />
-      </Hide>
+      <NewDiscussionDrawer
+        isOpen={isOpen}
+        onClose={onClose}
+        pageName="DiscussionTopicPage"
+        content={newComment}
+        setContent={(content) => setNewComment(content)}
+        onOKCallback={handleSubmission}
+        children={<></>}
+      />
     </>
   );
 };

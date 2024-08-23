@@ -1,3 +1,4 @@
+import { useState } from "react";
 import MarkdownEditor from "@/components/markdown-editor";
 import {
   Button,
@@ -12,63 +13,70 @@ import {
   IconButton,
   Spacer,
   VStack,
+  useBreakpointValue
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { FiChevronDown, FiMaximize2, FiMinimize2 } from "react-icons/fi";
 
 interface NewDiscussionDrawerProps extends DrawerProps {
   pageName: string;
-  mobileSize: boolean;
-  newContent: string;
-  setNewContent: (content: string) => void;
-  setFullHeightReverse: () => void;
+  content: string;
+  setContent: (content: string) => void;
   onOKCallback: () => void;
 }
 
 const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
   pageName,
-  mobileSize,
-  newContent,
-  setNewContent,
-  setFullHeightReverse,
+  content,
+  setContent,
   onOKCallback,
   ...drawerProps
 }) => {
+  const [fullHeight, setFullHeight] = useState<boolean>(false);
+  const _width = useBreakpointValue({ base: "100%", md: "60%" })
   const { t } = useTranslation();
 
   return (
-    <Drawer {...drawerProps}>
+    <Drawer 
+      placement="bottom"
+      blockScrollOnMount={false}
+      closeOnOverlayClick={false}
+      isFullHeight={fullHeight}
+      {...drawerProps}
+    >
       <DrawerOverlay />
       <DrawerContent
-        width={drawerProps.isFullHeight || mobileSize ? "100%" : "50%"}
+        width={fullHeight ? "100%" : _width}
         margin={"0 auto"}
         rounded={"lg"}
       >
         <Flex>
-          <VStack>
-            <DrawerHeader>{t(`${pageName}.drawer.title`)}</DrawerHeader>
-          </VStack>
+          <DrawerHeader flex="1">
+            {t(`${pageName}.drawer.title`)}
+          </DrawerHeader>
           <Spacer />
           <IconButton
             aria-label="Full Height"
-            variant={"ghost"}
-            icon={drawerProps.isFullHeight ? <FiMinimize2 /> : <FiMaximize2 />}
-            onClick={setFullHeightReverse}
-            size={"lg"}
+            variant="ghost"
+            icon={fullHeight ? <FiMinimize2 /> : <FiMaximize2 />}
+            onClick={() => setFullHeight(current => !current)}
+            size="lg"
           />
           <IconButton
             aria-label="Close Drawer"
-            variant={"ghost"}
-            size={"lg"}
+            variant="ghost"
+            size="lg"
             icon={<FiChevronDown />}
             onClick={drawerProps.onClose}
           />
         </Flex>
         <DrawerBody>
           <MarkdownEditor
-            content={newContent}
+            content={content}
+            resize="none"
+            h="100%"
             onContentChange={(content) => {
-              setNewContent(content);
+              setContent(content);
             }}
           />
         </DrawerBody>
