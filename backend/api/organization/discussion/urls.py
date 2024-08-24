@@ -6,6 +6,7 @@ urlpatterns = [
 
     #topic CRUD
     path('topic/create/', create_topic, name='create_topic'),
+    path('topic/info/', get_topic_info, name='get_topic_info'),
     path('topic/list/', list_topics, name='list_topic'),
     path('topic/delete/', delete_topic, name='delete_topic'),
 

@@ -23,6 +23,10 @@
         }
     },
     "DiscussionTopicPage": {
+        "button": {
+            "reply": "Reply",
+            "share": "Share"
+        },
         "drawer": {
             "title": "Add Comment",
             "submit": "Submit",
@@ -235,6 +239,9 @@
             "enableDiscussion": {
                 "success": "Discussion enabled",
                 "error": "Operation failed"
+            },
+            "getTopicInfo": {
+                "error": "Failed to get topic"
             },
             "listTopics": {
                 "error": "Failed to get discussion list"

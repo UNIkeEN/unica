@@ -10,6 +10,18 @@ export async function enableDiscussion(id: number) {
   }
 };
 
+export async function getTopicInfo(id: number, local_id: number) {
+  try {
+    const response = await request.post(`/api/organization/${id}/discussion/topic/info/`, {
+      topic_local_id: local_id,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to get topic info', error);
+    throw error;
+  }
+}
+
 export async function listTopics(id: number, page: number, pageSize: number) {
   try {
     const response = await request.post(`/api/organization/${id}/discussion/topic/list/`, {

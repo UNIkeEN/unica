@@ -23,6 +23,10 @@
         }
     },
     "DiscussionTopicPage": {
+        "button": {
+            "reply": "回复",
+            "share": "分享"
+        },
         "drawer": {
             "title": "添加评论",
             "submit": "提交",
@@ -235,6 +239,9 @@
             "enableDiscussion": {
                 "success": "讨论功能已启用",
                 "error": "操作失败"
+            },
+            "getTopicInfo": {
+                "error": "获取话题失败"
             },
             "listTopics": {
                 "error": "获取话题列表失败"

@@ -67,6 +67,41 @@ def create_topic(request, id):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@swagger_auto_schema(
+    method='post',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={ 'topic_local_id': openapi.Schema(type=openapi.TYPE_INTEGER) },
+        required=['topic_local_id']
+    ),
+    responses={
+        200: openapi.Response(
+            description="Discussion topic retrieved successfully",
+            schema=DiscussionTopicSerializer
+        ),
+        404: openapi.Response(description="Topic not found or has been deleted"),
+        403: openapi.Response(description="Authenticated user does not have the required permissions"),
+    },
+    operation_description="Retrieve a discussion topic in this organization.",
+    tags=["Organization/Discussion"]
+)
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@organization_permission_classes(['Owner', 'Member'])
+def get_topic_info(request, id):
+    organization = request.organization
+    if not hasattr(organization, 'discussion'):
+        return Response({'detail': 'Discussion not enabled in this organization'}, status=status.HTTP_404_NOT_FOUND)
+    topic_local_id = request.data.get('topic_local_id')
+    try:
+        topic = DiscussionTopic.objects.get(discussion=organization.discussion, local_id=topic_local_id, deleted=False)
+    except DiscussionTopic.DoesNotExist:
+        return Response({'detail': 'Topic not found or has been deleted'}, status=status.HTTP_404_NOT_FOUND)
+    serializer = DiscussionTopicSerializer(topic)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 # topic list
 @swagger_auto_schema(
     method='post',

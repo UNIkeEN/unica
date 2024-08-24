@@ -1,25 +1,30 @@
 import MarkdownRenderer from "@/components/markdown-renderer";
 import NewDiscussionDrawer from "@/components/new-discussion-drawer";
-import RichList from "@/components/rich-list";
+import CommentList from "@/components/comment-list";
 import OrganizationContext from "@/contexts/organization";
 import { useToast } from "@/contexts/toast";
 import { DiscussionComment, DiscussionTopic } from "@/models/discussion";
-import { createComment, listComments } from "@/services/discussion";
+import { getTopicInfo, createComment, listComments } from "@/services/discussion";
 import { formatRelativeTime } from "@/utils/datetime";
 import {
-  Center,
-  Divider,
-  HStack,
+  Grid,
+  GridItem,
   Heading,
   IconButton,
+  Button,
   Text,
   VStack,
+  Box,
   useDisclosure,
+  HStack,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import Head from 'next/head';
+import { useContext, useEffect, useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { FiMessageCircle } from "react-icons/fi";
+import { FaReply } from "react-icons/fa";
+import { LuArrowUpToLine } from "react-icons/lu";
+import { FiShare2 } from "react-icons/fi";
 
 const DiscussionTopicPage = () => {
   const router = useRouter();
@@ -35,20 +40,59 @@ const DiscussionTopicPage = () => {
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(20);
   const [commentCount, setCommentCount] = useState<number>(0);
+  const [isTitleVisible, setIsTitleVisible] = useState(true);
+  const titleRef = useRef(null);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
-    //TODO: get topic from backend
-    setTopic({
-      id: 1,
-      local_id: local_id,
-      title: "Test Topic",
-      created_at: "2021-10-01T00:00:00",
-      updated_at: "2021-10-01T00:00:00",
-    });
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsTitleVisible(entry.isIntersecting);
+      },{ threshold: 0.1 }
+    );
+    if (titleRef.current) {observer.observe(titleRef.current);}
+    return () => {if (titleRef.current) {observer.unobserve(titleRef.current);}};
+  }, []);
+
+  const breadcrumbs = [{ 
+    text: orgCtx.basicInfo?.display_name, 
+    link: `/organizations/${router.query.id}/discussion/` 
+  }];
+
+  useEffect(() => {
+    if (topic) {
+      const metaTitle = isTitleVisible ? orgCtx.basicInfo?.display_name : topic.title;
+      const metaBreadcrumbs = isTitleVisible
+        ? JSON.stringify("")
+        : JSON.stringify(breadcrumbs);
+      document.querySelector('meta[name="headerTitle"]').setAttribute("content", metaTitle);
+      document.querySelector('meta[name="headerBreadcrumbs"]').setAttribute("content", metaBreadcrumbs);
+    }
+  }, [isTitleVisible, topic]);
+
+  useEffect(() => {
+    getTopic();
     getCommentsList(page, pageSize);
   }, [page, pageSize]);
+
+  const getTopic = async () => {
+    try {
+      const res = await getTopicInfo(org_id, local_id);
+      setTopic(res);
+    } catch (error) {
+      console.error("Failed to get topic info:", error);
+      if (error.request && error.request.status === 403) {
+        orgCtx.toastNoPermissionAndRedirect();
+      } else {
+        toast({
+          title: t("Services.discussion.getTopicInfo.error"),
+          status: "error",
+        });
+      }
+      setTopic(null);
+    }
+  };
 
   const getCommentsList = async (page: number = 1, pageSize: number = 20) => {
     try {
@@ -102,51 +146,55 @@ const DiscussionTopicPage = () => {
     }
   };
 
-  const AddCommentButton = () => {
-    return (
-      <IconButton
-        aria-label="Add Comment"
-        variant={"subtle"}
-        icon={<FiMessageCircle />}
-        onClick={() => {
-          onOpen();
-        }}
-      />
-    );
-  };
-
   return (
     <>
-      <HStack>
-        <VStack spacing={6} align="stretch">
-          <Heading>{topic?.title}</Heading>
-          {comments && comments.length > 0 && (
-            <RichList
-              items={comments.map((comment) => ({
-                title: comment.user.display_name,
-                subtitle: comment.user.email,
-                titleExtra: (
-                  <Text
-                    fontSize="sm"
-                    className="secondary-text"
-                    wordBreak="break-all"
-                  >
-                    {t("General.updated_at", {
-                      time: formatRelativeTime(comment.updated_at, t),
-                    })}
-                  </Text>
-                ),
-                body: <MarkdownRenderer content={comment.content} />,
-              }))}
-            />
-          )}
-          <AddCommentButton />
-        </VStack>
-        <Center height="50px">
-          <Divider orientation="vertical" />
-        </Center>
-        <AddCommentButton />
-      </HStack>
+      <Head>
+        <meta name="headerTitle" content={orgCtx.basicInfo?.display_name} />
+        <meta name="headerBreadcrumbs" content="" />
+      </Head>
+      <Grid templateColumns='repeat(4, 1fr)' gap={16}>
+        <GridItem colSpan={{ base: 4, md: 3 }}>
+          <VStack spacing={6} align="stretch">
+            <Heading as='h3' size='lg' wordBreak="break-all" ref={titleRef}>
+              {topic?.title}<Text as='span' fontWeight="normal" color="gray.400" ml={2}>{`#${topic?.local_id}`}</Text>
+            </Heading>
+            {comments && comments.length > 0 && (
+              <CommentList items={comments} />
+            )}
+            <HStack spacing={2}>
+              <Button 
+                colorScheme="blue" 
+                leftIcon={<FaReply />}
+                onClick={() => { onOpen(); }}
+              >
+                {t("DiscussionTopicPage.button.reply")}
+              </Button>
+              <Button 
+                leftIcon={<FiShare2 />}
+                onClick={() => {}} // TODO: share
+              >
+                {t("DiscussionTopicPage.button.share")}
+              </Button>
+            </HStack>
+          </VStack>
+        </GridItem>
+        <GridItem colSpan={{ base: 0, md: 1 }} display={{ base: 'none', md: 'block' }}>
+          <Box position="sticky" top="2">
+            <HStack spacing={2}>
+              <IconButton
+                aria-label="Add Comment"
+                icon={<FaReply />}
+                onClick={() => { onOpen(); }}
+              />
+              <IconButton
+                aria-label="Scroll to Top"
+                icon={<LuArrowUpToLine />}
+                onClick={() => { titleRef.current.scrollIntoView({ behavior: "smooth" }); }}
+              />
+            </HStack>
+          </Box>
+        </GridItem>
+      </Grid>
 
       <NewDiscussionDrawer
         isOpen={isOpen}
