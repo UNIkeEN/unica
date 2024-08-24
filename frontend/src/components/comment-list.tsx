@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { 
   Flex, 
   VStack,
@@ -10,13 +10,16 @@ import {
   Avatar,
   Spacer,
   Icon,
-  Tooltip
+  Tooltip,
+  IconButton
 } from "@chakra-ui/react";
 import { DiscussionComment } from "@/models/discussion";
 import MarkdownRenderer from "@/components/markdown-renderer";
 import { formatRelativeTime } from "@/utils/datetime";
 import { useTranslation } from "react-i18next";
-import { FiEdit } from "react-icons/fi";
+import { FiEdit, FiTrash2 } from "react-icons/fi";
+import UserContext from "@/contexts/user";
+import OrganizationContext from "@/contexts/organization";
 
 interface CommentListProps extends BoxProps {
   items: DiscussionComment[];
@@ -27,6 +30,8 @@ const CommentList: React.FC<CommentListProps> = ({
   ...boxProps 
 }) => {
   const { t } = useTranslation();
+  const userCtx = useContext(UserContext);
+  const orgCtx = useContext(OrganizationContext);
 
   return (
     <Box {...boxProps}>
@@ -68,6 +73,17 @@ const CommentList: React.FC<CommentListProps> = ({
                 </HStack>
               </Flex>
               <MarkdownRenderer content={item.content} minHeight="100px" width="100%"/>
+              {(userCtx.profile.id === item.user.id ||
+                  orgCtx.basicInfo.role === "Owner") && (
+                  <IconButton
+                    variant="ghost"
+                    mt="auto"
+                    ml="auto"
+                    aria-label="delete comment"
+                    icon={<FiTrash2 />}
+                    color="gray"
+                  />
+                )}
             </VStack>
           </Flex>
           <Divider/>

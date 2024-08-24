@@ -35,6 +35,34 @@ export async function listTopics(id: number, page: number, pageSize: number) {
   }
 }
 
+export async function createTopic(id: number, title: string, category_id: number, init_comment?: string) {
+  try {
+    const response = await request.post(`/api/organization/${id}/discussion/topic/create/`, {
+      title: title,
+      category_id: category_id,
+      comment: {
+        content: init_comment
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to create topic', error);
+    throw error;
+  }
+}
+
+export async function deleteTopic(id: number, topic_id: number) {
+  try {
+    const response = await request.post(`/api/organization/${id}/discussion/topic/delete/`, {
+      topic_id: topic_id
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to delete topic', error);
+    throw error;
+  }
+}
+
 export async function listComments(id: number, page: number, pageSize: number, local_id: number) {
   try {
     const response = await request.post(`/api/organization/${id}/discussion/comment/list` ,{
@@ -49,15 +77,28 @@ export async function listComments(id: number, page: number, pageSize: number, l
   }
 }
 
-export async function createComment(id: number, local_id: number, content: string) {
+export async function createComment(id: number, topic_local_id: number, content: string) {
   try {
     const response = await request.post(`/api/organization/${id}/discussion/comment/create/`, {
-      topic_local_id: local_id,
+      topic_local_id: topic_local_id,
       content: content
     });
     return response.data;
   } catch (error) {
     console.error('Failed to create comment', error);
+    throw error;
+  }
+}
+
+export async function deleteComment(id: number, topic_local_id: number, comment_local_id: number) {
+  try {
+    const response = await request.post(`/api/organization/${id}/discussion/comment/delete/`, {
+      comment_local_id: comment_local_id,
+      topic_local_id: topic_local_id
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to delete comment', error);
     throw error;
   }
 }

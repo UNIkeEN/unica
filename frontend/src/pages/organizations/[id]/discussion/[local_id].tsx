@@ -1,11 +1,9 @@
-import MarkdownRenderer from "@/components/markdown-renderer";
 import NewDiscussionDrawer from "@/components/new-discussion-drawer";
 import CommentList from "@/components/comment-list";
 import OrganizationContext from "@/contexts/organization";
 import { useToast } from "@/contexts/toast";
 import { DiscussionComment, DiscussionTopic } from "@/models/discussion";
 import { getTopicInfo, createComment, listComments } from "@/services/discussion";
-import { formatRelativeTime } from "@/utils/datetime";
 import {
   Grid,
   GridItem,
