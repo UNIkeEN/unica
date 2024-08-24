@@ -3,7 +3,12 @@ import CommentList from "@/components/comment-list";
 import OrganizationContext from "@/contexts/organization";
 import { useToast } from "@/contexts/toast";
 import { DiscussionComment, DiscussionTopic } from "@/models/discussion";
-import { getTopicInfo, createComment, listComments } from "@/services/discussion";
+import {
+  getTopicInfo,
+  createComment,
+  listComments,
+  deleteComment,
+} from "@/services/discussion";
 import {
   Grid,
   GridItem,
@@ -17,7 +22,7 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import Head from 'next/head';
+import Head from "next/head";
 import { useContext, useEffect, useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { FaReply } from "react-icons/fa";
@@ -47,25 +52,40 @@ const DiscussionTopicPage = () => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         setIsTitleVisible(entry.isIntersecting);
-      },{ threshold: 0.1 }
+      },
+      { threshold: 0.1 }
     );
-    if (titleRef.current) {observer.observe(titleRef.current);}
-    return () => {if (titleRef.current) {observer.unobserve(titleRef.current);}};
+    if (titleRef.current) {
+      observer.observe(titleRef.current);
+    }
+    return () => {
+      if (titleRef.current) {
+        observer.unobserve(titleRef.current);
+      }
+    };
   }, []);
 
-  const breadcrumbs = [{ 
-    text: orgCtx.basicInfo?.display_name, 
-    link: `/organizations/${router.query.id}/discussion/` 
-  }];
+  const breadcrumbs = [
+    {
+      text: orgCtx.basicInfo?.display_name,
+      link: `/organizations/${router.query.id}/discussion/`,
+    },
+  ];
 
   useEffect(() => {
     if (topic) {
-      const metaTitle = isTitleVisible ? orgCtx.basicInfo?.display_name : topic.title;
+      const metaTitle = isTitleVisible
+        ? orgCtx.basicInfo?.display_name
+        : topic.title;
       const metaBreadcrumbs = isTitleVisible
         ? JSON.stringify("")
         : JSON.stringify(breadcrumbs);
-      document.querySelector('meta[name="headerTitle"]').setAttribute("content", metaTitle);
-      document.querySelector('meta[name="headerBreadcrumbs"]').setAttribute("content", metaBreadcrumbs);
+      document
+        .querySelector('meta[name="headerTitle"]')
+        .setAttribute("content", metaTitle);
+      document
+        .querySelector('meta[name="headerBreadcrumbs"]')
+        .setAttribute("content", metaBreadcrumbs);
     }
   }, [isTitleVisible, topic]);
 
@@ -114,22 +134,8 @@ const DiscussionTopicPage = () => {
   };
 
   const handleSubmission = async () => {
-    const success = await handleAddComment();
-    if (success) {
-      toast({
-        title: t("Services.discussion.createComment.success"),
-        status: "success",
-      });
-      setNewComment("");
-      onClose();
-    }
-  };
-
-  const handleAddComment = async () => {
     try {
-      await createComment(org_id, local_id, newComment);
-      getCommentsList(page, pageSize);
-      return true;
+      createComment(org_id, local_id, newComment);
     } catch (error) {
       console.error("Failed to create topic:", error);
       if (error.request && error.request.status === 403) {
@@ -140,8 +146,35 @@ const DiscussionTopicPage = () => {
           status: "error",
         });
       }
-      return false;
     }
+    getCommentsList(page, pageSize);
+    toast({
+      title: t("Services.discussion.createComment.success"),
+      status: "success",
+    });
+    setNewComment("");
+  };
+
+  const handleCommentDelete = async (comment: DiscussionComment) => {
+    try {
+      await deleteComment(org_id, local_id, comment.local_id);
+    } catch (error) {
+      console.error("Failed to delete comment:", error);
+      if (error.request && error.request.status === 403) {
+        orgCtx.toastNoPermissionAndRedirect();
+      } else {
+        toast({
+          title: t("Services.discussion.deleteComment.error"),
+          status: "error",
+        });
+      }
+    }
+    getCommentsList(page, pageSize);
+    toast({
+      title: t("Services.discussion.deleteComment.success"),
+      status: "success",
+    });
+    onClose();
   };
 
   return (
@@ -150,24 +183,35 @@ const DiscussionTopicPage = () => {
         <meta name="headerTitle" content={orgCtx.basicInfo?.display_name} />
         <meta name="headerBreadcrumbs" content="" />
       </Head>
-      <Grid templateColumns='repeat(4, 1fr)' gap={16}>
+      <Grid templateColumns="repeat(4, 1fr)" gap={16}>
         <GridItem colSpan={{ base: 4, md: 3 }}>
           <VStack spacing={6} align="stretch">
-            <Heading as='h3' size='lg' wordBreak="break-all" ref={titleRef}>
-              {topic?.title}<Text as='span' fontWeight="normal" color="gray.400" ml={2}>{`#${topic?.local_id}`}</Text>
+            <Heading as="h3" size="lg" wordBreak="break-all" ref={titleRef}>
+              {topic?.title}
+              <Text
+                as="span"
+                fontWeight="normal"
+                color="gray.400"
+                ml={2}
+              >{`#${topic?.local_id}`}</Text>
             </Heading>
             {comments && comments.length > 0 && (
-              <CommentList items={comments} />
+              <CommentList
+                items={comments}
+                onCommentDelete={handleCommentDelete}
+              />
             )}
             <HStack spacing={2}>
-              <Button 
-                colorScheme="blue" 
+              <Button
+                colorScheme="blue"
                 leftIcon={<FaReply />}
-                onClick={() => { onOpen(); }}
+                onClick={() => {
+                  onOpen();
+                }}
               >
                 {t("DiscussionTopicPage.button.reply")}
               </Button>
-              <Button 
+              <Button
                 leftIcon={<FiShare2 />}
                 onClick={() => {}} // TODO: share
               >
@@ -176,18 +220,25 @@ const DiscussionTopicPage = () => {
             </HStack>
           </VStack>
         </GridItem>
-        <GridItem colSpan={{ base: 0, md: 1 }} display={{ base: 'none', md: 'block' }}>
+        <GridItem
+          colSpan={{ base: 0, md: 1 }}
+          display={{ base: "none", md: "block" }}
+        >
           <Box position="sticky" top="2">
             <HStack spacing={2}>
               <IconButton
                 aria-label="Add Comment"
                 icon={<FaReply />}
-                onClick={() => { onOpen(); }}
+                onClick={() => {
+                  onOpen();
+                }}
               />
               <IconButton
                 aria-label="Scroll to Top"
                 icon={<LuArrowUpToLine />}
-                onClick={() => { titleRef.current.scrollIntoView({ behavior: "smooth" }); }}
+                onClick={() => {
+                  titleRef.current.scrollIntoView({ behavior: "smooth" });
+                }}
               />
             </HStack>
           </Box>

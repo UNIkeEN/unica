@@ -22,6 +22,20 @@
             "descriptionTooLong": "组织描述不得超过 200 字"
         }
     },
+    "DeleteDiscussionAlertDialog": {
+        "topic": {
+            "title": "删除话题",
+            "content": "确定要删除此话题吗？",
+            "delete": "删除",
+            "cancel": "取消"
+        },
+        "comment": {
+            "title": "删除评论",
+            "content": "确定要删除此评论吗？",
+            "delete": "删除",
+            "cancel": "取消"
+        }
+    },
     "DiscussionTopicPage": {
         "button": {
             "reply": "回复",
@@ -252,6 +266,10 @@
             "createComment": {
                 "error": "创建评论失败",
                 "success": "评论已成功创建"
+            },
+            "deleteComment": {
+                "error": "删除评论失败",
+                "success": "评论已成功删除"
             }
         },
         "projects": {

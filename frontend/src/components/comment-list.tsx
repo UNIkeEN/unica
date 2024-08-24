@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
-import { 
-  Flex, 
+import {
+  Flex,
   VStack,
-  HStack, 
+  HStack,
   Divider,
   Text,
   Box,
@@ -11,7 +11,8 @@ import {
   Spacer,
   Icon,
   Tooltip,
-  IconButton
+  IconButton,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { DiscussionComment } from "@/models/discussion";
 import MarkdownRenderer from "@/components/markdown-renderer";
@@ -20,18 +21,25 @@ import { useTranslation } from "react-i18next";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import UserContext from "@/contexts/user";
 import OrganizationContext from "@/contexts/organization";
+import DeleteDiscussionAlertDialog from "./modals/delete-discussion-alert-dialog";
 
 interface CommentListProps extends BoxProps {
   items: DiscussionComment[];
+  onCommentDelete: (comment: DiscussionComment) => void;
 }
 
-const CommentList: React.FC<CommentListProps> = ({ 
-  items, 
-  ...boxProps 
+const CommentList: React.FC<CommentListProps> = ({
+  items,
+  onCommentDelete,
+  ...boxProps
 }) => {
   const { t } = useTranslation();
   const userCtx = useContext(UserContext);
   const orgCtx = useContext(OrganizationContext);
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [deleteComment, setDeleteComment] =
+    React.useState<DiscussionComment | null>(null);
 
   return (
     <Box {...boxProps}>
@@ -43,7 +51,7 @@ const CommentList: React.FC<CommentListProps> = ({
             <VStack spacing={2} ml={4} align="start" overflow="hidden" flex="1">
               <Flex width="100%" alignItems="center">
                 <HStack spacing={2} flexWrap="wrap">
-                  <Text 
+                  <Text
                     wordBreak="break-all"
                     fontSize="md"
                     fontWeight="semibold"
@@ -58,13 +66,13 @@ const CommentList: React.FC<CommentListProps> = ({
                 <Spacer />
                 <HStack spacing={2}>
                   {item.created_at !== item.updated_at && (
-                    <Tooltip 
+                    <Tooltip
                       label={t("General.updated_at", {
-                        time: formatRelativeTime(item.updated_at, t)
+                        time: formatRelativeTime(item.updated_at, t),
                       })}
                       aria-label="Edited"
                     >
-                      <Icon as={FiEdit} color="orange"/>
+                      <Icon as={FiEdit} color="orange" />
                     </Tooltip>
                   )}
                   <Text className="secondary-text">
@@ -72,25 +80,45 @@ const CommentList: React.FC<CommentListProps> = ({
                   </Text>
                 </HStack>
               </Flex>
-              <MarkdownRenderer content={item.content} minHeight="100px" width="100%"/>
+              <MarkdownRenderer
+                content={item.content}
+                minHeight="100px"
+                width="100%"
+              />
               {(userCtx.profile.id === item.user.id ||
-                  orgCtx.basicInfo.role === "Owner") && (
-                  <IconButton
-                    variant="ghost"
-                    mt="auto"
-                    ml="auto"
-                    aria-label="delete comment"
-                    icon={<FiTrash2 />}
-                    color="gray"
-                  />
-                )}
+                orgCtx.basicInfo.role === "Owner") && (
+                <IconButton
+                  variant="ghost"
+                  mt="auto"
+                  ml="auto"
+                  aria-label="delete comment"
+                  icon={<FiTrash2 />}
+                  color="gray"
+                  onClick={() => {
+                    onOpen();
+                    setDeleteComment(item);
+                  }}
+                />
+              )}
             </VStack>
           </Flex>
-          <Divider/>
+          <Divider />
         </>
       ))}
+      {deleteComment && (
+        <DeleteDiscussionAlertDialog
+          isOpen={isOpen}
+          deleteObject="comment"
+          onClose={onClose}
+          onOKCallback={() => {
+            onCommentDelete(deleteComment);
+            setDeleteComment(null);
+            onClose();
+          }}
+        />
+      )}
     </Box>
   );
-}
+};
 
 export default CommentList;
