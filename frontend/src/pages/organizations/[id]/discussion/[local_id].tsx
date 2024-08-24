@@ -135,7 +135,7 @@ const DiscussionTopicPage = () => {
 
   const handleSubmission = async () => {
     try {
-      createComment(org_id, local_id, newComment);
+      await createComment(org_id, local_id, newComment);
     } catch (error) {
       console.error("Failed to create topic:", error);
       if (error.request && error.request.status === 403) {
@@ -147,12 +147,13 @@ const DiscussionTopicPage = () => {
         });
       }
     }
-    getCommentsList(page, pageSize);
     toast({
       title: t("Services.discussion.createComment.success"),
       status: "success",
     });
     setNewComment("");
+    onClose();
+    getCommentsList(page, pageSize);
   };
 
   const handleCommentDelete = async (comment: DiscussionComment) => {
@@ -169,12 +170,11 @@ const DiscussionTopicPage = () => {
         });
       }
     }
-    getCommentsList(page, pageSize);
     toast({
       title: t("Services.discussion.deleteComment.success"),
       status: "success",
     });
-    onClose();
+    getCommentsList(page, pageSize);
   };
 
   return (
