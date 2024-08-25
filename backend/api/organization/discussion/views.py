@@ -7,6 +7,7 @@ from rest_framework.pagination import PageNumberPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from .models import Discussion
+from ..models import Membership
 from api.organization.decorators import organization_permission_classes
 from .serializers import *
 
@@ -181,6 +182,10 @@ def delete_topic(request, id):
     if not topic:
         return Response({'detail': 'Discussion topic not found'}, status=status.HTTP_404_NOT_FOUND)
 
+    organization_owner = Membership.objects.get(organization=organization, role='Owner').user
+    if request.user != organization_owner and request.user != topic.user:
+        return Response({'detail': 'You do not have permission to delete this topic'}, status=status.HTTP_403_FORBIDDEN)
+
     topic.deleted = True
     topic.save()
     return Response(status=status.HTTP_204_NO_CONTENT)
@@ -294,6 +299,7 @@ def list_comment(request, id):
         204: openapi.Response(description="Comment deleted successfully"),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
         404: openapi.Response(description="Comment or topic not found"),
+        400: openapi.Response(description="Please use delete_topic to delete the entire topic.")
     },
     operation_description="Delete a comment from an existing discussion topic.",
     tags=["Organization/Discussion"]
@@ -306,6 +312,9 @@ def delete_comment(request, id):
     organization = request.organization
     topic_local_id = request.data.get('topic_local_id')
     comment_local_id = request.data.get('comment_local_id')
+    if topic_local_id == 1:
+        return Response({'detail': 'Please use delete_topic to delete the entire topic.'},
+                        status=status.HTTP_400_BAD_REQUEST)
 
     try:
         topic = DiscussionTopic.objects.get(discussion=organization.discussion, local_id=topic_local_id, deleted=False)
@@ -317,13 +326,10 @@ def delete_comment(request, id):
     except DiscussionComment.DoesNotExist:
         return Response({'detail': 'Comment not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        # 获取 topic 的创建人
-    topic_creator_comment = topic.comments.order_by('created_at').first()
-    topic_creator = topic_creator_comment.user
-
-        # 检查请求用户是否为 topic 创建人或评论创建人
-    if request.user != topic_creator and request.user != comment.user:
-        return Response({'detail': 'You do not have permission to delete this comment'},status=status.HTTP_403_FORBIDDEN)
+    organization_owner = Membership.objects.get(organization=organization, role='Owner').user
+    if request.user != organization_owner and request.user != comment.user:
+        return Response({'detail': 'You do not have permission to delete this comment'},
+                        status=status.HTTP_403_FORBIDDEN)
 
     # Mark the comment as deleted
     comment.deleted = True
