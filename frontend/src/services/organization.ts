@@ -117,3 +117,15 @@ export async function respondInvitation(id: number,  accept: boolean) {
         throw error;
     }
 }
+
+export async function cancelInvitation(id: number, username: string) {
+    try {
+        const response = await request.post(`/api/organization/${id}/invite/cancel/`, {
+            username: username
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Failed to cancel invitation:', error);
+        throw error;
+    }
+}

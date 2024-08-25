@@ -12,6 +12,7 @@ import {
   Text,
   HStack,
   Show,
+  useDisclosure,
 } from "@chakra-ui/react";
 
 import { useTranslation } from 'react-i18next';
@@ -22,6 +23,7 @@ import RichList from "@/components/rich-list";
 import { FiChevronDown } from "react-icons/fi";
 import { Organization, MemberRoleEnum } from '@/models/organization';
 import CreateOrganizationModal from "@/components/modals/create-organization-modal";
+import LeaveOrganizationAlertDialog from "@/components/modals/leave-organization-alert-dialog";
 
 const MyOrganizationsPage = () => {
   const authCtx = useContext(AuthContext);
@@ -30,19 +32,12 @@ const MyOrganizationsPage = () => {
   const { t } = useTranslation();
   const [orgSortBy, setOrgSortBy] = useState<string>('updated_at'); // updated_at, created_at, display_name
   const sortOptions = ['created_at', 'updated_at', 'display_name'];
+  const [selectedOrg, setSelectedOrg] = useState<Organization | null>(null);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     if (!authCtx.checkLoginAndRedirect()) return;
   }, [authCtx]);
-
-  // const handleCreateOrganization = async () => {
-  //   try {
-  //     await createOrganization("🦄 测试"); // only for test, @TODO: design a modal to input organization name
-  //     userCtx.updateOrganizations();
-  //   } catch (error) {
-  //     console.error('Failed to create organization:', error);
-  //   }
-  // };
 
   const sortOrganizations = (orgs: Organization[], orgSortBy: string): Organization[] => {
     return [...orgs].sort((a, b) => {
@@ -81,12 +76,6 @@ const MyOrganizationsPage = () => {
               </MenuOptionGroup>
             </MenuList>
           </Menu>
-          {/* <Button
-            colorScheme="blue"
-            onClick={handleCreateOrganization}
-          >
-            {t('MyOrganizationsPage.button.create')}
-          </Button> */}
           <CreateOrganizationModal />
         </HStack>
 
@@ -119,6 +108,10 @@ const MyOrganizationsPage = () => {
                       }
                       <Button size="sm" colorScheme="red" variant="subtle"
                         isDisabled={item.role === MemberRoleEnum.OWNER && item.owner_count === 1}
+                        onClick={() => {
+                          setSelectedOrg(item);
+                          onOpen();
+                        }}
                       >
                         {t('MyOrganizationsPage.button.leave')}
                       </Button>
@@ -127,7 +120,17 @@ const MyOrganizationsPage = () => {
               }))} />
           }
         </div>
-
+        {selectedOrg &&
+          <LeaveOrganizationAlertDialog 
+          isOpen={isOpen} 
+          onClose={onClose} 
+          orgName={selectedOrg.display_name}
+          orgId={selectedOrg.id}
+          onOKCallback={() => {
+            setSelectedOrg(null);
+            userCtx.updateOrganizations();
+          }}
+        />}
       </VStack>
     </>
   );

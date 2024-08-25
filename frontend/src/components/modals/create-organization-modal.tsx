@@ -37,6 +37,7 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
   const handleSave = async () => {
     const success = await handleCreateOrganization(name.trim(), description);
     if (success) {
+      userCtx.updateOrganizations();
       toast({
         title: t("Services.organization.createOrganization.created", {
           name: name.trim(),
@@ -55,7 +56,6 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
   ) => {
     try {
       await createOrganization(name, description);
-      userCtx.updateOrganizations();
       return true;
     } catch (error) {
       console.error("Failed to create organization:", error);

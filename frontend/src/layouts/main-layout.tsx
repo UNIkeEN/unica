@@ -24,7 +24,8 @@ const MainLayout = ({ children }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [headerTitle, setHeaderTitle] = useState('');
   const [headerBreadcrumbs, setHeaderBreadcrumbs] = useState(null);
-  const [headerExtra, setHeaderExtra] = useState(null);
+  const [headerExtra, setHeaderExtra] = useState(null); // TODO: get and set headerExtra from meta tag
+  const [pageBgColor, setPageBgColor] = useState('white');
 
   const updateHeader = () => {
     const headerTitleMeta = document.querySelector('meta[name="headerTitle"]') as HTMLMetaElement;
@@ -47,9 +48,19 @@ const MainLayout = ({ children }) => {
     }
   };
 
+  const updateStyleMetas = () => {
+    const pageBgColorMeta = document.querySelector('meta[name="pageBgColor"]') as HTMLMetaElement;
+    if (pageBgColorMeta) {
+      setPageBgColor(pageBgColorMeta.content);
+    } else {
+      setPageBgColor('white');
+    }
+  }
+
   useEffect(() => {
-    // updateHeader();
-    const observer = new MutationObserver(updateHeader);
+    updateStyleMetas();
+
+    const observer = new MutationObserver(()=>{updateHeader(); updateStyleMetas();});
     observer.observe(document.head, { childList: true, subtree: true });
     return () => observer.disconnect();
   }, [children]);
@@ -67,7 +78,7 @@ const MainLayout = ({ children }) => {
       {/* Desktop Sidebar */}
       <Show above='md'>
         <Box
-          display={{ base: 'none', md: 'block' }}
+          display='block'
           w="2xs"
           bg="gray.50"
           p={4}
@@ -97,7 +108,7 @@ const MainLayout = ({ children }) => {
       </Hide>
 
       {/* Main Content Area */}
-      <Flex flex="1" direction="column" borderLeftWidth="1px" overflow="hidden">
+      <Flex flex="1" direction="column" borderLeftWidth="1px" overflow="hidden" bg={pageBgColor}>
         {/* Header */}
         <Flex
           as="header"
@@ -109,6 +120,7 @@ const MainLayout = ({ children }) => {
           position="sticky"
           top="0"
           zIndex="10"
+          bg="white"
         >
           <Flex align="center">
             <Hide above='md'>

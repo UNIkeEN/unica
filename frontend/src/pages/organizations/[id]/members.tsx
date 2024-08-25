@@ -29,6 +29,7 @@ import Pagination from "@/components/pagination";
 import InviteMembersModal from "@/components/modals/invite-members-modal";
 import RemoveMemberAlertDialog from "@/components/modals/remove-member-alert-dialog";
 import ChangeMemberRoleModal from "@/components/modals/change-member-role-modal";
+import CancelInvitationAlertDialog from "@/components/modals/cancel-invitation-alert-dialog";
 
 const OrganizationMembersPage = () => {
   const orgCtx = useContext(OrganizationContext);
@@ -56,6 +57,12 @@ const OrganizationMembersPage = () => {
     isOpen: isChangeRoleModalOpen,
     onOpen: onChangeRoleModalOpen,
     onClose: onChangeRoleModalClose
+  } = useDisclosure();
+
+  const {
+    isOpen: isCancelInviteModalOpen,
+    onOpen: onCancelInviteModalOpen,
+    onClose: onCancelInviteModalClose
   } = useDisclosure();
 
   useEffect(() => {
@@ -93,7 +100,7 @@ const OrganizationMembersPage = () => {
   const getInvitationList = async (id: number, page: number = 1, pageSize: number = 20) => {
     try {
       const res = await getOrganizationInvitations(id, page, pageSize);
-      setPendingCount(res.total);
+      setPendingCount(res.count);
       setPendingList(res.results as OrganizationMember[]);
     } catch (error) {
       if (error.request && error.request.status === 403) {
@@ -169,7 +176,7 @@ const OrganizationMembersPage = () => {
             <RichList
               items={listData.map((member) => ({
                 title: member.user.display_name,
-                subtitle: member.user.email,
+                subtitle: member.user.username,
                 lineExtra:
                   <HStack spacing={4}>
                     <Text fontSize="sm" className="secondary-text">
@@ -203,7 +210,16 @@ const OrganizationMembersPage = () => {
                       </Menu>
                     }
                     {ListDomain === "pending" && orgCtx.userRole === MemberRoleEnum.OWNER &&
-                        <></>
+                          <Button onClick={() => {
+                            setSelectedMember(member);
+                            onCancelInviteModalOpen();
+                          }}
+                          size={'sm'}
+                          variant={'subtle'}
+                          colorScheme={'red'}
+                          >
+                            {t("OrganizationPages.members.list.menu.cancel_invitation")}
+                          </Button>
                     }
                   </HStack>
               }))} 
@@ -233,10 +249,23 @@ const OrganizationMembersPage = () => {
           onClose={onRemoveDialogClose}
           orgId={Number(router.query.id)}
           displayUserName={selectedMember.user.display_name}
-          email={selectedMember.user.email}
+          username={selectedMember.user.username}
           onOKCallback={() => {
             onRemoveDialogClose();
             getMemberList(Number(router.query.id), pageIndex, pageSize);
+          }}
+        />
+      }
+      {selectedMember && 
+        <CancelInvitationAlertDialog
+          isOpen={isCancelInviteModalOpen}
+          onClose={onCancelInviteModalClose}
+          orgId={Number(router.query.id)}
+          displayUserName={selectedMember.user.display_name}
+          username={selectedMember.user.username}
+          onOKCallback={() => {
+            onCancelInviteModalClose();
+            getInvitationList(Number(router.query.id), pageIndex, pageSize)
           }}
         />
       }
@@ -246,10 +275,10 @@ const OrganizationMembersPage = () => {
           onClose={onChangeRoleModalClose}
           orgId={Number(router.query.id)}
           displayUserName={selectedMember.user.display_name}
-          email={selectedMember.user.email}
+          username={selectedMember.user.username}
           onOKCallback={() => {
             onChangeRoleModalClose();
-            if (selectedMember.user.email === userCtx.profile.email) {
+            if (selectedMember.user.username === userCtx.profile.username) {
               setTimeout(() => {
                 window.location.reload();
               }, 1000);

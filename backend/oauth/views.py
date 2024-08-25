@@ -68,7 +68,7 @@ def auth_oauth(request, provider):
         user_info['email'] = claims['sub'] + "@sjtu.edu.cn"
 
     User = get_user_model()
-    user, created = User.objects.get_or_create(username=user_info.get('email')) # use email as username to make it unique
+    user, created = User.objects.get_or_create(username=user_info.get('name'))
     if user:
         login(request, user)
         if created:

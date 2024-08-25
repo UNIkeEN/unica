@@ -8,14 +8,13 @@ import {
   AlertDialogOverlay,
   AlertDialogCloseButton,
   Button,
-  MenuItem
 } from '@chakra-ui/react';
 import { useToast } from "@/contexts/toast";
 import { useTranslation } from "react-i18next";
-import { removeMember } from "@/services/organization";
+import { cancelInvitation } from "@/services/organization";
 import OrganizationContext from "@/contexts/organization";
 
-interface RemoveMemberAlertDialogProps {
+interface CancelInvitationAlertDialogProps {
   isOpen: boolean;
   onClose: () => void;
   orgId: number;
@@ -24,7 +23,7 @@ interface RemoveMemberAlertDialogProps {
   onOKCallback?: () => void;
 }
 
-const RemoveMemberAlertDialog: React.FC<RemoveMemberAlertDialogProps> = ({
+const CancelInvitationAlertDialog: React.FC<CancelInvitationAlertDialogProps> = ({
   isOpen,
   onClose,
   orgId,
@@ -37,11 +36,11 @@ const RemoveMemberAlertDialog: React.FC<RemoveMemberAlertDialogProps> = ({
   const toast = useToast();
   const orgCtx = useContext(OrganizationContext);
 
-  const handleRemoveMember = async () => {
+  const handleCancelInvitation = async () => {
     try {
-      await removeMember(orgId, username);
+      await cancelInvitation(orgId, username);
       toast({
-        title: t("Services.organization.removeMember.removed"),
+        title: t("Services.organization.cancelInvitation.cancelSuccess"),
         status: "success",
       });
       onClose();
@@ -50,12 +49,12 @@ const RemoveMemberAlertDialog: React.FC<RemoveMemberAlertDialogProps> = ({
       console.error("Failed to remove member:", error);
       if (
         error.response &&
-        (error.response.status === 400 || error.response.status === 404)
+        (error.response.status === 404)
       ) {
         toast({
-          title: t("Services.organization.removeMember.error"),
+          title: t("Services.organization.cancelInvitation.error"),
           description: t(
-            `Services.organization.removeMember.error-${error.response.status}`
+            `Services.organization.cancelInvitation.error-${error.response.status}`
           ),
           status: "error",
         });
@@ -76,11 +75,11 @@ const RemoveMemberAlertDialog: React.FC<RemoveMemberAlertDialogProps> = ({
       <AlertDialogOverlay>
         <AlertDialogContent>
           <AlertDialogHeader>
-            {t("RemoveUserAlertDialog.dialog.title")}
+            {t("CancelInvitationDialog.dialog.title")}
           </AlertDialogHeader>
           <AlertDialogCloseButton />
           <AlertDialogBody pb={5}>
-            {t("RemoveUserAlertDialog.dialog.content", {
+            {t("CancelInvitationDialog.dialog.content", {
               displayUsername: displayUserName,
               username: username,
               orgName: orgCtx.basicInfo.display_name,
@@ -88,10 +87,10 @@ const RemoveMemberAlertDialog: React.FC<RemoveMemberAlertDialogProps> = ({
           </AlertDialogBody>
           <AlertDialogFooter>
             <Button ref={cancelRef} onClick={onClose}>
-              {t("RemoveUserAlertDialog.dialog.cancel")}
+              {t("CancelInvitationDialog.dialog.cancel")}
             </Button>
-            <Button colorScheme='red' onClick={handleRemoveMember} ml={3}>
-              {t("RemoveUserAlertDialog.dialog.remove")}
+            <Button colorScheme='red' onClick={handleCancelInvitation} ml={3}>
+              {t("CancelInvitationDialog.dialog.remove")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -100,4 +99,4 @@ const RemoveMemberAlertDialog: React.FC<RemoveMemberAlertDialogProps> = ({
   )
 }
 
-export default RemoveMemberAlertDialog;
+export default CancelInvitationAlertDialog;

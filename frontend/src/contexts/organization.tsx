@@ -1,9 +1,10 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '@/contexts/toast';
 import { useRouter } from 'next/router';
 import { Organization, MemberRoleEnum } from '@/models/organization';
 import { checkUserOrgPermission } from '@/services/organization';
+import { getProjects } from '@/services/project';
 
 interface OrganizationContextType {
   updateAll: (id: number) => void;
@@ -15,6 +16,7 @@ interface OrganizationContextType {
   updateBasicInfo: (id: number) => void;
   setUserRole: (role: string) => void;
   setBasicInfo: (org: Organization) => void;
+  getProjectList: (page: number, pageSize: number, org_id: number) => Promise<any>;
 }
 
 const OrganizationContext = createContext<OrganizationContextType>({
@@ -26,7 +28,8 @@ const OrganizationContext = createContext<OrganizationContextType>({
   basicInfo: {} as Organization | undefined,
   updateBasicInfo: () => {},
   setUserRole: () => {},
-  setBasicInfo: () => {}
+  setBasicInfo: () => {},
+  getProjectList: (page: number, pageSize: number, org_id: number) => null,
 });
 
 export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -78,6 +81,21 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
     }
   };
 
+  const getProjectList = useCallback(async (page: number, pageSize: number, org_id: number) => {
+    if (!org_id) return null;
+    try {
+      const projectList = await getProjects(page, pageSize, org_id);
+      return projectList;
+    } catch (error) {
+      toast({
+        title: t('Services.projects.getProjects.error'),
+        status: 'error'
+      })
+      console.error('Failed to update organization projects:', error);
+      throw error;
+    }
+  }, [toast, t]);
+
   const updateAll = (id: number) => {
     try{
       updateBasicInfo(id);
@@ -104,7 +122,8 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
     basicInfo: orgInfo,
     updateBasicInfo,
     setUserRole: (role: string) => setUserRole(role),
-    setBasicInfo: (org: Organization) => setOrgInfo(org)
+    setBasicInfo: (org: Organization) => setOrgInfo(org),
+    getProjectList,
   }
 
   return (

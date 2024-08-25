@@ -42,28 +42,29 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
   const orgCtx = useContext(OrganizationContext);
   const initialRef = useRef(null);
 
-  const [email, setEmail] = useState("");
-  const [isEmailValid, setIsEmailValid] = useState(true);
+  const [username, setUsername] = useState("");
+  const [usernameNull, setUsernameNull] = useState(false);
+  const [usernameTooLong, setUsernameTooLong] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSave = async () => {
     setIsLoading(true);
-    const success = await handleCreateInvitation(email.trim());
+    const success = await handleCreateInvitation(username.trim());
     if (success) {
       toast({
-        title: t("Services.organization.createInvitation.created", { email: email.trim() }),
+        title: t("Services.organization.createInvitation.created", { username: username.trim() }),
         status: "success",
       });
       onClose();
       onOKCallback();
-      setEmail("");
+      setUsername("");
       setIsLoading(false);
     }
   };
 
-  const handleCreateInvitation = async (email: string) => {
+  const handleCreateInvitation = async (username: string) => {
     try {
-      await createInvitation(id, email);
+      await createInvitation(id, username);
       return true;
     } catch (error) {
       console.error("Failed to create invitation:", error);
@@ -107,35 +108,34 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
           <ModalCloseButton />
 
           <ModalBody pb={5}>
-            <FormControl pb={5} isInvalid={!isEmailValid} isRequired>
-              <FormLabel>{t("InviteMembersModal.modal.email")}</FormLabel>
+            <FormControl pb={5} isInvalid={usernameNull || usernameTooLong} isRequired>
+              <FormLabel>{t("InviteMembersModal.modal.username")}</FormLabel>
               <Input
-                placeholder={t("InviteMembersModal.modal.email")}
-                value={email}
+                placeholder={t("InviteMembersModal.modal.username")}
+                value={username}
                 onChange={(e) => {
-                  setEmail(e.target.value);
+                  setUsername(e.target.value);
                 }}
-                onBlur={() =>
-                  setIsEmailValid(
-                    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
-                      email.trim()
-                    )
-                  )
-                }
-                onFocus={() => setIsEmailValid(true)}
+                onBlur={() => {
+                  setUsernameNull(username.trim() === "");
+                  setUsernameTooLong(username.trim().length > 150);
+                }}
+                onFocus={() => {
+                  setUsernameNull(false);
+                  setUsernameTooLong(false);
+                }}
                 ref={initialRef}
               />
-              {!isEmailValid && (
-                <FormErrorMessage>
-                  {t("InviteMembersModal.FormErrorMessage.emailInvalid")}
-                </FormErrorMessage>
-              )}
+              <FormErrorMessage>
+                {usernameNull && t("InviteMembersModal.FormErrorMessage.usernameNull")}
+                {usernameTooLong && t("InviteMembersModal.FormErrorMessage.usernameTooLong")}
+              </FormErrorMessage>
               <FormHelperText
                 wordBreak='break-all'
                 overflowWrap='break-word'
                 lineHeight={1.5}
               >
-                {t("InviteMembersModal.modal.emailHelper-1", {
+                {t("InviteMembersModal.modal.usernameHelper-1", {
                   base_uri: window.location.origin,
                   id: id,
                 })}
@@ -155,7 +155,7 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
                     });
                   }}
                 />
-                {t("InviteMembersModal.modal.emailHelper-2")}
+                {t("InviteMembersModal.modal.usernameHelper-2")}
               </FormHelperText>
             </FormControl>
           </ModalBody>
@@ -165,7 +165,7 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
               colorScheme="blue"
               mr={3}
               onClick={handleSave}
-              isDisabled={!isEmailValid}
+              isDisabled={usernameNull || usernameTooLong}
               isLoading={isLoading}
               spinner={<BeatLoader size={8} color='white' />}
             >

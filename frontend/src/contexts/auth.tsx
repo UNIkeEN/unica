@@ -1,7 +1,6 @@
 import React, { createContext, useCallback, useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
-import { useToast } from '@/contexts/toast';
 import useLocalStorage from '@/hooks/useLocalStorage';
 import UserContext from '@/contexts/user';
 
@@ -16,8 +15,8 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({
   token: '',
   isLoggedIn: false,
-  onLogin: () => {},
-  onLogout: () => {},
+  onLogin: () => { },
+  onLogout: () => { },
   checkLoginAndRedirect: () => false,
 });
 
@@ -25,7 +24,6 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [token, setToken] = useLocalStorage<string>('token', '');
   const userCtx = useContext(UserContext);
   const router = useRouter();
-  const toast = useToast();
   const { t } = useTranslation();
 
   const isLoggedIn = !!token;
@@ -33,20 +31,16 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const loginHandler = useCallback((newToken: string) => {
     setToken(newToken);
     userCtx.updateAll();
-  }, [setToken]);
+  }, [setToken, userCtx]);
 
   const logoutHandler = useCallback(() => {
     setToken('');
     userCtx.cleanUp();
-    router.push('/login');
-  }, [setToken, router]);
+    // router.push('/login');
+  }, [userCtx, setToken, router]);
 
   const checkLoginAndRedirect = () => {
     if (!isLoggedIn) {
-      toast({
-        title: t('LoginPage.toast.need-login'),
-        status: 'warning'
-      })
       const currentPath = router.asPath;
       router.push(`/login?next=${encodeURIComponent(currentPath)}`);
       return false;

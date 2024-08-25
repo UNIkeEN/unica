@@ -8,54 +8,47 @@ import {
   AlertDialogOverlay,
   AlertDialogCloseButton,
   Button,
-  MenuItem
-} from '@chakra-ui/react';
+} from "@chakra-ui/react";
 import { useToast } from "@/contexts/toast";
 import { useTranslation } from "react-i18next";
-import { removeMember } from "@/services/organization";
+import { leaveOrganization } from "@/services/organization";
 import OrganizationContext from "@/contexts/organization";
 
-interface RemoveMemberAlertDialogProps {
+interface LeaveOrganizationAlertDialogProps {
   isOpen: boolean;
   onClose: () => void;
   orgId: number;
-  displayUserName: string;
-  username: string;
+  orgName: string;
   onOKCallback?: () => void;
 }
 
-const RemoveMemberAlertDialog: React.FC<RemoveMemberAlertDialogProps> = ({
-  isOpen,
-  onClose,
-  orgId,
-  displayUserName,
-  username,
-  onOKCallback,
-}) => {
+const LeaveOrganizationAlertDialog: React.FC<
+  LeaveOrganizationAlertDialogProps
+> = ({ isOpen, onClose, orgId, orgName, onOKCallback }) => {
   const cancelRef = useRef();
   const { t } = useTranslation();
   const toast = useToast();
   const orgCtx = useContext(OrganizationContext);
 
-  const handleRemoveMember = async () => {
+  const handleLeaveOrganization = async () => {
     try {
-      await removeMember(orgId, username);
+      await leaveOrganization(orgId);
       toast({
-        title: t("Services.organization.removeMember.removed"),
+        title: t("Services.organization.leaveOrganization.left"),
         status: "success",
       });
       onClose();
       onOKCallback();
     } catch (error) {
-      console.error("Failed to remove member:", error);
+      console.error("Failed to leave organization:", error);
       if (
         error.response &&
-        (error.response.status === 400 || error.response.status === 404)
+        (error.response.status === 404 || error.response.status === 400)
       ) {
         toast({
-          title: t("Services.organization.removeMember.error"),
+          title: t("Services.organization.leaveOrganization.error"),
           description: t(
-            `Services.organization.removeMember.error-${error.response.status}`
+            `Services.organization.leaveOrganization.error-${error.response.status}`
           ),
           status: "error",
         });
@@ -64,7 +57,8 @@ const RemoveMemberAlertDialog: React.FC<RemoveMemberAlertDialogProps> = ({
       if (error.response && error.response.status === 403) {
         orgCtx.toastNoPermissionAndRedirect();
       }
-    }};
+    }
+  };
 
   return (
     <AlertDialog
@@ -75,29 +69,27 @@ const RemoveMemberAlertDialog: React.FC<RemoveMemberAlertDialogProps> = ({
     >
       <AlertDialogOverlay>
         <AlertDialogContent>
-          <AlertDialogHeader>
-            {t("RemoveUserAlertDialog.dialog.title")}
+          <AlertDialogHeader fontSize="lg" fontWeight="bold">
+            {t("LeaveOrganizationAlertDialog.dialog.title")}
           </AlertDialogHeader>
           <AlertDialogCloseButton />
+
           <AlertDialogBody pb={5}>
-            {t("RemoveUserAlertDialog.dialog.content", {
-              displayUsername: displayUserName,
-              username: username,
-              orgName: orgCtx.basicInfo.display_name,
-            })}
+            {t("LeaveOrganizationAlertDialog.dialog.confirm", { orgName })}
           </AlertDialogBody>
+
           <AlertDialogFooter>
             <Button ref={cancelRef} onClick={onClose}>
-              {t("RemoveUserAlertDialog.dialog.cancel")}
+              {t("LeaveOrganizationAlertDialog.dialog.cancel")}
             </Button>
-            <Button colorScheme='red' onClick={handleRemoveMember} ml={3}>
-              {t("RemoveUserAlertDialog.dialog.remove")}
+            <Button colorScheme="red" onClick={handleLeaveOrganization} ml={3}>
+              {t("LeaveOrganizationAlertDialog.dialog.leave")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialogOverlay>
     </AlertDialog>
-  )
-}
+  );
+};
 
-export default RemoveMemberAlertDialog;
+export default LeaveOrganizationAlertDialog;

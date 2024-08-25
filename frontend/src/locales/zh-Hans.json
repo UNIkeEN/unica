@@ -1,7 +1,15 @@
 {
+    "CancelInvitationDialog": {
+        "dialog": {
+            "title": "取消邀请",
+            "content": "{{displayUsername}}({{username}}) 将从 {{orgName}} 邀请列表中移除",
+            "remove": "移除",
+            "cancel": "取消"
+        }
+    },
     "ChangeMemberRoleModal": {
         "modal": {
-            "title": "修改 {{displayUserName}}({{email}}) 的身份",
+            "title": "修改 {{displayUserName}}({{username}}) 的身份",
             "owner_description": "拥有对整个组织的完全管理权限",
             "member_description": "可以查看组织内所有成员，可以创建新项目",
             "cancel": "取消",
@@ -25,6 +33,20 @@
             "nameRequired": "组织名称不能为空",
             "nameTooLong": "组织名称不得超过 20 字",
             "descriptionTooLong": "组织描述不得超过 200 字"
+        }
+    },
+    "CreateProjectModal": {
+        "modal": {
+            "title": "创建新项目",
+            "name": "项目名称",
+            "description": "项目描述",
+            "save": "保存",
+            "cancel": "取消"
+        },
+        "FormErrorMessage": {
+            "nameRequired": "项目名称不能为空",
+            "nameTooLong": "项目名称不得超过 20 字",
+            "descriptionTooLong": "项目描述不得超过 200 字"
         }
     },
     "DeleteDiscussionAlertDialog": {
@@ -92,17 +114,26 @@
     "InviteMembersModal": {
         "modal": {
             "title": "邀请新成员",
-            "email": "邮箱",
+            "username": "用户名",
             "save": "确定",
             "cancel": "取消",
-            "emailHelper-1": "被邀请人可访问 {{base_uri}}/organizations/{{id}}/invitation ",
-            "emailHelper-2": "以处理邀请"
+            "usernameHelper-1": "被邀请人可访问 {{base_uri}}/organizations/{{id}}/invitation ",
+            "usernameHelper-2": "以处理邀请"
         },
         "FormErrorMessage": {
-            "emailInvalid": "邮件格式无效"
+            "usernameNull": "用户名不能为空",
+            "usernameTooLong": "用户名过长"
         },
         "toast": {
             "copied": "已复制该地址至剪贴板"
+        }
+    },
+    "LeaveOrganizationAlertDialog": {
+        "dialog": {
+            "title": "退出组织",
+            "confirm": "确定要退出 {{orgName}} 吗？",
+            "leave": "退出",
+            "cancel": "取消"
         }
     },
     "LoginPage": {
@@ -164,7 +195,13 @@
     },
     "MyProjectsPage": {
         "title": "我的项目",
-        "header": "项目"
+        "header": "项目",
+        "list": {
+            "updated_at": "更新于 {{time}}"
+        },
+        "button": {
+            "create": "创建新项目"
+        }
     },
     "NotFoundPage": {
         "title": "页面不存在",
@@ -212,7 +249,8 @@
                 "invited_at": "于 {{date}} 发送邀请",
                 "menu": {
                     "change_role": "修改身份",
-                    "remove": "从组织移除"
+                    "remove": "从组织移除",
+                    "cancel_invitation": "删除"
                 }
             }
         },
@@ -241,6 +279,11 @@
             }
         }
     },
+    "ProjectContext":{
+        "toast":{
+            "noPermission":"您没有访问此项目的权限"
+        }
+    },
     "ProjectPages": {
         "board": {
             "title": "看板"
@@ -255,7 +298,7 @@
     "RemoveUserAlertDialog": {
         "dialog": {
             "title": "移除用户",
-            "content": "{{displayUsername}}({{email}}) 将从 {{orgName}} 组织移除.",
+            "content": "{{displayUsername}}({{username}}) 将从 {{orgName}} 组织移除.",
             "remove": "移除",
             "cancel": "取消"
         }
@@ -303,6 +346,11 @@
             },
             "getProjectInfo": {
                 "error": "获取项目信息失败"
+            },
+            "createProject": {
+                "success": "创建项目成功",
+                "created": "项目 “{{name}}” 已成功创建",
+                "error": "创建项目失败"
             }
         },
         "user": {
@@ -323,7 +371,13 @@
             "checkUserOrgPermission": {
                 "error": "获取组织信息失败"
             },
-            "leaveOrganization": {},
+            "leaveOrganization": {
+                "left": "已成功退出该组织",
+                "error": "退出组织失败",
+                "error-400": "无法退出作为唯一管理员的组织",
+                "error-403": "不是该组织的成员",
+                "error-404": "组织不存在"
+            },
             "getOrganizationMembers": {
                 "error": "获取成员列表失败"
             },
@@ -342,7 +396,7 @@
                 "error-404": "用户不存在或非该组织成员"
             },
             "createInvitation": {
-                "created": "已成功向 {{email}} 发送邀请",
+                "created": "已成功向 {{username}} 发送邀请",
                 "error": "邀请成员失败",
                 "error-403": "权限不足，仅管理员可邀请新成员",
                 "error-404": "未找到该用户",
@@ -353,6 +407,12 @@
             },
             "respondInvitation": {
                 "error": "未能回应邀请"
+            },
+            "cancelInvitation": {
+                "cancelSuccess": "已成功取消邀请",
+                "error": "取消邀请失败",
+                "error-403": "权限不足，仅管理员可取消邀请",
+                "error-404": "未找到该邀请"
             }
         }
     },

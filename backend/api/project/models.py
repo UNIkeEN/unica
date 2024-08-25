@@ -28,7 +28,7 @@ class Project(models.Model):
         super().save(*args, **kwargs)
         # Automatically create the associated board
         if not hasattr(self, 'board'):
-            from board.models import Board
+            from .board.models import Board
             Board.objects.create(project=self)
 
     def __str__(self):

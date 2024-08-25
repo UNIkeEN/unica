@@ -5,6 +5,8 @@ import { UserProfile } from '@/models/user';
 import { Organization } from '@/models/organization';
 import { getUserProfile } from '@/services/user';
 import { getUserOrganizations } from '@/services/organization';
+import { Project } from '@/models/project';
+import { getProjects } from '@/services/project';
 
 
 interface UserContextType {
@@ -14,6 +16,7 @@ interface UserContextType {
   updateProfile: () => void;
   organizations: Organization[];
   updateOrganizations: () => void;
+  getProjectList: (page: number, pageSize: number) => Promise<any>;
 }
 
 const UserContext = createContext<UserContextType>({
@@ -23,6 +26,7 @@ const UserContext = createContext<UserContextType>({
   updateProfile: () => {},
   organizations: [],
   updateOrganizations: () => {},
+  getProjectList: (page: number, pageSize: number) => null,
 });
 
 export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -60,6 +64,20 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   }, [toast, t]);
 
+  const getProjectList = useCallback(async (page: number, pageSize: number) => {
+    try {
+      const projectList = await getProjects(page, pageSize);
+      return projectList;
+    } catch (error) {
+      toast({
+        title: t('Services.projects.getProjects.error'),
+        status: 'error'
+      })
+      console.error('Failed to update user projects:', error);
+      throw error;
+    }
+  }, [toast, t]);
+
   const updateAll = useCallback(() => {
     updateProfile();
     updateOrganizations();
@@ -76,7 +94,8 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     profile: profile,
     updateProfile,
     organizations: organizations,
-    updateOrganizations
+    updateOrganizations,
+    getProjectList,
   };
 
   return (

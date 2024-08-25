@@ -1,4 +1,12 @@
 {
+    "CancelInvitationDialog": {
+        "dialog": {
+            "title": "取消邀請",
+            "content": "{{displayUsername}}（{{email}}）將從 {{orgName}} 邀請列表中移除",
+            "remove": "移除",
+            "cancel": "取消"
+        }
+    },
     "ChangeMemberRoleModal": {
         "modal": {
             "title": "修改 {{displayUserName}} ({{email}}) 的身份",
@@ -22,6 +30,20 @@
             "descriptionTooLong": "組織描述不得超過 200 字"
         }
     },
+    "CreateProjectModal": {
+        "modal": {
+            "title": "創建新項目",
+            "name": "項目名稱",
+            "description": "項目描述",
+            "save": "保存",
+            "cancel": "取消"
+        },
+        "FormErrorMessage": {
+            "nameRequired": "項目名稱不能為空",
+            "nameTooLong": "項目名稱不得超過 20 字",
+            "descriptionTooLong": "項目描述不得超過 200 字"
+        }
+    },
     "Enums": {
         "chakra-colors": {
             "gray": "灰色",
@@ -43,6 +65,9 @@
             }
         }
     },
+    "General": {
+        "loading": "加載中"
+    },
     "HomePage": {
         "title": "主頁",
         "header": "主頁"
@@ -61,6 +86,14 @@
         },
         "toast": {
             "copied": "已複製該地址至剪貼板"
+        }
+    },
+    "LeaveOrganizationAlertDialog": {
+        "dialog": {
+            "title": "退出組織",
+            "confirm": "確定要退出 {{orgName}} 嗎？",
+            "leave": "退出",
+            "cancel": "取消"
         }
     },
     "LoginPage": {
@@ -116,6 +149,9 @@
         "header": "項目",
         "list": {
             "updated_at": "更新於 {{time}}"
+        },
+        "button": {
+            "create": "創建新項目"
         }
     },
     "NotFoundPage": {
@@ -155,7 +191,8 @@
                 "invited_at": "於 {{date}} 發送邀請",
                 "menu": {
                     "change_role": "修改身份",
-                    "remove": "從組織移除"
+                    "remove": "從組織移除",
+                    "cancel_invitation": "刪除"
                 }
             }
         },
@@ -190,6 +227,11 @@
             }
         }
     },
+    "ProjectContext":{
+        "toast":{
+            "noPermission":"您沒有訪問此項目的權限"
+        }
+    },
     "ProjectPages": {
         "board": {
             "title": "看板"
@@ -221,6 +263,11 @@
             },
             "getProjectInfo": {
                 "error": "獲取項目信息失敗"
+            },
+            "createProject": {
+                "success": "創建項目成功",
+                "created": "項目“{{name}}”已成功創建",
+                "error": "創建項目失敗"
             }
         },
         "user": {
@@ -241,7 +288,13 @@
             "checkUserOrgPermission": {
                 "error": "獲取組織信息失敗"
             },
-            "leaveOrganization": {},
+            "leaveOrganization": {
+                "left": "已成功退出該組織",
+                "error": "退出組織失敗",
+                "error-400": "無法退出作為唯一管理員的組織",
+                "error-403": "不是該組織的成員",
+                "error-404": "組織不存在"
+            },
             "getOrganizationMembers": {
                 "error": "獲取成員列表失敗"
             },
@@ -271,6 +324,12 @@
             },
             "respondInvitation": {
                 "error": "未能回應邀請"
+            },
+            "cancelInvitation": {
+                "cancelSuccess": "已成功取消邀請",
+                "error": "取消邀請失敗",
+                "error-403": "權限不足，僅管理員可取消邀請",
+                "error-404": "未找到該邀請"
             }
         }
     },
