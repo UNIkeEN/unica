@@ -64,8 +64,9 @@ class DiscussionComment(AbstractComment):
                     self.local_id = 1
             super().save(*args, **kwargs)
 
-            self.topic.updated_at = timezone.now()
-            self.topic.save()
+            if not self.deleted:
+                self.topic.updated_at = timezone.now()
+                self.topic.save()
 
     def delete(self):
         self.deleted = True

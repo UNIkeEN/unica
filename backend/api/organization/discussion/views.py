@@ -301,7 +301,7 @@ def list_comment(request, id):
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
-@organization_permission_classes(['Owner'])
+@organization_permission_classes(['Owner','Member'])
 def delete_comment(request, id):
     organization = request.organization
     topic_local_id = request.data.get('topic_local_id')
@@ -316,6 +316,14 @@ def delete_comment(request, id):
         comment = DiscussionComment.objects.get(topic=topic, local_id=comment_local_id, deleted=False)
     except DiscussionComment.DoesNotExist:
         return Response({'detail': 'Comment not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        # 获取 topic 的创建人
+    topic_creator_comment = topic.comments.order_by('created_at').first()
+    topic_creator = topic_creator_comment.user
+
+        # 检查请求用户是否为 topic 创建人或评论创建人
+    if request.user != topic_creator and request.user != comment.user:
+        return Response({'detail': 'You do not have permission to delete this comment'},status=status.HTTP_403_FORBIDDEN)
 
     # Mark the comment as deleted
     comment.deleted = True
