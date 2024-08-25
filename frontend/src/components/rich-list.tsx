@@ -6,7 +6,11 @@ import {
   HStack, 
   Divider,
   Link, 
-  Text
+  Text,
+  Box,
+  BoxProps,
+  TextProps,
+  LinkProps
 } from "@chakra-ui/react";
 
 interface RichListItem {
@@ -18,14 +22,21 @@ interface RichListItem {
   lineExtra?: React.ReactNode;
 }
 
-interface RichListProps {
+interface RichListProps extends BoxProps {
   titleAsLink?: boolean;
+  titleProps?: TextProps | LinkProps;
   items: RichListItem[];
 }
 
-const RichList: React.FC<RichListProps> = ({ titleAsLink = false, items }) => {
+const RichList: React.FC<RichListProps> = ({ 
+  titleAsLink = false, 
+  titleProps,
+  items, 
+  ...boxProps 
+}) => {
   return (
-    <>
+    <Box {...boxProps}>
+      {items && items.length > 0 && <Divider />}
       {items.map((item) => (
         <>
           <Flex px={4} py={4} justify="space-between" alignItems="center">
@@ -34,20 +45,31 @@ const RichList: React.FC<RichListProps> = ({ titleAsLink = false, items }) => {
                 {titleAsLink ? (
                   <Link 
                     as={NextLink} 
-                    fontSize="md"
-                    color="blue.500"
-                    fontWeight="semibold" 
                     href={item.href}
                     wordBreak="break-all"
+                    {...{
+                      fontSize: "md",
+                      fontWeight: "semibold",
+                      color: "blue.500",
+                      _hover: { 
+                        textDecoration: "underline",
+                        color: "blue.500"
+                      },
+                      ...titleProps,
+                    } as LinkProps}
                   >
                     {item.title}
                   </Link>
                 ) : (
                   typeof item.title === "string" ? (
                   <Text 
-                    fontSize="md"
-                    fontWeight="semibold" 
                     wordBreak="break-all"
+                    {...{
+                      fontSize: "md",
+                      fontWeight: "semibold",
+                      color: "black",
+                      ...titleProps,
+                    } as TextProps}
                   >
                     {item.title}
                   </Text>
@@ -72,7 +94,7 @@ const RichList: React.FC<RichListProps> = ({ titleAsLink = false, items }) => {
           <Divider/>
           </>
       ))}
-    </>
+    </Box>
   );
 }
 

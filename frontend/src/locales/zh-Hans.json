@@ -16,6 +16,11 @@
             "change_role": "修改"
         }
     },
+    "CommentList": {
+        "tag": {
+            "original-poster": "楼主"
+        }
+    },
     "CreateOrganizationModal": {
         "modal": {
             "title": "创建新组织",
@@ -44,6 +49,31 @@
             "descriptionTooLong": "项目描述不得超过 200 字"
         }
     },
+    "DeleteDiscussionAlertDialog": {
+        "topic": {
+            "title": "删除话题",
+            "content": "确定要删除此话题吗？",
+            "delete": "删除",
+            "cancel": "取消"
+        },
+        "comment": {
+            "title": "删除评论",
+            "content": "确定要删除此评论吗？",
+            "delete": "删除",
+            "cancel": "取消"
+        }
+    },
+    "DiscussionTopicPage": {
+        "button": {
+            "reply": "回复",
+            "share": "分享"
+        },
+        "drawer": {
+            "title": "添加评论",
+            "submit": "提交",
+            "cancel": "取消"
+        }
+    },
     "Enums": {
         "chakra-colors": {
             "gray": "灰色",
@@ -65,8 +95,17 @@
             }
         }
     },
+    "EnableDiscussionConfirmModal":{
+        "modal": {
+            "title": "确认启用讨论？",
+            "body": " ",
+            "cancel": "取消",
+            "confirm": "确认"
+        }
+    },
     "General": {
-        "loading": "加载中"
+        "loading": "加载中",
+        "updated_at": "更新于 {{time}}"
     },
     "HomePage": {
         "title": "主页",
@@ -126,6 +165,15 @@
             }
         }
     },
+    "MarkdownEditor": {
+        "tab": {
+            "edit": "编辑",
+            "preview": "预览"
+        },
+        "button": {
+            "support-markdown": "支持 Markdown 语法"
+        }
+    },
     "MyOrganizationsPage": {
         "title": "我的组织",
         "header": "组织",
@@ -167,15 +215,24 @@
             "noPermission": "您未加入此组织或权限不足"
         }
     },
+    "OrganizationDiscussionPage": {
+        "drawer": {
+            "title": "添加话题",
+            "setTitle": "标题",
+            "setComment": "初始评论",
+            "submit": "提交",
+            "cancel": "取消"
+        },
+        "button": {
+            "create": "创建话题"
+        }
+    },
     "OrganizationPages": {
         "overview": {
             "title": "概览"
         },
         "projects": {
-            "title": "项目",
-            "list": {
-                "updated_at": "更新于 {{time}}"
-            }
+            "title": "项目"
         },
         "members": {
             "title": "成员",
@@ -195,6 +252,15 @@
                     "remove": "从组织移除",
                     "cancel_invitation": "删除"
                 }
+            }
+        },
+        "discussion": {
+            "title": "讨论",
+            "text": {
+                "notEnabled": "当前组织的讨论功能尚未启用。启用后，此处将可用于广播通知、推进任务进度，为整个组织开展讨论。"
+            },
+            "button": {
+                "enable": "启用讨论"
             }
         },
         "settings": {
@@ -243,12 +309,44 @@
                 "error": "认证失败"
             }
         },
+        "discussion": {
+            "enableDiscussion": {
+                "success": "讨论功能已启用",
+                "error": "操作失败"
+            },
+            "getTopicInfo": {
+                "error": "获取话题失败"
+            },
+            "listTopics": {
+                "error": "获取话题列表失败"
+            },
+            "listComments": {
+                "error": "获取评论列表失败"
+            },
+            "createComment": {
+                "error": "创建评论失败",
+                "success": "评论已成功创建"
+            },
+            "deleteComment": {
+                "error": "删除评论失败",
+                "success": "评论已成功删除"
+            },
+            "deleteTopic": {
+                "error": "删除话题失败",
+                "success": "话题已成功删除"
+            },
+            "createTopic": {
+                "button": "创建话题",
+                "error": "创建话题失败",
+                "success": "话题已成功创建"
+            }
+        },
         "projects": {
             "getProjects": {
                 "error": "获取项目列表失败"
             },
-            "getProjectInfo":{
-                "error":"获取项目信息失败"
+            "getProjectInfo": {
+                "error": "获取项目信息失败"
             },
             "createProject": {
                 "success": "创建项目成功",

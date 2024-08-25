@@ -46,7 +46,6 @@ const MyProjectsPage = () => {
         </HStack>
 
         <div>
-          <Divider />
           {projectList && projectList.length > 0 && (
             <RichList
               titleAsLink

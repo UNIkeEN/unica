@@ -17,10 +17,11 @@ class OrganizationSerializer(serializers.ModelSerializer):
     member_count = serializers.SerializerMethodField()  # All members, include owner
     owner_count = serializers.SerializerMethodField()
     project_count = serializers.SerializerMethodField()
+    is_discussion_enabled = serializers.SerializerMethodField()
 
     class Meta:
         model = Organization
-        fields = ['id', 'display_name', 'description', 'created_at', 'updated_at', 'role', 'member_count', 'owner_count', 'project_count']
+        fields = ['id', 'display_name', 'description', 'created_at', 'updated_at', 'role', 'member_count', 'owner_count', 'project_count', 'is_discussion_enabled']
         read_only_fields = ['id']
 
     def get_role(self, obj):
@@ -36,6 +37,9 @@ class OrganizationSerializer(serializers.ModelSerializer):
     
     def get_project_count(self, obj):
         return Project.objects.filter(owner_type=ContentType.objects.get_for_model(Organization), owner_id=obj.id).count()
+    
+    def get_is_discussion_enabled(self, obj):
+        return hasattr(obj, "discussion")
 
 
 class OrganizationCreationSerializer(serializers.ModelSerializer):

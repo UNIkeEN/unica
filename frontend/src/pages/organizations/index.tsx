@@ -7,9 +7,7 @@ import {
   MenuOptionGroup,
   MenuItemOption,
   Button,
-  Flex,
   VStack,
-  Divider,
   Tag,
   Text,
   HStack,
@@ -82,7 +80,6 @@ const MyOrganizationsPage = () => {
         </HStack>
 
         <div>
-          <Divider />
           {userCtx.organizations && userCtx.organizations.length > 0 &&
             <RichList titleAsLink
               items={sortOrganizations(userCtx.organizations, orgSortBy).map((item) => ({

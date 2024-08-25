@@ -196,6 +196,21 @@
                 }
             }
         },
+        "discussion": {
+            "modal": {
+                "title": "確認啟用討論？",
+                "body": " ",
+                "cancel": "取消",
+                "confirm": "確認"
+            },
+            "title": "討論",
+            "text": {
+                "notEnabled": "當前組織的討論功能尚未啟用。啟用後，此處將可用於廣播通知、推進任務進度，為整個組織開展討論。"
+            },
+            "button": {
+                "enable": "啟用討論"
+            }
+        },
         "settings": {
             "title": "設置"
         },
@@ -246,8 +261,8 @@
             "getProjects": {
                 "error": "獲取項目列表失敗"
             },
-            "getProjectInfo":{
-                "error":"獲取項目信息失敗"
+            "getProjectInfo": {
+                "error": "獲取項目信息失敗"
             },
             "createProject": {
                 "success": "創建項目成功",

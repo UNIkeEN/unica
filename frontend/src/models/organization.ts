@@ -10,6 +10,7 @@ export interface Organization {
   member_count?: number;
   owner_count?: number;
   project_count?: number;
+  is_discussion_enabled?: boolean;
 }
 
 export interface OrganizationMember {

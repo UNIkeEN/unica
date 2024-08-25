@@ -3,6 +3,7 @@ import { VStack, Text, HStack, Icon } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from "next/router";
 import { FiHome, FiBook, FiUser, FiSettings } from 'react-icons/fi';
+import { LuMessagesSquare } from "react-icons/lu";
 import { MemberRoleEnum } from "@/models/organization";
 import OrganizationContext, { OrganizationContextProvider } from '@/contexts/organization';
 import NavTabs from '@/components/nav-tabs';
@@ -40,6 +41,7 @@ const OrgLayoutContent: React.FC<{ children: React.ReactNode }> = ({ children })
     { icon: FiHome, label: 'overview', owner_only: false },
     { icon: FiBook, label: 'projects', owner_only: false },
     { icon: FiUser, label: 'members', owner_only: false },
+    { icon: LuMessagesSquare, label: 'discussion', owner_only: !(orgCtx.basicInfo?.is_discussion_enabled)},
     { icon: FiSettings, label: 'settings', owner_only: true },
   ];
 
