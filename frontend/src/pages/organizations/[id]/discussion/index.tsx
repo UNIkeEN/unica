@@ -9,19 +9,24 @@ import {
   Spacer,
   useDisclosure,
   Button,
+  IconButton,
 } from "@chakra-ui/react";
 import OrganizationContext from "@/contexts/organization";
 import { MemberRoleEnum } from "@/models/organization";
 import { DiscussionTopic } from "@/models/discussion";
-import { createTopic, listTopics } from "@/services/discussion";
+import { createTopic, listTopics, deleteTopic } from "@/services/discussion";
 import EnableDiscussionConfirmModal from "@/components/modals/enable-discussion-confirm-modal";
 import RichList from "@/components/rich-list";
 import Pagination from "@/components/pagination";
 import { formatRelativeTime } from "@/utils/datetime";
 import NewDiscussionDrawer from "@/components/new-discussion-drawer";
+import UserContext from "@/contexts/user";
+import { FiTrash2 } from "react-icons/fi";
+import DeleteDiscussionAlertDialog from "@/components/modals/delete-discussion-alert-dialog";
 
 const OrganizationDiscussionPage = () => {
   const orgCtx = useContext(OrganizationContext);
+  const userCtx = useContext(UserContext);
   const router = useRouter();
   const toast = useToast();
   const { t } = useTranslation();
@@ -30,10 +35,23 @@ const OrganizationDiscussionPage = () => {
   const [topicCount, setTopicCount] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(20);
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const [comment, setComment] = useState<string>("");
   const [title, setTitle] = useState<string>("");
+  const [deletingTopic, setDeletingTopic] = useState<DiscussionTopic | null>(
+    null
+  );
+
+  const {
+    isOpen: isCreateTopicOpen,
+    onOpen: onCreateTopicOpen,
+    onClose: onCreateTopicClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isDeleteTopicOpen,
+    onOpen: onDeleteTopicOpen,
+    onClose: onDeleteTopicClose,
+  } = useDisclosure();
 
   // Check if discussion is enabled
   useEffect(() => {
@@ -113,6 +131,28 @@ const OrganizationDiscussionPage = () => {
     }
   };
 
+  const onTopicDelete = async (topic: DiscussionTopic) => {
+    const id = Number(router.query.id);
+    try {
+      await deleteTopic(id, topic.id);
+    } catch (error) {
+      console.error("Failed to delete topic:", error);
+      if (error.request && error.request.status === 403) {
+        orgCtx.toastNoPermissionAndRedirect();
+      } else {
+        toast({
+          title: t("Services.discussion.deleteTopic.error"),
+          status: "error",
+        });
+      }
+    }
+    toast({
+      title: t("Services.discussion.deleteTopic.success"),
+      status: "success",
+    });
+    getTopicList(id, pageIndex, pageSize);
+  };
+
   // Not enabled, show enable modal for owners
   if (!orgCtx.basicInfo?.is_discussion_enabled)
     return (
@@ -126,7 +166,7 @@ const OrganizationDiscussionPage = () => {
 
   return (
     <VStack spacing={6} align="stretch">
-      <Button onClick={onOpen} colorScheme="blue" ml="auto">
+      <Button onClick={onCreateTopicOpen} colorScheme="blue" ml="auto">
         {t("OrganizationDiscussionPage.button.create")}
       </Button>
       {topicList && topicList.length > 0 && (
@@ -144,6 +184,19 @@ const OrganizationDiscussionPage = () => {
                   })}
                 </Text>
               ),
+              lineExtra: (userCtx.profile.id === topic.user.id ||
+                orgCtx.basicInfo.role === MemberRoleEnum.OWNER) && (
+                <IconButton
+                  variant="ghost"
+                  aria-label="delete topic"
+                  icon={<FiTrash2 />}
+                  color="gray"
+                  onClick={() => {
+                    onDeleteTopicOpen();
+                    setDeletingTopic(topic);
+                  }}
+                />
+              ),
             }))}
           />
           <Flex>
@@ -159,8 +212,8 @@ const OrganizationDiscussionPage = () => {
         </>
       )}
       <NewDiscussionDrawer
-        isOpen={isOpen}
-        onClose={onClose}
+        isOpen={isCreateTopicOpen}
+        onClose={onCreateTopicClose}
         pageName="OrganizationDiscussionPage"
         comment={comment}
         setComment={(comment) => {
@@ -172,6 +225,16 @@ const OrganizationDiscussionPage = () => {
         }}
         onOKCallback={handleSubmission}
         children={<></>}
+      />
+      <DeleteDiscussionAlertDialog
+        isOpen={isDeleteTopicOpen}
+        deleteObject="topic"
+        onClose={onDeleteTopicClose}
+        onOKCallback={() => {
+          onTopicDelete(deletingTopic);
+          setDeletingTopic(null);
+          onDeleteTopicClose();
+        }}
       />
     </VStack>
   );
