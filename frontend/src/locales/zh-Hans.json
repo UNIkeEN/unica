@@ -8,6 +8,11 @@
             "change_role": "修改"
         }
     },
+    "CommentList": {
+        "tag": {
+            "original-poster": "楼主"
+        }
+    },
     "CreateOrganizationModal": {
         "modal": {
             "title": "创建新组织",

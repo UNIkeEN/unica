@@ -18,8 +18,8 @@ import {
 import MarkdownRenderer from '@/components/markdown-renderer';
 import { useTranslation } from 'next-i18next';
 import { FaMarkdown } from "react-icons/fa";
-import { FiBold, FiItalic, FiCode, FiList } from 'react-icons/fi';
-import { LuTextQuote, LuListChecks, LuStrikethrough, LuListOrdered } from "react-icons/lu";
+import { FiBold, FiItalic, FiCode } from 'react-icons/fi';
+import { LuList, LuTextQuote, LuListTodo, LuStrikethrough, LuListOrdered, LuHeading } from "react-icons/lu";
 
 interface MarkdownEditorProps extends BoxProps {
   content: string;
@@ -208,6 +208,11 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   const ToolBar = () => {
     const btnList = [
       {
+        label: "Heading",
+        icon: <LuHeading />,
+        onClick: () => handleListOperation("### ", false),
+      },
+      {
         label: "Bold",
         icon: <FiBold />,
         onClick: () => handleTextFormatting("**"),
@@ -235,7 +240,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       { label: "divider" },
       {
         label: "Unordered list",
-        icon: <FiList/>,
+        icon: <LuList/>,
         onClick: () => handleListOperation("* "),
       },
       {
@@ -245,7 +250,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       },
       {
         label: "Task list",
-        icon: <LuListChecks />,
+        icon: <LuListTodo />,
         onClick: () => handleListOperation("- [ ] "),
       }
     ];

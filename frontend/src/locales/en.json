@@ -8,6 +8,11 @@
             "change_role": "Change Role"
         }
     },
+    "CommentList": {
+        "tag": {
+            "original-poster": "OP"
+        }
+    },
     "CreateOrganizationModal": {
         "modal": {
             "title": "Create New Organization",

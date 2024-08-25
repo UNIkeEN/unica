@@ -11,26 +11,31 @@ import {
   Spacer,
   Icon,
   Tooltip,
+  Tag,
   IconButton,
   useDisclosure,
 } from "@chakra-ui/react";
 import { DiscussionComment } from "@/models/discussion";
+import { MemberRoleEnum } from "@/models/organization";
+import { UserBasicInfo } from "@/models/user";
 import MarkdownRenderer from "@/components/markdown-renderer";
 import { formatRelativeTime } from "@/utils/datetime";
 import { useTranslation } from "react-i18next";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import UserContext from "@/contexts/user";
 import OrganizationContext from "@/contexts/organization";
-import DeleteDiscussionAlertDialog from "./modals/delete-discussion-alert-dialog";
+import DeleteDiscussionAlertDialog from "@/components/modals/delete-discussion-alert-dialog";
 
 interface CommentListProps extends BoxProps {
   items: DiscussionComment[];
   onCommentDelete: (comment: DiscussionComment) => void;
+  topic_op: UserBasicInfo;  // original poster
 }
 
 const CommentList: React.FC<CommentListProps> = ({
   items,
   onCommentDelete,
+  topic_op,
   ...boxProps
 }) => {
   const { t } = useTranslation();
@@ -62,6 +67,11 @@ const CommentList: React.FC<CommentListProps> = ({
                   <Text className="secondary-text" wordBreak="break-all">
                     {item.user.email}
                   </Text>
+                  {item.user.id === topic_op?.id &&
+                    <Tag fontWeight="normal" colorScheme="gray">
+                      {t("CommentList.tag.original-poster")}
+                    </Tag>
+                  }
                 </HStack>
                 <Spacer />
                 <HStack spacing={2}>
@@ -85,8 +95,8 @@ const CommentList: React.FC<CommentListProps> = ({
                 minHeight="100px"
                 width="100%"
               />
-              {(userCtx.profile.id === item.user.id ||
-                orgCtx.basicInfo.role === "Owner") && (
+              {(userCtx.profile.id === item.user.id || orgCtx.basicInfo.role === MemberRoleEnum.OWNER) 
+              && (
                 <IconButton
                   variant="ghost"
                   mt="auto"

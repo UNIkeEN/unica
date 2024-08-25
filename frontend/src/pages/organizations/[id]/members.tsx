@@ -10,7 +10,6 @@ import {
   MenuItem,
   Button,
   VStack,
-  Divider,
   HStack,
   Text,
   IconButton,

@@ -8,7 +8,6 @@ import {
   MenuItemOption,
   Button,
   VStack,
-  Divider,
   Tag,
   Text,
   HStack,

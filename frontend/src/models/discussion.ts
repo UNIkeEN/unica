@@ -2,10 +2,11 @@ import { UserBasicInfo } from "./user";
 
 export interface DiscussionTopic {
   id: number;
-  local_id: number;
   title: string;
+  local_id: number;
   created_at: string;
   updated_at: string;
+  user: UserBasicInfo;
 }
 
 export interface DiscussionComment {

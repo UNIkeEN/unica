@@ -199,6 +199,7 @@ const DiscussionTopicPage = () => {
               <CommentList
                 items={comments}
                 onCommentDelete={handleCommentDelete}
+                topic_op={topic?.user}
               />
             )}
             <HStack spacing={2}>
