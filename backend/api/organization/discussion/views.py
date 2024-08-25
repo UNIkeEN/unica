@@ -7,7 +7,6 @@ from rest_framework.pagination import PageNumberPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from .models import Discussion
-from ..models import Membership
 from api.organization.decorators import organization_permission_classes
 from .serializers import *
 
@@ -182,8 +181,7 @@ def delete_topic(request, id):
     if not topic:
         return Response({'detail': 'Discussion topic not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    organization_owner = Membership.objects.get(organization=organization, role='Owner').user
-    if request.user != organization_owner and request.user != topic.user:
+    if request.membership.role != 'Owner' and request.user != topic.user:
         return Response({'detail': 'You do not have permission to delete this topic'}, status=status.HTTP_403_FORBIDDEN)
 
     topic.deleted = True
@@ -326,8 +324,7 @@ def delete_comment(request, id):
     except DiscussionComment.DoesNotExist:
         return Response({'detail': 'Comment not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    organization_owner = Membership.objects.get(organization=organization, role='Owner').user
-    if request.user != organization_owner and request.user != comment.user:
+    if request.membership.role != 'Owner' and request.user != comment.user:
         return Response({'detail': 'You do not have permission to delete this comment'},
                         status=status.HTTP_403_FORBIDDEN)
 
