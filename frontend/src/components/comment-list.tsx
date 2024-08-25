@@ -29,12 +29,14 @@ import DeleteDiscussionAlertDialog from "@/components/modals/delete-discussion-a
 interface CommentListProps extends BoxProps {
   items: DiscussionComment[];
   onCommentDelete: (comment: DiscussionComment) => void;
+  onTopicDelete: () => void;
   topic_op: UserBasicInfo;  // original poster
 }
 
 const CommentList: React.FC<CommentListProps> = ({
   items,
   onCommentDelete,
+  onTopicDelete,
   topic_op,
   ...boxProps
 }) => {
@@ -42,10 +44,14 @@ const CommentList: React.FC<CommentListProps> = ({
   const userCtx = useContext(UserContext);
   const orgCtx = useContext(OrganizationContext);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [deleteComment, setDeleteComment] =
-    React.useState<DiscussionComment | null>(null);
+  const [deleteComment, setDeleteComment] = React.useState<DiscussionComment | null>(null);
 
+  const {
+    isOpen: isDeleteDialogOpen,
+    onOpen: onDeleteDialogOpen,
+    onClose: onDeleteDialogClose,
+  } = useDisclosure();
+  
   return (
     <Box {...boxProps}>
       {items && items.length > 0 && <Divider />}
@@ -105,7 +111,7 @@ const CommentList: React.FC<CommentListProps> = ({
                   icon={<FiTrash2 />}
                   color="gray"
                   onClick={() => {
-                    onOpen();
+                    onDeleteDialogOpen();
                     setDeleteComment(item);
                   }}
                 />
@@ -117,13 +123,17 @@ const CommentList: React.FC<CommentListProps> = ({
       ))}
       {deleteComment && (
         <DeleteDiscussionAlertDialog
-          isOpen={isOpen}
-          deleteObject="comment"
-          onClose={onClose}
+          isOpen={isDeleteDialogOpen}
+          deleteObject={deleteComment.local_id === 1 ? "topic" : "comment"}
+          onClose={onDeleteDialogClose}
           onOKCallback={() => {
-            onCommentDelete(deleteComment);
             setDeleteComment(null);
-            onClose();
+            onDeleteDialogClose();
+            if (deleteComment.local_id === 1) {
+              onTopicDelete();
+            } else {
+              onCommentDelete(deleteComment);
+            }
           }}
         />
       )}

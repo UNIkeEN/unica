@@ -5,6 +5,7 @@ import { useToast } from "@/contexts/toast";
 import { DiscussionComment, DiscussionTopic } from "@/models/discussion";
 import {
   getTopicInfo,
+  deleteTopic,
   createComment,
   listComments,
   deleteComment,
@@ -32,7 +33,7 @@ import { FiShare2 } from "react-icons/fi";
 const DiscussionTopicPage = () => {
   const router = useRouter();
   const org_id = Number(router.query.id);
-  const local_id = Number(router.query.local_id);
+  const topic_local_id = Number(router.query.local_id);
   const { t } = useTranslation();
   const orgCtx = useContext(OrganizationContext);
   const toast = useToast();
@@ -96,7 +97,7 @@ const DiscussionTopicPage = () => {
 
   const getTopic = async () => {
     try {
-      const res = await getTopicInfo(org_id, local_id);
+      const res = await getTopicInfo(org_id, topic_local_id);
       setTopic(res);
     } catch (error) {
       console.error("Failed to get topic info:", error);
@@ -114,7 +115,7 @@ const DiscussionTopicPage = () => {
 
   const getCommentsList = async (page: number = 1, pageSize: number = 20) => {
     try {
-      const res = await listComments(org_id, page, pageSize, local_id);
+      const res = await listComments(org_id, page, pageSize, topic_local_id);
       console.warn(res);
       setComments(res.results);
       setCommentCount(res.count);
@@ -135,7 +136,7 @@ const DiscussionTopicPage = () => {
 
   const handleSubmission = async () => {
     try {
-      await createComment(org_id, local_id, newComment);
+      await createComment(org_id, topic_local_id, newComment);
     } catch (error) {
       console.error("Failed to create comment:", error);
       if (error.request && error.request.status === 403) {
@@ -156,9 +157,30 @@ const DiscussionTopicPage = () => {
     getCommentsList(page, pageSize);
   };
 
+  const handleTopicDelete = async () => {
+    try {
+      await deleteTopic(org_id, topic_local_id);
+    } catch (error) {
+      console.error("Failed to delete topic:", error);
+      if (error.request && error.request.status === 403) {
+        orgCtx.toastNoPermissionAndRedirect();
+      } else {
+        toast({
+          title: t("Services.discussion.deleteTopic.error"),
+          status: "error",
+        });
+      }
+    }
+    toast({
+      title: t("Services.discussion.deleteTopic.success"),
+      status: "success",
+    });
+    router.push(`/organizations/${org_id}/discussion/`);
+  };
+
   const handleCommentDelete = async (comment: DiscussionComment) => {
     try {
-      await deleteComment(org_id, local_id, comment.local_id);
+      await deleteComment(org_id, topic_local_id, comment.local_id);
     } catch (error) {
       console.error("Failed to delete comment:", error);
       if (error.request && error.request.status === 403) {
@@ -176,6 +198,7 @@ const DiscussionTopicPage = () => {
     });
     getCommentsList(page, pageSize);
   };
+
 
   return (
     <>
@@ -199,6 +222,7 @@ const DiscussionTopicPage = () => {
               <CommentList
                 items={comments}
                 onCommentDelete={handleCommentDelete}
+                onTopicDelete={handleTopicDelete}
                 topic_op={topic?.user}
               />
             )}

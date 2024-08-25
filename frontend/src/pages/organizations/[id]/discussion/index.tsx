@@ -131,27 +131,6 @@ const OrganizationDiscussionPage = () => {
     }
   };
 
-  const onTopicDelete = async (topic: DiscussionTopic) => {
-    const id = Number(router.query.id);
-    try {
-      await deleteTopic(id, topic.id);
-    } catch (error) {
-      console.error("Failed to delete topic:", error);
-      if (error.request && error.request.status === 403) {
-        orgCtx.toastNoPermissionAndRedirect();
-      } else {
-        toast({
-          title: t("Services.discussion.deleteTopic.error"),
-          status: "error",
-        });
-      }
-    }
-    toast({
-      title: t("Services.discussion.deleteTopic.success"),
-      status: "success",
-    });
-    getTopicList(id, pageIndex, pageSize);
-  };
 
   // Not enabled, show enable modal for owners
   if (!orgCtx.basicInfo?.is_discussion_enabled)
@@ -184,19 +163,6 @@ const OrganizationDiscussionPage = () => {
                   })}
                 </Text>
               ),
-              lineExtra: (userCtx.profile.id === topic.user.id ||
-                orgCtx.basicInfo.role === MemberRoleEnum.OWNER) && (
-                <IconButton
-                  variant="ghost"
-                  aria-label="delete topic"
-                  icon={<FiTrash2 />}
-                  color="gray"
-                  onClick={() => {
-                    onDeleteTopicOpen();
-                    setDeletingTopic(topic);
-                  }}
-                />
-              ),
             }))}
           />
           <Flex>
@@ -225,16 +191,6 @@ const OrganizationDiscussionPage = () => {
         }}
         onOKCallback={handleSubmission}
         children={<></>}
-      />
-      <DeleteDiscussionAlertDialog
-        isOpen={isDeleteTopicOpen}
-        deleteObject="topic"
-        onClose={onDeleteTopicClose}
-        onOKCallback={() => {
-          onTopicDelete(deletingTopic);
-          setDeletingTopic(null);
-          onDeleteTopicClose();
-        }}
       />
     </VStack>
   );

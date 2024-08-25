@@ -155,9 +155,9 @@ def list_topics(request, id):
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
         properties={
-            'topic_id': openapi.Schema(type=openapi.TYPE_INTEGER)
+            'topic_local_id': openapi.Schema(type=openapi.TYPE_INTEGER)
         },
-        required=['topic_id']
+        required=['topic_local_id']
     ),
     responses={
         204: openapi.Response(description="Discussion topic deleted successfully"),
@@ -176,8 +176,8 @@ def delete_topic(request, id):
     if not hasattr(organization, 'discussion'):
         return Response({'detail': 'Discussion not enabled in this organization'}, status=status.HTTP_404_NOT_FOUND)
 
-    topic_id = request.data.get('topic_id')
-    topic = organization.discussion.topics.filter(id=topic_id).first()
+    topic_local_id = request.data.get('topic_local_id')
+    topic = DiscussionTopic.objects.get(discussion=organization.discussion, local_id=topic_local_id, deleted=False)
     if not topic:
         return Response({'detail': 'Discussion topic not found'}, status=status.HTTP_404_NOT_FOUND)
 

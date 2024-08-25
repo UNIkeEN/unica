@@ -51,10 +51,10 @@ export async function createTopic(id: number, title: string, category_id: number
   }
 }
 
-export async function deleteTopic(id: number, topic_id: number) {
+export async function deleteTopic(id: number, topic_local_id: number) {
   try {
     const response = await request.post(`/api/organization/${id}/discussion/topic/delete/`, {
-      topic_id: topic_id
+      topic_local_id: topic_local_id
     });
     return response.data;
   } catch (error) {
