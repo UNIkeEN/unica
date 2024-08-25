@@ -35,7 +35,7 @@ export async function listTopics(id: number, page: number, pageSize: number) {
   }
 }
 
-export async function createTopic(id: number, title: string, category_id: number, init_comment?: string) {
+export async function createTopic(id: number, title: string, category_id: number, init_comment: string) {
   try {
     const response = await request.post(`/api/organization/${id}/discussion/topic/create/`, {
       title: title,

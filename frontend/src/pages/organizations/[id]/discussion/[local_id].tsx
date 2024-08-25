@@ -137,7 +137,7 @@ const DiscussionTopicPage = () => {
     try {
       await createComment(org_id, local_id, newComment);
     } catch (error) {
-      console.error("Failed to create topic:", error);
+      console.error("Failed to create comment:", error);
       if (error.request && error.request.status === 403) {
         orgCtx.toastNoPermissionAndRedirect();
       } else {
@@ -250,8 +250,8 @@ const DiscussionTopicPage = () => {
         isOpen={isOpen}
         onClose={onClose}
         pageName="DiscussionTopicPage"
-        content={newComment}
-        setContent={(content) => setNewComment(content)}
+        comment={newComment}
+        setComment={(comment) => setNewComment(comment)}
         onOKCallback={handleSubmission}
         children={<></>}
       />

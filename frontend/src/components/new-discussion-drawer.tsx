@@ -10,34 +10,41 @@ import {
   DrawerOverlay,
   DrawerProps,
   Flex,
+  FormControl,
+  FormLabel,
   IconButton,
+  Input,
   Spacer,
-  VStack,
-  useBreakpointValue
+  useBreakpointValue,
+  Text,
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { FiChevronDown, FiMaximize2, FiMinimize2 } from "react-icons/fi";
 
 interface NewDiscussionDrawerProps extends DrawerProps {
   pageName: string;
-  content: string;
-  setContent: (content: string) => void;
+  comment: string;
+  setComment: (comment: string) => void;
   onOKCallback: () => void;
+  title?: string;
+  setTitle?: (title: string) => void;
 }
 
 const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
   pageName,
-  content,
-  setContent,
+  comment,
+  setComment,
   onOKCallback,
+  title,
+  setTitle,
   ...drawerProps
 }) => {
   const [fullHeight, setFullHeight] = useState<boolean>(false);
-  const _width = useBreakpointValue({ base: "100%", md: "60%" })
+  const _width = useBreakpointValue({ base: "100%", md: "60%" });
   const { t } = useTranslation();
 
   return (
-    <Drawer 
+    <Drawer
       placement="bottom"
       blockScrollOnMount={false}
       closeOnOverlayClick={false}
@@ -51,15 +58,13 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
         rounded={"lg"}
       >
         <Flex>
-          <DrawerHeader flex="1">
-            {t(`${pageName}.drawer.title`)}
-          </DrawerHeader>
+          <DrawerHeader flex="1">{t(`${pageName}.drawer.title`)}</DrawerHeader>
           <Spacer />
           <IconButton
             aria-label="Full Height"
             variant="ghost"
             icon={fullHeight ? <FiMinimize2 /> : <FiMaximize2 />}
-            onClick={() => setFullHeight(current => !current)}
+            onClick={() => setFullHeight((current) => !current)}
             size="lg"
           />
           <IconButton
@@ -71,12 +76,20 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
           />
         </Flex>
         <DrawerBody>
+          {pageName == "OrganizationDiscussionPage" && (
+            <Input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder={t(`${pageName}.drawer.setTitle`)}
+              mb="5"
+            />
+          )}
           <MarkdownEditor
-            content={content}
+            content={comment}
             resize="none"
             h="100%"
-            onContentChange={(content) => {
-              setContent(content);
+            onContentChange={(comment) => {
+              setComment(comment);
             }}
           />
         </DrawerBody>

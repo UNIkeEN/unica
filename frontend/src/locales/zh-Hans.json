@@ -178,6 +178,18 @@
             "noPermission": "您未加入此组织或权限不足"
         }
     },
+    "OrganizationDiscussionPage": {
+        "drawer": {
+            "title": "添加话题",
+            "setTitle": "标题",
+            "setComment": "初始评论",
+            "submit": "提交",
+            "cancel": "取消"
+        },
+        "button": {
+            "create": "创建话题"
+        }
+    },
     "OrganizationPages": {
         "overview": {
             "title": "概览"
@@ -275,6 +287,14 @@
             "deleteComment": {
                 "error": "删除评论失败",
                 "success": "评论已成功删除"
+            },
+            "deleteTopic": {
+                "error": "删除话题失败",
+                "success": "话题已成功删除"
+            },
+            "createTopic": {
+                "error": "创建话题失败",
+                "success": "话题已成功创建"
             }
         },
         "projects": {

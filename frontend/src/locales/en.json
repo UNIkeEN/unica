@@ -178,6 +178,18 @@
             "noPermission": "You are not a member of this organization or do not have enough permissions"
         }
     },
+    "OrganizationDiscussionPage": {
+        "drawer": {
+            "title": "Add Comment",
+            "setTitle": "Title",
+            "setComment": "Initial Comment",
+            "submit": "Submit",
+            "cancel": "Cancel"
+        },
+        "button": {
+            "create": "Create Topic"
+        }
+    },
     "OrganizationPages": {
         "overview": {
             "title": "Overview"
@@ -275,6 +287,15 @@
             "deleteComment": {
                 "error": "Failed to delete comment",
                 "success": "Comment deleted successfully"
+            },
+            "deleteTopic": {
+                "error": "Failed to delete topic",
+                "success": "Topic deleted successfully"
+            },
+            "createTopic": {
+                "button": "Create Topic",
+                "error": "Failed to create topic",
+                "success": "Topic created successfully"
             }
         },
         "projects": {
