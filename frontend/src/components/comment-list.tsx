@@ -98,7 +98,9 @@ const CommentList: React.FC<CommentListProps> = ({
                       })}
                       aria-label="Edited"
                     >
-                      <Icon as={FiEdit} color="orange" />
+                      <Box mt="1">
+                        <Icon as={FiEdit} color="orange"/>
+                      </Box>
                     </Tooltip>
                   )}
                   <Text className="secondary-text">
