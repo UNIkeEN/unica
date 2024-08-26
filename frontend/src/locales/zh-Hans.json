@@ -52,7 +52,8 @@
     "DeleteDiscussionAlertDialog": {
         "topic": {
             "title": "删除话题",
-            "content": "确定要删除此话题吗？",
+            "content": "删除主楼将导致该话题（包括所有评论）被删除，确定继续吗？",
+            "deleteDisabled": "删除({{seconds}})",
             "delete": "删除",
             "cancel": "取消"
         },

@@ -52,7 +52,8 @@
     "DeleteDiscussionAlertDialog": {
         "topic": {
             "title": "Delete Topic",
-            "content": "Are you sure you want to delete this topic?",
+            "content": "Deleting original post will cause the topic (including all comments) to be deleted, are you sure to continue?",
+            "deleteDisabled": "Delete({{seconds}})",
             "delete": "Delete",
             "cancel": "Cancel"
         },

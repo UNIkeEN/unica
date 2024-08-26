@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   AlertDialog,
   AlertDialogBody,
@@ -23,6 +23,26 @@ const DeleteDiscussionAlertDialog: React.FC<
 > = ({ isOpen, deleteObject, onClose, onOKCallback }) => {
   const cancelRef = useRef();
   const { t } = useTranslation();
+
+  const [seconds, setSeconds] = useState(3);
+  const [deleteDisabled, setDeleteDisabled] = useState(true);
+
+  useEffect(() => {
+    if (deleteObject === "topic") {
+      if (seconds > 1) {
+        const timer = setTimeout(() => {
+          setSeconds(seconds - 1);
+        }, 1000);
+        return () => clearTimeout(timer);
+      } else {
+        const timer = setTimeout(() => {
+          setDeleteDisabled(false);
+        }, 1000);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [seconds]);
+
   return (
     <AlertDialog
       isOpen={isOpen}
@@ -43,9 +63,22 @@ const DeleteDiscussionAlertDialog: React.FC<
             <Button ref={cancelRef} onClick={onClose}>
               {t(`DeleteDiscussionAlertDialog.${deleteObject}.cancel`)}
             </Button>
-            <Button colorScheme="red" onClick={onOKCallback} ml={3}>
-              {t(`DeleteDiscussionAlertDialog.${deleteObject}.delete`)}
-            </Button>
+            {deleteObject === "topic" && deleteDisabled ? (
+              <Button
+                colorScheme="red"
+                onClick={onOKCallback}
+                ml={3}
+                isDisabled
+              >
+                {t(`DeleteDiscussionAlertDialog.${deleteObject}.deleteDisabled`, {
+                  seconds: seconds,
+                })}
+              </Button>
+            ) : (
+              <Button colorScheme="red" onClick={onOKCallback} ml={3}>
+                {t(`DeleteDiscussionAlertDialog.${deleteObject}.delete`)}
+              </Button>
+            )}
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialogOverlay>
