@@ -170,7 +170,7 @@ def list_topics(request, id):
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
-@organization_permission_classes(['Owner'])
+@organization_permission_classes(['Owner', 'Member'])
 def delete_topic(request, id):
     organization = request.organization
     if not hasattr(organization, 'discussion'):
@@ -181,11 +181,12 @@ def delete_topic(request, id):
     if not topic:
         return Response({'detail': 'Discussion topic not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    if request.membership.role != 'Owner' and request.user != topic.user:
+    first_comment = topic.comments.filter(deleted=False).order_by('created_at').first()
+
+    if request.membership.role != 'Owner' and request.user != first_comment.user:
         return Response({'detail': 'You do not have permission to delete this topic'}, status=status.HTTP_403_FORBIDDEN)
 
-    topic.deleted = True
-    topic.save()
+    topic.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -305,12 +306,12 @@ def list_comment(request, id):
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
-@organization_permission_classes(['Owner','Member'])
+@organization_permission_classes(['Owner', 'Member'])
 def delete_comment(request, id):
     organization = request.organization
     topic_local_id = request.data.get('topic_local_id')
     comment_local_id = request.data.get('comment_local_id')
-    if topic_local_id == 1:
+    if comment_local_id == 1:
         return Response({'detail': 'Please use delete_topic to delete the entire topic.'},
                         status=status.HTTP_400_BAD_REQUEST)
 
