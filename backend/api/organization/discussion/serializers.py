@@ -43,12 +43,13 @@ class DiscussionCommentSerializer(serializers.ModelSerializer):
     user = UserBasicInfoSerializer()
     class Meta:
         model = DiscussionComment
-        fields = ['id', 'user', 'topic', 'content', 'created_at', 'updated_at', 'local_id', 'deleted']
+        fields = ['id', 'user', 'topic', 'content', 'created_at', 'updated_at', 'local_id', 'edited']
 
 class DiscussionCommentCreationSerializer(serializers.ModelSerializer):
     class Meta:
         model = DiscussionComment
         fields = ['content','local_id']
+        read_only_fields = ['local_id']
 
 class DiscussionTopicCreationSerializer(serializers.ModelSerializer):
     comment = DiscussionCommentCreationSerializer(required=False)

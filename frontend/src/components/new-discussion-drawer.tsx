@@ -22,7 +22,8 @@ import { useTranslation } from "react-i18next";
 import { FiChevronDown, FiMaximize2, FiMinimize2 } from "react-icons/fi";
 
 interface NewDiscussionDrawerProps extends DrawerProps {
-  pageName: string;
+  drawerTitle: string;
+  variant: "topic" | "comment"
   comment: string;
   setComment: (comment: string) => void;
   onOKCallback: () => void;
@@ -31,7 +32,8 @@ interface NewDiscussionDrawerProps extends DrawerProps {
 }
 
 const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
-  pageName,
+  drawerTitle,
+  variant,
   comment,
   setComment,
   onOKCallback,
@@ -58,7 +60,7 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
         rounded={"lg"}
       >
         <Flex>
-          <DrawerHeader flex="1">{t(`${pageName}.drawer.title`)}</DrawerHeader>
+          <DrawerHeader flex="1">{drawerTitle}</DrawerHeader>
           <Spacer />
           <IconButton
             aria-label="Full Height"
@@ -76,11 +78,11 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
           />
         </Flex>
         <DrawerBody>
-          {pageName == "OrganizationDiscussionPage" && (
+          {variant === "topic" && (
             <Input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder={t(`${pageName}.drawer.setTitle`)}
+              placeholder={t("NewDiscussionDrawer.drawer.setTitle")}
               mb="5"
             />
           )}
@@ -96,10 +98,10 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
 
         <DrawerFooter>
           <Button onClick={drawerProps.onClose}>
-            {t(`${pageName}.drawer.cancel`)}
+            {t("NewDiscussionDrawer.drawer.cancel")}
           </Button>
           <Button colorScheme="blue" onClick={onOKCallback} ml={3}>
-            {t(`${pageName}.drawer.submit`)}
+            {t("NewDiscussionDrawer.drawer.submit")}
           </Button>
         </DrawerFooter>
       </DrawerContent>

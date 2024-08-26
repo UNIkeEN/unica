@@ -9,6 +9,7 @@ import {
   createComment,
   listComments,
   deleteComment,
+  editComment
 } from "@/services/discussion";
 import {
   Grid,
@@ -182,6 +183,10 @@ const DiscussionTopicPage = () => {
   const handleCommentDelete = async (comment: DiscussionComment) => {
     try {
       await deleteComment(org_id, topic_local_id, comment.local_id);
+      toast({
+        title: t("Services.discussion.deleteComment.success"),
+        status: "success",
+      });
     } catch (error) {
       console.error("Failed to delete comment:", error);
       if (error.request && error.request.status === 403) {
@@ -193,10 +198,29 @@ const DiscussionTopicPage = () => {
         });
       }
     }
-    toast({
-      title: t("Services.discussion.deleteComment.success"),
-      status: "success",
-    });
+    getCommentsList(page, pageSize);
+  };
+
+  const handleCommentEdit = async (comment: DiscussionComment, newContent: string) => {
+    console.warn(comment, newContent);
+    if (newContent === comment.content) return;
+    try {
+      await editComment(org_id, topic_local_id, comment.local_id, newContent);
+      toast({
+        title: t("Services.discussion.editComment.success"),
+        status: "success",
+      });
+    } catch (error) {
+      console.error("Failed to edit comment:", error);
+      if (error.request && error.request.status === 403) {
+        orgCtx.toastNoPermissionAndRedirect();
+      } else {
+        toast({
+          title: t("Services.discussion.editComment.error"),
+          status: "error",
+        });
+      }
+    }
     getCommentsList(page, pageSize);
   };
 
@@ -223,6 +247,7 @@ const DiscussionTopicPage = () => {
               <CommentList
                 items={comments}
                 onCommentDelete={handleCommentDelete}
+                onCommentEdit={handleCommentEdit}
                 onTopicDelete={handleTopicDelete}
                 topic_op={topic?.user}
               />
@@ -274,7 +299,8 @@ const DiscussionTopicPage = () => {
       <NewDiscussionDrawer
         isOpen={isOpen}
         onClose={onClose}
-        pageName="DiscussionTopicPage"
+        drawerTitle={t("DiscussionTopicPage.drawer.reply")}
+        variant="comment"
         comment={newComment}
         setComment={(comment) => setNewComment(comment)}
         onOKCallback={handleSubmission}

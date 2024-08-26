@@ -49,10 +49,12 @@ class DiscussionTopic(models.Model):
 class DiscussionComment(AbstractComment):
     topic = models.ForeignKey(DiscussionTopic, on_delete=models.CASCADE, related_name='comments')
     local_id = models.IntegerField(editable=False)  # local id, in the same topic scope
+    edited = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False) # soft delete
 
     def save(self, *args, **kwargs):
         with transaction.atomic():
+            self.edited = True
             if not self.local_id:
                 max_local_id = DiscussionComment.objects.filter(
                     topic=self.topic
@@ -62,11 +64,12 @@ class DiscussionComment(AbstractComment):
                     self.local_id = max_local_id + 1  # Generate local_id at max+1
                 else:
                     self.local_id = 1
-            super().save(*args, **kwargs)
+                self.edited = False # no local_id regarded as creation(no edited)
 
-            if not self.deleted:
                 self.topic.updated_at = timezone.now()
                 self.topic.save()
+            super().save(*args, **kwargs)
+                
 
     def delete(self):
         self.deleted = True

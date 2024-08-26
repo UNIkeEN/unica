@@ -318,7 +318,6 @@ def delete_comment(request, id):
         topic = DiscussionTopic.objects.get(discussion=organization.discussion, local_id=topic_local_id, deleted=False)
     except DiscussionTopic.DoesNotExist:
         return Response({'detail': 'Topic not found or has been deleted'}, status=status.HTTP_404_NOT_FOUND)
-
     try:
         comment = DiscussionComment.objects.get(topic=topic, local_id=comment_local_id, deleted=False)
     except DiscussionComment.DoesNotExist:
@@ -333,4 +332,52 @@ def delete_comment(request, id):
     comment.save()
 
     return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@swagger_auto_schema(
+    method='patch',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'topic_local_id': openapi.Schema(type=openapi.TYPE_INTEGER),
+            'comment_local_id': openapi.Schema(type=openapi.TYPE_INTEGER),
+            'content': openapi.Schema(type=openapi.TYPE_STRING, max_length=200)
+        },
+        required=['topic_local_id', 'comment_local_id', 'content']
+    ),
+    responses={
+        201: openapi.Response(
+            description="Comment edited successfully",
+            schema=DiscussionCommentCreationSerializer
+        ),
+        400: openapi.Response(description="Invalid input"),
+        403: openapi.Response(description="Authenticated user does not have the required permissions"),
+        404: openapi.Response(description="Topic not found or has been deleted"),
+    },
+    operation_description="Edited an existed comment",
+    tags=["Organization/Discussion"]
+)
+@api_view(['PATCH'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@organization_permission_classes(['Owner','Member'])
+def edit_comment(request, id):
+    organization = request.organization
+    topic_local_id = request.data.get('topic_local_id')
+    comment_local_id = request.data.get('comment_local_id')
+
+    try:
+        topic = DiscussionTopic.objects.get(discussion=organization.discussion, local_id=topic_local_id, deleted=False)
+    except DiscussionTopic.DoesNotExist:
+        return Response({'detail': 'Topic not found or has been deleted'}, status=status.HTTP_404_NOT_FOUND)
+    try:
+        comment = DiscussionComment.objects.get(topic=topic, local_id=comment_local_id, deleted=False)
+    except DiscussionComment.DoesNotExist:
+        return Response({'detail': 'Comment not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    serializer = DiscussionCommentCreationSerializer(comment, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save(topic=topic, user=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

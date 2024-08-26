@@ -102,3 +102,17 @@ export async function deleteComment(id: number, topic_local_id: number, comment_
     throw error;
   }
 }
+
+export async function editComment(id: number, topic_local_id: number, comment_local_id: number, content: string) {
+  try {
+    const response = await request.patch(`/api/organization/${id}/discussion/comment/update/`, {
+      comment_local_id: comment_local_id,
+      topic_local_id: topic_local_id,
+      content: content
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to edit comment', error);
+    throw error;
+  }
+}

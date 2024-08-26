@@ -21,14 +21,16 @@ import { UserBasicInfo } from "@/models/user";
 import MarkdownRenderer from "@/components/markdown-renderer";
 import { formatRelativeTime } from "@/utils/datetime";
 import { useTranslation } from "react-i18next";
-import { FiEdit, FiTrash2 } from "react-icons/fi";
+import { FiEdit, FiTrash2, FiEdit3 } from "react-icons/fi";
 import UserContext from "@/contexts/user";
 import OrganizationContext from "@/contexts/organization";
 import DeleteDiscussionAlertDialog from "@/components/modals/delete-discussion-alert-dialog";
+import NewDiscussionDrawer from "./new-discussion-drawer";
 
 interface CommentListProps extends BoxProps {
   items: DiscussionComment[];
   onCommentDelete: (comment: DiscussionComment) => void;
+  onCommentEdit: (comment: DiscussionComment, newContent: string) => void;
   onTopicDelete: () => void;
   topic_op: UserBasicInfo;  // original poster
 }
@@ -36,6 +38,7 @@ interface CommentListProps extends BoxProps {
 const CommentList: React.FC<CommentListProps> = ({
   items,
   onCommentDelete,
+  onCommentEdit,
   onTopicDelete,
   topic_op,
   ...boxProps
@@ -44,12 +47,19 @@ const CommentList: React.FC<CommentListProps> = ({
   const userCtx = useContext(UserContext);
   const orgCtx = useContext(OrganizationContext);
 
-  const [deleteComment, setDeleteComment] = React.useState<DiscussionComment | null>(null);
+  const [selectedComment, setSelectedComment] = React.useState<DiscussionComment | null>(null);
+  const [editedComment, setEditedComment] = React.useState<string | null>(null);
 
   const {
     isOpen: isDeleteDialogOpen,
     onOpen: onDeleteDialogOpen,
     onClose: onDeleteDialogClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isEditDrawerOpen,
+    onOpen: onEditDrawerOpen,
+    onClose: onEditDrawerClose,
   } = useDisclosure();
   
   return (
@@ -81,7 +91,7 @@ const CommentList: React.FC<CommentListProps> = ({
                 </HStack>
                 <Spacer />
                 <HStack spacing={2}>
-                  {item.created_at !== item.updated_at && (
+                  {item.edited && (
                     <Tooltip
                       label={t("General.updated_at", {
                         time: formatRelativeTime(item.updated_at, t),
@@ -103,40 +113,65 @@ const CommentList: React.FC<CommentListProps> = ({
               />
               {(userCtx.profile.id === item.user.id || orgCtx.basicInfo.role === MemberRoleEnum.OWNER) 
               && (
+              <HStack spacing={0} ml="auto">
                 <IconButton
                   variant="ghost"
-                  mt="auto"
-                  ml="auto"
+                  aria-label="edit comment"
+                  icon={<FiEdit3/>}
+                  color="gray"
+                  onClick={() => {
+                    setEditedComment(item.content);
+                    setSelectedComment(item);
+                    onEditDrawerOpen();
+                  }}
+                />
+                <IconButton
+                  variant="ghost"
                   aria-label="delete comment"
                   icon={<FiTrash2 />}
                   color="gray"
                   onClick={() => {
                     onDeleteDialogOpen();
-                    setDeleteComment(item);
+                    setSelectedComment(item);
                   }}
                 />
+              </HStack>
               )}
             </VStack>
           </Flex>
           <Divider />
         </>
       ))}
-      {deleteComment && (
+      {selectedComment && (
         <DeleteDiscussionAlertDialog
           isOpen={isDeleteDialogOpen}
-          deleteObject={deleteComment.local_id === 1 ? "topic" : "comment"}
+          deleteObject={selectedComment.local_id === 1 ? "topic" : "comment"}
           onClose={onDeleteDialogClose}
           onOKCallback={() => {
-            setDeleteComment(null);
             onDeleteDialogClose();
-            if (deleteComment.local_id === 1) {
+            if (selectedComment.local_id === 1) {
               onTopicDelete();
             } else {
-              onCommentDelete(deleteComment);
+              onCommentDelete(selectedComment);
             }
+            setSelectedComment(null);
           }}
         />
       )}
+      {selectedComment && <NewDiscussionDrawer
+        isOpen={isEditDrawerOpen}
+        onClose={onEditDrawerClose}
+        drawerTitle={t("DiscussionTopicPage.drawer.editComment")}
+        variant="comment"
+        comment={editedComment}
+        setComment={(comment) => {setEditedComment(comment);}}
+        onOKCallback={() => {
+          onEditDrawerClose();
+          onCommentEdit(selectedComment, editedComment!);
+          setSelectedComment(null);
+        }}
+        children={<></>}
+      />}
     </Box>
   );
 };

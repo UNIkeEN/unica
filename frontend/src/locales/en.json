@@ -69,9 +69,8 @@
             "share": "Share"
         },
         "drawer": {
-            "title": "Add Comment",
-            "submit": "Submit",
-            "cancel": "Cancel"
+            "reply": "Add Comment",
+            "editComment": "Edit Comment"
         }
     },
     "Enums": {
@@ -203,6 +202,14 @@
             "create": "New Project"
         }
     },
+    "NewDiscussionDrawer": {
+        "drawer": {
+            "setTitle": "Title",
+            "setComment": "Initial Comment",
+            "submit": "Submit",
+            "cancel": "Cancel"
+        }
+    },
     "NotFoundPage": {
         "title": "Page Not Found",
         "text": "Page not found, redirecting to home page in {{seconds}} seconds..."
@@ -213,18 +220,6 @@
     "OrganizationContext": {
         "toast": {
             "noPermission": "You are not a member of this organization or do not have enough permissions"
-        }
-    },
-    "OrganizationDiscussionPage": {
-        "drawer": {
-            "title": "Add Comment",
-            "setTitle": "Title",
-            "setComment": "Initial Comment",
-            "submit": "Submit",
-            "cancel": "Cancel"
-        },
-        "button": {
-            "create": "Create Topic"
         }
     },
     "OrganizationPages": {
@@ -260,7 +255,8 @@
                 "notEnabled": "The Discussion feature is currently disabled for this organization. Enabling it will allow you to broadcast announcements, advance task progress, and hold conversations for the entire organization."
             },
             "button": {
-                "enable": "Enable Discussion"
+                "enable": "Enable Discussion",
+                "createTopic": "Create Topic"
             }
         },
         "settings": {
@@ -330,6 +326,10 @@
             "deleteComment": {
                 "error": "Failed to delete comment",
                 "success": "Comment deleted successfully"
+            },
+            "editComment": {
+                "error": "Failed to edit comment",
+                "success": "Comment edited successfully"
             },
             "deleteTopic": {
                 "error": "Failed to delete topic",

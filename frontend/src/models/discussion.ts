@@ -17,5 +17,5 @@ export interface DiscussionComment {
   created_at: string;
   updated_at: string;
   local_id: number;
-  deleted: boolean;
+  edited: boolean;
 }

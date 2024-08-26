@@ -146,7 +146,7 @@ const OrganizationDiscussionPage = () => {
   return (
     <VStack spacing={6} align="stretch">
       <Button onClick={onCreateTopicOpen} colorScheme="blue" ml="auto">
-        {t("OrganizationDiscussionPage.button.create")}
+        {t("OrganizationPages.discussion.button.createTopic")}
       </Button>
       {topicList && topicList.length > 0 && (
         <>
@@ -180,7 +180,8 @@ const OrganizationDiscussionPage = () => {
       <NewDiscussionDrawer
         isOpen={isCreateTopicOpen}
         onClose={onCreateTopicClose}
-        pageName="OrganizationDiscussionPage"
+        drawerTitle={t("OrganizationPages.discussion.button.createTopic")}
+        variant="topic"
         comment={comment}
         setComment={(comment) => {
           setComment(comment);
