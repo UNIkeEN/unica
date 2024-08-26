@@ -157,20 +157,22 @@ const CommentList: React.FC<CommentListProps> = ({
           }}
         />
       )}
-      {selectedComment && <NewDiscussionDrawer
-        isOpen={isEditDrawerOpen}
-        onClose={onEditDrawerClose}
-        drawerTitle={t("DiscussionTopicPage.drawer.editComment")}
-        variant="comment"
-        comment={editedComment}
-        setComment={(comment) => {setEditedComment(comment);}}
-        onOKCallback={() => {
-          onEditDrawerClose();
-          onCommentEdit(selectedComment, editedComment!);
-          setSelectedComment(null);
-        }}
-        children={<></>}
-      />}
+      {selectedComment && 
+        <NewDiscussionDrawer
+          isOpen={isEditDrawerOpen}
+          onClose={onEditDrawerClose}
+          drawerTitle={t("DiscussionTopicPage.drawer.editComment")}
+          variant="comment"
+          comment={editedComment}
+          setComment={(comment) => {setEditedComment(comment);}}
+          onOKCallback={() => {
+            onEditDrawerClose();
+            onCommentEdit(selectedComment, editedComment!);
+            setSelectedComment(null);
+        }}>
+          <React.Fragment />
+        </NewDiscussionDrawer>
+      }
     </Box>
   );
 };

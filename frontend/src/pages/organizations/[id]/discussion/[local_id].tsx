@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { useContext, useEffect, useState, useRef } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { FaReply } from "react-icons/fa";
 import { LuArrowUpToLine } from "react-icons/lu";
@@ -310,8 +310,9 @@ const DiscussionTopicPage = () => {
         comment={newComment}
         setComment={(comment) => setNewComment(comment)}
         onOKCallback={handleSubmission}
-        children={<></>}
-      />
+      >
+        <React.Fragment />
+      </NewDiscussionDrawer>
     </>
   );
 };

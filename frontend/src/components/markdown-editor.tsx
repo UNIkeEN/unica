@@ -257,9 +257,9 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
 
     return (
       <HStack ml="auto" mr={2} spacing={0}>
-        {btnList.map((btn) => (
-          btn.label === "divider" ? <Divider orientation='vertical' mx={1}/> :
-          <Tooltip label={btn.label}>
+        {btnList.map((btn, index) => (
+          btn.label === "divider" ? <Divider orientation='vertical' mx={1} key={`${index}-${btn.label}`}/> :
+          <Tooltip label={btn.label} key={`${index}-${btn.label}`}>
             <IconButton
               aria-label={btn.label}
               icon={btn.icon}
