@@ -441,6 +441,13 @@
                 "yesterday": "yesterday",
                 "others": "on {{time}}"
             }
+        },
+        "share": {
+            "shareContent": {
+                "share-success": "Shared successfully",
+                "copy-success": "Copied to clipboard",
+                "copy-url-success": "Copied the address to clipboard"
+            }
         }
     }
 }

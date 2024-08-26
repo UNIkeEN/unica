@@ -1,16 +1,3 @@
-import NewDiscussionDrawer from "@/components/new-discussion-drawer";
-import CommentList from "@/components/comment-list";
-import OrganizationContext from "@/contexts/organization";
-import { useToast } from "@/contexts/toast";
-import { DiscussionComment, DiscussionTopic } from "@/models/discussion";
-import {
-  getTopicInfo,
-  deleteTopic,
-  createComment,
-  listComments,
-  deleteComment,
-  editComment
-} from "@/services/discussion";
 import {
   Grid,
   GridItem,
@@ -30,6 +17,20 @@ import { useTranslation } from "react-i18next";
 import { FaReply } from "react-icons/fa";
 import { LuArrowUpToLine } from "react-icons/lu";
 import { FiShare2 } from "react-icons/fi";
+import NewDiscussionDrawer from "@/components/new-discussion-drawer";
+import CommentList from "@/components/comment-list";
+import OrganizationContext from "@/contexts/organization";
+import { useToast } from "@/contexts/toast";
+import { DiscussionComment, DiscussionTopic } from "@/models/discussion";
+import {
+  getTopicInfo,
+  deleteTopic,
+  createComment,
+  listComments,
+  deleteComment,
+  editComment
+} from "@/services/discussion";
+import { shareContent } from "@/utils/share";
 
 const DiscussionTopicPage = () => {
   const router = useRouter();
@@ -202,7 +203,6 @@ const DiscussionTopicPage = () => {
   };
 
   const handleCommentEdit = async (comment: DiscussionComment, newContent: string) => {
-    console.warn(comment, newContent);
     if (newContent === comment.content) return;
     try {
       await editComment(org_id, topic_local_id, comment.local_id, newContent);
@@ -264,7 +264,13 @@ const DiscussionTopicPage = () => {
               </Button>
               <Button
                 leftIcon={<FiShare2 />}
-                onClick={() => {}} // TODO: share
+                onClick={() => {
+                  shareContent(
+                    topic.title, 
+                    `Discussion on ${orgCtx.basicInfo?.display_name} #${topic.local_id}`, 
+                    window.location.href,
+                    toast, t
+                )}}
               >
                 {t("DiscussionTopicPage.button.share")}
               </Button>

@@ -441,6 +441,13 @@
                 "yesterday": "昨天",
                 "others": "{{time}}"
             }
+        },
+        "share": {
+            "shareContent": {
+                "share-success": "分享成功",
+                "copy-success": "已复制至剪贴板",
+                "copy-url-success": "已复制该地址至剪贴板"
+            }
         }
     }
 }
