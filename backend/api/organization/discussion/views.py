@@ -371,7 +371,7 @@ def edit_comment(request, id):
     except DiscussionTopic.DoesNotExist:
         return Response({'detail': 'Topic not found or has been deleted'}, status=status.HTTP_404_NOT_FOUND)
     try:
-        comment = DiscussionComment.objects.get(topic=topic, local_id=comment_local_id, deleted=False)
+        comment = DiscussionComment.objects.get(topic=topic, local_id=comment_local_id, deleted=False, user=request.user)
     except DiscussionComment.DoesNotExist:
         return Response({'detail': 'Comment not found'}, status=status.HTTP_404_NOT_FOUND)
     

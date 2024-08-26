@@ -111,10 +111,8 @@ const CommentList: React.FC<CommentListProps> = ({
                 minHeight="100px"
                 width="100%"
               />
-              {(userCtx.profile.id === item.user.id || orgCtx.basicInfo.role === MemberRoleEnum.OWNER) 
-              && (
               <HStack spacing={0} ml="auto">
-                <IconButton
+                {(userCtx.profile.id === item.user.id) && <IconButton
                   variant="ghost"
                   aria-label="edit comment"
                   icon={<FiEdit3/>}
@@ -124,8 +122,8 @@ const CommentList: React.FC<CommentListProps> = ({
                     setSelectedComment(item);
                     onEditDrawerOpen();
                   }}
-                />
-                <IconButton
+                />}
+                {(userCtx.profile.id === item.user.id || orgCtx.basicInfo.role === MemberRoleEnum.OWNER) &&  <IconButton
                   variant="ghost"
                   aria-label="delete comment"
                   icon={<FiTrash2 />}
@@ -134,9 +132,8 @@ const CommentList: React.FC<CommentListProps> = ({
                     onDeleteDialogOpen();
                     setSelectedComment(item);
                   }}
-                />
+                />}
               </HStack>
-              )}
             </VStack>
           </Flex>
           <Divider />
