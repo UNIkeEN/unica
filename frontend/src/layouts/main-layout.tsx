@@ -58,8 +58,8 @@ const MainLayout = ({ children }) => {
   }
 
   useEffect(() => {
+    updateHeader();
     updateStyleMetas();
-
     const observer = new MutationObserver(()=>{updateHeader(); updateStyleMetas();});
     observer.observe(document.head, { childList: true, subtree: true });
     return () => observer.disconnect();

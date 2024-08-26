@@ -65,7 +65,7 @@ export async function deleteTopic(id: number, topic_local_id: number) {
 
 export async function listComments(id: number, page: number, pageSize: number, local_id: number) {
   try {
-    const response = await request.post(`/api/organization/${id}/discussion/comment/list` ,{
+    const response = await request.post(`/api/organization/${id}/discussion/comment/list/` ,{
       topic_local_id: local_id,
       page: page,
       page_size: pageSize
