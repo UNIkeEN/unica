@@ -69,7 +69,7 @@ const DiscussionTopicPage = () => {
   const breadcrumbs = [
     {
       text: orgCtx.basicInfo?.display_name,
-      link: `/organizations/${router.query.id}/discussion/`,
+      link: `/organizations/${org_id}/discussion/`,
     },
   ];
 
@@ -110,6 +110,7 @@ const DiscussionTopicPage = () => {
         });
       }
       setTopic(null);
+      router.push(`/organizations/${org_id}/discussion/`)
     }
   };
 

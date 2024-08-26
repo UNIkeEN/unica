@@ -58,7 +58,7 @@ const CommentList: React.FC<CommentListProps> = ({
       {items.map((item) => (
         <>
           <Flex px={4} py={4} justify="space-between" alignItems="flex-start">
-            <Avatar mt={2} size="md" name={item.user.email} />
+            <Avatar mt={2} size="md" name={item.user.username} />
             <VStack spacing={2} ml={4} align="start" overflow="hidden" flex="1">
               <Flex width="100%" alignItems="center">
                 <HStack spacing={2} flexWrap="wrap">
@@ -71,7 +71,7 @@ const CommentList: React.FC<CommentListProps> = ({
                     {item.user.display_name}
                   </Text>
                   <Text className="secondary-text" wordBreak="break-all">
-                    {item.user.email}
+                    {item.user.username}
                   </Text>
                   {item.user.id === topic_op?.id &&
                     <Tag fontWeight="normal" colorScheme="gray">
