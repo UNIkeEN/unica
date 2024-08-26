@@ -361,7 +361,7 @@ def delete_comment(request, id):
 @api_view(['PATCH'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
-@organization_permission_classes(['Owner','Member'])
+@organization_permission_classes(['Owner', 'Member'])
 def edit_comment(request, id):
     organization = request.organization
     topic_local_id = request.data.get('topic_local_id')
@@ -382,3 +382,99 @@ def edit_comment(request, id):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+#update_category ,直接传入一个json数组
+@swagger_auto_schema(
+    method='post',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'categories': openapi.Schema(
+                type=openapi.TYPE_ARRAY,
+                items=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'id': openapi.Schema(type=openapi.TYPE_INTEGER),
+                        'name': openapi.Schema(type=openapi.TYPE_STRING),
+                        'color': openapi.Schema(type=openapi.TYPE_STRING),
+                    },
+                    required=['id']
+                )
+            ),
+        },
+        required=['categories']
+    ),
+    responses={
+        200: openapi.Response(description="Categories updated successfully"),
+        403: openapi.Response(description="Authenticated user does not have the required permissions"),
+        404: openapi.Response(description="Discussion not found"),
+    },
+    operation_description="Update categories for a discussion.",
+    tags=["Organization/Discussion"]
+)
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@organization_permission_classes(['Owner'])
+def update_categories(request, id):
+    organization = request.organization
+    try:
+        discussion = Discussion.objects.get(organization=organization)
+    except Discussion.DoesNotExist:
+        return Response({'detail': 'Discussion not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    data = request.data.get('categories')
+    discussion.categories = data
+    ids = set()
+    names = set()
+    for cat in discussion.categories:
+        if cat['id'] in ids:
+            return Response({'detail': 'Duplicate category id'}, status=status.HTTP_400_BAD_REQUEST)
+        ids.add(cat['id'])
+        if cat['name'] in names:
+            return Response({'detail': 'Duplicate category name'}, status=status.HTTP_400_BAD_REQUEST)
+        names.add(cat['name'])
+
+    discussion.categories = [cat for cat in discussion.categories if cat['name'] and cat['color']]
+    for topic in discussion.topics.all():
+        if topic.category_id not in [cat['id'] for cat in data]:
+            topic.category_id = 0
+            topic.save()
+
+    discussion.save()
+    return Response({'detail': 'Categories updated successfully'}, status=status.HTTP_200_OK)
+
+# category list
+@swagger_auto_schema(
+    method='post',
+    responses={
+        200: openapi.Response(
+            description="List of categories in the discussion",
+            schema=openapi.Schema(
+                type=openapi.TYPE_ARRAY,
+                items=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'id': openapi.Schema(type=openapi.TYPE_INTEGER),
+                        'name': openapi.Schema(type=openapi.TYPE_STRING),
+                        'color': openapi.Schema(type=openapi.TYPE_STRING),
+                    }
+                )
+            )
+        ),
+        404: openapi.Response(description="Discussion not found"),
+    },
+    operation_description="Retrieve a list of categories in the discussion.",
+    tags=["Organization/Discussion"]
+)
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@organization_permission_classes(['Owner', 'Member'])
+def list_categories(request, id):
+    organization = request.organization
+    try:
+        discussion = Discussion.objects.get(organization=organization)
+    except Discussion.DoesNotExist:
+        return Response({'detail': 'Discussion not found'}, status=status.HTTP_404_NOT_FOUND)
+    return Response(discussion.categories, status=status.HTTP_200_OK)

@@ -15,4 +15,8 @@ urlpatterns = [
     path('comment/list/', list_comment, name='list_comment'),
     path('comment/delete/', delete_comment, name='delete_comment'),
     path('comment/update/', edit_comment, name='edit_comment'),
+
+    #category CRUD
+    path('category/update/', update_categories, name='update_category'),
+    path('category/list/', list_categories, name='list_category'),
 ]
