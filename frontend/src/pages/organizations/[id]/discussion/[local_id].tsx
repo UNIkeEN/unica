@@ -6,11 +6,12 @@ import {
   Button,
   Text,
   VStack,
-  Flex,
   Box,
-  Skeleton,
   useDisclosure,
   HStack,
+  Spinner,
+  Flex,
+  Skeleton,
   SkeletonCircle,
   SkeletonText,
 } from "@chakra-ui/react";
@@ -35,6 +36,7 @@ import {
   editComment
 } from "@/services/discussion";
 import { shareContent } from "@/utils/share";
+import InfiniteScroll from "react-infinite-scroller";
 
 const DiscussionTopicPage = () => {
   const router = useRouter();
@@ -48,8 +50,9 @@ const DiscussionTopicPage = () => {
   const [comments, setComments] = useState<DiscussionComment[]>([]);
   const [newComment, setNewComment] = useState<string>("");
   const [page, setPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(20);
-  const [commentCount, setCommentCount] = useState<number>(0);
+  const [pageSize, setPageSize] = useState<number>(6);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isTitleVisible, setIsTitleVisible] = useState(true);
   const titleRef = useRef(null);
 
@@ -98,8 +101,15 @@ const DiscussionTopicPage = () => {
 
   useEffect(() => {
     getTopic();
-    getCommentsList(page, pageSize);
-  }, [page, pageSize]);
+    initializeComments();
+  }, []);
+
+  const initializeComments = async () => {
+    setIsLoading(true);
+    const res = await getCommentsList(1, pageSize);
+    setComments(res.results);
+    setIsLoading(false);
+  };
 
   const getTopic = async () => {
     try {
@@ -116,16 +126,16 @@ const DiscussionTopicPage = () => {
         });
       }
       setTopic(null);
-      router.push(`/organizations/${org_id}/discussion/`)
+      router.push(`/organizations/${org_id}/discussion/`);
     }
   };
 
   const getCommentsList = async (page: number = 1, pageSize: number = 20) => {
     try {
       const res = await listComments(org_id, page, pageSize, topic_local_id);
-      console.warn(res);
-      setComments(res.results);
-      setCommentCount(res.count);
+      if (res.count <= page * pageSize) setHasMore(false);
+      console.log("Comments list:", res);
+      return res;
     } catch (error) {
       console.error("Failed to get comment list:", error);
       if (error.request && error.request.status === 403) {
@@ -136,9 +146,18 @@ const DiscussionTopicPage = () => {
           status: "error",
         });
       }
-      setComments([]);
-      setCommentCount(0);
+      return {};
     }
+  };
+
+  const loadMoreComments = async () => {
+    if (isLoading) return;
+    setIsLoading(true);
+    console.log("Load more comments");
+    const res = await getCommentsList(page + 1, pageSize);
+    setComments([...comments, ...res.results]);
+    setPage(page + 1);
+    setIsLoading(false);
   };
 
   const handleSubmission = async () => {
@@ -161,7 +180,8 @@ const DiscussionTopicPage = () => {
     });
     setNewComment("");
     onClose();
-    getCommentsList(page, pageSize);
+    
+    // TODO: Operations after submission
   };
 
   const handleTopicDelete = async () => {
@@ -203,10 +223,18 @@ const DiscussionTopicPage = () => {
         });
       }
     }
-    getCommentsList(page, pageSize);
+    if (hasMore) {
+      const res = await getCommentsList(page, pageSize);
+      setComments([...comments.filter((c) => c.local_id !== comment.local_id), res.results[res.results.length - 1]]);
+    }
+    else
+      setComments(comments.filter((c) => c.local_id !== comment.local_id));
   };
 
-  const handleCommentEdit = async (comment: DiscussionComment, newContent: string) => {
+  const handleCommentEdit = async (
+    comment: DiscussionComment,
+    newContent: string
+  ) => {
     if (newContent === comment.content) return;
     try {
       await editComment(org_id, topic_local_id, comment.local_id, newContent);
@@ -225,9 +253,12 @@ const DiscussionTopicPage = () => {
         });
       }
     }
-    getCommentsList(page, pageSize);
+    setComments(
+      comments.map((c) =>
+        c.local_id === comment.local_id ? { ...c, content: newContent } : c
+      )
+    );
   };
-
 
   return (
     <>
@@ -235,89 +266,111 @@ const DiscussionTopicPage = () => {
         <meta name="headerTitle" content={orgCtx.basicInfo?.display_name} />
         <meta name="headerBreadcrumbs" content="" />
       </Head>
-      <Grid templateColumns="repeat(4, 1fr)" gap={16}>
-        <GridItem colSpan={{ base: 4, md: 3 }}>
-          <VStack spacing={6} align="stretch">
-            <Skeleton isLoaded={topic!==null}>
-              <Heading as="h3" size="lg" wordBreak="break-all" ref={titleRef} px={1}>
-                {topic?.title}
-                <Text
-                  as="span"
-                  fontWeight="normal"
-                  color="gray.400"
-                  ml={2}
-                >{`#${topic?.local_id}`}</Text>
-              </Heading>
-            </Skeleton>
-            {comments && comments.length > 0 ? (
-              <CommentList
-                items={comments}
-                onCommentDelete={handleCommentDelete}
-                onCommentEdit={handleCommentEdit}
-                onTopicDelete={handleTopicDelete}
-                topic_op={topic?.user}
-              />
-            ) : (
-              <Flex justify="space-between" alignItems="flex-start">
-                <SkeletonCircle size="10" />
-                <SkeletonText 
-                  ml={{ base: "2", md: "4" }}
-                  noOfLines={4}
-                  spacing="4"
-                  skeletonHeight="4"
-                  flex="1"
+      <Box overflow='auto' height='80vh' id='scrollableDiv'>
+        <Grid templateColumns="repeat(4, 1fr)" gap={16}>
+          <GridItem colSpan={{ base: 4, md: 3 }}>
+            <VStack spacing={6} align="stretch">
+              <Skeleton isLoaded={topic !== null}>
+                <Heading as="h3" size="lg" wordBreak="break-all" ref={titleRef} px={1}>
+                  {topic?.title}
+                  <Text
+                    as="span"
+                    fontWeight="normal"
+                    color="gray.400"
+                    ml={2}
+                  >{`#${topic?.local_id}`}</Text>
+                </Heading>
+              </Skeleton>
+              {comments && comments.length > 0 ? (
+                <InfiniteScroll
+                  loadMore={loadMoreComments}
+                  hasMore={hasMore}
+                  useWindow={false}
+                  initialLoad={false}
+                  getScrollParent={() => document.getElementById('scrollableDiv')}
+                  loader={
+                    <HStack justifyContent='center' mt='5'>
+                      <Spinner
+                        thickness="4px"
+                        speed="0.65s"
+                        emptyColor="gray.200"
+                        color="blue.500"
+                        size="lg"
+                      />
+                      <Text>{t("DiscussionTopicPage.loading")}</Text>
+                    </HStack>}
+                >
+                  <CommentList
+                    items={comments}
+                    onCommentDelete={handleCommentDelete}
+                    onCommentEdit={handleCommentEdit}
+                    onTopicDelete={handleTopicDelete}
+                    topic_op={topic?.user}
+                  />
+                </InfiniteScroll>
+              ) : (
+                <Flex justify="space-between" alignItems="flex-start">
+                  <SkeletonCircle size="10" />
+                  <SkeletonText
+                    ml={{ base: "2", md: "4" }}
+                    noOfLines={4}
+                    spacing="4"
+                    skeletonHeight="4"
+                    flex="1"
+                  />
+                </Flex>
+              )}
+              <HStack spacing={2}>
+                <Button
+                  colorScheme="blue"
+                  leftIcon={<FaReply />}
+                  onClick={() => {
+                    onOpen();
+                  }}
+                >
+                  {t("DiscussionTopicPage.button.reply")}
+                </Button>
+                <Button
+                  leftIcon={<FiShare2 />}
+                  onClick={() => {
+                    shareContent(
+                      topic.title,
+                      `Discussion on ${orgCtx.basicInfo?.display_name} #${topic.local_id}`,
+                      window.location.href,
+                      toast, t
+                    )
+                  }}
+                >
+                  {t("DiscussionTopicPage.button.share")}
+                </Button>
+              </HStack>
+            </VStack>
+          </GridItem>
+          <GridItem
+            colSpan={{ base: 0, md: 1 }}
+            display={{ base: "none", md: "block" }}
+          >
+            <Box position="sticky" top="2">
+              <HStack spacing={2}>
+                <IconButton
+                  aria-label="Add Comment"
+                  icon={<FaReply />}
+                  onClick={() => {
+                    onOpen();
+                  }}
                 />
-              </Flex>
-            )}
-            <HStack spacing={2}>
-              <Button
-                colorScheme="blue"
-                leftIcon={<FaReply />}
-                onClick={() => {
-                  onOpen();
-                }}
-              >
-                {t("DiscussionTopicPage.button.reply")}
-              </Button>
-              <Button
-                leftIcon={<FiShare2 />}
-                onClick={() => {
-                  shareContent(
-                    topic.title, 
-                    `Discussion on ${orgCtx.basicInfo?.display_name} #${topic.local_id}`, 
-                    window.location.href,
-                    toast, t
-                )}}
-              >
-                {t("DiscussionTopicPage.button.share")}
-              </Button>
-            </HStack>
-          </VStack>
-        </GridItem>
-        <GridItem
-          colSpan={{ base: 0, md: 1 }}
-          display={{ base: "none", md: "block" }}
-        >
-          <Box position="sticky" top="2">
-            <HStack spacing={2}>
-              <IconButton
-                aria-label="Add Comment"
-                icon={<FaReply />}
-                onClick={() => {
-                  onOpen();
-                }}
-              />
-              <IconButton
-                aria-label="Scroll to Top"
-                icon={<LuArrowUpToLine />}
-                onClick={() => {
-                  titleRef.current.scrollIntoView({ behavior: "smooth" });
-                }}
-              />
-            </HStack>
-          </Box>
-        </GridItem>
-      </Grid>
+                <IconButton
+                  aria-label="Scroll to Top"
+                  icon={<LuArrowUpToLine />}
+                  onClick={() => {
+                    titleRef.current.scrollIntoView({ behavior: "smooth" });
+                  }}
+                />
+              </HStack>
+            </Box>
+          </GridItem>
+        </Grid>
+      </Box>
 
       <NewDiscussionDrawer
         isOpen={isOpen}

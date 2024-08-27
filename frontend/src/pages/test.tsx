@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import Head from 'next/head';
-import { Button, VStack, Badge } from "@chakra-ui/react";
+import { Button, VStack, Badge, Box } from "@chakra-ui/react";
 import Pagination from "@/components/pagination";
 import ChakraColorSelector from "@/components/color-selector";
 import MarkdownEditor from "@/components/markdown-editor";
+import InfiniteScroll from 'react-infinite-scroller';
 
 const ComponentTestPage = () => {
   const router = useRouter();
@@ -49,6 +50,14 @@ ReactDOM.render(
 
   const [markdown, setMarkdown] = React.useState(exampleMarkdown);
 
+  const [items, setItems] = React.useState<number[]>(Array.from({ length: 20 }, (_, i) => i + 1));
+  const loadMore = () => {
+    console.log("Load more");
+    const lastItem = items[items.length - 1];
+    const newItems = Array.from({ length: 20 }, (_, i) => lastItem + i + 1);
+    setItems([...items, ...newItems]);
+  };
+
   const breadcrumbs = [
     { text: "Item1", link: "/" },
     { text: "Item2", link: "/projects" },
@@ -90,12 +99,29 @@ ReactDOM.render(
         />
 
         {/* Markdown */}
-        <MarkdownEditor 
-          content={markdown} 
-          onContentChange={(content) => setMarkdown(content)} 
+        <MarkdownEditor
+          content={markdown}
+          onContentChange={(content) => setMarkdown(content)}
           w="60%"
         />
-          
+
+        {/* Infinite Scroll */}
+        <Box height="300px" overflow="auto">
+          <InfiniteScroll
+            loadMore={loadMore}
+            hasMore={true}
+            loader={<div className="loader" key={0}>Loading ...</div>}
+            threshold={50}
+            useWindow={false}
+          >
+            {items.map(item => (
+              <Box p={4} borderWidth="1px" borderRadius="md">
+                {'haha' + item}
+              </Box>
+            ))}
+          </InfiniteScroll>
+        </Box>
+
       </VStack>
     </>
   );

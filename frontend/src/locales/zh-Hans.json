@@ -72,7 +72,8 @@
         "drawer": {
             "reply": "添加评论",
             "editComment": "编辑评论"
-        }
+        },
+        "loading": "加载中..."
     },
     "Enums": {
         "chakra-colors": {
