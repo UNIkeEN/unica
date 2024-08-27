@@ -8,24 +8,27 @@ import {
   AlertDialogOverlay,
   AlertDialogCloseButton,
   Button,
+  IconButton,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
+import { FiTrash2 } from "react-icons/fi";
 
 interface DeleteDiscussionAlertDialogProps {
-  isOpen: boolean;
   deleteObject: string;
-  onClose: () => void;
   onOKCallback: () => void;
 }
 
 const DeleteDiscussionAlertDialog: React.FC<
   DeleteDiscussionAlertDialogProps
-> = ({ isOpen, deleteObject, onClose, onOKCallback }) => {
+> = ({ deleteObject, onOKCallback }) => {
   const cancelRef = useRef();
   const { t } = useTranslation();
 
   const [seconds, setSeconds] = useState(3);
   const [deleteDisabled, setDeleteDisabled] = useState(true);
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     if (deleteObject === "topic") {
@@ -44,45 +47,69 @@ const DeleteDiscussionAlertDialog: React.FC<
   }, [seconds]);
 
   return (
-    <AlertDialog
-      isOpen={isOpen}
-      onClose={onClose}
-      leastDestructiveRef={cancelRef}
-      isCentered
-    >
-      <AlertDialogOverlay>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            {t(`DeleteDiscussionAlertDialog.${deleteObject}.title`)}
-          </AlertDialogHeader>
-          <AlertDialogCloseButton />
-          <AlertDialogBody pb={5}>
-            {t(`DeleteDiscussionAlertDialog.${deleteObject}.content`)}
-          </AlertDialogBody>
-          <AlertDialogFooter>
-            <Button ref={cancelRef} onClick={onClose}>
-              {t(`DeleteDiscussionAlertDialog.${deleteObject}.cancel`)}
-            </Button>
-            {deleteObject === "topic" && deleteDisabled ? (
-              <Button
-                colorScheme="red"
-                onClick={onOKCallback}
-                ml={3}
-                isDisabled
-              >
-                {t(`DeleteDiscussionAlertDialog.${deleteObject}.deleteDisabled`, {
-                  seconds: seconds,
-                })}
+    <>
+      <IconButton
+        variant="ghost"
+        aria-label="delete comment"
+        icon={<FiTrash2 />}
+        color="gray"
+        onClick={() => {
+          setSeconds(3);
+          setDeleteDisabled(true);
+          onOpen();
+        }}
+      />
+      <AlertDialog
+        isOpen={isOpen}
+        onClose={onClose}
+        leastDestructiveRef={cancelRef}
+        isCentered
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              {t(`DeleteDiscussionAlertDialog.${deleteObject}.title`)}
+            </AlertDialogHeader>
+            <AlertDialogCloseButton />
+            <AlertDialogBody pb={5}>
+              {t(`DeleteDiscussionAlertDialog.${deleteObject}.content`)}
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onClose}>
+                {t(`DeleteDiscussionAlertDialog.${deleteObject}.cancel`)}
               </Button>
-            ) : (
-              <Button colorScheme="red" onClick={onOKCallback} ml={3}>
-                {t(`DeleteDiscussionAlertDialog.${deleteObject}.delete`)}
-              </Button>
-            )}
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialogOverlay>
-    </AlertDialog>
+              {deleteObject === "topic" && deleteDisabled ? (
+                <Button
+                  colorScheme="red"
+                  onClick={() => {
+                    onOKCallback();
+                    onClose();
+                  }}
+                  ml={3}
+                  isDisabled
+                >
+                  {t(
+                    `DeleteDiscussionAlertDialog.${deleteObject}.deleteDisabled`,
+                    { seconds: seconds }
+                  )}
+                </Button>
+              ) : (
+                <Button
+                  colorScheme="red"
+                  onClick={() => {
+                    onOKCallback();
+                    onClose();
+                  }}
+                  ml={3}
+                >
+                  {t(`DeleteDiscussionAlertDialog.${deleteObject}.delete`)}
+                </Button>
+              )}
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+    </>
   );
 };
 

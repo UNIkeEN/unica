@@ -1,30 +1,30 @@
-import React, { useContext } from "react";
-import {
-  Flex,
-  VStack,
-  HStack,
-  Divider,
-  Text,
-  Box,
-  BoxProps,
-  Avatar,
-  Spacer,
-  Icon,
-  Tooltip,
-  Tag,
-  IconButton,
-  useDisclosure,
-} from "@chakra-ui/react";
+import MarkdownRenderer from "@/components/markdown-renderer";
+import DeleteDiscussionAlertDialog from "@/components/modals/delete-discussion-alert-dialog";
+import OrganizationContext from "@/contexts/organization";
+import UserContext from "@/contexts/user";
 import { DiscussionComment } from "@/models/discussion";
 import { MemberRoleEnum } from "@/models/organization";
 import { UserBasicInfo } from "@/models/user";
-import MarkdownRenderer from "@/components/markdown-renderer";
 import { formatRelativeTime } from "@/utils/datetime";
+import {
+  Avatar,
+  Box,
+  BoxProps,
+  Divider,
+  Flex,
+  HStack,
+  Icon,
+  IconButton,
+  Spacer,
+  Tag,
+  Text,
+  Tooltip,
+  VStack,
+  useDisclosure,
+} from "@chakra-ui/react";
+import React, { useContext } from "react";
 import { useTranslation } from "react-i18next";
-import { FiEdit, FiTrash2, FiEdit3 } from "react-icons/fi";
-import UserContext from "@/contexts/user";
-import OrganizationContext from "@/contexts/organization";
-import DeleteDiscussionAlertDialog from "@/components/modals/delete-discussion-alert-dialog";
+import { FiEdit, FiEdit3 } from "react-icons/fi";
 import NewDiscussionDrawer from "./new-discussion-drawer";
 
 interface CommentListProps extends BoxProps {
@@ -32,7 +32,7 @@ interface CommentListProps extends BoxProps {
   onCommentDelete: (comment: DiscussionComment) => void;
   onCommentEdit: (comment: DiscussionComment, newContent: string) => void;
   onTopicDelete: () => void;
-  topic_op: UserBasicInfo;  // original poster
+  topic_op: UserBasicInfo; // original poster
 }
 
 const CommentList: React.FC<CommentListProps> = ({
@@ -47,21 +47,16 @@ const CommentList: React.FC<CommentListProps> = ({
   const userCtx = useContext(UserContext);
   const orgCtx = useContext(OrganizationContext);
 
-  const [selectedComment, setSelectedComment] = React.useState<DiscussionComment | null>(null);
+  const [selectedComment, setSelectedComment] =
+    React.useState<DiscussionComment | null>(null);
   const [editedComment, setEditedComment] = React.useState<string | null>(null);
-
-  const {
-    isOpen: isDeleteDialogOpen,
-    onOpen: onDeleteDialogOpen,
-    onClose: onDeleteDialogClose,
-  } = useDisclosure();
 
   const {
     isOpen: isEditDrawerOpen,
     onOpen: onEditDrawerOpen,
     onClose: onEditDrawerClose,
   } = useDisclosure();
-  
+
   return (
     <Box {...boxProps}>
       {items && items.length > 0 && <Divider />}
@@ -69,7 +64,13 @@ const CommentList: React.FC<CommentListProps> = ({
         <>
           <Flex px={1} py={4} justify="space-between" alignItems="flex-start">
             <Avatar mt={2} size="md" name={item.user.username} />
-            <VStack spacing={2} ml={{base: "2", md: "4"}} align="start" overflow="hidden" flex="1">
+            <VStack
+              spacing={2}
+              ml={{ base: "2", md: "4" }}
+              align="start"
+              overflow="hidden"
+              flex="1"
+            >
               <Flex width="100%" alignItems="center">
                 <HStack spacing={2} flexWrap="wrap">
                   <Text
@@ -83,11 +84,11 @@ const CommentList: React.FC<CommentListProps> = ({
                   <Text className="secondary-text" wordBreak="break-all">
                     {item.user.username}
                   </Text>
-                  {item.user.id === topic_op?.id &&
+                  {item.user.id === topic_op?.id && (
                     <Tag fontWeight="normal" colorScheme="gray">
                       {t("CommentList.tag.original-poster")}
                     </Tag>
-                  }
+                  )}
                 </HStack>
                 <Spacer />
                 <HStack spacing={2}>
@@ -99,7 +100,7 @@ const CommentList: React.FC<CommentListProps> = ({
                       aria-label="Edited"
                     >
                       <Box mt="1">
-                        <Icon as={FiEdit} color="orange"/>
+                        <Icon as={FiEdit} color="orange" />
                       </Box>
                     </Tooltip>
                   )}
@@ -114,27 +115,32 @@ const CommentList: React.FC<CommentListProps> = ({
                 width="100%"
               />
               <HStack spacing={0} ml="auto">
-                {(userCtx.profile.id === item.user.id) && <IconButton
-                  variant="ghost"
-                  aria-label="edit comment"
-                  icon={<FiEdit3/>}
-                  color="gray"
-                  onClick={() => {
-                    setEditedComment(item.content);
-                    setSelectedComment(item);
-                    onEditDrawerOpen();
-                  }}
-                />}
-                {(userCtx.profile.id === item.user.id || orgCtx.basicInfo.role === MemberRoleEnum.OWNER) &&  <IconButton
-                  variant="ghost"
-                  aria-label="delete comment"
-                  icon={<FiTrash2 />}
-                  color="gray"
-                  onClick={() => {
-                    onDeleteDialogOpen();
-                    setSelectedComment(item);
-                  }}
-                />}
+                {userCtx.profile.id === item.user.id && (
+                  <IconButton
+                    variant="ghost"
+                    aria-label="edit comment"
+                    icon={<FiEdit3 />}
+                    color="gray"
+                    onClick={() => {
+                      setEditedComment(item.content);
+                      setSelectedComment(item);
+                      onEditDrawerOpen();
+                    }}
+                  />
+                )}
+                {(userCtx.profile.id === item.user.id ||
+                  orgCtx.basicInfo.role === MemberRoleEnum.OWNER) && (
+                  <DeleteDiscussionAlertDialog
+                    deleteObject={item.local_id === 1 ? "topic" : "comment"}
+                    onOKCallback={() => {
+                      if (item.local_id === 1) {
+                        onTopicDelete();
+                      } else {
+                        onCommentDelete(item);
+                      }
+                    }}
+                  />
+                )}
               </HStack>
             </VStack>
           </Flex>
@@ -142,37 +148,24 @@ const CommentList: React.FC<CommentListProps> = ({
         </>
       ))}
       {selectedComment && (
-        <DeleteDiscussionAlertDialog
-          isOpen={isDeleteDialogOpen}
-          deleteObject={selectedComment.local_id === 1 ? "topic" : "comment"}
-          onClose={onDeleteDialogClose}
-          onOKCallback={() => {
-            onDeleteDialogClose();
-            if (selectedComment.local_id === 1) {
-              onTopicDelete();
-            } else {
-              onCommentDelete(selectedComment);
-            }
-            setSelectedComment(null);
-          }}
-        />
-      )}
-      {selectedComment && 
         <NewDiscussionDrawer
           isOpen={isEditDrawerOpen}
           onClose={onEditDrawerClose}
           drawerTitle={t("DiscussionTopicPage.drawer.editComment")}
           variant="comment"
           comment={editedComment}
-          setComment={(comment) => {setEditedComment(comment);}}
+          setComment={(comment) => {
+            setEditedComment(comment);
+          }}
           onOKCallback={() => {
             onEditDrawerClose();
             onCommentEdit(selectedComment, editedComment!);
             setSelectedComment(null);
-        }}>
+          }}
+        >
           <React.Fragment />
         </NewDiscussionDrawer>
-      }
+      )}
     </Box>
   );
 };
