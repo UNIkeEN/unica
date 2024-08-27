@@ -141,7 +141,8 @@ const MainLayout = ({ children }) => {
         {/* Content */}
         <Box 
           as="main" 
-          p={6} 
+          px={{"base": 3, "md": 6}}
+          py={6}
           maxWidth="1200px" 
           mx="auto" 
           w="full"

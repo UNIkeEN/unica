@@ -13,7 +13,8 @@ import {
   VStack,
   HStack,
   Divider,
-  Tooltip
+  Tooltip,
+  useBreakpointValue
 } from '@chakra-ui/react';
 import MarkdownRenderer from '@/components/markdown-renderer';
 import { useTranslation } from 'next-i18next';
@@ -42,6 +43,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   const vstackRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { t } = useTranslation();
+  const isMobile = useBreakpointValue({ base: false, md: true });
 
   useEffect(() => {
     // Update height when the component mounts
@@ -256,18 +258,19 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     ];
 
     return (
-      <HStack ml="auto" mr={2} spacing={0}>
+      <HStack ml="auto" mr={2} spacing={0} wrap="wrap" maxW="100%">
         {btnList.map((btn, index) => (
-          btn.label === "divider" ? <Divider orientation='vertical' mx={1} key={`${index}-${btn.label}`}/> :
-          <Tooltip label={btn.label} key={`${index}-${btn.label}`}>
-            <IconButton
-              aria-label={btn.label}
-              icon={btn.icon}
-              variant="ghost"
-              colorScheme="gray"
-              size="sm"
-              onClick={btn.onClick}
-          />
+          btn.label === "divider" 
+          ? (isMobile && <Divider orientation='vertical' mx={1} key={`${index}-${btn.label}`}/>)
+          : <Tooltip label={btn.label} key={`${index}-${btn.label}`}>
+              <IconButton
+                aria-label={btn.label}
+                icon={btn.icon}
+                variant="ghost"
+                colorScheme="gray"
+                size="sm"
+                onClick={btn.onClick}
+            />
         </Tooltip>
         ))}
       </HStack>
@@ -289,7 +292,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         onChange={(index) => handleTabSwitch(index)}
         display="flex" flexDirection="column" height="100%"
       >
-        <TabList m="-1px">
+        <TabList m="-1px" whiteSpace="nowrap">
           <Tab>{t("MarkdownEditor.tab.edit")}</Tab>
           <Tab>{t("MarkdownEditor.tab.preview")}</Tab>
           <ToolBar/>

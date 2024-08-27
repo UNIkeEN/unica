@@ -10,13 +10,10 @@ import {
   DrawerOverlay,
   DrawerProps,
   Flex,
-  FormControl,
-  FormLabel,
   IconButton,
   Input,
   Spacer,
   useBreakpointValue,
-  Text,
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { FiChevronDown, FiMaximize2, FiMinimize2 } from "react-icons/fi";

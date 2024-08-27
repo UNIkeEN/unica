@@ -234,7 +234,7 @@ const DiscussionTopicPage = () => {
       <Grid templateColumns="repeat(4, 1fr)" gap={16}>
         <GridItem colSpan={{ base: 4, md: 3 }}>
           <VStack spacing={6} align="stretch">
-            <Heading as="h3" size="lg" wordBreak="break-all" ref={titleRef}>
+            <Heading as="h3" size="lg" wordBreak="break-all" ref={titleRef} px={1}>
               {topic?.title}
               <Text
                 as="span"
