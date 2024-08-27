@@ -6,9 +6,13 @@ import {
   Button,
   Text,
   VStack,
+  Flex,
   Box,
+  Skeleton,
   useDisclosure,
   HStack,
+  SkeletonCircle,
+  SkeletonText,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -234,16 +238,18 @@ const DiscussionTopicPage = () => {
       <Grid templateColumns="repeat(4, 1fr)" gap={16}>
         <GridItem colSpan={{ base: 4, md: 3 }}>
           <VStack spacing={6} align="stretch">
-            <Heading as="h3" size="lg" wordBreak="break-all" ref={titleRef} px={1}>
-              {topic?.title}
-              <Text
-                as="span"
-                fontWeight="normal"
-                color="gray.400"
-                ml={2}
-              >{`#${topic?.local_id}`}</Text>
-            </Heading>
-            {comments && comments.length > 0 && (
+            <Skeleton isLoaded={topic!==null}>
+              <Heading as="h3" size="lg" wordBreak="break-all" ref={titleRef} px={1}>
+                {topic?.title}
+                <Text
+                  as="span"
+                  fontWeight="normal"
+                  color="gray.400"
+                  ml={2}
+                >{`#${topic?.local_id}`}</Text>
+              </Heading>
+            </Skeleton>
+            {comments && comments.length > 0 ? (
               <CommentList
                 items={comments}
                 onCommentDelete={handleCommentDelete}
@@ -251,6 +257,17 @@ const DiscussionTopicPage = () => {
                 onTopicDelete={handleTopicDelete}
                 topic_op={topic?.user}
               />
+            ) : (
+              <Flex justify="space-between" alignItems="flex-start">
+                <SkeletonCircle size="10" />
+                <SkeletonText 
+                  ml={{ base: "2", md: "4" }}
+                  noOfLines={4}
+                  spacing="4"
+                  skeletonHeight="4"
+                  flex="1"
+                />
+              </Flex>
             )}
             <HStack spacing={2}>
               <Button
