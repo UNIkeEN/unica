@@ -22,6 +22,8 @@ import { useTranslation } from "react-i18next";
 import { FaReply } from "react-icons/fa";
 import { LuArrowUpToLine } from "react-icons/lu";
 import { FiShare2 } from "react-icons/fi";
+import { BeatLoader } from 'react-spinners';
+import InfiniteScroll from "react-infinite-scroller";
 import NewDiscussionDrawer from "@/components/new-discussion-drawer";
 import CommentList from "@/components/comment-list";
 import OrganizationContext from "@/contexts/organization";
@@ -36,7 +38,6 @@ import {
   editComment
 } from "@/services/discussion";
 import { shareContent } from "@/utils/share";
-import InfiniteScroll from "react-infinite-scroller";
 
 const DiscussionTopicPage = () => {
   const router = useRouter();
@@ -54,7 +55,9 @@ const DiscussionTopicPage = () => {
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isTitleVisible, setIsTitleVisible] = useState(true);
+  const [mainAreaHeight, setMainAreaHeight] = useState("80vh");
   const titleRef = useRef(null);
+  const mainAreaBoxRef = useRef(null);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -65,14 +68,27 @@ const DiscussionTopicPage = () => {
       },
       { threshold: 0.1 }
     );
-    if (titleRef.current) {
-      observer.observe(titleRef.current);
-    }
+    if (titleRef.current) { observer.observe(titleRef.current); }
     return () => {
-      if (titleRef.current) {
-        observer.unobserve(titleRef.current);
+      if (titleRef.current) { observer.unobserve(titleRef.current); }
+    };
+  }, []);
+
+  useEffect(() => {
+    const updateMainAreaHeight = () => {
+      if (mainAreaBoxRef.current) {
+        const topOffset = mainAreaBoxRef.current.getBoundingClientRect().top;
+        const newHeight = `calc(100vh - ${topOffset}px - 24px)`; // 24px for py={6} as parent Flex in MainLayout
+        setMainAreaHeight(newHeight);
       }
     };
+    updateMainAreaHeight(); // Initial height
+
+    const resizeObserver = new ResizeObserver(() => { updateMainAreaHeight();});
+    if (mainAreaBoxRef.current) {
+      resizeObserver.observe(document.body);
+    }
+    return () => { resizeObserver.disconnect(); }
   }, []);
 
   const breadcrumbs = [
@@ -255,7 +271,12 @@ const DiscussionTopicPage = () => {
     }
     setComments(
       comments.map((c) =>
-        c.local_id === comment.local_id ? { ...c, content: newContent } : c
+        c.local_id === comment.local_id 
+        ? { 
+          ...c, 
+          content: newContent,
+          edited: true
+        } : c
       )
     );
   };
@@ -266,12 +287,22 @@ const DiscussionTopicPage = () => {
         <meta name="headerTitle" content={orgCtx.basicInfo?.display_name} />
         <meta name="headerBreadcrumbs" content="" />
       </Head>
-      <Box overflow='auto' height='80vh' id='scrollableDiv'>
+      <Box 
+        overflow='auto' 
+        height={mainAreaHeight} 
+        id='mainAreaBox' 
+        ref={mainAreaBoxRef}
+      >
         <Grid templateColumns="repeat(4, 1fr)" gap={16}>
           <GridItem colSpan={{ base: 4, md: 3 }}>
             <VStack spacing={6} align="stretch">
               <Skeleton isLoaded={topic !== null}>
-                <Heading as="h3" size="lg" wordBreak="break-all" ref={titleRef} px={1}>
+                <Heading 
+                  as="h3" size="lg" 
+                  wordBreak="break-all" 
+                  ref={titleRef} 
+                  px={1}
+                >
                   {topic?.title}
                   <Text
                     as="span"
@@ -287,19 +318,12 @@ const DiscussionTopicPage = () => {
                   hasMore={hasMore}
                   useWindow={false}
                   initialLoad={false}
-                  getScrollParent={() => document.getElementById('scrollableDiv')}
+                  getScrollParent={() => document.getElementById('mainAreaBox')}
                   loader={
                     <HStack justifyContent='center' mt='5'>
-                      <Spinner
-                        thickness="4px"
-                        speed="0.65s"
-                        emptyColor="gray.200"
-                        color="blue.500"
-                        size="lg"
-                      />
-                      <Text>{t("DiscussionTopicPage.loading")}</Text>
-                    </HStack>}
-                >
+                      <BeatLoader size={8} color='gray' />
+                    </HStack>
+                  }>
                   <CommentList
                     items={comments}
                     onCommentDelete={handleCommentDelete}
@@ -350,7 +374,7 @@ const DiscussionTopicPage = () => {
             colSpan={{ base: 0, md: 1 }}
             display={{ base: "none", md: "block" }}
           >
-            <Box position="sticky" top="2">
+            <Box position="sticky" top="0">
               <HStack spacing={2}>
                 <IconButton
                   aria-label="Add Comment"
