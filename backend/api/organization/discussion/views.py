@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+import emoji
+from emoji import is_emoji
 from .models import Discussion
 from api.organization.decorators import organization_permission_classes
 from .serializers import *
@@ -383,7 +385,6 @@ def edit_comment(request, id):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-#update_category ,直接传入一个json数组
 @swagger_auto_schema(
     method='post',
     request_body=openapi.Schema(
@@ -396,9 +397,13 @@ def edit_comment(request, id):
                     properties={
                         'id': openapi.Schema(type=openapi.TYPE_INTEGER),
                         'name': openapi.Schema(type=openapi.TYPE_STRING),
-                        'color': openapi.Schema(type=openapi.TYPE_STRING),
+                        'color': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            enum=["gray", "red", "orange", "yellow", "green", "teal", "blue", "cyan", "purple", "pink"]
+                        ),
+                        'emoji': openapi.Schema(type=openapi.TYPE_STRING),
                     },
-                    required=['id']
+                    required=['id', 'name', 'color']  # emoji is not required
                 )
             ),
         },
@@ -423,26 +428,33 @@ def update_categories(request, id):
     except Discussion.DoesNotExist:
         return Response({'detail': 'Discussion not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    data = request.data.get('categories')
-    discussion.categories = data
-    ids = set()
-    names = set()
-    for cat in discussion.categories:
-        if cat['id'] in ids:
-            return Response({'detail': 'Duplicate category id'}, status=status.HTTP_400_BAD_REQUEST)
-        ids.add(cat['id'])
-        if cat['name'] in names:
-            return Response({'detail': 'Duplicate category name'}, status=status.HTTP_400_BAD_REQUEST)
-        names.add(cat['name'])
+    data = request.data.get('categories', [])
 
-    discussion.categories = [cat for cat in discussion.categories if cat['name'] and cat['color']]
+    # Validate the schema
+    try:
+        validate(instance=data, schema=CATEGORIES_SCHEMA)
+    except JSONSchemaValidationError as e:
+        return Response({'detail': f'Invalid categories format: {e.message}'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Validate the emoji field
+    for category in data:
+        emoji_value = category.get('emoji')
+        if emoji_value and not is_emoji(emoji_value):
+            return Response({'detail': f'Invalid emoji in category: {category["name"]}'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Update the discussion categories
+    discussion.categories = data
+
+    # Update topics with categories that no longer exist
+    valid_category_ids = {cat['id'] for cat in data}
     for topic in discussion.topics.all():
-        if topic.category_id not in [cat['id'] for cat in data]:
-            topic.category_id = 0
+        if topic.category_id not in valid_category_ids:
+            topic.category_id = 0  # Reset or set to a default category ID
             topic.save()
 
     discussion.save()
     return Response({'detail': 'Categories updated successfully'}, status=status.HTTP_200_OK)
+
 
 # category list
 @swagger_auto_schema(
@@ -458,6 +470,7 @@ def update_categories(request, id):
                         'id': openapi.Schema(type=openapi.TYPE_INTEGER),
                         'name': openapi.Schema(type=openapi.TYPE_STRING),
                         'color': openapi.Schema(type=openapi.TYPE_STRING),
+                        'emoji': openapi.Schema(type=openapi.TYPE_STRING),
                     }
                 )
             )

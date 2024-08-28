@@ -7,3 +7,4 @@ requests
 mmh3
 drf-yasg
 jsonschema
+emoji

@@ -2,6 +2,8 @@ from rest_framework import serializers
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from .models import Discussion, DiscussionTopic, DiscussionComment
+from .schemas import CATEGORIES_SCHEMA
+from jsonschema import validate, ValidationError as JSONSchemaValidationError
 from api.user.serializers import UserBasicInfoSerializer
 
 
@@ -11,6 +13,26 @@ class DiscussionSerializer(serializers.ModelSerializer):
         fields = ['organization', 'created_at', 'categories']
         read_only_fields = ['created_at']
         depth = 1
+
+    def validate_categories(self, value):
+        # Validate against JSON schema
+        try:
+            validate(instance=value, schema=CATEGORIES_SCHEMA)
+        except JSONSchemaValidationError as e:
+            raise serializers.ValidationError(f"Invalid categories format: {e.message}")
+
+        # Check for uniqueness of 'id' and 'name'
+        ids = set()
+        names = set()
+        for category in value:
+            if category['id'] in ids:
+                raise serializers.ValidationError(f"Duplicate id found: {category['id']}")
+            if category['name'] in names:
+                raise serializers.ValidationError(f"Duplicate name found: {category['name']}")
+            ids.add(category['id'])
+            names.add(category['name'])
+
+        return value
 
 
 class DiscussionTopicSerializer(serializers.ModelSerializer):
