@@ -50,10 +50,15 @@ const DiscussionTopicPage = () => {
   const [topic, setTopic] = useState<DiscussionTopic | null>(null);
   const [comments, setComments] = useState<DiscussionComment[]>([]);
   const [newComment, setNewComment] = useState<string>("");
+
   const [page, setPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(6);
+  const [pageSize, setPageSize] = useState<number>(5);
   const [hasMore, setHasMore] = useState<boolean>(true);
+  const [hasMoreReverse, setHasMoreReverse] = useState<boolean>(true);
+  const [commentsCount, setCommentsCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [scrollReverse, setScrollReverse] = useState<boolean>(false);
+
   const [isTitleVisible, setIsTitleVisible] = useState(true);
   const [mainAreaHeight, setMainAreaHeight] = useState("80vh");
   const titleRef = useRef(null);
@@ -84,7 +89,7 @@ const DiscussionTopicPage = () => {
     };
     updateMainAreaHeight(); // Initial height
 
-    const resizeObserver = new ResizeObserver(() => { updateMainAreaHeight();});
+    const resizeObserver = new ResizeObserver(() => { updateMainAreaHeight(); });
     if (mainAreaBoxRef.current) {
       resizeObserver.observe(document.body);
     }
@@ -127,6 +132,14 @@ const DiscussionTopicPage = () => {
     setIsLoading(false);
   };
 
+  useEffect(() => {
+    if (!scrollReverse) return;
+    const container = mainAreaBoxRef.current;
+    if (container && container.scrollHeight <= container.clientHeight) {
+      loadMoreCommentsReverse();
+    }
+  }, [comments, hasMoreReverse]);
+
   const getTopic = async () => {
     try {
       const res = await getTopicInfo(org_id, topic_local_id);
@@ -149,8 +162,10 @@ const DiscussionTopicPage = () => {
   const getCommentsList = async (page: number = 1, pageSize: number = 20) => {
     try {
       const res = await listComments(org_id, page, pageSize, topic_local_id);
+      setCommentsCount(res.count);
       if (res.count <= page * pageSize) setHasMore(false);
-      console.log("Comments list:", res);
+      if (page === 1) setHasMoreReverse(false);
+      console.log("Get comments list:", res);
       return res;
     } catch (error) {
       console.error("Failed to get comment list:", error);
@@ -176,6 +191,16 @@ const DiscussionTopicPage = () => {
     setIsLoading(false);
   };
 
+  const loadMoreCommentsReverse = async () => {
+    if (isLoading) return;
+    setIsLoading(true);
+    console.log("Load more comments reverse");
+    const res = await getCommentsList(page - 1, pageSize);
+    setComments([...res.results, ...comments]);
+    setPage(page - 1);
+    setIsLoading(false);
+  }
+
   const handleSubmission = async () => {
     try {
       await createComment(org_id, topic_local_id, newComment);
@@ -189,6 +214,7 @@ const DiscussionTopicPage = () => {
           status: "error",
         });
       }
+      return;
     }
     toast({
       title: t("Services.discussion.createComment.success"),
@@ -196,8 +222,20 @@ const DiscussionTopicPage = () => {
     });
     setNewComment("");
     onClose();
-    
-    // TODO: Operations after submission
+
+    const lastPage = Math.ceil((commentsCount + 1) / pageSize);
+    if (hasMore && !scrollReverse) {
+      setPage(lastPage);
+      setScrollReverse(true);
+      setHasMoreReverse(true);
+      const res = await getCommentsList(lastPage, pageSize);
+      setComments(res.results);
+    }
+    else {
+      const res = await getCommentsList(lastPage, pageSize);
+      setComments([...comments, res.results[res.results.length - 1]]);
+    }
+    mainAreaBoxRef.current.scrollTop = mainAreaBoxRef.current.scrollHeight;
   };
 
   const handleTopicDelete = async () => {
@@ -213,6 +251,7 @@ const DiscussionTopicPage = () => {
           status: "error",
         });
       }
+      return;
     }
     toast({
       title: t("Services.discussion.deleteTopic.success"),
@@ -238,8 +277,9 @@ const DiscussionTopicPage = () => {
           status: "error",
         });
       }
+      return;
     }
-    if (hasMore) {
+    if (!scrollReverse && hasMore) {
       const res = await getCommentsList(page, pageSize);
       setComments([...comments.filter((c) => c.local_id !== comment.local_id), res.results[res.results.length - 1]]);
     }
@@ -268,15 +308,16 @@ const DiscussionTopicPage = () => {
           status: "error",
         });
       }
+      return;
     }
     setComments(
       comments.map((c) =>
-        c.local_id === comment.local_id 
-        ? { 
-          ...c, 
-          content: newContent,
-          edited: true
-        } : c
+        c.local_id === comment.local_id
+          ? {
+            ...c,
+            content: newContent,
+            edited: true
+          } : c
       )
     );
   };
@@ -287,20 +328,20 @@ const DiscussionTopicPage = () => {
         <meta name="headerTitle" content={orgCtx.basicInfo?.display_name} />
         <meta name="headerBreadcrumbs" content="" />
       </Head>
-      <Box 
-        overflow='auto' 
-        height={mainAreaHeight} 
-        id='mainAreaBox' 
+      <Box
+        overflow='auto'
+        height={mainAreaHeight}
+        id='mainAreaBox'
         ref={mainAreaBoxRef}
       >
         <Grid templateColumns="repeat(4, 1fr)" gap={16}>
           <GridItem colSpan={{ base: 4, md: 3 }}>
             <VStack spacing={6} align="stretch">
               <Skeleton isLoaded={topic !== null}>
-                <Heading 
-                  as="h3" size="lg" 
-                  wordBreak="break-all" 
-                  ref={titleRef} 
+                <Heading
+                  as="h3" size="lg"
+                  wordBreak="break-all"
+                  ref={titleRef}
                   px={1}
                 >
                   {topic?.title}
@@ -314,8 +355,9 @@ const DiscussionTopicPage = () => {
               </Skeleton>
               {comments && comments.length > 0 ? (
                 <InfiniteScroll
-                  loadMore={loadMoreComments}
-                  hasMore={hasMore}
+                  loadMore={scrollReverse ? loadMoreCommentsReverse : loadMoreComments}
+                  hasMore={scrollReverse ? hasMoreReverse : hasMore}
+                  isReverse={scrollReverse}
                   useWindow={false}
                   initialLoad={false}
                   getScrollParent={() => document.getElementById('mainAreaBox')}
@@ -386,7 +428,14 @@ const DiscussionTopicPage = () => {
                 <IconButton
                   aria-label="Scroll to Top"
                   icon={<LuArrowUpToLine />}
-                  onClick={() => {
+                  onClick={async () => {
+                    if (scrollReverse) {
+                      setPage(1);
+                      setScrollReverse(false);
+                      setHasMore(true);
+                      const res = await getCommentsList(1, pageSize);
+                      setComments(res.results);
+                    }
                     titleRef.current.scrollIntoView({ behavior: "smooth" });
                   }}
                 />

@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import Head from 'next/head';
-import { Button, VStack, Badge, Box } from "@chakra-ui/react";
+import { Button, VStack, Badge, Box, Divider } from "@chakra-ui/react";
 import Pagination from "@/components/pagination";
 import ChakraColorSelector from "@/components/color-selector";
 import MarkdownEditor from "@/components/markdown-editor";
@@ -58,6 +58,24 @@ ReactDOM.render(
     setItems([...items, ...newItems]);
   };
 
+  const [itemsButtom, setItemsButtom] = React.useState<number[]>(Array.from({ length: 20 }, (_, i) => i + 1));
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const loadMoreButtom = () => {
+    console.log("Load more buttom");
+    const firstItem = itemsButtom[0];
+    const newItems = Array.from({ length: 20 }, (_, i) => firstItem - 20 + i );
+    setItemsButtom([...newItems, ...itemsButtom]);
+  };
+
+  // 将滚动条位置设置到最底部
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
+  }, []);
+
   const breadcrumbs = [
     { text: "Item1", link: "/" },
     { text: "Item2", link: "/projects" },
@@ -106,7 +124,7 @@ ReactDOM.render(
         />
 
         {/* Infinite Scroll */}
-        <Box height="300px" overflow="auto">
+        <Box height="300px" overflow="auto" mb="8">
           <InfiniteScroll
             loadMore={loadMore}
             hasMore={true}
@@ -116,7 +134,27 @@ ReactDOM.render(
           >
             {items.map(item => (
               <Box p={4} borderWidth="1px" borderRadius="md">
-                {'haha' + item}
+                {item}
+              </Box>
+            ))}
+          </InfiniteScroll>
+        </Box>
+
+        {/* Infinite Scroll Reverse */}
+        <Divider />
+        <Box height="300px" overflow="auto" mt="8" ref={scrollContainerRef}>
+          <InfiniteScroll
+            loadMore={loadMoreButtom}
+            hasMore={true}
+            loader={<div className="loader" key={0}>Loading ...</div>}
+            threshold={50}
+            useWindow={false}
+            isReverse
+            initialLoad={false}
+          >
+            {itemsButtom.map(item => (
+              <Box p={4} borderWidth="1px" borderRadius="md">
+                {'buttom' + item}
               </Box>
             ))}
           </InfiniteScroll>
