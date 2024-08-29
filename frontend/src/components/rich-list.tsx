@@ -2,6 +2,7 @@ import React from "react";
 import NextLink from 'next/link'
 import { 
   Flex, 
+  Spacer,
   VStack,
   HStack, 
   Divider,
@@ -20,27 +21,31 @@ interface RichListItem {
   body?: React.ReactNode;
   titleExtra?: React.ReactNode;
   lineExtra?: React.ReactNode;
+  linePrefix?: React.ReactNode;
 }
 
 interface RichListProps extends BoxProps {
   titleAsLink?: boolean;
   titleProps?: TextProps | LinkProps;
+  dividers?: "all" | "inside" | "none"
   items: RichListItem[];
 }
 
 const RichList: React.FC<RichListProps> = ({ 
   titleAsLink = false, 
   titleProps,
+  dividers = "all",
   items, 
   ...boxProps 
 }) => {
   return (
     <Box {...boxProps}>
-      {items && items.length > 0 && <Divider />}
-      {items.map((item) => (
+      {items && items.length > 0 && dividers === "all" &&  <Divider />}
+      {items.map((item, index) => (
         <>
-          <Flex px={4} py={4} justify="space-between" alignItems="center">
-            <VStack spacing={2} mr={2} align="start" overflow="hidden">
+          <Flex px={4} py={4} alignItems="center">
+            {item?.linePrefix}
+            <VStack spacing={2} mr={2} ml={item.linePrefix ? 4 : 0} align="start" overflow="hidden">
               <HStack spacing={2} flexWrap="wrap">
                 {titleAsLink ? (
                   <Link 
@@ -89,9 +94,10 @@ const RichList: React.FC<RichListProps> = ({
               }
               {item?.body}
             </VStack>
+            <Spacer/>
             {item?.lineExtra}
           </Flex>
-          <Divider/>
+          {(dividers === "all" || (dividers === "inside" && index < items.length - 1)) && <Divider/>}
           </>
       ))}
     </Box>

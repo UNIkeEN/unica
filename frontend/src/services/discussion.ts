@@ -120,7 +120,7 @@ export async function editComment(id: number, topic_local_id: number, comment_lo
 
 export async function updateCategories(id: number, categories: DiscussionTopicCategory[]) {
   try {
-    const response = await request.patch(`/api/organization/${id}/discussion/categories/update/`, {
+    const response = await request.patch(`/api/organization/${id}/discussion/category/update/`, {
       categories: categories
     });
     return response.data;
@@ -132,7 +132,7 @@ export async function updateCategories(id: number, categories: DiscussionTopicCa
 
 export async function listCategories(id: number) {
   try {
-    const response = await request.get(`/api/organization/${id}/discussion/categories/list/`);
+    const response = await request.get(`/api/organization/${id}/discussion/category/list/`);
     return response.data as DiscussionTopicCategory[];
   } catch (error) {
     console.error('Failed to list categories', error);
