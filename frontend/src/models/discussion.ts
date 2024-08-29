@@ -1,4 +1,5 @@
 import { UserBasicInfo } from "./user";
+import { ColorSelectorType } from "./enums";
 
 export interface DiscussionTopic {
   id: number;
@@ -18,4 +19,11 @@ export interface DiscussionComment {
   updated_at: string;
   local_id: number;
   edited: boolean;
+}
+
+export interface DiscussionTopicCategory {
+  id: number;
+  name: string;
+  color: ColorSelectorType;
+  emoji?: string;
 }

@@ -10,7 +10,7 @@ CATEGORIES_SCHEMA = {
                 "type": "string",
                 "enum": ["gray", "red", "orange", "yellow", "green", "teal", "blue", "cyan", "purple", "pink"]
             },
-            "emoji": {"type": "string"}  # Added emoji field
+            "emoji": {"type": "string"}
         },
         "required": ["id", "name", "color"],  # emoji is not required
         "additionalProperties": False

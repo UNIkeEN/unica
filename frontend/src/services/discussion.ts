@@ -1,4 +1,5 @@
 import { request } from "@/services/request";
+import { DiscussionTopicCategory } from "@/models/discussion";
 
 export async function enableDiscussion(id: number) {
   try {
@@ -113,6 +114,28 @@ export async function editComment(id: number, topic_local_id: number, comment_lo
     return response.data;
   } catch (error) {
     console.error('Failed to edit comment', error);
+    throw error;
+  }
+}
+
+export async function updateCategories(id: number, categories: DiscussionTopicCategory[]) {
+  try {
+    const response = await request.patch(`/api/organization/${id}/discussion/categories/update/`, {
+      categories: categories
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to update categories', error);
+    throw error;
+  }
+}
+
+export async function listCategories(id: number) {
+  try {
+    const response = await request.get(`/api/organization/${id}/discussion/categories/list/`);
+    return response.data as DiscussionTopicCategory[];
+  } catch (error) {
+    console.error('Failed to list categories', error);
     throw error;
   }
 }

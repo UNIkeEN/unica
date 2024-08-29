@@ -386,7 +386,7 @@ def edit_comment(request, id):
 
 
 @swagger_auto_schema(
-    method='post',
+    method='patch',
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
         properties={
@@ -417,7 +417,7 @@ def edit_comment(request, id):
     operation_description="Update categories for a discussion.",
     tags=["Organization/Discussion"]
 )
-@api_view(['POST'])
+@api_view(['PATCH'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner'])
@@ -458,7 +458,7 @@ def update_categories(request, id):
 
 # category list
 @swagger_auto_schema(
-    method='post',
+    method='get',
     responses={
         200: openapi.Response(
             description="List of categories in the discussion",
@@ -480,7 +480,7 @@ def update_categories(request, id):
     operation_description="Retrieve a list of categories in the discussion.",
     tags=["Organization/Discussion"]
 )
-@api_view(['POST'])
+@api_view(['GET'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner', 'Member'])

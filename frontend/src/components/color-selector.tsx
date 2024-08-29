@@ -8,6 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { FaRegCircle, FaCircleCheck } from "react-icons/fa6";
 import { useTranslation } from "next-i18next";
+import { ChakraColorEnums } from "@/models/enums";
 
 interface ChakraColorSelectorProps extends BoxProps {
   current: string;
@@ -23,7 +24,6 @@ const ChakraColorSelector: React.FC<ChakraColorSelectorProps> =({
 }) => {
 
   const { t } = useTranslation();
-  const ChakraColorEnums = ["gray", "red", "orange", "yellow", "green", "teal", "blue", "purple", "pink"];
 
   return (
     <Box {...boxProps}>
