@@ -104,6 +104,9 @@
             "confirm": "确认"
         }
     },
+    "Empty":{
+        "nodata":"暂无数据"
+    },
     "General": {
         "loading": "加载中",
         "updated_at": "更新于 {{time}}"

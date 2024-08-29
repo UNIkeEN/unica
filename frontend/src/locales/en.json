@@ -104,6 +104,9 @@
             "confirm": "Confirm"
         }
     },
+    "Empty":{
+        "nodata":"No Data"
+    },
     "General": {
         "loading": "Loading",
         "updated_at": "Updated {{time}}"
