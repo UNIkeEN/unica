@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Text, VStack, HStack, Heading } from "@chakra-ui/react";
+import { Box, Text, VStack, HStack } from "@chakra-ui/react";
 import { FiInbox } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
 
@@ -11,22 +11,22 @@ interface EmptyProps {
 }
 
 const iconSizeMap: Record<"sm" | "md" | "lg", string> = {
-  sm: "2em",
-  md: "3em",
-  lg: "5em",
+  sm: "1.5em",
+  md: "2.5em",
+  lg: "4em",
 };
 
 const Empty: React.FC<EmptyProps> = ({
   colorScheme = "gray",
   size = "md",
-  description = "Empty.nodata",
+  description,
   children
-  
+
 }) => {
-  const iconSize = typeof size === "number" ? `${size}px` : iconSizeMap[size] || "3em";
+  const { t } = useTranslation();
+  const iconSize = typeof size === "number" ? `${size}px` : iconSizeMap[size] || "2.5em";
   const textSize = typeof size === "number" ? "md" : size;
   const isLargeSize = typeof size === "number" ? size > 40 : size === "lg";
-  const { t } = useTranslation();
 
   return (
     <Box textAlign="center" color={`${colorScheme}.500`} p={4} borderWidth="1px" borderRadius="md">
@@ -35,7 +35,7 @@ const Empty: React.FC<EmptyProps> = ({
           <HStack spacing={2} justifyContent="center" alignItems="center">
             <FiInbox size={iconSize} />
             <Text fontSize={textSize} color={`${colorScheme}.500`}>
-              {t(description)}
+              {description ? description : t("Empty.nodata")}
             </Text>
           </HStack>
           {children}
@@ -44,7 +44,7 @@ const Empty: React.FC<EmptyProps> = ({
         <HStack spacing={4} justifyContent="center" alignItems="center">
           <FiInbox size={iconSize} />
           <Text fontSize={textSize} color={`${colorScheme}.500`}>
-            {t(description)}
+            {description ? description : t("Empty.nodata")}
           </Text>
           {children}
         </HStack>
@@ -53,24 +53,4 @@ const Empty: React.FC<EmptyProps> = ({
   );
 };
 
-const EmptyComponent = () => {
-
-  const colorScheme = "blue";
-  const size: "md" = "md";
-  const description = 'Empty.nodata';
-  const children = <Text>{/*children Text*/}</Text>;
-
-  return (
-    <Box p={8}>
-      <Heading mb={4}>Empty title</Heading>
-      <Empty
-        colorScheme={colorScheme}
-        size={size}
-        description={description}
-        children={children}
-      />
-    </Box>
-  );
-};
-
-export default EmptyComponent;
+export default Empty;
