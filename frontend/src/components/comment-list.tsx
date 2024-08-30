@@ -65,7 +65,7 @@ const CommentList: React.FC<CommentListProps> = ({
       {items.map((item) => (
         <>
           <Flex px={1} py={4} justify="space-between" alignItems="flex-start"
-            backgroundColor={item.local_id === newCommentLocalId ? 'lightskyblue' : 'transparent'}
+            backgroundColor={item.local_id === newCommentLocalId ? 'blue.100' : 'transparent'}
             transition='background-color 2s ease'
             rounded='md' p='3'
           >
