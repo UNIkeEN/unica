@@ -9,7 +9,6 @@ import {
   Box,
   useDisclosure,
   HStack,
-  Spinner,
   Flex,
   Skeleton,
   SkeletonCircle,
@@ -137,6 +136,8 @@ const DiscussionTopicPage = () => {
     const container = mainAreaBoxRef.current;
     if (container && container.scrollHeight <= container.clientHeight) {
       loadMoreCommentsReverse();
+    } else {
+      container.scrollTop = container.scrollHeight - container.clientHeight;
     }
   }, [comments, hasMoreReverse]);
 
@@ -199,6 +200,11 @@ const DiscussionTopicPage = () => {
     setComments([...res.results, ...comments]);
     setPage(page - 1);
     setIsLoading(false);
+
+    const container = mainAreaBoxRef.current;
+    if (container && container.scrollHeight <= container.clientHeight) {
+      container.scrollTop = container.scrollHeight - container.clientHeight;
+    }
   }
 
   const handleSubmission = async () => {
