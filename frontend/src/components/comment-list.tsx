@@ -29,6 +29,7 @@ import NewDiscussionDrawer from "./new-discussion-drawer";
 
 interface CommentListProps extends BoxProps {
   items: DiscussionComment[];
+  newCommentLocalId: number | null;
   onCommentDelete: (comment: DiscussionComment) => void;
   onCommentEdit: (comment: DiscussionComment, newContent: string) => void;
   onTopicDelete: () => void;
@@ -37,6 +38,7 @@ interface CommentListProps extends BoxProps {
 
 const CommentList: React.FC<CommentListProps> = ({
   items,
+  newCommentLocalId,
   onCommentDelete,
   onCommentEdit,
   onTopicDelete,
@@ -62,7 +64,11 @@ const CommentList: React.FC<CommentListProps> = ({
       {items && items.length > 0 && <Divider />}
       {items.map((item) => (
         <>
-          <Flex px={1} py={4} justify="space-between" alignItems="flex-start">
+          <Flex px={1} py={4} justify="space-between" alignItems="flex-start"
+            backgroundColor={item.local_id === newCommentLocalId ? 'lightskyblue' : 'transparent'}
+            transition='background-color 2s ease'
+            rounded='md' p='3'
+          >
             <Avatar mt={2} size="md" name={item.user.username} />
             <VStack
               spacing={2}
@@ -130,17 +136,17 @@ const CommentList: React.FC<CommentListProps> = ({
                 )}
                 {(userCtx.profile.id === item.user.id ||
                   orgCtx.basicInfo.role === MemberRoleEnum.OWNER) && (
-                  <DeleteDiscussionAlertDialog
-                    deleteObject={item.local_id === 1 ? "topic" : "comment"}
-                    onOKCallback={() => {
-                      if (item.local_id === 1) {
-                        onTopicDelete();
-                      } else {
-                        onCommentDelete(item);
-                      }
-                    }}
-                  />
-                )}
+                    <DeleteDiscussionAlertDialog
+                      deleteObject={item.local_id === 1 ? "topic" : "comment"}
+                      onOKCallback={() => {
+                        if (item.local_id === 1) {
+                          onTopicDelete();
+                        } else {
+                          onCommentDelete(item);
+                        }
+                      }}
+                    />
+                  )}
               </HStack>
             </VStack>
           </Flex>

@@ -32,3 +32,7 @@ body {
 .secondary-text {
   color: var(--chakra-colors-gray-500);
 }
+
+.markdown-body {
+  background-color: inherit !important;
+}

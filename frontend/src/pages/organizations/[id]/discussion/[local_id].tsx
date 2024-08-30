@@ -49,6 +49,7 @@ const DiscussionTopicPage = () => {
   const [topic, setTopic] = useState<DiscussionTopic | null>(null);
   const [comments, setComments] = useState<DiscussionComment[]>([]);
   const [newComment, setNewComment] = useState<string>("");
+  const [newCommentLocalId, setNewCommentLocalId] = useState<number | null>(null);
 
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(5);
@@ -209,7 +210,13 @@ const DiscussionTopicPage = () => {
 
   const handleSubmission = async () => {
     try {
-      await createComment(org_id, topic_local_id, newComment);
+      const res = await createComment(org_id, topic_local_id, newComment);
+      if (res.local_id) {
+        setNewCommentLocalId(res.local_id);
+        setTimeout(() => {
+          setNewCommentLocalId(null);
+        }, 1000);
+      }
     } catch (error) {
       console.error("Failed to create comment:", error);
       if (error.request && error.request.status === 403) {
@@ -378,6 +385,7 @@ const DiscussionTopicPage = () => {
                     onCommentEdit={handleCommentEdit}
                     onTopicDelete={handleTopicDelete}
                     topic_op={topic?.user}
+                    newCommentLocalId={newCommentLocalId}
                   />
                 </InfiniteScroll>
               ) : (
