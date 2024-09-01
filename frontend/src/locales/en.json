@@ -21,6 +21,18 @@
             "original-poster": "OP"
         }
     },
+    "CreateCategoryModal": {
+        "modal": {
+            "title": "Create New Category",
+            "preview": "Preview",
+            "name": "Name",
+            "emoji": "Emoji Icon",
+            "color": "Color",
+            "description": "Description",
+            "save": "Save",
+            "cancel": "Cancel"
+        }
+    },
     "CreateOrganizationModal": {
         "modal": {
             "title": "Create New Organization",
@@ -62,6 +74,14 @@
             "content": "Are you sure you want to delete this comment?",
             "delete": "Delete",
             "cancel": "Cancel"
+        }
+    },
+    "DiscussionCategoryManagerPage": {
+        "button": {
+            "create": "New Category"
+        },
+        "text": {
+            "total": "Total {{count}} categories"
         }
     },
     "DiscussionTopicPage": {

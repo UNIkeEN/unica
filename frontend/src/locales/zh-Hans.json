@@ -21,6 +21,18 @@
             "original-poster": "楼主"
         }
     },
+    "CreateCategoryModal": {
+        "modal": {
+            "title": "创建新分类",
+            "preview": "预览",
+            "name": "名称",
+            "emoji": "Emoji 图标",
+            "color": "颜色",
+            "description": "描述",
+            "save": "保存",
+            "cancel": "取消"
+        }
+    },
     "CreateOrganizationModal": {
         "modal": {
             "title": "创建新组织",
@@ -62,6 +74,14 @@
             "content": "确定要删除此评论吗？",
             "delete": "删除",
             "cancel": "取消"
+        }
+    },
+    "DiscussionCategoryManagerPage": {
+        "button": {
+            "create": "新分类"
+        },
+        "text": {
+            "total": "共 {{count}} 类"
         }
     },
     "DiscussionTopicPage": {

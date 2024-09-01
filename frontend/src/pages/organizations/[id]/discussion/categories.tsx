@@ -1,15 +1,21 @@
-import { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import { 
   VStack,
-  Tag
+  Flex,
+  Spacer,
+  Button,
+  Tag,
+  Text,
+  useDisclosure
 } from "@chakra-ui/react";
 import OrganizationContext from "@/contexts/organization";
-import { useToast } from "@chakra-ui/react";
+import { useToast } from "@/contexts/toast";
 import RichList from "@/components/rich-list";
 import { DiscussionTopicCategory } from "@/models/discussion";
 import { listCategories } from "@/services/discussion";
+import CreateCategoryModal from "@/components/modals/create-category-modal";
 
 
 const DiscussionCategoryManagerPage = () => {
@@ -19,6 +25,9 @@ const DiscussionCategoryManagerPage = () => {
   const toast = useToast();
 
   const [categories, setCategories] = useState<DiscussionTopicCategory[]>([]);
+  const [newCategory, setNewCategory] = useState<DiscussionTopicCategory | null>(null);
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     const id = Number(router.query.id);
@@ -48,17 +57,33 @@ const DiscussionCategoryManagerPage = () => {
   return (
     <>
       <VStack spacing={6} align="stretch">
-        <div>
-          {categories && categories.length > 0 && (
+        <Flex alignItems="center">
+          <Text pl={1}>{t("DiscussionCategoryManagerPage.text.total", {count: categories.length})}</Text>
+          <Spacer/>
+          <Button onClick={onOpen} colorScheme="blue">
+            {t("DiscussionCategoryManagerPage.button.create")}
+          </Button>
+        </Flex>
+        {categories && categories.length > 0 && (
+          <>
             <RichList
               items={categories.map((item) => ({
                 title: item.name,
                 linePrefix: <Tag size="lg" p={2.5} colorScheme={item.color}>{item.emoji}</Tag>
               }))}
             />
-          )}
-        </div>
+          </>
+        )}
       </VStack>
+
+      <CreateCategoryModal
+        isOpen={isOpen}
+        onClose={onClose}
+        category={newCategory}
+        setCategory={setNewCategory}
+      >
+        <React.Fragment />
+      </CreateCategoryModal>
     </>
   );
 };

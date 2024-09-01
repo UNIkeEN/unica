@@ -26,4 +26,5 @@ export interface DiscussionTopicCategory {
   name: string;
   color: ColorSelectorType;
   emoji?: string;
+  description?: string;
 }
