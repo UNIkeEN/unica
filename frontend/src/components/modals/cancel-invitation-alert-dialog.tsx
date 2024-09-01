@@ -90,7 +90,7 @@ const CancelInvitationAlertDialog: React.FC<CancelInvitationAlertDialogProps> = 
               {t("CancelInvitationDialog.dialog.cancel")}
             </Button>
             <Button colorScheme='red' onClick={handleCancelInvitation} ml={3}>
-              {t("CancelInvitationDialog.dialog.remove")}
+              {t("CancelInvitationDialog.dialog.confirm")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -75,7 +75,7 @@ const LeaveOrganizationAlertDialog: React.FC<
           <AlertDialogCloseButton />
 
           <AlertDialogBody pb={5}>
-            {t("LeaveOrganizationAlertDialog.dialog.confirm", { orgName })}
+            {t("LeaveOrganizationAlertDialog.dialog.content", { orgName })}
           </AlertDialogBody>
 
           <AlertDialogFooter>
@@ -83,7 +83,7 @@ const LeaveOrganizationAlertDialog: React.FC<
               {t("LeaveOrganizationAlertDialog.dialog.cancel")}
             </Button>
             <Button colorScheme="red" onClick={handleLeaveOrganization} ml={3}>
-              {t("LeaveOrganizationAlertDialog.dialog.leave")}
+              {t("LeaveOrganizationAlertDialog.dialog.confirm")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

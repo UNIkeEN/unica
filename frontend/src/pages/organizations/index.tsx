@@ -19,15 +19,20 @@ import { useTranslation } from 'react-i18next';
 import AuthContext from "@/contexts/auth";
 import UserContext from "@/contexts/user";
 import { useRouter } from "next/router";
+import { useToast } from "@/contexts/toast";
 import RichList from "@/components/rich-list";
 import { FiChevronDown } from "react-icons/fi";
 import { Organization, MemberRoleEnum } from '@/models/organization';
 import CreateOrganizationModal from "@/components/modals/create-organization-modal";
-import LeaveOrganizationAlertDialog from "@/components/modals/leave-organization-alert-dialog";
+import GenericAlertDialog from "@/components/modals/generic-alert-dialog";
+import { leaveOrganization } from "@/services/organization";
+import OrganizationContext from "@/contexts/organization";
 
 const MyOrganizationsPage = () => {
   const authCtx = useContext(AuthContext);
   const userCtx = useContext(UserContext);
+  const orgCtx = useContext(OrganizationContext);
+  const toast = useToast();
   const router = useRouter();
   const { t } = useTranslation();
   const [orgSortBy, setOrgSortBy] = useState<string>('updated_at'); // updated_at, created_at, display_name
@@ -48,6 +53,37 @@ const MyOrganizationsPage = () => {
       }
       return 0;
     });
+  };
+
+  const handleLeaveOrganization = async () => {
+    try {
+      await leaveOrganization(selectedOrg.id);
+      toast({
+        title: t("Services.organization.leaveOrganization.left"),
+        status: "success",
+      });
+      onClose();
+      setSelectedOrg(null);
+      userCtx.updateOrganizations();
+    } catch (error) {
+      console.error("Failed to leave organization:", error);
+      if (
+        error.response &&
+        (error.response.status === 404 || error.response.status === 400)
+      ) {
+        toast({
+          title: t("Services.organization.leaveOrganization.error"),
+          description: t(
+            `Services.organization.leaveOrganization.error-${error.response.status}`
+          ),
+          status: "error",
+        });
+      }
+      onClose();
+      if (error.response && error.response.status === 403) {
+        orgCtx.toastNoPermissionAndRedirect();
+      }
+    }
   };
 
   return (
@@ -121,15 +157,12 @@ const MyOrganizationsPage = () => {
           }
         </div>
         {selectedOrg &&
-          <LeaveOrganizationAlertDialog 
+          <GenericAlertDialog 
           isOpen={isOpen} 
           onClose={onClose} 
-          orgName={selectedOrg.display_name}
-          orgId={selectedOrg.id}
-          onOKCallback={() => {
-            setSelectedOrg(null);
-            userCtx.updateOrganizations();
-          }}
+          pageName="LeaveOrganizationAlertDialog"
+          objectName={selectedOrg.display_name}
+          onOKCallback={handleLeaveOrganization}
         />}
       </VStack>
     </>

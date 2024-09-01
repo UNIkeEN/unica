@@ -23,13 +23,12 @@ import OrganizationContext from "@/contexts/organization";
 import UserContext from "@/contexts/user";
 import { useToast } from '@/contexts/toast';
 import { OrganizationMember, MemberRoleEnum } from "@/models/organization";
-import { getOrganizationInvitations, getOrganizationMembers } from "@/services/organization";
+import { cancelInvitation, getOrganizationInvitations, getOrganizationMembers, removeMember } from "@/services/organization";
 import RichList from "@/components/rich-list";
 import Pagination from "@/components/pagination";
 import InviteMembersModal from "@/components/modals/invite-members-modal";
-import RemoveMemberAlertDialog from "@/components/modals/remove-member-alert-dialog";
 import ChangeMemberRoleModal from "@/components/modals/change-member-role-modal";
-import CancelInvitationAlertDialog from "@/components/modals/cancel-invitation-alert-dialog";
+import GenericAlertDialog from "@/components/modals/generic-alert-dialog";
 
 const OrganizationMembersPage = () => {
   const orgCtx = useContext(OrganizationContext);
@@ -139,6 +138,65 @@ const OrganizationMembersPage = () => {
     }
   };
 
+  const handleCancelInvitation = async (username: string) => {
+    try {
+      await cancelInvitation(Number(router.query.id), username);
+      toast({
+        title: t("Services.organization.cancelInvitation.cancelSuccess"),
+        status: "success",
+      });
+      onCancelInviteModalClose();
+      getInvitationList(Number(router.query.id), pageIndex, pageSize)
+    } catch (error) {
+      console.error("Failed to remove member:", error);
+      if (
+        error.response &&
+        (error.response.status === 404)
+      ) {
+        toast({
+          title: t("Services.organization.cancelInvitation.error"),
+          description: t(
+            `Services.organization.cancelInvitation.error-${error.response.status}`
+          ),
+          status: "error",
+        });
+      }
+      onCancelInviteModalClose();
+      if (error.response && error.response.status === 403) {
+        orgCtx.toastNoPermissionAndRedirect();
+      }
+    }
+  };
+  
+  const handleRemoveMember = async (username: string) => {
+    try {
+      await removeMember(Number(router.query.id), username);
+      toast({
+        title: t("Services.organization.removeMember.removed"),
+        status: "success",
+      });
+      onRemoveDialogClose();
+      getMemberList(Number(router.query.id), pageIndex, pageSize);
+    } catch (error) {
+      console.error("Failed to remove member:", error);
+      if (
+        error.response &&
+        (error.response.status === 400 || error.response.status === 404)
+      ) {
+        toast({
+          title: t("Services.organization.removeMember.error"),
+          description: t(
+            `Services.organization.removeMember.error-${error.response.status}`
+          ),
+          status: "error",
+        });
+      }
+      onRemoveDialogClose();
+      if (error.response && error.response.status === 403) {
+        orgCtx.toastNoPermissionAndRedirect();
+      }
+    }};
+
   return (
     <>
       <VStack spacing={6} align="stretch">
@@ -244,28 +302,26 @@ const OrganizationMembersPage = () => {
       </VStack>
 
       {selectedMember && 
-        <RemoveMemberAlertDialog
+        <GenericAlertDialog
           isOpen={isRemoveDialogOpen}
           onClose={onRemoveDialogClose}
-          orgId={Number(router.query.id)}
-          displayUserName={selectedMember.user.display_name}
-          username={selectedMember.user.username}
+          pageName="RemoveUserAlertDialog"
+          objectDisplayName={selectedMember.user.display_name}
+          objectName={selectedMember.user.username}
           onOKCallback={() => {
-            onRemoveDialogClose();
-            getMemberList(Number(router.query.id), pageIndex, pageSize);
+            handleRemoveMember(selectedMember.user.username);
           }}
         />
       }
       {selectedMember && 
-        <CancelInvitationAlertDialog
+        <GenericAlertDialog
           isOpen={isCancelInviteModalOpen}
           onClose={onCancelInviteModalClose}
-          orgId={Number(router.query.id)}
-          displayUserName={selectedMember.user.display_name}
-          username={selectedMember.user.username}
+          pageName="CancelInvitationDialog"
+          objectDisplayName={selectedMember.user.display_name}
+          objectName={selectedMember.user.username}
           onOKCallback={() => {
-            onCancelInviteModalClose();
-            getInvitationList(Number(router.query.id), pageIndex, pageSize)
+            handleCancelInvitation(selectedMember.user.username);
           }}
         />
       }

@@ -8,7 +8,6 @@ import {
   AlertDialogOverlay,
   AlertDialogCloseButton,
   Button,
-  MenuItem
 } from '@chakra-ui/react';
 import { useToast } from "@/contexts/toast";
 import { useTranslation } from "react-i18next";
@@ -91,7 +90,7 @@ const RemoveMemberAlertDialog: React.FC<RemoveMemberAlertDialogProps> = ({
               {t("RemoveUserAlertDialog.dialog.cancel")}
             </Button>
             <Button colorScheme='red' onClick={handleRemoveMember} ml={3}>
-              {t("RemoveUserAlertDialog.dialog.remove")}
+              {t("RemoveUserAlertDialog.dialog.confirm")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
