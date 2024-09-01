@@ -8,11 +8,11 @@ import {
 } from "@chakra-ui/react";
 import { FaRegCircle, FaCircleCheck } from "react-icons/fa6";
 import { useTranslation } from "next-i18next";
-import { ChakraColorEnums } from "@/models/enums";
+import { ChakraColorEnums, ColorSelectorType } from "@/models/enums";
 
 interface ChakraColorSelectorProps extends BoxProps {
   current: string;
-  onColorSelect: (color: string) => void;
+  onColorSelect: (color: ColorSelectorType) => void;
   size?: string;
 }
 
@@ -29,7 +29,7 @@ const ChakraColorSelector: React.FC<ChakraColorSelectorProps> =({
     <Box {...boxProps}>
       <Flex>
         {
-          ChakraColorEnums.map((color: string, index: number) => (
+          ChakraColorEnums.map((color: ColorSelectorType, index: number) => (
             <>
               <Tooltip label={t(`Enums.chakra-colors.${color}`)}>
                 <IconButton
