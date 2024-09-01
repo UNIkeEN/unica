@@ -386,95 +386,49 @@ def edit_comment(request, id):
 
 
 @swagger_auto_schema(
-    method='patch',
-    request_body=openapi.Schema(
-        type=openapi.TYPE_OBJECT,
-        properties={
-            'categories': openapi.Schema(
-                type=openapi.TYPE_ARRAY,
-                items=openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'id': openapi.Schema(type=openapi.TYPE_INTEGER),
-                        'name': openapi.Schema(type=openapi.TYPE_STRING),
-                        'color': openapi.Schema(
-                            type=openapi.TYPE_STRING,
-                            enum=["gray", "red", "orange", "yellow", "green", "teal", "blue", "cyan", "purple", "pink"]
-                        ),
-                        'emoji': openapi.Schema(type=openapi.TYPE_STRING),
-                    },
-                    required=['id', 'name', 'color']  # emoji is not required
-                )
-            ),
-        },
-        required=['categories']
-    ),
+    method='post',
+    request_body=DiscussionCategorySerializer(),
     responses={
-        200: openapi.Response(description="Categories updated successfully"),
+        201: openapi.Response(
+            description="Category created successfully",
+            schema=DiscussionCategorySerializer(many=True)
+        ),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
         404: openapi.Response(description="Discussion not found"),
     },
-    operation_description="Update categories for a discussion.",
+    operation_description="Create a new category for a discussion and return the updated list of categories.",
     tags=["Organization/Discussion"]
 )
-@api_view(['PATCH'])
+@api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner'])
-def update_categories(request, id):
+def create_category(request, id):
     organization = request.organization
     try:
         discussion = Discussion.objects.get(organization=organization)
     except Discussion.DoesNotExist:
         return Response({'detail': 'Discussion not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    data = request.data.get('categories', [])
+    serializer = DiscussionCategorySerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save(discussion=discussion)
+        # return all categories
+        categories = discussion.categories.all()
+        updated_serializer = DiscussionCategorySerializer(categories, many=True)
+        return Response(updated_serializer.data, status=status.HTTP_201_CREATED)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
-    # Validate the schema
-    try:
-        validate(instance=data, schema=CATEGORIES_SCHEMA)
-    except JSONSchemaValidationError as e:
-        return Response({'detail': f'Invalid categories format: {e.message}'}, status=status.HTTP_400_BAD_REQUEST)
-
-    # Validate the emoji field
-    for category in data:
-        emoji_value = category.get('emoji')
-        if emoji_value and not is_emoji(emoji_value):
-            return Response({'detail': f'Invalid emoji in category: {category["name"]}'}, status=status.HTTP_400_BAD_REQUEST)
-
-    # Update the discussion categories
-    discussion.categories = data
-
-    # Update topics with categories that no longer exist
-    valid_category_ids = {cat['id'] for cat in data}
-    for topic in discussion.topics.all():
-        if topic.category_id not in valid_category_ids:
-            topic.category_id = 0  # Reset or set to a default category ID
-            topic.save()
-
-    discussion.save()
-    return Response({'detail': 'Categories updated successfully'}, status=status.HTTP_200_OK)
-
-
-# category list
 @swagger_auto_schema(
     method='get',
     responses={
         200: openapi.Response(
             description="List of categories in the discussion",
-            schema=openapi.Schema(
-                type=openapi.TYPE_ARRAY,
-                items=openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'id': openapi.Schema(type=openapi.TYPE_INTEGER),
-                        'name': openapi.Schema(type=openapi.TYPE_STRING),
-                        'color': openapi.Schema(type=openapi.TYPE_STRING),
-                        'emoji': openapi.Schema(type=openapi.TYPE_STRING),
-                    }
-                )
-            )
+            schema=DiscussionCategorySerializer(many=True)
         ),
+        403: openapi.Response(description="Authenticated user does not have the required permissions"),
         404: openapi.Response(description="Discussion not found"),
     },
     operation_description="Retrieve a list of categories in the discussion.",
@@ -490,4 +444,120 @@ def list_categories(request, id):
         discussion = Discussion.objects.get(organization=organization)
     except Discussion.DoesNotExist:
         return Response({'detail': 'Discussion not found'}, status=status.HTTP_404_NOT_FOUND)
-    return Response(discussion.categories, status=status.HTTP_200_OK)
+
+    categories = discussion.categories.all()
+    serializer = DiscussionCategorySerializer(categories, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@swagger_auto_schema(
+    method='patch',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'category_id': openapi.Schema(
+                type=openapi.TYPE_INTEGER,
+                description="The ID of the category to update"
+            ),
+            'category_value': openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'name': openapi.Schema(type=openapi.TYPE_STRING),
+                    'emoji': openapi.Schema(type=openapi.TYPE_STRING),
+                    'color': openapi.Schema(type=openapi.TYPE_STRING),
+                    'description': openapi.Schema(type=openapi.TYPE_STRING),
+                },
+                description="Fields to update for the category",
+            ),
+        },
+        required=['category_id', 'category_value'],
+    ),
+    responses={
+        200: openapi.Response(
+            description="Category updated successfully",
+            schema=DiscussionCategorySerializer(many=True)
+        ),
+        400: openapi.Response(description="Bad request, need category_id and category_value"),
+        403: openapi.Response(description="Authenticated user does not have the required permissions"),
+        404: openapi.Response(description="Discussion or Category not found"),
+    },
+    operation_description="Update an existing category for a discussion and return the updated list of categories.",
+    tags=["Organization/Discussion"]
+)
+@api_view(['PATCH'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@organization_permission_classes(['Owner'])
+def update_category(request, id):
+    organization = request.organization
+    try:
+        discussion = Discussion.objects.get(organization=organization)
+    except Discussion.DoesNotExist:
+        return Response({'detail': 'Discussion not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    category_id = request.data.get('category_id')
+    if not category_id:
+        return Response({'detail': 'Category ID is required for update.'}, status=status.HTTP_400_BAD_REQUEST)
+    category_value = request.data.get('category_value')
+    if not category_value:
+        return Response({'detail': 'Category value is required for update.'}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        category_instance = DiscussionCategory.objects.get(id=category_id, discussion=discussion)
+    except DiscussionCategory.DoesNotExist:
+        return Response({'detail': 'Category not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = DiscussionCategorySerializer(category_instance, data=category_value, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        # return all categories
+        categories = discussion.categories.all()
+        updated_serializer = DiscussionCategorySerializer(categories, many=True)
+        return Response(updated_serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@swagger_auto_schema(
+    method='post',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'category_id': openapi.Schema(type=openapi.TYPE_INTEGER, description="The ID of the category to delete"),
+        },
+        required=['category_id'],
+    ),
+    responses={
+        200: openapi.Response(
+            description="Category deleted successfully",
+            schema=DiscussionCategorySerializer(many=True)
+        ),
+        403: openapi.Response(description="Authenticated user does not have the required permissions"),
+        404: openapi.Response(description="Discussion or Category not found"),
+    },
+    operation_description="Delete an existing category from a discussion and return the updated list of categories.",
+    tags=["Organization/Discussion"]
+)
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@organization_permission_classes(['Owner'])
+def delete_category(request, id):
+    organization = request.organization
+    try:
+        discussion = Discussion.objects.get(organization=organization)
+    except Discussion.DoesNotExist:
+        return Response({'detail': 'Discussion not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    category_id = request.data.get('category_id')
+    if not category_id:
+        return Response({'detail': 'Category ID is required for deletion.'}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        category_instance = DiscussionCategory.objects.get(id=category_id, discussion=discussion)
+    except DiscussionCategory.DoesNotExist:
+        return Response({'detail': 'Category not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    category_instance.delete()
+    # return all categories
+    categories = discussion.categories.all()
+    updated_serializer = DiscussionCategorySerializer(categories, many=True)
+    return Response(updated_serializer.data, status=status.HTTP_200_OK)

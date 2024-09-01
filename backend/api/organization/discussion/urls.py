@@ -13,10 +13,12 @@ urlpatterns = [
     #comment CRUD
     path('comment/create/', create_comment, name='create_comment'),
     path('comment/list/', list_comment, name='list_comment'),
-    path('comment/delete/', delete_comment, name='delete_comment'),
     path('comment/update/', edit_comment, name='edit_comment'),
+    path('comment/delete/', delete_comment, name='delete_comment'),
 
     #category CRUD
-    path('category/update/', update_categories, name='update_category'),
+    path('category/create', create_category, name='create_category'),
     path('category/list/', list_categories, name='list_category'),
+    path('category/update/', update_category, name='update_category'),
+    path('category/delete', delete_category, name='delete_category')
 ]

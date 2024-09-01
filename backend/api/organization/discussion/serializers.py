@@ -1,9 +1,5 @@
 from rest_framework import serializers
-from django.contrib.contenttypes.models import ContentType
-from django.db import models
-from .models import Discussion, DiscussionTopic, DiscussionComment
-from .schemas import CATEGORIES_SCHEMA
-from jsonschema import validate, ValidationError as JSONSchemaValidationError
+from .models import Discussion, DiscussionTopic, DiscussionComment, DiscussionCategory
 from api.user.serializers import UserBasicInfoSerializer
 
 
@@ -13,26 +9,13 @@ class DiscussionSerializer(serializers.ModelSerializer):
         fields = ['organization', 'created_at', 'categories']
         read_only_fields = ['created_at']
         depth = 1
+    
 
-    def validate_categories(self, value):
-        # Validate against JSON schema
-        try:
-            validate(instance=value, schema=CATEGORIES_SCHEMA)
-        except JSONSchemaValidationError as e:
-            raise serializers.ValidationError(f"Invalid categories format: {e.message}")
-
-        # Check for uniqueness of 'id' and 'name'
-        ids = set()
-        names = set()
-        for category in value:
-            if category['id'] in ids:
-                raise serializers.ValidationError(f"Duplicate id found: {category['id']}")
-            if category['name'] in names:
-                raise serializers.ValidationError(f"Duplicate name found: {category['name']}")
-            ids.add(category['id'])
-            names.add(category['name'])
-
-        return value
+class DiscussionCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DiscussionCategory
+        fields = ['id', 'name', 'emoji', 'color', 'description']
+        read_only_fields = ['id']
 
 
 class DiscussionTopicSerializer(serializers.ModelSerializer):
@@ -48,10 +31,6 @@ class DiscussionTopicSerializer(serializers.ModelSerializer):
         discussion = self.context.get('discussion')
         if not discussion:
             raise serializers.ValidationError("Discussion is required.")
-        if data['category_id'] == 0:
-           return data
-        if not any(cat['id'] == data['category_id'] for cat in data['discussion'].categories):
-            raise serializers.ValidationError("Invalid category_id.")
         return data
 
     def get_user(self, obj):
@@ -67,11 +46,13 @@ class DiscussionCommentSerializer(serializers.ModelSerializer):
         model = DiscussionComment
         fields = ['id', 'user', 'topic', 'content', 'created_at', 'updated_at', 'local_id', 'edited']
 
+
 class DiscussionCommentCreationSerializer(serializers.ModelSerializer):
     class Meta:
         model = DiscussionComment
         fields = ['content','local_id']
         read_only_fields = ['local_id']
+
 
 class DiscussionTopicCreationSerializer(serializers.ModelSerializer):
     comment = DiscussionCommentCreationSerializer(required=False)

@@ -1,5 +1,6 @@
 from django.db import models, transaction
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 from api.models import AbstractComment
 from api.organization.models import Organization
 
@@ -7,16 +8,26 @@ from api.organization.models import Organization
 class Discussion(models.Model):
     organization = models.OneToOneField(Organization, on_delete=models.CASCADE, related_name='discussion')
     created_at = models.DateTimeField(auto_now_add=True)
-    categories = models.JSONField(default=list)  # [{id, name, color},...]
 
     def __str__(self):
         return f"Discussions of {self.organization.display_name}"
     
 
+class DiscussionCategory(models.Model):
+    discussion = models.ForeignKey(Discussion, on_delete=models.CASCADE, related_name='categories')
+    name = models.CharField(max_length=20)
+    emoji = models.CharField(max_length=2, blank=True, null=True)
+    color = models.CharField(max_length=7, default="gray")
+    description = models.TextField(max_length=200, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.name}"
+    
+
 class DiscussionTopic(models.Model):
     discussion = models.ForeignKey(Discussion, on_delete=models.CASCADE, related_name='topics')
     title = models.CharField(max_length=40)
-    category_id = models.IntegerField()
+    category = models.ForeignKey(DiscussionCategory, on_delete=models.SET_NULL, related_name='topics', null=True, blank=True)
     local_id = models.IntegerField(editable=False)  # local id, in the same discussion(organization) scope
     deleted = models.BooleanField(default=False) # soft delete
     created_at = models.DateTimeField(auto_now_add=True)
@@ -26,6 +37,9 @@ class DiscussionTopic(models.Model):
         unique_together = ('discussion', 'local_id')
     
     def save(self, *args, **kwargs):
+        if self.category and self.category.discussion != self.discussion:
+            raise ValidationError("The category does not belong to the same discussion.")
+        
         with transaction.atomic():
             if not self.local_id:
                 max_local_id = DiscussionTopic.objects.filter(

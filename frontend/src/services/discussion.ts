@@ -91,19 +91,6 @@ export async function createComment(id: number, topic_local_id: number, content:
   }
 }
 
-export async function deleteComment(id: number, topic_local_id: number, comment_local_id: number) {
-  try {
-    const response = await request.post(`/api/organization/${id}/discussion/comment/delete/`, {
-      comment_local_id: comment_local_id,
-      topic_local_id: topic_local_id
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Failed to delete comment', error);
-    throw error;
-  }
-}
-
 export async function editComment(id: number, topic_local_id: number, comment_local_id: number, content: string) {
   try {
     const response = await request.patch(`/api/organization/${id}/discussion/comment/update/`, {
@@ -118,14 +105,27 @@ export async function editComment(id: number, topic_local_id: number, comment_lo
   }
 }
 
-export async function updateCategories(id: number, categories: DiscussionTopicCategory[]) {
+export async function deleteComment(id: number, topic_local_id: number, comment_local_id: number) {
   try {
-    const response = await request.patch(`/api/organization/${id}/discussion/category/update/`, {
-      categories: categories
+    const response = await request.post(`/api/organization/${id}/discussion/comment/delete/`, {
+      comment_local_id: comment_local_id,
+      topic_local_id: topic_local_id
     });
     return response.data;
   } catch (error) {
-    console.error('Failed to update categories', error);
+    console.error('Failed to delete comment', error);
+    throw error;
+  }
+}
+
+export async function createCategory(id: number, category: DiscussionTopicCategory) {
+  try {
+    const response = await request.post(`/api/organization/${id}/discussion/category/create/`, {
+      category: category
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to create category', error);
     throw error;
   }
 }
@@ -136,6 +136,31 @@ export async function listCategories(id: number) {
     return response.data as DiscussionTopicCategory[];
   } catch (error) {
     console.error('Failed to list categories', error);
+    throw error;
+  }
+}
+
+export async function updateCategory(id: number, category_id: number, category_value: DiscussionTopicCategory) {
+  try {
+    const response = await request.patch(`/api/organization/${id}/discussion/category/update/`, {
+      category_id: category_id,
+      category_value: category_value
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to update category', error);
+    throw error;
+  }
+}
+
+export async function deleteCategory(id: number, category_id: number) {
+  try {
+    const response = await request.post(`/api/organization/${id}/discussion/category/delete/`, {
+      id: category_id
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to delete category', error);
     throw error;
   }
 }
