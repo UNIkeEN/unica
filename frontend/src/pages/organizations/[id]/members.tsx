@@ -305,9 +305,14 @@ const OrganizationMembersPage = () => {
         <GenericAlertDialog
           isOpen={isRemoveDialogOpen}
           onClose={onRemoveDialogClose}
-          pageName="RemoveUserAlertDialog"
-          objectDisplayName={selectedMember.user.display_name}
-          objectName={selectedMember.user.username}
+          title={t('RemoveUserAlertDialog.dialog.title')}
+          body={t("RemoveUserAlertDialog.dialog.content", {
+            displayUsername: selectedMember.user.display_name,
+            username: selectedMember.user.username,
+            orgName: orgCtx.basicInfo.display_name,
+          })}
+          btnOK={t('RemoveUserAlertDialog.dialog.confirm')}
+          btnCancel={t('RemoveUserAlertDialog.dialog.cancel')}
           onOKCallback={() => {
             handleRemoveMember(selectedMember.user.username);
           }}
@@ -317,9 +322,14 @@ const OrganizationMembersPage = () => {
         <GenericAlertDialog
           isOpen={isCancelInviteModalOpen}
           onClose={onCancelInviteModalClose}
-          pageName="CancelInvitationDialog"
-          objectDisplayName={selectedMember.user.display_name}
-          objectName={selectedMember.user.username}
+          title={t('CancelInvitationDialog.dialog.title')}
+          body={t("CancelInvitationDialog.dialog.content", {
+            displayUsername: selectedMember.user.display_name,
+            username: selectedMember.user.username,
+            orgName: orgCtx.basicInfo.display_name,
+          })}
+          btnOK={t('CancelInvitationDialog.dialog.confirm')}
+          btnCancel={t('CancelInvitationDialog.dialog.cancel')}
           onOKCallback={() => {
             handleCancelInvitation(selectedMember.user.username);
           }}

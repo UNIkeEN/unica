@@ -2,7 +2,7 @@
     "CancelInvitationDialog": {
         "dialog": {
             "title": "Delete",
-            "content": "{{objectDisplayName}}({{objectName}}) will be removed from the invitation list of {{orgName}}.",
+            "content": "{{displayUsername}}({{username}}) will be removed from the invitation list of {{orgName}}.",
             "confirm": "Remove",
             "cancel": "Cancel"
         }
@@ -155,7 +155,7 @@
     "LeaveOrganizationAlertDialog": {
         "dialog": {
             "title": "Leave Organization",
-            "content": "Are you sure you want to leave {{objectName}}?",
+            "content": "Are you sure you want to leave {{orgName}}?",
             "confirm": "Leave",
             "cancel": "Cancel"
         }
@@ -319,7 +319,7 @@
     "RemoveUserAlertDialog": {
         "dialog": {
             "title": "Remove Member",
-            "content": "{{objectDisplayName}}({{objectName}}) will be removed from the organization {{orgName}}.",
+            "content": "{{displayUsername}}({{username}}) will be removed from the organization {{orgName}}.",
             "confirm": "Remove",
             "cancel": "Cancel"
         }

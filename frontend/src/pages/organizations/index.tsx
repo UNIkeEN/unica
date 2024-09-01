@@ -160,8 +160,10 @@ const MyOrganizationsPage = () => {
           <GenericAlertDialog 
           isOpen={isOpen} 
           onClose={onClose} 
-          pageName="LeaveOrganizationAlertDialog"
-          objectName={selectedOrg.display_name}
+          title={t('LeaveOrganizationAlertDialog.dialog.title')}
+          body={t('LeaveOrganizationAlertDialog.dialog.content', { orgName: selectedOrg.display_name })}
+          btnOK={t('LeaveOrganizationAlertDialog.dialog.confirm')}
+          btnCancel={t('LeaveOrganizationAlertDialog.dialog.cancel')}
           onOKCallback={handleLeaveOrganization}
         />}
       </VStack>

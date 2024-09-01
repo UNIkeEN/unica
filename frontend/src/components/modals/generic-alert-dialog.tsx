@@ -1,4 +1,4 @@
-import { useRef, useContext } from "react";
+import { useRef } from "react";
 import {
   AlertDialog,
   AlertDialogBody,
@@ -9,29 +9,27 @@ import {
   AlertDialogCloseButton,
   Button,
 } from "@chakra-ui/react";
-import { useTranslation } from "react-i18next";
-import OrganizationContext from "@/contexts/organization";
 
 interface GenericAlertDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  pageName: string;
-  objectName: string;
-  objectDisplayName?: string;
+  title: string;
+  body: string;
+  btnOK: string;
+  btnCancel: string;
   onOKCallback?: () => void;
 }
 
 const GenericAlertDialog: React.FC<GenericAlertDialogProps> = ({
   isOpen,
   onClose,
-  pageName,
-  objectName,
-  objectDisplayName,
+  title,
+  body,
+  btnOK,
+  btnCancel,
   onOKCallback,
 }) => {
   const cancelRef = useRef();
-  const { t } = useTranslation();
-  const orgCtx = useContext(OrganizationContext);
 
   return (
     <AlertDialog
@@ -43,22 +41,18 @@ const GenericAlertDialog: React.FC<GenericAlertDialogProps> = ({
       <AlertDialogOverlay>
         <AlertDialogContent>
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            {t(`${pageName}.dialog.title`)}
+            {title}
           </AlertDialogHeader>
           <AlertDialogCloseButton />
           <AlertDialogBody pb={5}>
-            {t(`${pageName}.dialog.content`, {
-              objectDisplayName: objectDisplayName,
-              objectName: objectName,
-              orgName: orgCtx.basicInfo.display_name,
-            })}
+            {body}
           </AlertDialogBody>
           <AlertDialogFooter>
             <Button ref={cancelRef} onClick={onClose}>
-              {t(`${pageName}.dialog.cancel`)}
+              {btnCancel}
             </Button>
             <Button colorScheme="red" onClick={onOKCallback} ml={3}>
-              {t(`${pageName}.dialog.confirm`)}
+              {btnOK}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

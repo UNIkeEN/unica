@@ -2,7 +2,7 @@
     "CancelInvitationDialog": {
         "dialog": {
             "title": "取消邀请",
-            "content": "{{objectDisplayName}}({{objectName}}) 将从 {{orgName}} 邀请列表中移除",
+            "content": "{{displayUsername}}({{username}}) 将从 {{orgName}} 邀请列表中移除",
             "confirm": "移除",
             "cancel": "取消"
         }
@@ -155,7 +155,7 @@
     "LeaveOrganizationAlertDialog": {
         "dialog": {
             "title": "退出组织",
-            "content": "确定要退出 {{objectName}} 吗？",
+            "content": "确定要退出 {{orgName}} 吗？",
             "confirm": "退出",
             "cancel": "取消"
         }
@@ -319,7 +319,7 @@
     "RemoveUserAlertDialog": {
         "dialog": {
             "title": "移除用户",
-            "content": "{{objectDisplayName}}({{objectName}}) 将从 {{orgName}} 组织移除.",
+            "content": "{{displayUsername}}({{username}}) 将从 {{orgName}} 组织移除.",
             "confirm": "移除",
             "cancel": "取消"
         }
