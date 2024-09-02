@@ -13,7 +13,7 @@ import {
 import OrganizationContext from "@/contexts/organization";
 import { useToast } from "@/contexts/toast";
 import RichList from "@/components/rich-list";
-import { DiscussionTopicCategory } from "@/models/discussion";
+import { DiscussionTopicCategory, emptyCategory } from "@/models/discussion";
 import { listCategories } from "@/services/discussion";
 import CreateCategoryModal from "@/components/modals/create-category-modal";
 
@@ -25,7 +25,7 @@ const DiscussionCategoryManagerPage = () => {
   const toast = useToast();
 
   const [categories, setCategories] = useState<DiscussionTopicCategory[]>([]);
-  const [newCategory, setNewCategory] = useState<DiscussionTopicCategory | null>(null);
+  const [newCategory, setNewCategory] = useState<DiscussionTopicCategory>(emptyCategory);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -69,7 +69,7 @@ const DiscussionCategoryManagerPage = () => {
             <RichList
               items={categories.map((item) => ({
                 title: item.name,
-                linePrefix: <Tag size="lg" p={2.5} colorScheme={item.color}>{item.emoji}</Tag>
+                linePrefix: <Tag size="lg" p={2.5} colorScheme={item.color}>{item.emoji || "💬"}</Tag>
               }))}
             />
           </>

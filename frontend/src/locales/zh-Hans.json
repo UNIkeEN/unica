@@ -31,6 +31,12 @@
             "description": "描述",
             "save": "保存",
             "cancel": "取消"
+        },
+        "FormErrorMessage": {
+            "nameRequired": "分类名称不能为空",
+            "nameTooLong": "分类名称不得超过 20 字",
+            "emojiInvalid": "无效的 Emoji 图标（仅允许单个 Emoji）",
+            "descriptionTooLong": "分类描述不得超过 200 字"
         }
     },
     "CreateOrganizationModal": {

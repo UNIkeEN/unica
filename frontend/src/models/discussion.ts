@@ -28,3 +28,11 @@ export interface DiscussionTopicCategory {
   emoji?: string;
   description?: string;
 }
+
+export const emptyCategory: DiscussionTopicCategory = {
+  id: 0,
+  name: '',
+  color: 'gray',
+  emoji: '',
+  description: ''
+};

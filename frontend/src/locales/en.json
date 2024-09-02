@@ -31,6 +31,12 @@
             "description": "Description",
             "save": "Save",
             "cancel": "Cancel"
+        },
+        "FormErrorMessage": {
+            "nameRequired": "Category name is required",
+            "nameTooLong": "Category name is too long",
+            "emojiInvalid": "Invalid Emoji Icon",
+            "descriptionTooLong": "Description is too long"
         }
     },
     "CreateOrganizationModal": {

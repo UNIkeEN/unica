@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import { BeatLoader } from 'react-spinners';
 import {
   Button,
@@ -22,7 +22,7 @@ import {
 import { useTranslation } from "react-i18next";
 import ChakraColorSelector from "@/components/color-selector";
 import { DiscussionTopicCategory as Category } from "@/models/discussion";
-import { ReadonlyURLSearchParams } from "next/navigation";
+import { isOnlyEmoji } from "@/utils/string";
 
 interface CreateCategoryModalProps extends ModalProps {
   category: Category,
@@ -39,7 +39,11 @@ const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
   const { t } = useTranslation();
   const initialRef = useRef(null);
 
-  //TODO: Form CHeck
+  //Form Check
+  const [isNameNull, setIsNameNull] = useState(false);
+  const [nameTooLong, setNameTooLong] = useState(false);
+  const [descriptionTooLong, setDescriptionTooLong] = useState(false);
+  const [isEmojiInValid, setIsEmojiInValid] = useState(false);
 
   return (
     <>
@@ -59,25 +63,44 @@ const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
               <FormLabel>{t("CreateCategoryModal.modal.preview")}</FormLabel>
               <Flex alignItems="center" justify="center" overflow="hidden">
                 <Tag size="lg" p={2.5} colorScheme={category?.color || "gray"}>
-                  {category?.emoji || " "}
+                  {category?.emoji.slice(0,2) || "💬"}
                 </Tag>
                 <Text fontWeight="semibold" wordBreak="break-all" ml={2}>
                   {category?.name}
                 </Text>
               </Flex>
             </FormControl>
-            <FormControl pb={5} isRequired>
+            <FormControl 
+              isInvalid={isNameNull || nameTooLong} 
+              pb={5} 
+              isRequired
+            >
               <FormLabel>{t("CreateCategoryModal.modal.name")}</FormLabel>
               <Input
+                ref={initialRef}
                 placeholder={t("CreateCategoryModal.modal.name")}
                 value={category?.name}
                 onChange={(e) => {
                   setCategory({...category, name: e.target.value})
                 }}
-                ref={initialRef}
+                onBlur={(e) => {
+                  setIsNameNull(category.name.trim() === "");
+                  setNameTooLong(category.name.trim().length > 20);
+                }}
+                onFocus={() => {
+                  setIsNameNull(false);
+                  setNameTooLong(false);
+                }}
               />
+              <FormErrorMessage>
+                {isNameNull
+                  ? t("CreateCategoryModal.FormErrorMessage.nameRequired")
+                  : nameTooLong
+                  ? t("CreateCategoryModal.FormErrorMessage.nameTooLong")
+                  : ""}
+              </FormErrorMessage>
             </FormControl>
-            <FormControl pb={5}>
+            <FormControl pb={5} isInvalid={isEmojiInValid}>
               <FormLabel>{t("CreateCategoryModal.modal.emoji")}</FormLabel>
               <Input
                 placeholder={t("CreateCategoryModal.modal.emoji")}
@@ -85,7 +108,18 @@ const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
                 onChange={(e) => {
                   setCategory({...category, emoji: e.target.value})
                 }}
+                onBlur={(e) => {
+                  setIsEmojiInValid(category.emoji!=="" && (!isOnlyEmoji(category.emoji) || category.emoji.length > 2));
+                }}
+                onFocus={() => {
+                  setIsEmojiInValid(false);
+                }}
               />
+              <FormErrorMessage>
+                {isEmojiInValid
+                  ? t("CreateCategoryModal.FormErrorMessage.emojiInvalid")
+                  : ""}
+              </FormErrorMessage>
             </FormControl>
             <FormControl pb={5} isRequired>
               <FormLabel>{t("CreateCategoryModal.modal.color")}</FormLabel>
@@ -96,7 +130,7 @@ const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
                 }}
               />
             </FormControl>
-            <FormControl>
+            <FormControl isInvalid={descriptionTooLong}>
             <FormLabel>{t("CreateCategoryModal.modal.description")}</FormLabel>
               <Textarea
                 placeholder={t("CreateCategoryModal.modal.description")}
@@ -105,7 +139,18 @@ const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
                 onChange={(e) => {
                   setCategory({...category, description: e.target.value})
                 }}
+                onBlur={(e) => {
+                  setDescriptionTooLong(category.description.length > 200);
+                }}
+                onFocus={() => {
+                  setDescriptionTooLong(false);
+                }}
               />
+              <FormErrorMessage>
+                {descriptionTooLong
+                  ? t("CreateCategoryModal.FormErrorMessage.descriptionTooLong")
+                  : ""}
+              </FormErrorMessage>
             </FormControl>
           </ModalBody>
 
@@ -114,6 +159,7 @@ const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
               colorScheme="blue"
               mr={3}
               spinner={<BeatLoader size={8} color='white' />}
+              isDisabled={isNameNull || nameTooLong || descriptionTooLong || isEmojiInValid}
             >
               {t("CreateCategoryModal.modal.save")}
             </Button>
