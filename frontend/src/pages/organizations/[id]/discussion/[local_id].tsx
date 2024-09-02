@@ -121,13 +121,13 @@ const DiscussionTopicPage = () => {
   }, [isTitleVisible, topic]);
 
   useEffect(() => {
-    getTopic();
+    handleGetTopicInfo();
     initializeComments();
   }, []);
 
   const initializeComments = async () => {
     setIsLoading(true);
-    const res = await getCommentsList(1, pageSize);
+    const res = await handleListComments(1, pageSize);
     setComments(res.results);
     setIsLoading(false);
   };
@@ -142,7 +142,7 @@ const DiscussionTopicPage = () => {
     }
   }, [comments, hasMoreReverse]);
 
-  const getTopic = async () => {
+  const handleGetTopicInfo = async () => {
     try {
       const res = await getTopicInfo(org_id, topic_local_id);
       setTopic(res);
@@ -161,7 +161,7 @@ const DiscussionTopicPage = () => {
     }
   };
 
-  const getCommentsList = async (page: number = 1, pageSize: number = 20) => {
+  const handleListComments = async (page: number = 1, pageSize: number = 20) => {
     try {
       const res = await listComments(org_id, page, pageSize, topic_local_id);
       setCommentsCount(res.count);
@@ -187,7 +187,7 @@ const DiscussionTopicPage = () => {
     if (isLoading) return;
     setIsLoading(true);
     console.log("Load more comments");
-    const res = await getCommentsList(page + 1, pageSize);
+    const res = await handleListComments(page + 1, pageSize);
     setComments([...comments, ...res.results]);
     setPage(page + 1);
     setIsLoading(false);
@@ -197,7 +197,7 @@ const DiscussionTopicPage = () => {
     if (isLoading) return;
     setIsLoading(true);
     console.log("Load more comments reverse");
-    const res = await getCommentsList(page - 1, pageSize);
+    const res = await handleListComments(page - 1, pageSize);
     setComments([...res.results, ...comments]);
     setPage(page - 1);
     setIsLoading(false);
@@ -236,17 +236,17 @@ const DiscussionTopicPage = () => {
       setPage(lastPage);
       setScrollReverse(true);
       setHasMoreReverse(true);
-      const res = await getCommentsList(lastPage, pageSize);
+      const res = await handleListComments(lastPage, pageSize);
       setComments(res.results);
     }
     else {
-      const res = await getCommentsList(lastPage, pageSize);
+      const res = await handleListComments(lastPage, pageSize);
       setComments([...comments, res.results[res.results.length - 1]]);
     }
     mainAreaBoxRef.current.scrollTop = mainAreaBoxRef.current.scrollHeight;
   };
 
-  const handleTopicDelete = async () => {
+  const handleDeleteTopic = async () => {
     try {
       await deleteTopic(org_id, topic_local_id);
     } catch (error) {
@@ -268,7 +268,7 @@ const DiscussionTopicPage = () => {
     router.push(`/organizations/${org_id}/discussion/`);
   };
 
-  const handleCommentDelete = async (comment: DiscussionComment) => {
+  const handleDeleteComment = async (comment: DiscussionComment) => {
     try {
       await deleteComment(org_id, topic_local_id, comment.local_id);
       toast({
@@ -288,14 +288,14 @@ const DiscussionTopicPage = () => {
       return;
     }
     if (!scrollReverse && hasMore) {
-      const res = await getCommentsList(page, pageSize);
+      const res = await handleListComments(page, pageSize);
       setComments([...comments.filter((c) => c.local_id !== comment.local_id), res.results[res.results.length - 1]]);
     }
     else
       setComments(comments.filter((c) => c.local_id !== comment.local_id));
   };
 
-  const handleCommentEdit = async (
+  const handleEditComment = async (
     comment: DiscussionComment,
     newContent: string
   ) => {
@@ -376,9 +376,9 @@ const DiscussionTopicPage = () => {
                   }>
                   <CommentList
                     items={comments}
-                    onCommentDelete={handleCommentDelete}
-                    onCommentEdit={handleCommentEdit}
-                    onTopicDelete={handleTopicDelete}
+                    onCommentDelete={handleDeleteComment}
+                    onCommentEdit={handleEditComment}
+                    onTopicDelete={handleDeleteTopic}
                     topic_op={topic?.user}
                     newCommentLocalId={newCommentLocalId}
                   />
@@ -442,7 +442,7 @@ const DiscussionTopicPage = () => {
                       setPage(1);
                       setScrollReverse(false);
                       setHasMore(true);
-                      const res = await getCommentsList(1, pageSize);
+                      const res = await handleListComments(1, pageSize);
                       setComments(res.results);
                     }
                     titleRef.current.scrollIntoView({ behavior: "smooth" });

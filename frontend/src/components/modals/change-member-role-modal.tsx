@@ -43,7 +43,7 @@ const ChangeMemberRoleModal: React.FC<ChangeMemberRoleModalProps> = ({
   const orgCtx = useContext(OrganizationContext);
   const [newRole, setNewRole] = useState(null);
 
-  const handleChangeMemberRole = async () => {
+  const handleModifyMemberRole = async () => {
     try {
       await modifyMemberRole(orgId, username, newRole);
       toast({
@@ -99,7 +99,7 @@ const ChangeMemberRoleModal: React.FC<ChangeMemberRoleModalProps> = ({
           <Button ref={cancelRef} onClick={onClose}>
             {t("ChangeMemberRoleModal.modal.cancel")}
           </Button>
-          <Button colorScheme="blue" onClick={handleChangeMemberRole} ml={3} isDisabled={newRole === null}>
+          <Button colorScheme="blue" onClick={handleModifyMemberRole} ml={3} isDisabled={newRole === null}>
             {t("ChangeMemberRoleModal.modal.change_role")}
           </Button>
         </ModalFooter>

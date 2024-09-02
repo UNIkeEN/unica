@@ -51,7 +51,7 @@ const OrganizationDiscussionPage = () => {
     }
 
     if (orgCtx.basicInfo?.is_discussion_enabled) {
-      if (id) getTopicList(id, pageIndex, pageSize);
+      if (id) handleListTopics(id, pageIndex, pageSize);
       else {
         setTopicList([]);
         setTopicCount(0);
@@ -65,7 +65,7 @@ const OrganizationDiscussionPage = () => {
     pageSize,
   ]);
 
-  const getTopicList = async (
+  const handleListTopics = async (
     id: number,
     page: number = 1,
     pageSize: number = 20
@@ -89,7 +89,7 @@ const OrganizationDiscussionPage = () => {
     }
   };
 
-  const handleSubmission = async () => {
+  const handleCreateTopic = async () => {
     const id = Number(router.query.id);
     try {
       const res = await createTopic(
@@ -173,7 +173,7 @@ const OrganizationDiscussionPage = () => {
         setComment={(comment) => {setComment(comment);}}
         title={title}
         setTitle={(title) => {setTitle(title);}}
-        onOKCallback={handleSubmission}
+        onOKCallback={handleCreateTopic}
       >
         <React.Fragment />
       </NewDiscussionDrawer>

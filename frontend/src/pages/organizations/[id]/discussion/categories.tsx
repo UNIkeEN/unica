@@ -31,13 +31,13 @@ const DiscussionCategoryManagerPage = () => {
 
   useEffect(() => {
     const id = Number(router.query.id);
-    if (id) getCategoryList(id);
+    if (id) handleListCategories(id);
     else {
       setCategories([]);
     }
   }, [router.query.id]);
 
-  const getCategoryList = async (org_id: number) => {
+  const handleListCategories = async (org_id: number) => {
     try {
       const res = await listCategories(org_id);
       setCategories(res);
