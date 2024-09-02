@@ -22,7 +22,7 @@ class DiscussionTopicSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
     class Meta:
         model = DiscussionTopic
-        fields = ['id', 'title', 'category_id', 'local_id', 'deleted', 'created_at', 'updated_at', 'user']
+        fields = ['id', 'title', 'category', 'local_id', 'deleted', 'created_at', 'updated_at', 'user']
         read_only_fields = ['created_at', 'updated_at']
         depth = 1
 
@@ -65,10 +65,6 @@ class DiscussionTopicCreationSerializer(serializers.ModelSerializer):
         discussion = self.context.get('discussion')
         if not discussion:
             raise serializers.ValidationError("Discussion is required.")
-        if data['category_id'] == 0:
-           return data
-        if not any(cat['id'] == data['category_id'] for cat in discussion.categories):
-            raise serializers.ValidationError("Invalid category_id.")
         return data
 
     def create(self, validated_data):
