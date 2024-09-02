@@ -20,6 +20,8 @@ class DiscussionCategorySerializer(serializers.ModelSerializer):
 
 class DiscussionTopicSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
+    category = serializers.SerializerMethodField()
+
     class Meta:
         model = DiscussionTopic
         fields = ['id', 'title', 'category', 'local_id', 'deleted', 'created_at', 'updated_at', 'user']
@@ -38,6 +40,9 @@ class DiscussionTopicSerializer(serializers.ModelSerializer):
         if earliest_comment:
             return UserBasicInfoSerializer(earliest_comment.user).data
         return None
+    
+    def get_category(self, obj):
+        return DiscussionCategorySerializer(obj.category).data
 
 
 class DiscussionCommentSerializer(serializers.ModelSerializer):
@@ -56,6 +61,7 @@ class DiscussionCommentCreationSerializer(serializers.ModelSerializer):
 
 class DiscussionTopicCreationSerializer(serializers.ModelSerializer):
     comment = DiscussionCommentCreationSerializer(required=False)
+    category_id = serializers.IntegerField(required=False, allow_null=True)
 
     class Meta:
         model = DiscussionTopic
@@ -65,6 +71,15 @@ class DiscussionTopicCreationSerializer(serializers.ModelSerializer):
         discussion = self.context.get('discussion')
         if not discussion:
             raise serializers.ValidationError("Discussion is required.")
+        category_id = data.get('category_id')
+        if category_id:
+            try:
+                category = DiscussionCategory.objects.get(id=category_id, discussion=discussion)
+                data['category'] = category
+            except DiscussionCategory.DoesNotExist:
+                raise serializers.ValidationError("Category does not exist or does not belong to this discussion.")
+        else:
+            data['category'] = None
         return data
 
     def create(self, validated_data):

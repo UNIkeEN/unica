@@ -20,6 +20,9 @@ class DiscussionCategory(models.Model):
     color = models.CharField(max_length=7, default="gray")
     description = models.TextField(max_length=200, blank=True, null=True)
 
+    class Meta:
+        unique_together = ('discussion', 'name', 'color')
+
     def __str__(self):
         return f"{self.name}"
     
