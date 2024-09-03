@@ -8,7 +8,7 @@ interface SelectableButtonProps extends ButtonProps {
 const SelectableButton: React.FC<SelectableButtonProps> = ({ isSelected = false, colorScheme = 'gray', children, ...props }) => {
   const theme = useTheme();
 
-  const selectedBg = theme.colors[colorScheme][200];
+  const selectedBg = theme.colors["blackAlpha"][100];
   const selectedColor = theme.colors[colorScheme][900];
   const defaultColor = theme.colors[colorScheme][600];
 
@@ -21,7 +21,7 @@ const SelectableButton: React.FC<SelectableButtonProps> = ({ isSelected = false,
       justifyContent="flex-start"
       overflow="hidden"
       _hover={{
-        bg: isSelected ? selectedBg : theme.colors[colorScheme][100],
+        bg: isSelected ? selectedBg : theme.colors["blackAlpha"][50],
       }}
       _active={{
         bg: theme.colors[colorScheme][200],

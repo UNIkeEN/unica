@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/router";
+import NextLink from 'next/link';
 import { useToast } from "@/contexts/toast";
 import {
   VStack,
@@ -9,16 +10,20 @@ import {
   Spacer,
   useDisclosure,
   Button,
-  Tag,
-  Tooltip
+  Grid,
+  GridItem,
+  Link,
+  HStack,
+  Box
 } from "@chakra-ui/react";
 import OrganizationContext from "@/contexts/organization";
 import { MemberRoleEnum } from "@/models/organization";
-import { DiscussionTopic } from "@/models/discussion";
-import { createTopic, listTopics, deleteTopic } from "@/services/discussion";
+import { DiscussionTopic, DiscussionTopicCategory } from "@/models/discussion";
+import { createTopic, listTopics } from "@/services/discussion";
 import { formatRelativeTime } from "@/utils/datetime";
 import EnableDiscussionConfirmModal from "@/components/modals/enable-discussion-confirm-modal";
 import RichList from "@/components/rich-list";
+import NavMenu from "@/components/nav-menu";
 import Pagination from "@/components/pagination";
 import NewDiscussionDrawer from "@/components/new-discussion-drawer";
 import CategoryIcon from "@/components/category-icon";
@@ -29,6 +34,8 @@ const OrganizationDiscussionPage = () => {
   const toast = useToast();
   const { t } = useTranslation();
 
+  const [categories, setCategories] = useState<DiscussionTopicCategory[]>([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number>(0);
   const [topicList, setTopicList] = useState<DiscussionTopic[]>([]);
   const [topicCount, setTopicCount] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
@@ -66,6 +73,17 @@ const OrganizationDiscussionPage = () => {
     pageIndex,
     pageSize,
   ]);
+
+  useEffect(() => {
+    const id = Number(router.query.id);
+    if (id) {
+      orgCtx.handleListDiscussionCategories(id)
+      .then((res) => {setCategories(res);})
+      .catch((error) => {setCategories([]);})
+    } else {
+      setCategories([]);
+    }
+  }, [router.query.id]);
 
   const handleListTopics = async (
     id: number,
@@ -133,40 +151,86 @@ const OrganizationDiscussionPage = () => {
     );
 
   return (
-    <VStack spacing={6} align="stretch">
-      <Button onClick={onCreateTopicOpen} colorScheme="blue" ml="auto">
-        {t("OrganizationPages.discussion.button.createTopic")}
-      </Button>
-      {topicList && topicList.length > 0 && (
-        <>
-          <RichList
-            titleAsLink
-            titleProps={{ color: "black" }}
-            items={topicList.map((topic) => ({
-              linePrefix: <CategoryIcon category={topic.category} withTooltip />,
-              title: topic.title,
-              href: `/organizations/${router.query.id}/discussion/${topic.local_id}`,
-              body: (
-                <Text fontSize="sm" className="secondary-text">
-                  {t("General.updated_at", {
-                    time: formatRelativeTime(topic.updated_at, t),
-                  })}
-                </Text>
-              ),
-            }))}
-          />
-          <Flex>
-            <Spacer />
-            <Pagination
-              total={Math.ceil(topicCount / pageSize)}
-              current={pageIndex}
-              onPageChange={(page) => setPageIndex(page)}
-              colorScheme="blue"
-              variant="subtle"
+    <>
+      <Grid templateColumns="repeat(5, 1fr)" gap={6}>
+        <GridItem
+            colSpan={{ base: 0, lg: 1 }}
+            display={{ base: "none", lg: "block" }}
+        >
+          <VStack spacing={4} align="stretch">
+            <Text ml={1} mt={2} fontWeight="semibold">{t("OrganizationPages.discussion.subtitle.categories")}</Text>
+            <NavMenu
+              spacing={2}
+              selectedKeys={[selectedCategoryId]}
+              items={[
+                {
+                  label: <Text>{t("OrganizationPages.discussion.button.viewAllTopics")}</Text>,
+                  value: 0,
+                  onClick: {}
+                },
+                ...categories.slice(0, 10).map((category) => ({
+                  label: (
+                    <HStack spacing={2}>
+                      <CategoryIcon category={category} size="md" />
+                      <Text>{category.name}</Text>
+                    </HStack>
+                  ),
+                  value: category.id,
+                  onClick: {}
+                }))
+              ]}
             />
-          </Flex>
-        </>
-      )}
+            <Link 
+              as={NextLink} 
+              color="blue.500" 
+              fontSize="xs" 
+              href={`/organizations/${router.query.id}/discussion/categories`}
+            >
+              {t(`OrganizationPages.discussion.button.allCategories${orgCtx.userRole === MemberRoleEnum.OWNER && "WithManage"}`)}
+            </Link>
+          </VStack>
+        </GridItem>
+        <GridItem colSpan={{ base: 5, lg: 4 }}>
+          <VStack spacing={4} align="stretch">
+            <Flex>
+              <Text ml={1} mt={2} fontWeight="semibold">{t("OrganizationPages.discussion.subtitle.topics")}</Text>
+              <Button onClick={onCreateTopicOpen} colorScheme="blue" ml="auto">
+                {t("OrganizationPages.discussion.button.createTopic")}
+              </Button>
+            </Flex>
+            {topicList && topicList.length > 0 && (
+              <>
+                <RichList
+                  titleAsLink
+                  titleProps={{ color: "black" }}
+                  items={topicList.map((topic) => ({
+                    linePrefix: <CategoryIcon category={topic.category} withTooltip />,
+                    title: topic.title,
+                    href: `/organizations/${router.query.id}/discussion/${topic.local_id}`,
+                    body: (
+                      <Text fontSize="sm" className="secondary-text">
+                        {t("General.updated_at", {
+                          time: formatRelativeTime(topic.updated_at, t),
+                        })}
+                      </Text>
+                    ),
+                  }))}
+                />
+                <Flex>
+                  <Spacer />
+                  <Pagination
+                    total={Math.ceil(topicCount / pageSize)}
+                    current={pageIndex}
+                    onPageChange={(page) => setPageIndex(page)}
+                    colorScheme="blue"
+                    variant="subtle"
+                  />
+                </Flex>
+              </>
+            )}
+          </VStack>
+        </GridItem>
+      </Grid>
       <NewDiscussionDrawer
         isOpen={isCreateTopicOpen}
         onClose={onCreateTopicClose}
@@ -180,7 +244,7 @@ const OrganizationDiscussionPage = () => {
       >
         <React.Fragment />
       </NewDiscussionDrawer>
-    </VStack>
+    </>
   );
 };
 

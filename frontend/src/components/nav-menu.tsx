@@ -4,24 +4,26 @@ import SelectableButton from '@/components/selectable-button';
 
 export interface MenuItem {
   label: React.ReactNode;
-  value: string;
+  value: any;
 }
 
 export interface NavMenuProps {
   items: MenuItem[];
-  selectedKeys?: string[];
-  onClick?: (value: string) => void;
+  selectedKeys?: any[];
+  onClick?: (value: any) => void;
   size?: string;
+  spacing?: number;
 }
 
 const NavMenu: React.FC<NavMenuProps> = ({
   items,
   selectedKeys = [],
   onClick,
-  size = 'sm'
+  size = 'sm',
+  spacing = 0.5
 }) => {
   return (
-    <VStack spacing={0.5} align="stretch">
+    <VStack spacing={spacing} align="stretch">
       {items.map((item) => (
         <SelectableButton
           key={item.value}

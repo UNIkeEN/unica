@@ -3,22 +3,25 @@ import { useTranslation } from 'react-i18next';
 import { useToast } from '@/contexts/toast';
 import { useRouter } from 'next/router';
 import { Organization, MemberRoleEnum } from '@/models/organization';
+import { DiscussionTopicCategory } from '@/models/discussion';
 import { checkUserOrgPermission } from '@/services/organization';
 import { getProjects } from '@/services/project';
+import { listCategories } from '@/services/discussion';
 
 interface OrganizationContextType {
   updateAll: (id: number) => void;
   cleanUp: () => void;
   toastNoPermissionAndRedirect: (userRole?: string) => void;
   mounted: boolean;
-  // Basic Global State
+  // Basic Global State of Organization, 
   userRole: string;
   basicInfo: Organization;
   updateBasicInfo: (id: number) => void;
   setUserRole: (role: string) => void;
   setBasicInfo: (org: Organization) => void;
-  // Shared Fetch Functions(used by different components and pages)
+  // Shared Global State and Update Handlers (shared by different components and pages)
   handleGetProjects: (page: number, pageSize: number, org_id: number) => Promise<any>;
+  handleListDiscussionCategories: (org_id: number) => Promise<any>;
 }
 
 const OrganizationContext = createContext<OrganizationContextType>({
@@ -32,12 +35,14 @@ const OrganizationContext = createContext<OrganizationContextType>({
   setUserRole: () => {},
   setBasicInfo: () => {},
   handleGetProjects: (page: number, pageSize: number, org_id: number) => null,
+  handleListDiscussionCategories: (org_id: number) => null
 });
 
 export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // const [mounted, setMounted] = useState(false);
   const [orgInfo, setOrgInfo] = useState<Organization | undefined>(undefined);
   const [userRole, setUserRole] = useState(undefined);
+  const [discussionCategories, setDiscussionCategories] = useState<DiscussionTopicCategory[]>([]);
   const router = useRouter();
   const toast = useToast();
   const { t } = useTranslation();
@@ -90,7 +95,9 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
       setOrgInfo({ ...orgInfo, project_count: projectList.count });
       return projectList.results;
     } catch (error) {
-      toast({
+      if (error.request && error.request.status === 403) {
+        toastNoPermissionAndRedirect(MemberRoleEnum.NO_PERMISSION);
+      } else toast({
         title: t('Services.projects.getProjects.error'),
         status: 'error'
       })
@@ -98,6 +105,21 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
       throw error;
     }
   };
+
+  const handleListDiscussionCategories = async (org_id: number) => {
+    if (!org_id || (orgInfo && !orgInfo.is_discussion_enabled)) return null;
+    try {
+      const res = await listCategories(org_id);
+      return res;
+    } catch (error) {
+      if (error.request && error.request.status === 403) {
+        toastNoPermissionAndRedirect(MemberRoleEnum.NO_PERMISSION);
+      } else toast({
+        title: t('Services.projects.listCategories.error'),
+        status: 'error'
+      })
+    }
+  }
 
   const updateAll = (id: number) => {
     try{
@@ -127,7 +149,8 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
     setUserRole: (role: string) => setUserRole(role),
     setBasicInfo: (org: Organization) => setOrgInfo(org),
     handleGetProjects,
-  }
+    handleListDiscussionCategories,
+  };
 
   return (
     <OrganizationContext.Provider value={contextValue}>

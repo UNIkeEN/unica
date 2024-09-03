@@ -3,17 +3,19 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import { 
   VStack,
+  HStack,
   Flex,
   Spacer,
   Button,
   Text,
+  Show,
   useDisclosure
 } from "@chakra-ui/react";
 import OrganizationContext from "@/contexts/organization";
 import { useToast } from "@/contexts/toast";
 import RichList from "@/components/rich-list";
 import { DiscussionTopicCategory, emptyCategory } from "@/models/discussion";
-import { listCategories } from "@/services/discussion";
+import { MemberRoleEnum } from "@/models/organization";
 import CreateCategoryModal from "@/components/modals/create-category-modal";
 import CategoryIcon from "@/components/category-icon";
 
@@ -30,29 +32,14 @@ const DiscussionCategoryManagerPage = () => {
 
   useEffect(() => {
     const id = Number(router.query.id);
-    if (id) handleListCategories(id);
-    else {
+    if (id) {
+      orgCtx.handleListDiscussionCategories(id)
+      .then((res) => {setCategories(res);})
+      .catch((error) => {setCategories([]);})
+    } else {
       setCategories([]);
     }
   }, [router.query.id]);
-
-  const handleListCategories = async (org_id: number) => {
-    try {
-      const res = await listCategories(org_id);
-      setCategories(res);
-    } catch (error) {
-      console.error(error);
-      if (error.request && error.request.status === 403) {
-        orgCtx.toastNoPermissionAndRedirect();
-      } else {
-        toast ({
-          title: t('Services.projects.listCategories.error'),
-          status: 'error'
-        })
-      }
-      setCategories([]);
-    }
-  }
 
   return (
     <>
@@ -69,7 +56,19 @@ const DiscussionCategoryManagerPage = () => {
             <RichList
               items={categories.map((item) => ({
                 title: item.name,
-                linePrefix: <CategoryIcon category={item} />
+                linePrefix: <CategoryIcon category={item} />,
+                lineExtra: orgCtx.userRole === MemberRoleEnum.OWNER &&
+                <Show above="md">
+                  <HStack spacing={2}>
+                    {/* TODO: Button logic */}
+                    <Button size="sm">
+                      {t('DiscussionCategoryManagerPage.button.edit')}
+                    </Button>
+                    <Button size="sm" colorScheme="red" variant="subtle">
+                      {t('DiscussionCategoryManagerPage.button.delete')}
+                    </Button>
+                  </HStack>
+                </Show>
               }))}
             />
           </>

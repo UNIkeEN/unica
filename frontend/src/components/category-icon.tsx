@@ -10,11 +10,13 @@ import { useTranslation } from 'next-i18next';
 interface CategoryIconProps extends BoxProps {
   category: Category;
   withTooltip?: boolean;
+  size?: "md" | "lg"
 }
 
 const CategoryIcon: React.FC<CategoryIconProps> = ({ 
   category,
   withTooltip = false,
+  size = "lg",
   ...boxProps 
 }) => {
   const { t } = useTranslation();
@@ -25,8 +27,8 @@ const CategoryIcon: React.FC<CategoryIconProps> = ({
         label={category.name || t('CategoryIcon.uncategorized')}
       >
         <Tag 
-          size="lg" 
-          p={2.5} 
+          size={size} 
+          p={size === "lg" ? 2.5 : 1.5} 
           colorScheme={category.color || "gray"}
           color={category.name? "black" : "transparent"}
         >

@@ -133,7 +133,6 @@ const MyOrganizationsPage = () => {
                 lineExtra:
                   <Show above="md">
                     <HStack spacing={2}>
-                      {/* TODO: Button logic */}
                       {item.role === MemberRoleEnum.OWNER &&
                         <Button 
                           size="sm"

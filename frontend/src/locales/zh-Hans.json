@@ -87,7 +87,9 @@
     },
     "DiscussionCategoryManagerPage": {
         "button": {
-            "create": "新分类"
+            "create": "新分类",
+            "edit": "编辑",
+            "delete": "删除"
         },
         "text": {
             "total": "共 {{count}} 类"
@@ -288,9 +290,16 @@
             "text": {
                 "notEnabled": "当前组织的讨论功能尚未启用。启用后，此处将可用于广播通知、推进任务进度，为整个组织开展讨论。"
             },
+            "subtitle": {
+                "categories": "分类",
+                "topics": "话题"
+            },
             "button": {
                 "enable": "启用讨论",
-                "createTopic": "创建话题"
+                "createTopic": "创建话题",
+                "viewAllTopics": "查看所有话题",
+                "allCategories": "全部分类",
+                "allCategoriesWithManage": "全部分类与管理"
             }
         },
         "settings": {

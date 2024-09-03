@@ -40,7 +40,7 @@ export async function createTopic(id: number, title: string, category_id: number
   try {
     const response = await request.post(`/api/organization/${id}/discussion/topic/create/`, {
       title: title,
-      category_id: category_id,
+      // category_id: category_id,
       comment: {
         content: init_comment
       }

@@ -87,7 +87,9 @@
     },
     "DiscussionCategoryManagerPage": {
         "button": {
-            "create": "New Category"
+            "create": "New Category",
+            "edit": "Edit",
+            "delete": "Delete"
         },
         "text": {
             "total": "Total {{count}} categories"
@@ -288,9 +290,16 @@
             "text": {
                 "notEnabled": "The Discussion feature is currently disabled for this organization. Enabling it will allow you to broadcast announcements, advance task progress, and hold conversations for the entire organization."
             },
+            "subtitle": {
+                "categories": "Categories",
+                "topics": "Topics"
+            },
             "button": {
                 "enable": "Enable Discussion",
-                "createTopic": "Create Topic"
+                "createTopic": "Create Topic",
+                "viewAllTopics": "View All Topics",
+                "allCategories": "All Categories",
+                "allCategoriesWithManage": "All Categories and Manage"
             }
         },
         "settings": {
