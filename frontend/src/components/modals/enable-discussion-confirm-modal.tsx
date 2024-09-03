@@ -33,6 +33,7 @@ const EnableDiscussionConfirmModal = () => {
         is_discussion_enabled: true,
       });
       onClose();
+      window.location.reload();
     } catch (error) {
       console.error("Failed to enable discussion:", error);
       if (error.response && error.response.status === 403) {
