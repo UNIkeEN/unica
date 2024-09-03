@@ -55,6 +55,7 @@ const DiscussionTopicPage = () => {
   const [pageSize, setPageSize] = useState<number>(5);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [hasMoreReverse, setHasMoreReverse] = useState<boolean>(true);
+  const [isUserScrolling, setIsUserScrolling] = useState<boolean>(false);
   const [commentsCount, setCommentsCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [scrollReverse, setScrollReverse] = useState<boolean>(false);
@@ -132,15 +133,32 @@ const DiscussionTopicPage = () => {
     setIsLoading(false);
   };
 
+  const handleUserScroll = () => {
+    setIsUserScrolling(true);
+  };
+
+  useEffect(() => {
+    const container = mainAreaBoxRef.current;
+    if (container) {
+      container.addEventListener('scroll', handleUserScroll);
+    }
+    return () => {
+      if (container) {
+        container.removeEventListener('scroll', handleUserScroll);
+      }
+    };
+  }, [mainAreaBoxRef]);
+
   useEffect(() => {
     if (!scrollReverse) return;
     const container = mainAreaBoxRef.current;
     if (container && container.scrollHeight <= container.clientHeight) {
       loadMoreCommentsReverse();
-    } else {
+    } else if (!isUserScrolling) {
       container.scrollTop = container.scrollHeight - container.clientHeight;
     }
-  }, [comments, hasMoreReverse]);
+    setIsUserScrolling(false);
+  }, [comments]);
 
   const handleGetTopicInfo = async () => {
     try {
