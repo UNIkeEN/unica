@@ -4,7 +4,7 @@ import RichList from "@/components/rich-list";
 import AuthContext from "@/contexts/auth";
 import UserContext from "@/contexts/user";
 import { formatRelativeTime } from "@/utils/datetime";
-import { Divider, Flex, HStack, Spacer, Text, VStack } from "@chakra-ui/react";
+import { Flex, HStack, Spacer, Text, VStack } from "@chakra-ui/react";
 import Head from "next/head";
 import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -23,7 +23,7 @@ const MyProjectsPage = () => {
   }, [authCtx]);
 
   useEffect(() => {
-    userCtx.getProjectList(pageIndex, pageSize)
+    userCtx.handleGetProjects(pageIndex, pageSize)
     .then((res) => {
       setProjectList(res.results);
       setProjectCount(res.count);

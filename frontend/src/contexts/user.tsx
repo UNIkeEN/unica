@@ -16,7 +16,7 @@ interface UserContextType {
   updateProfile: () => void;
   organizations: Organization[];
   updateOrganizations: () => void;
-  getProjectList: (page: number, pageSize: number) => Promise<any>;
+  handleGetProjects: (page: number, pageSize: number) => Promise<any>;
 }
 
 const UserContext = createContext<UserContextType>({
@@ -26,7 +26,7 @@ const UserContext = createContext<UserContextType>({
   updateProfile: () => {},
   organizations: [],
   updateOrganizations: () => {},
-  getProjectList: (page: number, pageSize: number) => null,
+  handleGetProjects: (page: number, pageSize: number) => null,
 });
 
 export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -64,7 +64,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   }, [toast, t]);
 
-  const getProjectList = useCallback(async (page: number, pageSize: number) => {
+  const handleGetProjects = useCallback(async (page: number, pageSize: number) => {
     try {
       const projectList = await getProjects(page, pageSize);
       return projectList;
@@ -95,7 +95,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     updateProfile,
     organizations: organizations,
     updateOrganizations,
-    getProjectList,
+    handleGetProjects,
   };
 
   return (
