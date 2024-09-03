@@ -422,7 +422,7 @@ def create_category(request, id):
     
 
 @swagger_auto_schema(
-    method='post',
+    method='get',
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
         properties={
@@ -441,7 +441,7 @@ def create_category(request, id):
     operation_description="Retrieve a list of categories in the discussion.",
     tags=["Organization/Discussion"]
 )
-@api_view(['POST'])
+@api_view(['GET'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner', 'Member'])
@@ -452,19 +452,9 @@ def list_categories(request, id):
     except Discussion.DoesNotExist:
         return Response({'detail': 'Discussion not found'}, status=status.HTTP_404_NOT_FOUND)
     
-    class CustomPagination(PageNumberPagination):
-        page_size_query_param = 'page_size'
-
-    paginator = CustomPagination()
-    request.query_params._mutable = True
-    request.query_params['page'] = request.data.get('page', 1)
-    request.query_params['page_size'] = request.data.get('page_size', 20)
-    request.query_params._mutable = False
-
     categories = discussion.categories.all().order_by('name')
-    result_page = paginator.paginate_queryset(categories, request)
-    serializer = DiscussionCategorySerializer(result_page, many=True)
-    return paginator.get_paginated_response(serializer.data)
+    serializer = DiscussionCategorySerializer(categories, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @swagger_auto_schema(

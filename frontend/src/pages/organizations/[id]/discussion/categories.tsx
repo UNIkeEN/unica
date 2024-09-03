@@ -6,7 +6,6 @@ import {
   Flex,
   Spacer,
   Button,
-  Tag,
   Text,
   useDisclosure
 } from "@chakra-ui/react";
@@ -16,7 +15,6 @@ import RichList from "@/components/rich-list";
 import { DiscussionTopicCategory, emptyCategory } from "@/models/discussion";
 import { listCategories } from "@/services/discussion";
 import CreateCategoryModal from "@/components/modals/create-category-modal";
-import Pagination from "@/components/pagination";
 import CategoryIcon from "@/components/category-icon";
 
 const DiscussionCategoryManagerPage = () => {
@@ -26,9 +24,7 @@ const DiscussionCategoryManagerPage = () => {
   const toast = useToast();
 
   const [categories, setCategories] = useState<DiscussionTopicCategory[]>([]);
-  const [categoryCount, setCategoryCount] = useState<number>(0);
   const [newCategory, setNewCategory] = useState<DiscussionTopicCategory>(emptyCategory);
-  const [pageIndex, setPageIndex] = useState<number>(1);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -38,13 +34,12 @@ const DiscussionCategoryManagerPage = () => {
     else {
       setCategories([]);
     }
-  }, [router.query.id, pageIndex]);
+  }, [router.query.id]);
 
   const handleListCategories = async (org_id: number) => {
     try {
-      const res = await listCategories(org_id, pageIndex, 20);
-      setCategoryCount(res.count);
-      setCategories(res.results);
+      const res = await listCategories(org_id);
+      setCategories(res);
     } catch (error) {
       console.error(error);
       if (error.request && error.request.status === 403) {
@@ -56,7 +51,6 @@ const DiscussionCategoryManagerPage = () => {
         })
       }
       setCategories([]);
-      setCategoryCount(0);
     }
   }
 
@@ -64,7 +58,7 @@ const DiscussionCategoryManagerPage = () => {
     <>
       <VStack spacing={6} align="stretch">
         <Flex alignItems="center">
-          <Text pl={1}>{t("DiscussionCategoryManagerPage.text.total", {count: categoryCount})}</Text>
+          <Text pl={1}>{t("DiscussionCategoryManagerPage.text.total", {count: categories ? categories.length : 0})}</Text>
           <Spacer/>
           <Button onClick={onOpen} colorScheme="blue">
             {t("DiscussionCategoryManagerPage.button.create")}
@@ -78,16 +72,6 @@ const DiscussionCategoryManagerPage = () => {
                 linePrefix: <CategoryIcon category={item} />
               }))}
             />
-            <Flex>
-            <Spacer />
-            <Pagination
-              total={Math.ceil(categoryCount / 20)}
-              current={pageIndex}
-              onPageChange={(page) => setPageIndex(page)}
-              colorScheme="blue"
-              variant="subtle"
-            />
-          </Flex>
           </>
         )}
       </VStack>
