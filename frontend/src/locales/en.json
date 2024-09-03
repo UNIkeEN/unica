@@ -385,6 +385,10 @@
                 "button": "Create Topic",
                 "error": "Failed to create topic",
                 "success": "Topic created successfully"
+            },
+            "createCategory": {
+                "success": "Created category successfully",
+                "error": "Failed to create category"
             }
         },
         "projects": {

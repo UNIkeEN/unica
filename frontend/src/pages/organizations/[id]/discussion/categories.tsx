@@ -18,6 +18,7 @@ import { DiscussionTopicCategory, emptyCategory } from "@/models/discussion";
 import { MemberRoleEnum } from "@/models/organization";
 import CreateCategoryModal from "@/components/modals/create-category-modal";
 import CategoryIcon from "@/components/category-icon";
+import { createCategory } from "@/services/discussion";
 
 const DiscussionCategoryManagerPage = () => {
   const orgCtx = useContext(OrganizationContext);
@@ -80,6 +81,30 @@ const DiscussionCategoryManagerPage = () => {
         onClose={onClose}
         category={newCategory}
         setCategory={setNewCategory}
+        onOKCallback={async () => {
+          try {
+            const id = Number(router.query.id);
+            const res = await createCategory(id, newCategory);
+            if (res) {
+              toast({
+                title: t("Services.discussion.createCategory.success"),
+                status: "success",
+              });
+              setNewCategory(emptyCategory);
+              setCategories(res);
+              onClose();
+            }
+          } catch (error) {
+            if (error.request && error.request.status === 403) {
+              orgCtx.toastNoPermissionAndRedirect();
+            } else {
+              toast({
+                title: t("Services.discussion.createCategory.error"),
+                status: "error",
+              });
+            }
+          }
+        }}
       >
         <React.Fragment />
       </CreateCategoryModal>

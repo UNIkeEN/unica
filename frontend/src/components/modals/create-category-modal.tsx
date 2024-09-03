@@ -156,6 +156,7 @@ const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
 
           <ModalFooter>
             <Button
+              onClick={onOKCallback}
               colorScheme="blue"
               mr={3}
               spinner={<BeatLoader size={8} color='white' />}

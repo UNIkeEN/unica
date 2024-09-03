@@ -120,9 +120,7 @@ export async function deleteComment(id: number, topic_local_id: number, comment_
 
 export async function createCategory(id: number, category: DiscussionTopicCategory) {
   try {
-    const response = await request.post(`/api/organization/${id}/discussion/category/create/`, {
-      category: category
-    });
+    const response = await request.post(`/api/organization/${id}/discussion/category/create/`, category);
     return response.data;
   } catch (error) {
     console.error('Failed to create category', error);

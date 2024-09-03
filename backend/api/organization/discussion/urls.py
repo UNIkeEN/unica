@@ -17,8 +17,8 @@ urlpatterns = [
     path('comment/delete/', delete_comment, name='delete_comment'),
 
     #category CRUD
-    path('category/create', create_category, name='create_category'),
+    path('category/create/', create_category, name='create_category'),
     path('category/list/', list_categories, name='list_category'),
     path('category/update/', update_category, name='update_category'),
-    path('category/delete', delete_category, name='delete_category')
+    path('category/delete/', delete_category, name='delete_category')
 ]
