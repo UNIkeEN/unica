@@ -423,13 +423,6 @@ def create_category(request, id):
 
 @swagger_auto_schema(
     method='get',
-    request_body=openapi.Schema(
-        type=openapi.TYPE_OBJECT,
-        properties={
-            'page': openapi.Schema(type=openapi.TYPE_INTEGER, default=1),
-            'page_size': openapi.Schema(type=openapi.TYPE_INTEGER, default=20),
-        }
-    ),
     responses={
         200: openapi.Response(
             description="List of categories in the discussion",
