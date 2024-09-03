@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -7,12 +8,14 @@ import {
   ModalBody,
   ModalCloseButton,
   Button,
+  UnorderedList,
+  ListItem,
   useDisclosure,
 } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 import { useToast } from "@/contexts/toast";
 import { enableDiscussion } from '@/services/discussion';
-import { useContext } from "react";
 import OrganizationContext from '@/contexts/organization';
 
 const EnableDiscussionConfirmModal = () => {
@@ -20,6 +23,7 @@ const EnableDiscussionConfirmModal = () => {
   const { t } = useTranslation();
   const toast = useToast();
   const orgCtx = useContext(OrganizationContext);
+  const router = useRouter();
 
   const handleEnableDiscussion = async () => {
     try {
@@ -33,7 +37,7 @@ const EnableDiscussionConfirmModal = () => {
         is_discussion_enabled: true,
       });
       onClose();
-      window.location.reload();
+      router.push(`/organizations/${router.query.id}/discussion/categories`);
     } catch (error) {
       console.error("Failed to enable discussion:", error);
       if (error.response && error.response.status === 403) {
@@ -63,7 +67,12 @@ const EnableDiscussionConfirmModal = () => {
           <ModalHeader>{t("EnableDiscussionConfirmModal.modal.title")}</ModalHeader>
           <ModalCloseButton />
 
-          <ModalBody>{t("EnableDiscussionConfirmModal.modal.body")}</ModalBody>
+          <ModalBody>
+            <UnorderedList>
+              <ListItem>{t("EnableDiscussionConfirmModal.modal.body.tip-1")}</ListItem>
+              <ListItem>{t("EnableDiscussionConfirmModal.modal.body.tip-2")}</ListItem>
+            </UnorderedList>
+          </ModalBody>
 
           <ModalFooter>
             <Button onClick={onClose} mr={3} >

@@ -92,7 +92,7 @@
             "delete": "删除"
         },
         "text": {
-            "total": "共 {{count}} 类"
+            "total": "共 {{count}} 类话题分类"
         }
     },
     "DiscussionTopicPage": {
@@ -130,7 +130,10 @@
     "EnableDiscussionConfirmModal":{
         "modal": {
             "title": "确认启用讨论？",
-            "body": " ",
+            "body": {
+                "tip-1": "讨论功能启用后将无法关闭",
+                "tip-2": "作为管理员，您可以设置不同的话题分类。点击启用后将首先跳转至分类设置页面"
+            },
             "cancel": "取消",
             "confirm": "确认"
         }

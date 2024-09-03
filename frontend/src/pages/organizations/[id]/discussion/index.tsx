@@ -168,7 +168,7 @@ const OrganizationDiscussionPage = () => {
                   value: 0,
                   onClick: {}
                 },
-                ...categories.slice(0, 10).map((category) => ({
+                ...(categories && categories.length > 0 ? categories.slice(0, 10).map((category) => ({
                   label: (
                     <HStack spacing={2}>
                       <CategoryIcon category={category} size="md" />
@@ -177,7 +177,7 @@ const OrganizationDiscussionPage = () => {
                   ),
                   value: category.id,
                   onClick: {}
-                }))
+                })) : [])
               ]}
             />
             <Link 

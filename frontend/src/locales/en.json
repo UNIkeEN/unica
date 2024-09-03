@@ -92,7 +92,7 @@
             "delete": "Delete"
         },
         "text": {
-            "total": "Total {{count}} categories"
+            "total": "Total {{count}} topic categories"
         }
     },
     "DiscussionTopicPage": {
@@ -130,7 +130,10 @@
     "EnableDiscussionConfirmModal":{
         "modal": {
             "title": "Confirm to enable Discussion?",
-            "body": " ",
+            "body": {
+                "tip-1": "The discussion feature cannot be turned off after it is turned on",
+                "tip-2": "You can set different topic categories as an owner. After enabling the discussion, you will be redirected to the category setting page first."
+            },
             "cancel": "Cancel",
             "confirm": "Confirm"
         }
