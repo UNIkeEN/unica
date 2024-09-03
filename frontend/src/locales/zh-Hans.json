@@ -7,6 +7,9 @@
             "cancel": "取消"
         }
     },
+    "CategoryIcon": {
+        "uncategorized": "未分类"
+    },
     "ChangeMemberRoleModal": {
         "modal": {
             "title": "修改 {{displayUserName}}({{username}}) 的身份",

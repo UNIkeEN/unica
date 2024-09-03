@@ -16,7 +16,8 @@ import RichList from "@/components/rich-list";
 import { DiscussionTopicCategory, emptyCategory } from "@/models/discussion";
 import { listCategories } from "@/services/discussion";
 import CreateCategoryModal from "@/components/modals/create-category-modal";
-
+import Pagination from "@/components/pagination";
+import CategoryIcon from "@/components/category-icon";
 
 const DiscussionCategoryManagerPage = () => {
   const orgCtx = useContext(OrganizationContext);
@@ -25,7 +26,9 @@ const DiscussionCategoryManagerPage = () => {
   const toast = useToast();
 
   const [categories, setCategories] = useState<DiscussionTopicCategory[]>([]);
+  const [categoryCount, setCategoryCount] = useState<number>(0);
   const [newCategory, setNewCategory] = useState<DiscussionTopicCategory>(emptyCategory);
+  const [pageIndex, setPageIndex] = useState<number>(1);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -35,12 +38,13 @@ const DiscussionCategoryManagerPage = () => {
     else {
       setCategories([]);
     }
-  }, [router.query.id]);
+  }, [router.query.id, pageIndex]);
 
   const handleListCategories = async (org_id: number) => {
     try {
-      const res = await listCategories(org_id);
-      setCategories(res);
+      const res = await listCategories(org_id, pageIndex, 20);
+      setCategoryCount(res.count);
+      setCategories(res.results);
     } catch (error) {
       console.error(error);
       if (error.request && error.request.status === 403) {
@@ -51,6 +55,8 @@ const DiscussionCategoryManagerPage = () => {
           status: 'error'
         })
       }
+      setCategories([]);
+      setCategoryCount(0);
     }
   }
 
@@ -58,7 +64,7 @@ const DiscussionCategoryManagerPage = () => {
     <>
       <VStack spacing={6} align="stretch">
         <Flex alignItems="center">
-          <Text pl={1}>{t("DiscussionCategoryManagerPage.text.total", {count: categories.length})}</Text>
+          <Text pl={1}>{t("DiscussionCategoryManagerPage.text.total", {count: categoryCount})}</Text>
           <Spacer/>
           <Button onClick={onOpen} colorScheme="blue">
             {t("DiscussionCategoryManagerPage.button.create")}
@@ -69,9 +75,19 @@ const DiscussionCategoryManagerPage = () => {
             <RichList
               items={categories.map((item) => ({
                 title: item.name,
-                linePrefix: <Tag size="lg" p={2.5} colorScheme={item.color}>{item.emoji || "💬"}</Tag>
+                linePrefix: <CategoryIcon category={item} />
               }))}
             />
+            <Flex>
+            <Spacer />
+            <Pagination
+              total={Math.ceil(categoryCount / 20)}
+              current={pageIndex}
+              onPageChange={(page) => setPageIndex(page)}
+              colorScheme="blue"
+              variant="subtle"
+            />
+          </Flex>
           </>
         )}
       </VStack>

@@ -7,6 +7,9 @@
             "cancel": "Cancel"
         }
     },
+    "CategoryIcon": {
+        "uncategorized": "Uncategorized"
+    },
     "ChangeMemberRoleModal": {
         "modal": {
             "title": "Change the role of {{displayUserName}}({{username}})",

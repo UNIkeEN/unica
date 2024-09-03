@@ -4,6 +4,7 @@ import { ColorSelectorType } from "./enums";
 export interface DiscussionTopic {
   id: number;
   title: string;
+  category: DiscussionTopicCategory;
   local_id: number;
   created_at: string;
   updated_at: string;

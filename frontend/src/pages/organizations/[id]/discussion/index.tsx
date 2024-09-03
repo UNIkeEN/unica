@@ -8,18 +8,20 @@ import {
   Flex,
   Spacer,
   useDisclosure,
-  Button
+  Button,
+  Tag,
+  Tooltip
 } from "@chakra-ui/react";
 import OrganizationContext from "@/contexts/organization";
 import { MemberRoleEnum } from "@/models/organization";
 import { DiscussionTopic } from "@/models/discussion";
 import { createTopic, listTopics, deleteTopic } from "@/services/discussion";
+import { formatRelativeTime } from "@/utils/datetime";
 import EnableDiscussionConfirmModal from "@/components/modals/enable-discussion-confirm-modal";
 import RichList from "@/components/rich-list";
 import Pagination from "@/components/pagination";
-import { formatRelativeTime } from "@/utils/datetime";
 import NewDiscussionDrawer from "@/components/new-discussion-drawer";
-import UserContext from "@/contexts/user";
+import CategoryIcon from "@/components/category-icon";
 
 const OrganizationDiscussionPage = () => {
   const orgCtx = useContext(OrganizationContext);
@@ -141,6 +143,7 @@ const OrganizationDiscussionPage = () => {
             titleAsLink
             titleProps={{ color: "black" }}
             items={topicList.map((topic) => ({
+              linePrefix: <CategoryIcon category={topic.category} withTooltip />,
               title: topic.title,
               href: `/organizations/${router.query.id}/discussion/${topic.local_id}`,
               body: (
