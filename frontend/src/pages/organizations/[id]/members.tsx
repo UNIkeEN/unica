@@ -67,14 +67,14 @@ const OrganizationMembersPage = () => {
   useEffect(() => {
     const id = Number(router.query.id);
     if (id) {
-      getMemberList(Number(router.query.id), pageIndex, pageSize);
+      handlGetOrganizationMembers(Number(router.query.id), pageIndex, pageSize);
     } else {
       setMemberList([]);
       setPendingList([]);
     }
   }, [router.query.id]);
 
-  const getMemberList = async (id: number, page: number = 1, pageSize: number = 20) => {
+  const handlGetOrganizationMembers = async (id: number, page: number = 1, pageSize: number = 20) => {
     try {
       const res = await getOrganizationMembers(id, page, pageSize);
       orgCtx.setBasicInfo({
@@ -96,7 +96,7 @@ const OrganizationMembersPage = () => {
     }
   };
 
-  const getInvitationList = async (id: number, page: number = 1, pageSize: number = 20) => {
+  const handleGetOrganizationInvitations = async (id: number, page: number = 1, pageSize: number = 20) => {
     try {
       const res = await getOrganizationInvitations(id, page, pageSize);
       setPendingCount(res.count);
@@ -120,9 +120,9 @@ const OrganizationMembersPage = () => {
     setPageIndex(1);
     const id = Number(router.query.id);
     if (value === "pending" && orgCtx.userRole === MemberRoleEnum.OWNER) {
-      getInvitationList(id, 1, pageSize)
+      handleGetOrganizationInvitations(id, 1, pageSize)
     } else if (value === "members") {
-      getMemberList(Number(router.query.id), 1, pageSize)
+      handlGetOrganizationMembers(Number(router.query.id), 1, pageSize)
     }
     setListDomain(value);
   }
@@ -132,9 +132,9 @@ const OrganizationMembersPage = () => {
   const handlePageChange = (page: number) => {
     setPageIndex(page);
     if (ListDomain === "members") {
-      getMemberList(Number(router.query.id), page, pageSize)
+      handlGetOrganizationMembers(Number(router.query.id), page, pageSize)
     } else if (ListDomain === "pending") {
-      getInvitationList(Number(router.query.id), page, pageSize)
+      handleGetOrganizationInvitations(Number(router.query.id), page, pageSize)
     }
   };
 
@@ -146,7 +146,7 @@ const OrganizationMembersPage = () => {
         status: "success",
       });
       onCancelInviteModalClose();
-      getInvitationList(Number(router.query.id), pageIndex, pageSize)
+      handleGetOrganizationInvitations(Number(router.query.id), pageIndex, pageSize)
     } catch (error) {
       console.error("Failed to remove member:", error);
       if (
@@ -176,7 +176,7 @@ const OrganizationMembersPage = () => {
         status: "success",
       });
       onRemoveDialogClose();
-      getMemberList(Number(router.query.id), pageIndex, pageSize);
+      handlGetOrganizationMembers(Number(router.query.id), pageIndex, pageSize);
     } catch (error) {
       console.error("Failed to remove member:", error);
       if (
@@ -223,7 +223,7 @@ const OrganizationMembersPage = () => {
             <InviteMembersModal id={Number(router.query.id)}
             onOKCallback={()=>{
               if (ListDomain === "pending") {
-                getInvitationList(Number(router.query.id), pageIndex, pageSize);
+                handleGetOrganizationInvitations(Number(router.query.id), pageIndex, pageSize);
               }
             }}/>
           </HStack>
@@ -349,7 +349,7 @@ const OrganizationMembersPage = () => {
                 window.location.reload();
               }, 1000);
             } else {
-              getMemberList(Number(router.query.id), pageIndex, pageSize);
+              handlGetOrganizationMembers(Number(router.query.id), pageIndex, pageSize);
             }
           }}
         />

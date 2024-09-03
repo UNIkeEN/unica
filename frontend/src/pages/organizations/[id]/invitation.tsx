@@ -23,7 +23,7 @@ const OrganizationInvitationPage = () => {
       }
   }, [router]);
 
-  const handleRespond = (accept: boolean) => {
+  const handleRespondInvitation = (accept: boolean) => {
     const { id } = router.query;
     if (id)
       respondInvitation(Number(id), accept)
@@ -51,12 +51,12 @@ const OrganizationInvitationPage = () => {
           { orgName: orgCtx.basicInfo?.display_name }
         )}</Text>
         <HStack spacing={3}>
-          <Button colorScheme="blue" onClick={() => {handleRespond(true)}}>
+          <Button colorScheme="blue" onClick={() => {handleRespondInvitation(true)}}>
             {t("OrganizationPages.invitation.button.accept",
               { orgName: orgCtx.basicInfo?.display_name }
             )}
           </Button>
-          <Button onClick={() => {handleRespond(false)}}>
+          <Button onClick={() => {handleRespondInvitation(false)}}>
             {t("OrganizationPages.invitation.button.decline")}
           </Button>
         </HStack>

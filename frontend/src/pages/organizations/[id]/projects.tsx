@@ -31,14 +31,14 @@ const OrganizationProjectsPage = () => {
 
   useEffect(() => {
     const id = Number(router.query.id);
-    if (id) getProjectList(pageIndex, pageSize, id);
+    if (id) handleGetProjects(pageIndex, pageSize, id);
     else {
       setProjectList([]);
       setProjectCount(0);
     }
   }, [pageIndex, pageSize, router.query.id]);
 
-  const getProjectList = async (page: number = 1, pageSize: number = 20, org_id: number) => {
+  const handleGetProjects = async (page: number = 1, pageSize: number = 20, org_id: number) => {
     try {
       const res = await getProjects(page, pageSize, org_id);
       setProjectCount(res.count);
