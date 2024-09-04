@@ -395,6 +395,14 @@
             "createCategory": {
                 "error": "创建分类失败",
                 "success": "分类已成功创建"
+            },
+            "deleteCategory": {
+                "error": "删除分类失败",
+                "success": "分类已成功删除"
+            },
+            "updateCategory": {
+                "error": "更新分类失败",
+                "success": "分类已成功更新"
             }
         },
         "projects": {

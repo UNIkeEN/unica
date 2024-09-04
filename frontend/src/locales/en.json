@@ -395,6 +395,14 @@
             "createCategory": {
                 "success": "Created category successfully",
                 "error": "Failed to create category"
+            },
+            "deleteCategory": {
+                "error": "Failed to delete category",
+                "success": "Category deleted successfully"
+            },
+            "updateCategory": {
+                "error": "Failed to update category",
+                "success": "Category updated successfully"
             }
         },
         "projects": {

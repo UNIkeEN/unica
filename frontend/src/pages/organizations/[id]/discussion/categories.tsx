@@ -18,7 +18,7 @@ import { DiscussionTopicCategory, emptyCategory } from "@/models/discussion";
 import { MemberRoleEnum } from "@/models/organization";
 import CreateCategoryModal from "@/components/modals/create-category-modal";
 import CategoryIcon from "@/components/category-icon";
-import { createCategory } from "@/services/discussion";
+import { createCategory, updateCategory } from "@/services/discussion";
 
 const DiscussionCategoryManagerPage = () => {
   const orgCtx = useContext(OrganizationContext);
@@ -28,6 +28,8 @@ const DiscussionCategoryManagerPage = () => {
 
   const [categories, setCategories] = useState<DiscussionTopicCategory[]>([]);
   const [newCategory, setNewCategory] = useState<DiscussionTopicCategory>(emptyCategory);
+  const [selectedCategory, setSelectedCategory] = useState<DiscussionTopicCategory | null>(null);
+  const [isUpdate, setIsUpdate] = useState(false); // update or create
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -42,13 +44,85 @@ const DiscussionCategoryManagerPage = () => {
     }
   }, [router.query.id]);
 
+  const handleCreateCategory = async () => {
+    try {
+      const id = Number(router.query.id);
+      const res = await createCategory(id, newCategory);
+      if (res) {
+        toast({
+          title: t("Services.discussion.createCategory.success"),
+          status: "success",
+        });
+        setCategories(res);
+        onClose();
+      }
+    } catch (error) {
+      if (error.request && error.request.status === 403) {
+        orgCtx.toastNoPermissionAndRedirect();
+      } else {
+        toast({
+          title: t("Services.discussion.createCategory.error"),
+          status: "error",
+        });
+      }
+    }
+  };
+
+  const handleUpdateCategory = async (
+    category: DiscussionTopicCategory,
+    newCategory: DiscussionTopicCategory
+  ) => {
+    if (
+      category.name === newCategory.name &&
+      category.color === newCategory.color &&
+      category.emoji === newCategory.emoji &&
+      category.description === newCategory.description
+    )
+      return;
+    try {
+      const id = Number(router.query.id);
+      const res = await updateCategory(id, category.id, newCategory);
+      if (res) {
+        toast({
+          title: t("Services.discussion.updateCategory.success"),
+          status: "success",
+        });
+        setCategories(res);
+        onClose();
+      }
+    } catch (error) {
+      if (error.request && error.request.status === 403) {
+        orgCtx.toastNoPermissionAndRedirect();
+      } else {
+        toast({
+          title: t("Services.discussion.updateCategory.error"),
+          status: "error",
+        });
+      }
+    }
+  };
+
+  const handleDeleteCategory = async () => {
+  };
+
   return (
     <>
       <VStack spacing={6} align="stretch">
         <Flex alignItems="center">
-          <Text pl={1}>{t("DiscussionCategoryManagerPage.text.total", {count: categories ? categories.length : 0})}</Text>
-          <Spacer/>
-          <Button onClick={onOpen} colorScheme="blue">
+          <Text pl={1}>
+            {t("DiscussionCategoryManagerPage.text.total", {
+              count: categories ? categories.length : 0,
+            })}
+          </Text>
+          <Spacer />
+          <Button
+            onClick={() => {
+              setIsUpdate(false);
+              setNewCategory(emptyCategory);
+              onOpen();
+            }}
+            colorScheme="blue"
+          >
             {t("DiscussionCategoryManagerPage.button.create")}
           </Button>
         </Flex>
@@ -58,18 +132,27 @@ const DiscussionCategoryManagerPage = () => {
               items={categories.map((item) => ({
                 title: item.name,
                 linePrefix: <CategoryIcon category={item} />,
-                lineExtra: orgCtx.userRole === MemberRoleEnum.OWNER &&
-                <Show above="md">
-                  <HStack spacing={2}>
-                    {/* TODO: Button logic */}
-                    <Button size="sm">
-                      {t('DiscussionCategoryManagerPage.button.edit')}
-                    </Button>
-                    <Button size="sm" colorScheme="red" variant="subtle">
-                      {t('DiscussionCategoryManagerPage.button.delete')}
-                    </Button>
-                  </HStack>
-                </Show>
+                lineExtra: orgCtx.userRole === MemberRoleEnum.OWNER && (
+                  <Show above="md">
+                    <HStack spacing={2}>
+                      {/* TODO: Button logic */}
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          setIsUpdate(true);
+                          setNewCategory(item);
+                          setSelectedCategory(item);
+                          onOpen();
+                        }}
+                      >
+                        {t("DiscussionCategoryManagerPage.button.edit")}
+                      </Button>
+                      <Button size="sm" colorScheme="red" variant="subtle">
+                        {t("DiscussionCategoryManagerPage.button.delete")}
+                      </Button>
+                    </HStack>
+                  </Show>
+                ),
               }))}
             />
           </>
@@ -81,30 +164,13 @@ const DiscussionCategoryManagerPage = () => {
         onClose={onClose}
         category={newCategory}
         setCategory={setNewCategory}
-        onOKCallback={async () => {
-          try {
-            const id = Number(router.query.id);
-            const res = await createCategory(id, newCategory);
-            if (res) {
-              toast({
-                title: t("Services.discussion.createCategory.success"),
-                status: "success",
-              });
-              setNewCategory(emptyCategory);
-              setCategories(res);
-              onClose();
-            }
-          } catch (error) {
-            if (error.request && error.request.status === 403) {
-              orgCtx.toastNoPermissionAndRedirect();
-            } else {
-              toast({
-                title: t("Services.discussion.createCategory.error"),
-                status: "error",
-              });
-            }
-          }
-        }}
+        onOKCallback={
+          isUpdate
+            ? () => {
+                handleUpdateCategory(selectedCategory, newCategory);
+              }
+            : handleCreateCategory
+        }
       >
         <React.Fragment />
       </CreateCategoryModal>
