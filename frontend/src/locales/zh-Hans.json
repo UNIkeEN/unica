@@ -498,6 +498,24 @@
             "title": "外观设置"
         }
     },
+    "UpdateCategoryModal": {
+        "modal": {
+            "title": "更新分类",
+            "preview": "预览",
+            "name": "名称",
+            "emoji": "Emoji 图标",
+            "color": "颜色",
+            "description": "描述",
+            "save": "更新",
+            "cancel": "取消"
+        },
+        "FormErrorMessage": {
+            "nameRequired": "分类名称不能为空",
+            "nameTooLong": "分类名称不得超过 20 字",
+            "emojiInvalid": "无效的 Emoji 图标（仅允许单个 Emoji）",
+            "descriptionTooLong": "分类描述不得超过 200 字"
+        }
+    },
     "UserContext": {
         "toast": {
             "error-2": "获取组织列表失败"

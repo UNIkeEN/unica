@@ -192,6 +192,7 @@ const DiscussionCategoryManagerPage = () => {
       <CreateCategoryModal
         isOpen={isOpen}
         onClose={onClose}
+        isUpdate={isUpdate}
         category={newCategory}
         setCategory={setNewCategory}
         onOKCallback={
