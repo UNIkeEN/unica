@@ -13,6 +13,7 @@ import {
   Skeleton,
   SkeletonCircle,
   SkeletonText,
+  Hide,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -25,6 +26,7 @@ import { BeatLoader } from 'react-spinners';
 import InfiniteScroll from "react-infinite-scroller";
 import NewDiscussionDrawer from "@/components/new-discussion-drawer";
 import CommentList from "@/components/comment-list";
+import CategoryIcon from "@/components/category-icon";
 import OrganizationContext from "@/contexts/organization";
 import { useToast } from "@/contexts/toast";
 import { DiscussionComment, DiscussionTopic } from "@/models/discussion";
@@ -37,6 +39,7 @@ import {
   editComment
 } from "@/services/discussion";
 import { shareContent } from "@/utils/share";
+import { formatRelativeTime } from "@/utils/datetime";
 
 const DiscussionTopicPage = () => {
   const router = useRouter();
@@ -378,6 +381,20 @@ const DiscussionTopicPage = () => {
                     ml={2}
                   >{`#${topic?.local_id}`}</Text>
                 </Heading>
+                <Hide above="md">
+                  <Flex mt={2} ml={1} alignItems="center">
+                    {topic && topic.category && topic.category.id && 
+                      <HStack spacing={2} mr={6}>
+                        <CategoryIcon size="md" category={topic.category}/>
+                        <Text fontSize="sm" color="gray.600">{topic.category.name}</Text>
+                      </HStack>
+                    }
+                    <Text fontSize="sm" color="gray.600">
+                      {t("DiscussionTopicPage.text.activity", {count: commentsCount})}
+                      {formatRelativeTime(topic?.updated_at, t)}
+                    </Text>
+                  </Flex>
+                </Hide>
               </Skeleton>
               {comments && comments.length > 0 ? (
                 <InfiniteScroll
@@ -444,29 +461,51 @@ const DiscussionTopicPage = () => {
             display={{ base: "none", md: "block" }}
           >
             <Box position="sticky" top="0">
-              <HStack spacing={2}>
-                <IconButton
-                  aria-label="Add Comment"
-                  icon={<FaReply />}
-                  onClick={() => {
-                    onOpen();
-                  }}
-                />
-                <IconButton
-                  aria-label="Scroll to Top"
-                  icon={<LuArrowUpToLine />}
-                  onClick={async () => {
-                    if (scrollReverse) {
-                      setPage(1);
-                      setScrollReverse(false);
-                      setHasMore(true);
-                      const res = await handleListComments(1, pageSize);
-                      setComments(res.results);
-                    }
-                    titleRef.current.scrollIntoView({ behavior: "smooth" });
-                  }}
-                />
-              </HStack>
+              <VStack spacing={6} alignItems="start">
+                {topic && topic.category && topic.category.id && 
+                  <Box>
+                    <Text mb={2} className="secondary-text">
+                      {t("DiscussionTopicPage.sider.category")}
+                    </Text>
+                    <HStack spacing={2}>
+                      <CategoryIcon category={topic.category}/>
+                      <Text color="gray.600">{topic.category.name}</Text>
+                    </HStack>
+                  </Box>
+                }
+                <Box>
+                  <Text mb={2} className="secondary-text">
+                    {t("DiscussionTopicPage.sider.activity")}
+                  </Text>
+                  <Text color="gray.600">
+                    {t("DiscussionTopicPage.text.activity", {count: commentsCount})}
+                    {formatRelativeTime(topic?.updated_at, t)}
+                  </Text>
+                </Box>
+                <HStack spacing={2}>
+                  <IconButton
+                    aria-label="Add Comment"
+                    icon={<FaReply />}
+                    onClick={() => {
+                      onOpen();
+                    }}
+                  />
+                  <IconButton
+                    aria-label="Scroll to Top"
+                    icon={<LuArrowUpToLine />}
+                    onClick={async () => {
+                      if (scrollReverse) {
+                        setPage(1);
+                        setScrollReverse(false);
+                        setHasMore(true);
+                        const res = await handleListComments(1, pageSize);
+                        setComments(res.results);
+                      }
+                      titleRef.current.scrollIntoView({ behavior: "smooth" });
+                    }}
+                  />
+                </HStack>
+              </VStack>
             </Box>
           </GridItem>
         </Grid>

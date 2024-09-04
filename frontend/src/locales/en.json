@@ -104,7 +104,13 @@
             "reply": "Add Comment",
             "editComment": "Edit Comment"
         },
-        "loading": "Loading..."
+        "sider": {
+            "category": "Category",
+            "activity": "Activity"
+        },
+        "text": {
+            "activity": "{{count}} comments, last updated "
+        }
     },
     "Enums": {
         "chakra-colors": {

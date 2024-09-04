@@ -104,7 +104,13 @@
             "reply": "添加评论",
             "editComment": "编辑评论"
         },
-        "loading": "加载中..."
+        "sider": {
+            "category": "分类",
+            "activity": "活动"
+        },
+        "text": {
+            "activity": "{{count}} 条回复，更新于 "
+        }
     },
     "Enums": {
         "chakra-colors": {
