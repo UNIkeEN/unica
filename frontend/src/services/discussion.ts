@@ -154,7 +154,7 @@ export async function updateCategory(id: number, category_id: number, category_v
 export async function deleteCategory(id: number, category_id: number) {
   try {
     const response = await request.post(`/api/organization/${id}/discussion/category/delete/`, {
-      id: category_id
+      category_id: category_id
     });
     return response.data;
   } catch (error) {

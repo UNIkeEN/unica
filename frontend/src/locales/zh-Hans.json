@@ -70,6 +70,14 @@
             "descriptionTooLong": "项目描述不得超过 200 字"
         }
     },
+    "DeleteCategoryAlertDialog": {
+        "dialog": {
+            "title": "删除分类",
+            "content": "确定要删除分类 {{name}} 吗？",
+            "confirm": "删除",
+            "cancel": "取消"
+        }
+    },
     "DeleteDiscussionAlertDialog": {
         "topic": {
             "title": "删除话题",

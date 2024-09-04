@@ -70,6 +70,14 @@
             "descriptionTooLong": "Description is too long"
         }
     },
+    "DeleteCategoryAlertDialog": {
+        "dialog": {
+            "title": "Delete Category",
+            "content": "Are you sure you want to delete the category {{name}}?",
+            "confirm": "Delete",
+            "cancel": "Cancel"
+        }
+    },
     "DeleteDiscussionAlertDialog": {
         "topic": {
             "title": "Delete Topic",

@@ -18,7 +18,8 @@ import { DiscussionTopicCategory, emptyCategory } from "@/models/discussion";
 import { MemberRoleEnum } from "@/models/organization";
 import CreateCategoryModal from "@/components/modals/create-category-modal";
 import CategoryIcon from "@/components/category-icon";
-import { createCategory, updateCategory } from "@/services/discussion";
+import { createCategory, deleteCategory, updateCategory } from "@/services/discussion";
+import GenericAlertDialog from "@/components/modals/generic-alert-dialog";
 
 const DiscussionCategoryManagerPage = () => {
   const orgCtx = useContext(OrganizationContext);
@@ -32,6 +33,7 @@ const DiscussionCategoryManagerPage = () => {
   const [isUpdate, setIsUpdate] = useState(false); // update or create
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure();
 
   useEffect(() => {
     const id = Number(router.query.id);
@@ -102,7 +104,28 @@ const DiscussionCategoryManagerPage = () => {
     }
   };
 
-  const handleDeleteCategory = async () => {
+  const handleDeleteCategory = async (category_id: number) => {
+    try {
+      const id = Number(router.query.id);
+      const res = await deleteCategory(id, category_id);
+      if (res) {
+        toast({
+          title: t("Services.discussion.deleteCategory.success"),
+          status: "success",
+        });
+        setCategories(res);
+        onDeleteClose();
+      }
+    } catch (error) {
+      if (error.request && error.request.status === 403) {
+        orgCtx.toastNoPermissionAndRedirect();
+      } else {
+        toast({
+          title: t("Services.discussion.deleteCategory.error"),
+          status: "error",
+        });
+      }
+    }
   };
 
   return (
@@ -135,7 +158,6 @@ const DiscussionCategoryManagerPage = () => {
                 lineExtra: orgCtx.userRole === MemberRoleEnum.OWNER && (
                   <Show above="md">
                     <HStack spacing={2}>
-                      {/* TODO: Button logic */}
                       <Button
                         size="sm"
                         onClick={() => {
@@ -147,7 +169,15 @@ const DiscussionCategoryManagerPage = () => {
                       >
                         {t("DiscussionCategoryManagerPage.button.edit")}
                       </Button>
-                      <Button size="sm" colorScheme="red" variant="subtle">
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          setSelectedCategory(item);
+                          onDeleteOpen();
+                        }}
+                        colorScheme="red"
+                        variant="subtle"
+                      >
                         {t("DiscussionCategoryManagerPage.button.delete")}
                       </Button>
                     </HStack>
@@ -174,6 +204,20 @@ const DiscussionCategoryManagerPage = () => {
       >
         <React.Fragment />
       </CreateCategoryModal>
+
+      {selectedCategory && (
+        <GenericAlertDialog
+          isOpen={isDeleteOpen}
+          onClose={onDeleteClose}
+          title={t("DeleteCategoryAlertDialog.dialog.title")}
+          body={t("DeleteCategoryAlertDialog.dialog.content", {
+            name: selectedCategory.name,
+          })}
+          btnOK={t("DeleteCategoryAlertDialog.dialog.confirm")}
+          btnCancel={t("DeleteCategoryAlertDialog.dialog.cancel")}
+          onOKCallback={() => handleDeleteCategory(selectedCategory.id)}
+        />
+      )}
     </>
   );
 };
