@@ -15,6 +15,7 @@ import { HamburgerIcon } from '@chakra-ui/icons';
 import AuthContext from '@/contexts/auth';
 import UserContext from '@/contexts/user';
 import MainSider from '@/components/main-sider';
+import MainSiderSmall from '@/components/main-sider-small';
 import MainHeader from '@/components/main-header';
 
 const MainLayout = ({ children }) => {
@@ -26,6 +27,10 @@ const MainLayout = ({ children }) => {
   const [headerBreadcrumbs, setHeaderBreadcrumbs] = useState(null);
   const [headerExtra, setHeaderExtra] = useState(null); // TODO: get and set headerExtra from meta tag
   const [pageBgColor, setPageBgColor] = useState('white');
+
+  const [isSmallSider, setIsSmallSider] = useState<boolean>(
+    JSON.parse(localStorage.getItem("MainLayout.isSmallSider")) || false
+  );
 
   const updateHeader = () => {
     const headerTitleMeta = document.querySelector('meta[name="headerTitle"]') as HTMLMetaElement;
@@ -57,6 +62,11 @@ const MainLayout = ({ children }) => {
     }
   }
 
+  const toggleSiderMode = () => {
+    localStorage.setItem("MainLayout.isSmallSider", JSON.stringify(!isSmallSider));
+    setIsSmallSider(prev => !prev);
+  }
+
   useEffect(() => {
     updateHeader();
     updateStyleMetas();
@@ -79,12 +89,15 @@ const MainLayout = ({ children }) => {
       <Show above='md'>
         <Box
           display='block'
-          w="2xs"
+          w={isSmallSider ? "70px" : "2xs"}
           bg="gray.50"
           p={4}
           overflowY="auto"
         >
-          <MainSider />
+          {isSmallSider 
+            ? <MainSiderSmall onSwitchSider={toggleSiderMode}/> 
+            : <MainSider onSwitchSider={toggleSiderMode}/>
+          }
         </Box>
       </Show>
 

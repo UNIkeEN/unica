@@ -24,7 +24,7 @@ import {
 } from "react-icons/fi";
 
 
-const MainSider = () => {
+const MainSider = ({ onSwitchSider = () => {} }) => {
   
   const router = useRouter();
   const userCtx = useContext(UserContext);
@@ -41,54 +41,55 @@ const MainSider = () => {
     <Flex direction="column" h="100%" justifyContent="space-between">
       <VStack spacing={8} align="stretch" overflowY="auto">
         
-        <UserMenuArea/>
+        <UserMenuArea onSwitchSider={onSwitchSider}/>
                 
         {/* Top Menu */}
         <NavMenu 
           items={topMenuItems.map((item) => ({
             value: item.value,
             label: 
-                <HStack spacing={2}>
-                  <Icon as={item.icon} />
-                  <Text fontSize="md">{item.label}</Text>
-                </HStack>
+              <HStack spacing={2}>
+                <Icon as={item.icon} />
+                <Text fontSize="md">{item.label}</Text>
+              </HStack>
           }))}
           onClick={(value) => {router.push(value)}}
-          selectedKeys={[router.asPath]}/>
+          selectedKeys={[router.asPath]}
+        />
 
-          {/* Pinned Projects */}
+        {/* Pinned Projects */}
+        <VStack spacing={2} align="stretch">
+          <Text fontSize="sm" className="secondary-text" ml={3}>{t('MainSider.pinned.title')}</Text>
+        </VStack>
+
+        {/* Recent Projects */}
+        <VStack spacing={2} align="stretch">
+          <Text fontSize="sm" className="secondary-text" ml={3}>{t('MainSider.recent.title')}</Text>
+        </VStack>
+
+        {/* Organizations */}
+        {userCtx.organizations && userCtx.organizations.length>0 &&
           <VStack spacing={2} align="stretch">
-            <Text fontSize="sm" className="secondary-text" ml={3}>{t('MainSider.pinned.title')}</Text>
+            <Text fontSize="sm" className="secondary-text" ml={3}>{t('MainSider.my-organizations.title')}</Text>
+            <NavMenu 
+              items={userCtx.organizations.slice(0, 5).map((item) => ({
+                value: `/organizations/${item.id}/overview`,
+                label: 
+                    <HStack spacing={2} overflow="hidden">
+                      <Avatar size="2xs" name={item.display_name}/>
+                      <Text fontSize="md" overflow="hidden" textOverflow="ellipsis">{item.display_name}</Text>
+                    </HStack>
+              }))}
+              onClick={(value) => {router.push(value)}}
+              selectedKeys={[router.asPath]}/>
+              {
+                userCtx.organizations.length>5 &&
+                <SelectableButton mt={-1.5} fontSize="xs" onClick={() => {router.push('/organizations')}}>
+                  <Text />{t('MainSider.my-organizations.button.more')}<Text/>
+                </SelectableButton>
+              }
           </VStack>
-
-          {/* Recent Projects */}
-          <VStack spacing={2} align="stretch">
-            <Text fontSize="sm" className="secondary-text" ml={3}>{t('MainSider.recent.title')}</Text>
-          </VStack>
-
-          {/* Recent Projects */}
-          {userCtx.organizations && userCtx.organizations.length>0 &&
-            <VStack spacing={2} align="stretch">
-              <Text fontSize="sm" className="secondary-text" ml={3}>{t('MainSider.my-organizations.title')}</Text>
-              <NavMenu 
-                items={userCtx.organizations.slice(0, 5).map((item) => ({
-                  value: `/organizations/${item.id}/overview`,
-                  label: 
-                      <HStack spacing={2} overflow="hidden">
-                        <Avatar size="2xs" name={item.display_name}/>
-                        <Text fontSize="md" overflow="hidden" textOverflow="ellipsis">{item.display_name}</Text>
-                      </HStack>
-                }))}
-                onClick={(value) => {router.push(value)}}
-                selectedKeys={[router.asPath]}/>
-                {
-                  userCtx.organizations.length>5 &&
-                  <SelectableButton mt={-1.5} fontSize="xs" onClick={() => {router.push('/organizations')}}>
-                    <Text />{t('MainSider.my-organizations.button.more')}<Text/>
-                  </SelectableButton>
-                }
-            </VStack>
-          }
+        }
 
       </VStack>
       
