@@ -26,7 +26,10 @@
     },
     "CreateCategoryModal": {
         "modal": {
-            "title": "Create New Category",
+            "title": {
+                "create": "Create New Category",
+                "edit": "Edit Category"
+            },
             "preview": "Preview",
             "name": "Name",
             "emoji": "Emoji Icon",
@@ -73,7 +76,7 @@
     "DeleteCategoryAlertDialog": {
         "dialog": {
             "title": "Delete Category",
-            "content": "Are you sure you want to delete the category {{name}}?",
+            "content": "Are you sure you want to delete the category {{name}}? All topics under this category will be marked as uncategorized.",
             "confirm": "Delete",
             "cancel": "Cancel"
         }
@@ -496,24 +499,6 @@
         },
         "appearance": {
             "title": "Appearance Settings"
-        }
-    },
-    "UpdateCategoryModal": {
-        "modal": {
-            "title": "Edit Category",
-            "preview": "Preview",
-            "name": "Name",
-            "emoji": "Emoji Icon",
-            "color": "Color",
-            "description": "Description",
-            "save": "Save",
-            "cancel": "Cancel"
-        },
-        "FormErrorMessage": {
-            "nameRequired": "Category name is required",
-            "nameTooLong": "Category name is too long",
-            "emojiInvalid": "Invalid Emoji Icon",
-            "descriptionTooLong": "Description is too long"
         }
     },
     "UserContext": {
