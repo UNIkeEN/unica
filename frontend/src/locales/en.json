@@ -262,6 +262,7 @@
         "drawer": {
             "setTitle": "Title",
             "setComment": "Initial Comment",
+            "setCategory": "Uncategorized",
             "submit": "Submit",
             "cancel": "Cancel"
         },

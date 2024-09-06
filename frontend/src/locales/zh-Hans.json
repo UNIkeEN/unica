@@ -262,6 +262,7 @@
         "drawer": {
             "setTitle": "标题",
             "setComment": "初始评论",
+            "setCategory": "未分类",
             "submit": "提交",
             "cancel": "取消"
         },

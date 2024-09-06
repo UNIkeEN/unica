@@ -42,6 +42,7 @@ const OrganizationDiscussionPage = () => {
   const [pageSize, setPageSize] = useState<number>(20);
   const [comment, setComment] = useState<string>("");
   const [title, setTitle] = useState<string>("");
+  const [newTopicCategory, setNewTopicCategory] = useState<number>(0);
 
   const {
     isOpen: isCreateTopicOpen,
@@ -115,7 +116,7 @@ const OrganizationDiscussionPage = () => {
       const res = await createTopic(
         id,
         title,
-        0, // category_id, default to 0
+        newTopicCategory,
         comment
       );
       if (res.local_id) {
@@ -237,9 +238,12 @@ const OrganizationDiscussionPage = () => {
         drawerTitle={t("OrganizationPages.discussion.button.createTopic")}
         variant="topic"
         comment={comment}
-        setComment={(comment) => {setComment(comment);}}
+        setComment={(comment) => { setComment(comment); }}
         title={title}
-        setTitle={(title) => {setTitle(title);}}
+        setTitle={(title) => { setTitle(title); }}
+        categories={categories}
+        newTopicCategory={newTopicCategory}
+        setNewTopicCategory={(category) => { setNewTopicCategory(category); }}
         onOKCallback={handleCreateTopic}
       >
         <React.Fragment />

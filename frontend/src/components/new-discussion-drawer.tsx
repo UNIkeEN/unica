@@ -15,10 +15,12 @@ import {
   Spacer,
   useBreakpointValue,
   FormControl,
-  FormErrorMessage
+  FormErrorMessage,
+  Select
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { FiChevronDown, FiMaximize2, FiMinimize2 } from "react-icons/fi";
+import { DiscussionTopicCategory } from "@/models/discussion";
 
 interface NewDiscussionDrawerProps extends DrawerProps {
   drawerTitle: string;
@@ -26,6 +28,9 @@ interface NewDiscussionDrawerProps extends DrawerProps {
   comment: string;
   setComment: (comment: string) => void;
   onOKCallback: () => void;
+  categories?: DiscussionTopicCategory[];
+  newTopicCategory?: number;
+  setNewTopicCategory?: (categoryId: number) => void;
   title?: string;
   setTitle?: (title: string) => void;
 }
@@ -36,6 +41,9 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
   comment,
   setComment,
   onOKCallback,
+  categories,
+  newTopicCategory,
+  setNewTopicCategory,
   title,
   setTitle,
   ...drawerProps
@@ -83,7 +91,7 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
               <Input
                 value={title}
                 onChange={(e) => {
-                  setTitle(e.target.value)
+                  setTitle(e.target.value);
                   setIsTitleTooLong(e.target.value.length > 40);
                 }}
                 placeholder={t("NewDiscussionDrawer.drawer.setTitle")}
@@ -93,6 +101,20 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
                   ? t("NewDiscussionDrawer.FormErrorMessage.titleTooLong")
                   : ""}
               </FormErrorMessage>
+              <Select
+                placeholder={t("NewDiscussionDrawer.drawer.setCategory")}
+                onChange={(event) => {
+                  setNewTopicCategory(parseInt(event.target.value));
+                }}
+                mt={5}
+              >
+                {categories?.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category?.emoji.slice(0, 2) || "💬"}
+                    {category?.name}
+                  </option>
+                ))}
+              </Select>
             </FormControl>
           )}
           <MarkdownEditor
@@ -109,11 +131,15 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
           <Button onClick={drawerProps.onClose}>
             {t("NewDiscussionDrawer.drawer.cancel")}
           </Button>
-          <Button 
-            colorScheme="blue" 
-            onClick={onOKCallback} 
+          <Button
+            colorScheme="blue"
+            onClick={onOKCallback}
             ml={3}
-            isDisabled={(variant === "topic" && (title.trim() === "" || isTitleTooLong)) || comment.trim() === ""}
+            isDisabled={
+              (variant === "topic" &&
+                (title.trim() === "" || isTitleTooLong)) ||
+              comment.trim() === ""
+            }
           >
             {t("NewDiscussionDrawer.drawer.submit")}
           </Button>
