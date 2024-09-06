@@ -120,6 +120,7 @@ def get_topic_info(request, id):
         properties={
             'page': openapi.Schema(type=openapi.TYPE_INTEGER, default=1),
             'page_size': openapi.Schema(type=openapi.TYPE_INTEGER, default=20),
+            'category_id': openapi.Schema(type=openapi.TYPE_INTEGER, default=None)
         }
     ),
     responses={
@@ -152,8 +153,11 @@ def list_topics(request, id):
     if not hasattr(organization, 'discussion'):
         return Response({'detail': 'Discussion not enabled in this organization'}, status=status.HTTP_404_NOT_FOUND)
 
-    # Filter out topics where deleted=True
-    topics = organization.discussion.topics.filter(deleted=False).order_by('-created_at')
+    category_id = request.data.get('category_id')
+    if category_id:
+        topics = DiscussionTopic.objects.filter(discussion=organization.discussion, category=category_id, deleted=False).order_by('created_at')
+    else:
+        topics = DiscussionTopic.objects.filter(discussion=organization.discussion, deleted=False).order_by('created_at')
     result_page = paginator.paginate_queryset(topics, request)
     serializer = DiscussionTopicSerializer(result_page, many=True)
     return paginator.get_paginated_response(serializer.data)
