@@ -264,6 +264,9 @@
             "setComment": "初始评论",
             "submit": "提交",
             "cancel": "取消"
+        },
+        "FormErrorMessage": {
+            "titleTooLong": "标题不得超过 40 字"
         }
     },
     "NotFoundPage": {

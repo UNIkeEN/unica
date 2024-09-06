@@ -264,6 +264,9 @@
             "setComment": "Initial Comment",
             "submit": "Submit",
             "cancel": "Cancel"
+        },
+        "FormErrorMessage": {
+            "titleTooLong": "Title is too long"
         }
     },
     "NotFoundPage": {

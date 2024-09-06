@@ -14,6 +14,8 @@ import {
   Input,
   Spacer,
   useBreakpointValue,
+  FormControl,
+  FormErrorMessage
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { FiChevronDown, FiMaximize2, FiMinimize2 } from "react-icons/fi";
@@ -39,6 +41,7 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
   ...drawerProps
 }) => {
   const [fullHeight, setFullHeight] = useState<boolean>(false);
+  const [isTitleTooLong, setIsTitleTooLong] = useState<boolean>(false);
   const _width = useBreakpointValue({ base: "100%", md: "60%" });
   const { t } = useTranslation();
 
@@ -76,12 +79,21 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
         </Flex>
         <DrawerBody>
           {variant === "topic" && (
-            <Input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder={t("NewDiscussionDrawer.drawer.setTitle")}
-              mb="5"
-            />
+            <FormControl isInvalid={isTitleTooLong} mb={5}>
+              <Input
+                value={title}
+                onChange={(e) => {
+                  setTitle(e.target.value)
+                  setIsTitleTooLong(e.target.value.length > 40);
+                }}
+                placeholder={t("NewDiscussionDrawer.drawer.setTitle")}
+              />
+              <FormErrorMessage>
+                {isTitleTooLong
+                  ? t("NewDiscussionDrawer.FormErrorMessage.titleTooLong")
+                  : ""}
+              </FormErrorMessage>
+            </FormControl>
           )}
           <MarkdownEditor
             content={comment}
@@ -97,7 +109,12 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
           <Button onClick={drawerProps.onClose}>
             {t("NewDiscussionDrawer.drawer.cancel")}
           </Button>
-          <Button colorScheme="blue" onClick={onOKCallback} ml={3}>
+          <Button 
+            colorScheme="blue" 
+            onClick={onOKCallback} 
+            ml={3}
+            isDisabled={(variant === "topic" && (title.trim() === "" || isTitleTooLong)) || comment.trim() === ""}
+          >
             {t("NewDiscussionDrawer.drawer.submit")}
           </Button>
         </DrawerFooter>
