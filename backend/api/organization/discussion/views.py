@@ -62,6 +62,14 @@ def create_topic(request, id):
         return Response({'detail': 'Discussion not enabled in this organization'}, status=status.HTTP_404_NOT_FOUND)
 
     data = request.data
+    if 'category' in data and data['category']:
+        category_id = data['category']
+        try:
+            category = DiscussionCategory.objects.get(id=category_id)
+        except DiscussionCategory.DoesNotExist:
+            return Response({'detail': 'Category not found'}, status=status.HTTP_404_NOT_FOUND)
+    else:
+        data['category'] = None
     serializer = DiscussionTopicCreationSerializer(data=data, context={'discussion': organization.discussion, 'request': request})
     if serializer.is_valid():
         serializer.save()

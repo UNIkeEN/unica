@@ -61,26 +61,26 @@ class DiscussionCommentCreationSerializer(serializers.ModelSerializer):
 
 class DiscussionTopicCreationSerializer(serializers.ModelSerializer):
     comment = DiscussionCommentCreationSerializer(required=False)
-    category_id = serializers.IntegerField(required=False, allow_null=True)
+    category = serializers.PrimaryKeyRelatedField(queryset=DiscussionCategory.objects.all(), required=False, allow_null=True)
 
     class Meta:
         model = DiscussionTopic
-        fields = ['title', 'category_id', 'comment', 'local_id']
+        fields = ['title', 'category', 'comment', 'local_id']
 
     def validate(self, data):
         discussion = self.context.get('discussion')
         if not discussion:
             raise serializers.ValidationError("Discussion is required.")
-        category_id = data.get('category_id')
-        if category_id:
-            try:
-                category = DiscussionCategory.objects.get(id=category_id, discussion=discussion)
-                data['category'] = category
-            except DiscussionCategory.DoesNotExist:
-                raise serializers.ValidationError("Category does not exist or does not belong to this discussion.")
-        else:
+
+        if data.get('category') is None:
             data['category'] = None
+        else:
+            category = data['category']
+            if category.discussion != discussion:
+                raise serializers.ValidationError("The category does not belong to the same discussion.")
+
         return data
+
 
     def create(self, validated_data):
         discussion = self.context['discussion']
@@ -95,5 +95,4 @@ class DiscussionTopicCreationSerializer(serializers.ModelSerializer):
                 user=self.context['request'].user,
                 **comment_data
             )
-
         return topic
