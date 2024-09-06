@@ -103,6 +103,7 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
               </FormErrorMessage>
               <Select
                 placeholder={t("NewDiscussionDrawer.drawer.setCategory")}
+                value={newTopicCategory}
                 onChange={(event) => {
                   setNewTopicCategory(parseInt(event.target.value));
                 }}

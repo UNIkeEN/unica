@@ -23,11 +23,12 @@ export async function getTopicInfo(id: number, local_id: number) {
   }
 }
 
-export async function listTopics(id: number, page: number, pageSize: number) {
+export async function listTopics(id: number, page: number, pageSize: number, category_id?: number) {
   try {
     const response = await request.post(`/api/organization/${id}/discussion/topic/list/`, {
       page: page,
-      page_size: pageSize
+      page_size: pageSize,
+      category_id: category_id
     });
     return response.data;
   } catch (error) {

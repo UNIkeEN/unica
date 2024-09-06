@@ -89,10 +89,11 @@ const OrganizationDiscussionPage = () => {
   const handleListTopics = async (
     id: number,
     page: number = 1,
-    pageSize: number = 20
+    pageSize: number = 20,
+    categoryId?: number
   ) => {
     try {
-      const res = await listTopics(id, page, pageSize);
+      const res = await listTopics(id, page, pageSize, categoryId);
       setTopicCount(res.count);
       setTopicList(res.results);
     } catch (error) {
@@ -163,11 +164,11 @@ const OrganizationDiscussionPage = () => {
             <NavMenu
               spacing={2}
               selectedKeys={[selectedCategoryId]}
+              onClick={(value) => {handleListTopics(Number(router.query.id), 1, pageSize, value); setSelectedCategoryId(value);}}
               items={[
                 {
                   label: <Text>{t("OrganizationPages.discussion.button.viewAllTopics")}</Text>,
                   value: 0,
-                  onClick: {}
                 },
                 ...(categories && categories.length > 0 ? categories.slice(0, 10).map((category) => ({
                   label: (
@@ -177,7 +178,6 @@ const OrganizationDiscussionPage = () => {
                     </HStack>
                   ),
                   value: category.id,
-                  onClick: {}
                 })) : [])
               ]}
             />
