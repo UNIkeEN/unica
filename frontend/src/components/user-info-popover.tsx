@@ -6,26 +6,45 @@ import {
   PopoverBody,
   Text,
   VStack,
-  HStack
+  HStack,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { UserBasicInfo } from "@/models/user";
 
-interface UserInfoPopoverProps {
+interface UserAvatarProps {
   user: UserBasicInfo;
   trigger?: "hover" | "click";
   avatarSize?: string;
 }
 
-const UserInfoPopover = ({
-  user,
-  trigger = "hover",
-  avatarSize = "md",
-}: UserInfoPopoverProps) => {
+interface UserInfoPopoverProps {
+  user: UserBasicInfo;
+  trigger?: "hover" | "click";
+  avatarSize?: string;
+  children?: React.ReactNode;
+}
+
+const UserAvatar = ({ user, trigger = "hover", avatarSize = "md" }: UserAvatarProps) => {
+  const { onOpen, onClose, isOpen } = useDisclosure();
 
   return (
-    <Popover placement="bottom-start" closeOnBlur trigger={trigger} isLazy>
+    <Popover
+      placement="bottom-start"
+      closeOnBlur
+      isLazy
+      isOpen={isOpen}
+      onOpen={onOpen}
+      onClose={onClose}
+      trigger={trigger}
+    >
       <PopoverTrigger>
-        <Avatar cursor="pointer" name={user.display_name} size={avatarSize} />
+        <Avatar
+          cursor="pointer"
+          name={user.display_name}
+          size={avatarSize}
+          onMouseEnter={trigger === "hover" ? onOpen : undefined}
+          onMouseLeave={trigger === "hover" ? onClose : undefined}
+        />
       </PopoverTrigger>
       <PopoverContent width="auto">
         <PopoverBody p={4}>
@@ -48,4 +67,31 @@ const UserInfoPopover = ({
   );
 };
 
-export default UserInfoPopover;
+const UserInfoPopover = ({ user, trigger = "hover", avatarSize = "md", children }: UserInfoPopoverProps) => {
+  return (
+    <Popover placement="bottom-start" closeOnBlur trigger={trigger} isLazy>
+      <PopoverTrigger>
+        {children || <Avatar cursor="pointer" name={user.display_name} size={avatarSize} />}
+      </PopoverTrigger>
+      <PopoverContent width="auto">
+        <PopoverBody p={4}>
+          <VStack spacing={2} align="start">
+            <HStack>
+              <Text fontSize="lg" fontWeight="normal">
+                {user.display_name}
+              </Text>
+              <Text fontSize="sm" color="gray.500">
+                @{user.username}
+              </Text>
+            </HStack>
+            <Text fontSize="sm" color="gray.600">
+              {user.biography}
+            </Text>
+          </VStack>
+        </PopoverBody>
+      </PopoverContent>
+    </Popover>
+  );
+};
+
+export { UserAvatar, UserInfoPopover };
