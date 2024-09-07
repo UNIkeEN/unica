@@ -39,7 +39,7 @@ const OrganizationDiscussionPage = () => {
   const [topicList, setTopicList] = useState<DiscussionTopic[]>([]);
   const [topicCount, setTopicCount] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(4);
+  const [pageSize, setPageSize] = useState<number>(20);
   const [comment, setComment] = useState<string>("");
   const [title, setTitle] = useState<string>("");
   const [newTopicCategory, setNewTopicCategory] = useState<number>(0);

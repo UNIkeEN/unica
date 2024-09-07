@@ -264,7 +264,8 @@
             "setComment": "初始评论",
             "setCategory": "未分类",
             "submit": "提交",
-            "cancel": "取消"
+            "cancel": "取消",
+            "uncategorized": "未分类"
         },
         "FormErrorMessage": {
             "titleTooLong": "标题不得超过 40 字"

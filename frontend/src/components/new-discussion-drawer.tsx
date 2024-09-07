@@ -16,11 +16,19 @@ import {
   useBreakpointValue,
   FormControl,
   FormErrorMessage,
-  Select
+  Grid,
+  HStack,
+  Text,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuOptionGroup,
+  MenuItemOption
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { FiChevronDown, FiMaximize2, FiMinimize2 } from "react-icons/fi";
 import { DiscussionTopicCategory } from "@/models/discussion";
+import CategoryIcon from "@/components/category-icon";
 
 interface NewDiscussionDrawerProps extends DrawerProps {
   drawerTitle: string;
@@ -87,36 +95,63 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
         </Flex>
         <DrawerBody>
           {variant === "topic" && (
-            <FormControl isInvalid={isTitleTooLong} mb={5}>
-              <Input
-                value={title}
-                onChange={(e) => {
-                  setTitle(e.target.value);
-                  setIsTitleTooLong(e.target.value.length > 40);
-                }}
-                placeholder={t("NewDiscussionDrawer.drawer.setTitle")}
-              />
-              <FormErrorMessage>
-                {isTitleTooLong
-                  ? t("NewDiscussionDrawer.FormErrorMessage.titleTooLong")
-                  : ""}
-              </FormErrorMessage>
-              <Select
-                placeholder={t("NewDiscussionDrawer.drawer.setCategory")}
-                value={newTopicCategory}
-                onChange={(event) => {
-                  setNewTopicCategory(parseInt(event.target.value));
-                }}
-                mt={5}
-              >
-                {categories?.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category?.emoji.slice(0, 2) || "💬"}
-                    {category?.name}
-                  </option>
-                ))}
-              </Select>
-            </FormControl>
+            <Grid 
+              templateColumns={{base: "1fr 1fr", md: "7fr 2fr"}}
+              gap={4} mb={5}
+              alignItems="center" 
+            >
+              <FormControl isInvalid={isTitleTooLong} >
+                <Input
+                  value={title}
+                  onChange={(e) => {
+                    setTitle(e.target.value);
+                    setIsTitleTooLong(e.target.value.length > 40);
+                  }}
+                  placeholder={t("NewDiscussionDrawer.drawer.setTitle")}
+                />
+                <FormErrorMessage>
+                  {isTitleTooLong
+                    ? t("NewDiscussionDrawer.FormErrorMessage.titleTooLong")
+                    : ""}
+                </FormErrorMessage>
+              </FormControl>
+      
+              <Menu>
+                <MenuButton 
+                  as={Button} 
+                  rightIcon={<FiChevronDown />}
+                  style={{ textAlign: 'left' }}
+                >
+                  {newTopicCategory === 0 ? (
+                    <Text style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}} >{t("NewDiscussionDrawer.drawer.uncategorized")}</Text>
+                  ) : (
+                    <HStack spacing={2}>
+                      <CategoryIcon category={categories.find((cat) => cat.id === newTopicCategory)} size="md" />
+                      <Text style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}}>{categories.find((cat) => cat.id === newTopicCategory)?.name}</Text>
+                    </HStack>
+                  )}
+                </MenuButton>
+                <MenuList>
+                  <MenuOptionGroup
+                    defaultValue={String(newTopicCategory)}
+                    type="radio"
+                    onChange={(value) => setNewTopicCategory(Number(value))}
+                  >
+                    <MenuItemOption value="0">
+                      <Text>{t("NewDiscussionDrawer.drawer.uncategorized")}</Text>
+                    </MenuItemOption>
+                    {categories?.map((category) => (
+                      <MenuItemOption key={category.id} value={String(category.id)}>
+                        <HStack spacing={2}>
+                          <CategoryIcon category={category} size="md" />
+                          <Text>{category.name}</Text>
+                        </HStack>
+                      </MenuItemOption>
+                    ))}
+                  </MenuOptionGroup>
+                </MenuList>
+              </Menu>
+            </Grid>
           )}
           <MarkdownEditor
             content={comment}

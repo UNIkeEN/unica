@@ -264,7 +264,8 @@
             "setComment": "Initial Comment",
             "setCategory": "Uncategorized",
             "submit": "Submit",
-            "cancel": "Cancel"
+            "cancel": "Cancel",
+            "uncategorized": "Uncategorized"
         },
         "FormErrorMessage": {
             "titleTooLong": "Title is too long"
