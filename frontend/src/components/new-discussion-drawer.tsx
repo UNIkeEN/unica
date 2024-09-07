@@ -23,7 +23,8 @@ import {
   MenuButton,
   MenuList,
   MenuOptionGroup,
-  MenuItemOption
+  MenuItemOption,
+  useMediaQuery
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { FiChevronDown, FiMaximize2, FiMinimize2 } from "react-icons/fi";
@@ -59,6 +60,9 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
   const [fullHeight, setFullHeight] = useState<boolean>(false);
   const [isTitleTooLong, setIsTitleTooLong] = useState<boolean>(false);
   const _width = useBreakpointValue({ base: "100%", md: "60%" });
+  const [isShortHeight] = useMediaQuery("(max-height: 600px)");
+  const [isMediumHeight] = useMediaQuery("(max-height: 800px)");
+  const _height = isShortHeight ? "80%" : isMediumHeight ? "70%" : "60%";
   const { t } = useTranslation();
 
   return (
@@ -66,14 +70,15 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
       placement="bottom"
       blockScrollOnMount={false}
       closeOnOverlayClick={false}
-      isFullHeight={fullHeight}
       {...drawerProps}
     >
       <DrawerOverlay />
       <DrawerContent
         width={fullHeight ? "100%" : _width}
+        height={fullHeight ? "100%" : _height}
         margin={"0 auto"}
         rounded={"lg"}
+        transition={"width 0.3s ease, height 0.3s ease"}
       >
         <Flex>
           <DrawerHeader flex="1">{drawerTitle}</DrawerHeader>
@@ -156,7 +161,7 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
           <MarkdownEditor
             content={comment}
             resize="none"
-            h="100%"
+            h={fullHeight ? "90%" : "auto"}
             onContentChange={(comment) => {
               setComment(comment);
             }}
