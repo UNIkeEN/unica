@@ -32,7 +32,7 @@ const UserAvatar = ({
       isOpen={isOpen}
       onOpen={onOpen}
       onClose={onClose}
-      trigger="click" 
+      trigger={trigger}
     >
       <PopoverTrigger>
         <Avatar
