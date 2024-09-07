@@ -18,7 +18,7 @@ interface UserInfoPopoverProps {
 
 const UserInfoPopover = ({
   user,
-  trigger = "hover",
+  trigger = {trigger},
   avatarSize = "md",
 }: UserInfoPopoverProps) => {
 
