@@ -39,7 +39,7 @@ const OrganizationDiscussionPage = () => {
   const [topicList, setTopicList] = useState<DiscussionTopic[]>([]);
   const [topicCount, setTopicCount] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(20);
+  const [pageSize, setPageSize] = useState<number>(4);
   const [comment, setComment] = useState<string>("");
   const [title, setTitle] = useState<string>("");
   const [newTopicCategory, setNewTopicCategory] = useState<number>(0);
@@ -70,9 +70,7 @@ const OrganizationDiscussionPage = () => {
   }, [
     orgCtx.basicInfo?.is_discussion_enabled,
     orgCtx.userRole,
-    router.query.id,
-    pageIndex,
-    pageSize,
+    router.query.id
   ]);
 
   useEffect(() => {
@@ -164,7 +162,11 @@ const OrganizationDiscussionPage = () => {
             <NavMenu
               spacing={2}
               selectedKeys={[selectedCategoryId]}
-              onClick={(value) => {handleListTopics(Number(router.query.id), 1, pageSize, value); setSelectedCategoryId(value);}}
+              onClick={(value) => {
+                setPageIndex(1)
+                setSelectedCategoryId(value)
+                handleListTopics(Number(router.query.id), 1, pageSize, value)
+              }}
               items={[
                 {
                   label: <Text>{t("OrganizationPages.discussion.button.viewAllTopics")}</Text>,
@@ -222,7 +224,10 @@ const OrganizationDiscussionPage = () => {
                   <Pagination
                     total={Math.ceil(topicCount / pageSize)}
                     current={pageIndex}
-                    onPageChange={(page) => setPageIndex(page)}
+                    onPageChange={(page) => {
+                      setPageIndex(page)
+                      handleListTopics(Number(router.query.id), page, pageSize, selectedCategoryId)
+                    }}
                     colorScheme="blue"
                     variant="subtle"
                   />

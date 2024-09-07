@@ -155,9 +155,9 @@ def list_topics(request, id):
 
     category_id = request.data.get('category_id')
     if category_id:
-        topics = DiscussionTopic.objects.filter(discussion=organization.discussion, category=category_id, deleted=False).order_by('created_at')
+        topics = DiscussionTopic.objects.filter(discussion=organization.discussion, category=category_id, deleted=False).order_by('-updated_at')
     else:
-        topics = DiscussionTopic.objects.filter(discussion=organization.discussion, deleted=False).order_by('created_at')
+        topics = DiscussionTopic.objects.filter(discussion=organization.discussion, deleted=False).order_by('-updated_at')
     result_page = paginator.paginate_queryset(topics, request)
     serializer = DiscussionTopicSerializer(result_page, many=True)
     return paginator.get_paginated_response(serializer.data)
