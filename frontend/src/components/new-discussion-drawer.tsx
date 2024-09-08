@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MarkdownEditor from "@/components/markdown-editor";
 import {
   Button,
@@ -60,10 +60,28 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
   const [fullHeight, setFullHeight] = useState<boolean>(false);
   const [isTitleTooLong, setIsTitleTooLong] = useState<boolean>(false);
   const _width = useBreakpointValue({ base: "100%", md: "60%" });
-  const [isShortHeight] = useMediaQuery("(max-height: 600px)");
-  const [isMediumHeight] = useMediaQuery("(max-height: 800px)");
-  const _height = isShortHeight ? "80%" : isMediumHeight ? "70%" : "60%";
-  const { t } = useTranslation();
+  const contentRef = useRef(null);
+  const [drawerheight, setDrawerHeight] = useState("auto");
+  const [autoHeight, setAutoHeight] = useState("auto");
+  const { t } = useTranslation(); 
+
+  useEffect(() => {
+    const contentEl = contentRef.current;
+    if (!contentEl) return;
+    if (fullHeight) {
+      const curHeight = contentEl.scrollHeight;
+      setAutoHeight(`${curHeight}px`);
+      setDrawerHeight(`${curHeight}px`);
+
+      setTimeout(() => {
+        setDrawerHeight("100%");
+      }, 100); 
+    } else {
+      setTimeout(() => {
+        setDrawerHeight(autoHeight);
+      }, 100);
+    }
+  }, [fullHeight]);
 
   return (
     <Drawer
@@ -74,8 +92,9 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
     >
       <DrawerOverlay />
       <DrawerContent
+        ref={contentRef}
         width={fullHeight ? "100%" : _width}
-        height={fullHeight ? "100%" : _height}
+        height={drawerheight}
         margin={"0 auto"}
         rounded={"lg"}
         transition={"width 0.3s ease, height 0.3s ease"}
