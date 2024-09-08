@@ -23,26 +23,8 @@ interface UserInfoPopoverProps {
   children?: React.ReactNode;
 }
 
-const UserAvatar = ({ user, trigger = "hover", avatarSize = "md" }: UserAvatarProps) => {
-  return (
-    <Popover
-      placement="bottom-start"
-      closeOnBlur
-      isLazy
-      trigger={trigger}
-    >
-      <PopoverTrigger>
-        <Avatar
-          cursor="pointer"
-          name={user.display_name}
-          size={avatarSize}
-        />
-      </PopoverTrigger>
-    </Popover>
-  );
-};
-
 const UserInfoPopover = ({ user, trigger = "hover", avatarSize = "md", children }: UserInfoPopoverProps) => {
+
   return (
     <Popover placement="bottom-start" closeOnBlur trigger={trigger} isLazy>
       <PopoverTrigger>
@@ -66,6 +48,22 @@ const UserInfoPopover = ({ user, trigger = "hover", avatarSize = "md", children 
         </PopoverBody>
       </PopoverContent>
     </Popover>
+  );
+};
+
+const UserAvatar = ({ user, trigger = "hover", avatarSize = "md" }: UserAvatarProps) => {
+
+  return (
+    <UserInfoPopover
+      user={user}
+      trigger={trigger}
+      avatarSize={avatarSize}>
+      <Avatar
+        cursor="pointer"
+        name={user.display_name}
+        size={avatarSize}
+      />
+    </UserInfoPopover>
   );
 };
 
