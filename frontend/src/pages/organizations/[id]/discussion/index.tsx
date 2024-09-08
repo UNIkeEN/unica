@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/router";
 import NextLink from 'next/link';
@@ -44,6 +44,9 @@ const OrganizationDiscussionPage = () => {
   const [title, setTitle] = useState<string>("");
   const [newTopicCategory, setNewTopicCategory] = useState<number>(0);
 
+  const [listHeight, setListHeight] = useState("70vh");
+  const listRef = useRef(null);
+
   const {
     isOpen: isCreateTopicOpen,
     onOpen: onCreateTopicOpen,
@@ -83,6 +86,26 @@ const OrganizationDiscussionPage = () => {
       setCategories([]);
     }
   }, [router.query.id]);
+
+  useEffect(() => {
+    const updateListHeight = () => {
+      if (listRef.current) {
+        const topOffset = listRef.current.getBoundingClientRect().top;
+        const newHeight = `calc(100vh - ${topOffset}px - 24px)`;
+        setListHeight(newHeight);
+      }
+    };
+    
+    setTimeout(() => {
+      updateListHeight();
+    }, 200);
+
+    const resizeObserver = new ResizeObserver(() => { updateListHeight(); });
+    if (listRef.current) {
+      resizeObserver.observe(document.body);
+    }
+    return () => { resizeObserver.disconnect(); };
+  }, []);
 
   const handleListTopics = async (
     id: number,
@@ -202,7 +225,12 @@ const OrganizationDiscussionPage = () => {
               </Button>
             </Flex>
             {topicList && topicList.length > 0 && (
-              <>
+              <VStack
+                align="flex-start"
+                overflow="auto"
+                height={listHeight}
+                ref={listRef}
+              >
                 <RichList
                   titleAsLink
                   titleProps={{ color: "black" }}
@@ -219,9 +247,7 @@ const OrganizationDiscussionPage = () => {
                     ),
                   }))}
                 />
-                <Flex>
-                  <Spacer />
-                  <Pagination
+                <Pagination
                     total={Math.ceil(topicCount / pageSize)}
                     current={pageIndex}
                     onPageChange={(page) => {
@@ -230,9 +256,9 @@ const OrganizationDiscussionPage = () => {
                     }}
                     colorScheme="blue"
                     variant="subtle"
+                    ml="auto"
                   />
-                </Flex>
-              </>
+              </VStack>
             )}
           </VStack>
         </GridItem>
