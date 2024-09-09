@@ -7,41 +7,46 @@ import {
   Text,
   VStack,
   HStack,
+  Box,
+  BoxProps
 } from "@chakra-ui/react";
 import { UserBasicInfo } from "@/models/user";
 
-interface UserAvatarProps {
+interface UserAvatarProps extends BoxProps {
   user: UserBasicInfo;
   trigger?: "hover" | "click";
-  avatarSize?: string;
+  size?: string;
 }
 
 interface UserInfoPopoverProps {
   user: UserBasicInfo;
   trigger?: "hover" | "click";
-  avatarSize?: string;
-  children?: React.ReactNode;
+  children: React.ReactNode;
 }
 
-const UserInfoPopover = ({ user, trigger = "hover", avatarSize = "md", children }: UserInfoPopoverProps) => {
+const UserInfoPopover: React.FC<UserInfoPopoverProps> = ({ 
+  user, 
+  trigger = "hover", 
+  children 
+}) => {
 
   return (
-    <Popover placement="bottom-start" closeOnBlur trigger={trigger} isLazy>
+    <Popover closeOnBlur trigger={trigger} isLazy>
       <PopoverTrigger>
-        {children || <Avatar cursor="pointer" name={user.display_name} size={avatarSize} />}
+        {children}
       </PopoverTrigger>
       <PopoverContent width="auto">
-        <PopoverBody p={4}>
+        <PopoverBody p={4} maxW="18em">
           <VStack spacing={2} align="start">
             <HStack>
-              <Text fontSize="lg" fontWeight="normal">
+              <Text fontSize="md" fontWeight="semibold" color="black">
                 {user.display_name}
               </Text>
-              <Text fontSize="sm" color="gray.500">
-                @{user.username}
+              <Text fontSize="md" className="secondary-text">
+                {user.username}
               </Text>
             </HStack>
-            <Text fontSize="sm" color="gray.600">
+            <Text fontSize="sm">
               {user.biography}
             </Text>
           </VStack>
@@ -51,18 +56,22 @@ const UserInfoPopover = ({ user, trigger = "hover", avatarSize = "md", children 
   );
 };
 
-const UserAvatar = ({ user, trigger = "hover", avatarSize = "md" }: UserAvatarProps) => {
+const UserAvatar: React.FC<UserAvatarProps> = ({ 
+  user, 
+  trigger = "hover", 
+  size = "md",
+  ...boxProps
+}) => {
 
   return (
-    <UserInfoPopover
-      user={user}
-      trigger={trigger}
-      avatarSize={avatarSize}>
-      <Avatar
-        cursor="pointer"
-        name={user.display_name}
-        size={avatarSize}
-      />
+    <UserInfoPopover user={user} trigger={trigger}>
+      <Box {...boxProps}>
+        <Avatar
+          cursor="pointer"
+          name={user.display_name}
+          size={size}
+        />
+      </Box>
     </UserInfoPopover>
   );
 };
