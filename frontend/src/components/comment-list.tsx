@@ -1,5 +1,7 @@
 import MarkdownRenderer from "@/components/markdown-renderer";
 import DeleteDiscussionAlertDialog from "@/components/modals/delete-discussion-alert-dialog";
+import NewDiscussionDrawer from "@/components/new-discussion-drawer";
+import { UserAvatar } from "./user-info-popover";
 import OrganizationContext from "@/contexts/organization";
 import UserContext from "@/contexts/user";
 import { DiscussionComment } from "@/models/discussion";
@@ -7,7 +9,6 @@ import { MemberRoleEnum } from "@/models/organization";
 import { UserBasicInfo } from "@/models/user";
 import { formatRelativeTime } from "@/utils/datetime";
 import {
-  Avatar,
   Box,
   BoxProps,
   Divider,
@@ -25,7 +26,7 @@ import {
 import React, { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { FiEdit, FiEdit3 } from "react-icons/fi";
-import NewDiscussionDrawer from "./new-discussion-drawer";
+
 
 interface CommentListProps extends BoxProps {
   items: DiscussionComment[];
@@ -69,7 +70,7 @@ const CommentList: React.FC<CommentListProps> = ({
             transition='background-color 2s ease'
             rounded='md' p='3'
           >
-            <Avatar mt={2} size="md" name={item.user.username} />
+            <UserAvatar mt={2} size="md" user={item.user} />
             <VStack
               spacing={2}
               ml={{ base: "2", md: "4" }}

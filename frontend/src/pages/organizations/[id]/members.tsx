@@ -29,6 +29,7 @@ import Pagination from "@/components/pagination";
 import InviteMembersModal from "@/components/modals/invite-members-modal";
 import ChangeMemberRoleModal from "@/components/modals/change-member-role-modal";
 import GenericAlertDialog from "@/components/modals/generic-alert-dialog";
+import { UserAvatar } from "@/components/user-info-popover";
 
 const OrganizationMembersPage = () => {
   const orgCtx = useContext(OrganizationContext);
@@ -233,6 +234,7 @@ const OrganizationMembersPage = () => {
           <>
             <RichList
               items={listData.map((member) => ({
+                linePrefix: <UserAvatar user={member.user} size="md"/>,
                 title: member.user.display_name,
                 subtitle: member.user.username,
                 lineExtra:
