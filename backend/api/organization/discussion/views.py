@@ -426,7 +426,7 @@ def create_category(request, id):
     if serializer.is_valid():
         serializer.save(discussion=discussion)
         # return all categories
-        categories = discussion.categories.all()
+        categories = discussion.categories.all().order_by('name')
         updated_serializer = DiscussionCategorySerializer(categories, many=True)
         return Response(updated_serializer.data, status=status.HTTP_201_CREATED)
     else:

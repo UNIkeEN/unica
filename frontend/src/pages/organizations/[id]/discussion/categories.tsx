@@ -154,6 +154,8 @@ const DiscussionCategoryManagerPage = () => {
             <RichList
               items={categories.map((item) => ({
                 title: item.name,
+                titleExtra: item.description 
+                  && <Text className="secondary-text" fontSize="sm">{item.description}</Text>,
                 linePrefix: <CategoryIcon category={item} />,
                 lineExtra: orgCtx.userRole === MemberRoleEnum.OWNER && (
                   <Show above="md">
