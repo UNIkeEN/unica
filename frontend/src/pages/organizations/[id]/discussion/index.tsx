@@ -33,9 +33,10 @@ const OrganizationDiscussionPage = () => {
   const router = useRouter();
   const toast = useToast();
   const { t } = useTranslation();
+  const urlCategoryId = router.query.categoryId ? Number(router.query.categoryId) : 0;
 
   const [categories, setCategories] = useState<DiscussionTopicCategory[]>([]);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<number>(0);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number>(urlCategoryId);
   const [topicList, setTopicList] = useState<DiscussionTopic[]>([]);
   const [topicCount, setTopicCount] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
@@ -64,7 +65,7 @@ const OrganizationDiscussionPage = () => {
     }
 
     if (orgCtx.basicInfo?.is_discussion_enabled) {
-      if (id) handleListTopics(id, pageIndex, pageSize);
+      if (id) handleListTopics(id, pageIndex, pageSize, selectedCategoryId);
       else {
         setTopicList([]);
         setTopicCount(0);
@@ -203,7 +204,19 @@ const OrganizationDiscussionPage = () => {
                     </HStack>
                   ),
                   value: category.id,
-                })) : [])
+                })) : []),
+                ...(urlCategoryId === 0 ||
+                  categories.slice(0, 10).some(cat => cat.id === urlCategoryId) ? [] :
+                  [{
+                    label: (
+                      <HStack spacing={2}>
+                        {categories.find(cat => cat.id === urlCategoryId) &&
+                          <CategoryIcon category={categories.find(cat => cat.id === urlCategoryId)} size="md" />}
+                        <Text>{categories.find(cat => cat.id === urlCategoryId)?.name}</Text>
+                      </HStack>
+                    ),
+                    value: urlCategoryId,
+                  }])
               ]}
             />
             <Link 

@@ -150,9 +150,10 @@ const DiscussionCategoryManagerPage = () => {
           </Button>
         </Flex>
         <>
-          <RichList
+          <RichList titleAsLink
             items={categories.map((item) => ({
               title: item.name,
+              href: `/organizations/${router.query.id}/discussion?categoryId=${item.id}`,
               titleExtra: item.description 
                 && <Text className="secondary-text" fontSize="sm">{item.description}</Text>,
               linePrefix: <CategoryIcon category={item} />,

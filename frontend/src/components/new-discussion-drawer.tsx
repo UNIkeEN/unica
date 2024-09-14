@@ -155,7 +155,7 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
                     </HStack>
                   )}
                 </MenuButton>
-                <MenuList>
+                <MenuList maxHeight='300px' overflow='auto'>
                   <MenuOptionGroup
                     defaultValue={String(newTopicCategory)}
                     type="radio"
