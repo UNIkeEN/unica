@@ -149,46 +149,44 @@ const DiscussionCategoryManagerPage = () => {
             {t("DiscussionCategoryManagerPage.button.create")}
           </Button>
         </Flex>
-        {categories && categories.length > 0 && (
-          <>
-            <RichList
-              items={categories.map((item) => ({
-                title: item.name,
-                titleExtra: item.description 
-                  && <Text className="secondary-text" fontSize="sm">{item.description}</Text>,
-                linePrefix: <CategoryIcon category={item} />,
-                lineExtra: orgCtx.userRole === MemberRoleEnum.OWNER && (
-                  <Show above="md">
-                    <HStack spacing={2}>
-                      <Button
-                        size="sm"
-                        onClick={() => {
-                          setIsUpdate(true);
-                          setNewCategory(item);
-                          setSelectedCategory(item);
-                          onOpen();
-                        }}
-                      >
-                        {t("DiscussionCategoryManagerPage.button.edit")}
-                      </Button>
-                      <Button
-                        size="sm"
-                        onClick={() => {
-                          setSelectedCategory(item);
-                          onDeleteOpen();
-                        }}
-                        colorScheme="red"
-                        variant="subtle"
-                      >
-                        {t("DiscussionCategoryManagerPage.button.delete")}
-                      </Button>
-                    </HStack>
-                  </Show>
-                ),
-              }))}
-            />
-          </>
-        )}
+        <>
+          <RichList
+            items={categories.map((item) => ({
+              title: item.name,
+              titleExtra: item.description 
+                && <Text className="secondary-text" fontSize="sm">{item.description}</Text>,
+              linePrefix: <CategoryIcon category={item} />,
+              lineExtra: orgCtx.userRole === MemberRoleEnum.OWNER && (
+                <Show above="md">
+                  <HStack spacing={2}>
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        setIsUpdate(true);
+                        setNewCategory(item);
+                        setSelectedCategory(item);
+                        onOpen();
+                      }}
+                    >
+                      {t("DiscussionCategoryManagerPage.button.edit")}
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        setSelectedCategory(item);
+                        onDeleteOpen();
+                      }}
+                      colorScheme="red"
+                      variant="subtle"
+                    >
+                      {t("DiscussionCategoryManagerPage.button.delete")}
+                    </Button>
+                  </HStack>
+                </Show>
+              ),
+            }))}
+          />
+        </>
       </VStack>
 
       <CreateCategoryModal

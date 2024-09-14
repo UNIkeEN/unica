@@ -224,9 +224,9 @@ const OrganizationDiscussionPage = () => {
                 {t("OrganizationPages.discussion.button.createTopic")}
               </Button>
             </Flex>
-            {topicList && topicList.length > 0 && (
+            
               <VStack
-                align="flex-start"
+                align="strench"
                 overflow="auto"
                 height={listHeight}
                 ref={listRef}
@@ -247,7 +247,8 @@ const OrganizationDiscussionPage = () => {
                     ),
                   }))}
                 />
-                <Pagination
+                {topicList && topicList.length > 0 && ( 
+                  <Pagination
                     total={Math.ceil(topicCount / pageSize)}
                     current={pageIndex}
                     onPageChange={(page) => {
@@ -257,9 +258,8 @@ const OrganizationDiscussionPage = () => {
                     colorScheme="blue"
                     variant="subtle"
                     ml="auto"
-                  />
+                  /> )}
               </VStack>
-            )}
           </VStack>
         </GridItem>
       </Grid>

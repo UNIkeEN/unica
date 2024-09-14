@@ -116,44 +116,43 @@ const MyOrganizationsPage = () => {
         </HStack>
 
         <div>
-          {userCtx.organizations && userCtx.organizations.length > 0 &&
-            <RichList titleAsLink
-              items={sortOrganizations(userCtx.organizations, orgSortBy).map((item) => ({
-                title: item.display_name,
-                href: `organizations/${item.id}/overview`,
-                subtitle: item.description,
-                titleExtra:
-                  <Tag fontWeight="normal" colorScheme={item.role === MemberRoleEnum.OWNER ? "green" : "cyan"}>
-                    {t(`Enums.organization.role.${item.role}`)}
-                  </Tag>,
-                body:
-                  <Text fontSize="sm" className="secondary-text">
-                    {item.member_count} {item.member_count > 1 ? t('MyOrganizationsPage.text.members') : t('MyOrganizationsPage.text.member')}
-                  </Text>,
-                lineExtra:
-                  <Show above="md">
-                    <HStack spacing={2}>
-                      {item.role === MemberRoleEnum.OWNER &&
-                        <Button 
-                          size="sm"
-                          onClick={()=>{router.push(`organizations/${item.id}/settings`)}}
-                        >
-                          {t('MyOrganizationsPage.button.settings')}
-                        </Button>
-                      }
-                      <Button size="sm" colorScheme="red" variant="subtle"
-                        isDisabled={item.role === MemberRoleEnum.OWNER && item.owner_count === 1}
-                        onClick={() => {
-                          setSelectedOrg(item);
-                          onOpen();
-                        }}
+          <RichList titleAsLink
+            items={sortOrganizations(userCtx.organizations, orgSortBy).map((item) => ({
+              title: item.display_name,
+              href: `organizations/${item.id}/overview`,
+              subtitle: item.description,
+              titleExtra:
+                <Tag fontWeight="normal" colorScheme={item.role === MemberRoleEnum.OWNER ? "green" : "cyan"}>
+                  {t(`Enums.organization.role.${item.role}`)}
+                </Tag>,
+              body:
+                <Text fontSize="sm" className="secondary-text">
+                  {item.member_count} {item.member_count > 1 ? t('MyOrganizationsPage.text.members') : t('MyOrganizationsPage.text.member')}
+                </Text>,
+              lineExtra:
+                <Show above="md">
+                  <HStack spacing={2}>
+                    {item.role === MemberRoleEnum.OWNER &&
+                      <Button 
+                        size="sm"
+                        onClick={()=>{router.push(`organizations/${item.id}/settings`)}}
                       >
-                        {t('MyOrganizationsPage.button.leave')}
+                        {t('MyOrganizationsPage.button.settings')}
                       </Button>
-                    </HStack>
-                  </Show>
-              }))} />
-          }
+                    }
+                    <Button size="sm" colorScheme="red" variant="subtle"
+                      isDisabled={item.role === MemberRoleEnum.OWNER && item.owner_count === 1}
+                      onClick={() => {
+                        setSelectedOrg(item);
+                        onOpen();
+                      }}
+                    >
+                      {t('MyOrganizationsPage.button.leave')}
+                    </Button>
+                  </HStack>
+                </Show>
+            }))} 
+          />
         </div>
         {selectedOrg &&
           <GenericAlertDialog 

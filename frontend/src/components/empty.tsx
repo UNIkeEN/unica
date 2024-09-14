@@ -19,7 +19,7 @@ const iconSizeMap: Record<"sm" | "md" | "lg", string> = {
 
 const Empty: React.FC<EmptyProps> = ({
   colorScheme = "gray",
-  size = "lg",
+  size = "md",
   description,
   children,
   withIcon = true,

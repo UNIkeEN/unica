@@ -230,77 +230,76 @@ const OrganizationMembersPage = () => {
           </HStack>
         }
 
+        
+        <div>
+          <RichList
+            items={listData.map((member) => ({
+              linePrefix: <UserAvatar user={member.user} size="md"/>,
+              title: member.user.display_name,
+              subtitle: member.user.username,
+              lineExtra:
+                <HStack spacing={4}>
+                  <Text fontSize="sm" className="secondary-text">
+                    {t(`Enums.organization.role.${member.role}`)}
+                  </Text>
+                  {ListDomain === "members"
+                    ? <Text fontSize="sm" className="secondary-text">
+                        {t('OrganizationPages.members.list.joined_at', { date: ISOtoDate(member.joined_at) })}
+                      </Text>
+                    : <Text fontSize="sm" className="secondary-text">
+                        {t('OrganizationPages.members.list.invited_at', { date: ISOtoDate(member.joined_at) })}
+                      </Text>
+                  }
+                  {ListDomain === "members" && orgCtx.userRole === MemberRoleEnum.OWNER &&
+                    <Menu>
+                      <MenuButton as={IconButton} size="sm" aria-label="Menu" icon={<FiMoreHorizontal />} />
+                      <MenuList>
+                        <MenuItem onClick={() => {
+                          setSelectedMember(member);
+                          onChangeRoleModalOpen();
+                        }}>
+                          {t("OrganizationPages.members.list.menu.change_role")}
+                        </MenuItem>
+                        <MenuItem onClick={() => {
+                          setSelectedMember(member);
+                          onRemoveDialogOpen();
+                        }}>
+                          {t("OrganizationPages.members.list.menu.remove")}
+                        </MenuItem>
+                      </MenuList>
+                    </Menu>
+                  }
+                  {ListDomain === "pending" && orgCtx.userRole === MemberRoleEnum.OWNER &&
+                        <Button onClick={() => {
+                          setSelectedMember(member);
+                          onCancelInviteModalOpen();
+                        }}
+                        size={'sm'}
+                        variant={'subtle'}
+                        colorScheme={'red'}
+                        >
+                          {t("OrganizationPages.members.list.menu.cancel_invitation")}
+                        </Button>
+                  }
+                </HStack>
+            }))} 
+          />
+        </div>
         {listData && listData.length > 0 &&
-          <>
-            <RichList
-              items={listData.map((member) => ({
-                linePrefix: <UserAvatar user={member.user} size="md"/>,
-                title: member.user.display_name,
-                subtitle: member.user.username,
-                lineExtra:
-                  <HStack spacing={4}>
-                    <Text fontSize="sm" className="secondary-text">
-                      {t(`Enums.organization.role.${member.role}`)}
-                    </Text>
-                    {ListDomain === "members"
-                      ? <Text fontSize="sm" className="secondary-text">
-                          {t('OrganizationPages.members.list.joined_at', { date: ISOtoDate(member.joined_at) })}
-                        </Text>
-                      : <Text fontSize="sm" className="secondary-text">
-                          {t('OrganizationPages.members.list.invited_at', { date: ISOtoDate(member.joined_at) })}
-                        </Text>
-                    }
-                    {ListDomain === "members" && orgCtx.userRole === MemberRoleEnum.OWNER &&
-                      <Menu>
-                        <MenuButton as={IconButton} size="sm" aria-label="Menu" icon={<FiMoreHorizontal />} />
-                        <MenuList>
-                          <MenuItem onClick={() => {
-                            setSelectedMember(member);
-                            onChangeRoleModalOpen();
-                          }}>
-                            {t("OrganizationPages.members.list.menu.change_role")}
-                          </MenuItem>
-                          <MenuItem onClick={() => {
-                            setSelectedMember(member);
-                            onRemoveDialogOpen();
-                          }}>
-                            {t("OrganizationPages.members.list.menu.remove")}
-                          </MenuItem>
-                        </MenuList>
-                      </Menu>
-                    }
-                    {ListDomain === "pending" && orgCtx.userRole === MemberRoleEnum.OWNER &&
-                          <Button onClick={() => {
-                            setSelectedMember(member);
-                            onCancelInviteModalOpen();
-                          }}
-                          size={'sm'}
-                          variant={'subtle'}
-                          colorScheme={'red'}
-                          >
-                            {t("OrganizationPages.members.list.menu.cancel_invitation")}
-                          </Button>
-                    }
-                  </HStack>
-              }))} 
+          <Flex>
+            <Spacer />
+            <Pagination
+              total={
+                ListDomain === "members"
+                  ? Math.ceil(orgCtx.basicInfo.member_count / pageSize)
+                  : Math.ceil(pendingCount / pageSize)
+              }
+              current={pageIndex}
+              onPageChange={handlePageChange}
+              colorScheme="blue"
+              variant="subtle"
             />
-            <Flex>
-              <Spacer />
-              <Pagination
-                total={
-                  ListDomain === "members"
-                    ? Math.ceil(orgCtx.basicInfo.member_count / pageSize)
-                    : Math.ceil(pendingCount / pageSize)
-                }
-                current={pageIndex}
-                onPageChange={handlePageChange}
-                colorScheme="blue"
-                variant="subtle"
-              />
-            </Flex>
-          </>
-        }
-
+          </Flex>}
       </VStack>
 
       {selectedMember && 

@@ -13,6 +13,7 @@ import {
   TextProps,
   LinkProps
 } from "@chakra-ui/react";
+import Empty from "@/components/empty";
 
 interface RichListItem {
   title: string | React.ReactNode;
@@ -38,7 +39,8 @@ const RichList: React.FC<RichListProps> = ({
   items, 
   ...boxProps 
 }) => {
-  return (
+  if (items && items.length > 0) {
+    return (
     <Box {...boxProps}>
       {items && items.length > 0 && dividers === "all" &&  <Divider />}
       {items.map((item, index) => (
@@ -101,7 +103,9 @@ const RichList: React.FC<RichListProps> = ({
           </>
       ))}
     </Box>
-  );
+  )} else return (
+    <Empty/>
+  )
 }
 
 export default RichList;

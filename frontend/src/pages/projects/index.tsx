@@ -46,22 +46,20 @@ const MyProjectsPage = () => {
         </HStack>
 
         <div>
-          {projectList && projectList.length > 0 && (
-            <RichList
-              titleAsLink
-              items={projectList.map((project) => ({
-                title: project.display_name,
-                href: `/projects/${project.id}/board`,
-                body: (
-                  <Text fontSize="sm" className="secondary-text">
-                    {t("MyProjectsPage.list.updated_at", {
-                      time: formatRelativeTime(project.updated_at, t),
-                    })}
-                  </Text>
-                ),
-              }))}
-            />
-          )}
+          <RichList
+            titleAsLink
+            items={projectList.map((project) => ({
+              title: project.display_name,
+              href: `/projects/${project.id}/board`,
+              body: (
+                <Text fontSize="sm" className="secondary-text">
+                  {t("MyProjectsPage.list.updated_at", {
+                    time: formatRelativeTime(project.updated_at, t),
+                  })}
+                </Text>
+              ),
+            }))}
+          />
         </div>
         {projectList && projectList.length > 0 && (
           <Flex>
