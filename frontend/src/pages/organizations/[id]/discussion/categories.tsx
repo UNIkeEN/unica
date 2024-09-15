@@ -31,6 +31,8 @@ const DiscussionCategoryManagerPage = () => {
   const [newCategory, setNewCategory] = useState<DiscussionTopicCategory>(emptyCategory);
   const [selectedCategory, setSelectedCategory] = useState<DiscussionTopicCategory | null>(null);
   const [isUpdate, setIsUpdate] = useState(false); // update or create
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure();
@@ -38,8 +40,8 @@ const DiscussionCategoryManagerPage = () => {
   useEffect(() => {
     const id = Number(router.query.id);
     if (id) {
-      orgCtx.handleListDiscussionCategories(id)
-      .then((res) => {setCategories(res);})
+      orgCtx.handleListDiscussionCategories(page, pageSize, id)
+      .then((res) => {setCategories(res.results);})
       .catch((error) => {setCategories([]);})
     } else {
       setCategories([]);

@@ -129,9 +129,12 @@ export async function createCategory(id: number, category: DiscussionTopicCatego
   }
 }
 
-export async function listCategories(id: number) {
+export async function listCategories(id: number, page: number, pageSize: number) {
   try {
-    const response = await request.get(`/api/organization/${id}/discussion/category/list/`);
+    const response = await request.post(`/api/organization/${id}/discussion/category/list/`, {
+      page: page,
+      page_size: pageSize
+    });
     return response.data;
   } catch (error) {
     console.error('Failed to list categories', error);

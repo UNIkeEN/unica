@@ -80,8 +80,8 @@ const OrganizationDiscussionPage = () => {
   useEffect(() => {
     const id = Number(router.query.id);
     if (id) {
-      orgCtx.handleListDiscussionCategories(id)
-      .then((res) => {setCategories(res);})
+      orgCtx.handleListDiscussionCategories(1, 10, id)
+      .then((res) => {setCategories(res.results);})
       .catch((error) => {setCategories([]);})
     } else {
       setCategories([]);
