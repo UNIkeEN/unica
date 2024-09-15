@@ -190,6 +190,10 @@ const OrganizationDiscussionPage = () => {
                 setPageIndex(1)
                 setSelectedCategoryId(value)
                 handleListTopics(Number(router.query.id), 1, pageSize, value)
+                router.push({
+                  pathname: router.pathname,
+                  query: { ...router.query, ["categoryId"]: value }
+                });
               }}
               items={[
                 {
