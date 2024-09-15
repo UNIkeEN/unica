@@ -13,13 +13,14 @@ import {
 } from "@chakra-ui/react";
 import OrganizationContext from "@/contexts/organization";
 import { useToast } from "@/contexts/toast";
-import RichList from "@/components/rich-list";
 import { DiscussionTopicCategory, emptyCategory } from "@/models/discussion";
 import { MemberRoleEnum } from "@/models/organization";
+import { createCategory, deleteCategory, updateCategory } from "@/services/discussion";
+import RichList from "@/components/rich-list";
 import CreateCategoryModal from "@/components/modals/create-category-modal";
 import CategoryIcon from "@/components/category-icon";
-import { createCategory, deleteCategory, updateCategory } from "@/services/discussion";
 import GenericAlertDialog from "@/components/modals/generic-alert-dialog";
+import Pagination from "@/components/pagination";
 
 const DiscussionCategoryManagerPage = () => {
   const orgCtx = useContext(OrganizationContext);
@@ -28,11 +29,12 @@ const DiscussionCategoryManagerPage = () => {
   const toast = useToast();
 
   const [categories, setCategories] = useState<DiscussionTopicCategory[]>([]);
+  const [categoryCount, setCategoryCount] = useState(0);
   const [newCategory, setNewCategory] = useState<DiscussionTopicCategory>(emptyCategory);
   const [selectedCategory, setSelectedCategory] = useState<DiscussionTopicCategory | null>(null);
   const [isUpdate, setIsUpdate] = useState(false); // update or create
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(20);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure();
@@ -41,12 +43,19 @@ const DiscussionCategoryManagerPage = () => {
     const id = Number(router.query.id);
     if (id) {
       orgCtx.handleListDiscussionCategories(page, pageSize, id)
-      .then((res) => {setCategories(res.results);})
-      .catch((error) => {setCategories([]);})
+      .then((res) => {
+        setCategories(res.results);
+        setCategoryCount(res.count);
+      })
+      .catch((error) => {
+        setCategories([]);
+        setCategoryCount(0);
+      })
     } else {
       setCategories([]);
+      setCategoryCount(0);
     }
-  }, [router.query.id]);
+  }, [router.query.id, page, pageSize]);
 
   const handleCreateCategory = async () => {
     try {
@@ -136,7 +145,7 @@ const DiscussionCategoryManagerPage = () => {
         <Flex alignItems="center">
           <Text pl={1}>
             {t("DiscussionCategoryManagerPage.text.total", {
-              count: categories ? categories.length : 0,
+              count: categoryCount,
             })}
           </Text>
           <Spacer />
@@ -153,6 +162,7 @@ const DiscussionCategoryManagerPage = () => {
         </Flex>
         <>
           <RichList titleAsLink
+            titleProps={{ color: "black" }}
             items={categories.map((item) => ({
               title: item.name,
               href: `/organizations/${router.query.id}/discussion?categoryId=${item.id}`,
@@ -190,6 +200,18 @@ const DiscussionCategoryManagerPage = () => {
             }))}
           />
         </>
+        {categoryCount > 0 &&
+          <Flex>
+            <Spacer />
+            <Pagination
+              total={Math.ceil(categoryCount / pageSize)}
+              current={page}
+              onPageChange={(page) => setPage(page)}
+              colorScheme="blue"
+              variant="subtle"
+            />
+          </Flex>
+        }
       </VStack>
 
       <CreateCategoryModal
