@@ -1,10 +1,11 @@
 import React from 'react';
-import { VStack } from '@chakra-ui/react';
+import { VStack, Tooltip } from '@chakra-ui/react';
 import SelectableButton from '@/components/selectable-button';
 
 export interface MenuItem {
   label: React.ReactNode;
   value: any;
+  tooltip?: string;
 }
 
 export interface NavMenuProps {
@@ -25,14 +26,18 @@ const NavMenu: React.FC<NavMenuProps> = ({
   return (
     <VStack spacing={spacing} align="stretch">
       {items.map((item) => (
-        <SelectableButton
-          key={item.value}
-          size={size}
-          isSelected={selectedKeys.includes(item.value)}
-          onClick={() => onClick && onClick(item.value)}
-        >
-          {item.label}
-        </SelectableButton>
+        <Tooltip label={item.tooltip} placement="right">
+          <VStack align="stretch">
+            <SelectableButton
+              key={item.value}
+              size={size}
+              isSelected={selectedKeys.includes(item.value)}
+              onClick={() => onClick && onClick(item.value)}
+            >
+              {item.label}
+            </SelectableButton>
+          </VStack>
+        </Tooltip>
       ))}
     </VStack>
   );

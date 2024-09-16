@@ -44,7 +44,8 @@ const MainSiderSmall = ({ onSwitchSider }) => {
         <NavMenu 
           items={topMenuItems.map((item) => ({
             value: item.value,
-            label: <Icon as={item.icon} />
+            label: <Icon as={item.icon} />,
+            tooltip: item.label
           }))}
           onClick={(value) => {router.push(value)}}
           selectedKeys={[router.asPath]}
