@@ -382,6 +382,7 @@ def delete_comment(request, id):
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner', 'Member'])
+@throttle_classes([DiscussionThrottle])
 def edit_comment(request, id):
     organization = request.organization
     topic_local_id = request.data.get('topic_local_id')
