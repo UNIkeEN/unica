@@ -19,7 +19,7 @@ import {
 import OrganizationContext from "@/contexts/organization";
 import { MemberRoleEnum } from "@/models/organization";
 import { DiscussionTopic, DiscussionTopicCategory } from "@/models/discussion";
-import { createTopic, listTopics } from "@/services/discussion";
+import { createTopic, getCategoryInfo, listTopics } from "@/services/discussion";
 import { formatRelativeTime } from "@/utils/datetime";
 import EnableDiscussionConfirmModal from "@/components/modals/enable-discussion-confirm-modal";
 import RichList from "@/components/rich-list";
@@ -85,12 +85,9 @@ const OrganizationDiscussionPage = () => {
       orgCtx.handleListDiscussionCategories(1, 10, id)
         .then((res) => {
           if (urlCatId !== 0 && !res.results.some(cat => cat.id === urlCatId)) {
-            const extraCategory = {
-              id: urlCatId,
-              name: "Loading...",
-              color: "gray" as const,
-            }  // TODO: get category from API
-            setCategories([...res.results, extraCategory]);
+            getCategoryInfo(id, urlCatId).then((extraCategory) => {
+              setCategories([...res.results, extraCategory]);
+            })
           } else {
             setCategories(res.results);
           }

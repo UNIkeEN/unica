@@ -129,6 +129,18 @@ export async function createCategory(id: number, category: DiscussionTopicCatego
   }
 }
 
+export async function getCategoryInfo(id: number, category_id: number) {
+  try {
+    const response = await request.post(`/api/organization/${id}/discussion/category/info/`, {
+      category_id: category_id
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to get category', error);
+    throw error;
+  }
+}
+
 export async function listCategories(id: number, page: number, pageSize: number) {
   try {
     const response = await request.post(`/api/organization/${id}/discussion/category/list/`, {
