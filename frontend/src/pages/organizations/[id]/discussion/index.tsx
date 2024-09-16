@@ -33,10 +33,11 @@ const OrganizationDiscussionPage = () => {
   const router = useRouter();
   const toast = useToast();
   const { t } = useTranslation();
-  const urlCategoryId = router.query.categoryId ? Number(router.query.categoryId) : 0;
 
   const [categories, setCategories] = useState<DiscussionTopicCategory[]>([]);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<number>(urlCategoryId);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number>(
+    router.query.categoryId ? Number(router.query.categoryId) : 0
+  );
   const [topicList, setTopicList] = useState<DiscussionTopic[]>([]);
   const [topicCount, setTopicCount] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
@@ -79,14 +80,33 @@ const OrganizationDiscussionPage = () => {
 
   useEffect(() => {
     const id = Number(router.query.id);
+    const urlCatId = router.query.categoryId ? Number(router.query.categoryId) : 0;
     if (id) {
       orgCtx.handleListDiscussionCategories(1, 10, id)
-      .then((res) => {setCategories(res.results);})
+        .then((res) => {
+          if (urlCatId !== 0 && !res.results.some(cat => cat.id === urlCatId)) {
+            const extraCategory = {
+              id: urlCatId,
+              name: "Loading...",
+              color: "gray" as const,
+            }  // TODO: get category from API
+            setCategories([...res.results, extraCategory]);
+          } else {
+            setCategories(res.results);
+          }
+        })
       .catch((error) => {setCategories([]);})
     } else {
       setCategories([]);
     }
   }, [router.query.id]);
+
+  useEffect(() => {
+    const urlCatId = router.query.categoryId ? Number(router.query.categoryId) : 0;
+    setSelectedCategoryId(urlCatId);
+    setPageIndex(1)
+    handleListTopics(Number(router.query.id), 1, pageSize, urlCatId);
+  }, [router.query.categoryId]);
 
   useEffect(() => {
     const updateListHeight = () => {
@@ -187,9 +207,6 @@ const OrganizationDiscussionPage = () => {
               spacing={2}
               selectedKeys={[selectedCategoryId]}
               onClick={(value) => {
-                setPageIndex(1)
-                setSelectedCategoryId(value)
-                handleListTopics(Number(router.query.id), 1, pageSize, value)
                 router.push({
                   pathname: router.pathname,
                   query: { ...router.query, ["categoryId"]: value }
@@ -200,7 +217,7 @@ const OrganizationDiscussionPage = () => {
                   label: <Text>{t("OrganizationPages.discussion.button.viewAllTopics")}</Text>,
                   value: 0,
                 },
-                ...(categories && categories.length > 0 ? categories.slice(0, 10).map((category) => ({
+                ...(categories && categories.length > 0 ? categories.map((category) => ({
                   label: (
                     <HStack spacing={2}>
                       <CategoryIcon category={category} size="md" />
@@ -209,18 +226,6 @@ const OrganizationDiscussionPage = () => {
                   ),
                   value: category.id,
                 })) : []),
-                ...(urlCategoryId === 0 ||
-                  categories.slice(0, 10).some(cat => cat.id === urlCategoryId) ? [] :
-                  [{
-                    label: (
-                      <HStack spacing={2}>
-                        {categories.find(cat => cat.id === urlCategoryId) &&
-                          <CategoryIcon category={categories.find(cat => cat.id === urlCategoryId)} size="md" />}
-                        <Text>{categories.find(cat => cat.id === urlCategoryId)?.name}</Text>
-                      </HStack>
-                    ),
-                    value: urlCategoryId,
-                  }])
               ]}
             />
             <Link 
