@@ -226,7 +226,7 @@ const DiscussionTopicPage = () => {
 
   const handleSubmission = async () => {
     try {
-      const res = await createComment(org_id, topic_local_id, newComment);
+      const res = await createComment(org_id, topic_local_id, newComment, toast, t);
       if (res.local_id) {
         setNewCommentLocalId(res.local_id);
         setTimeout(() => {

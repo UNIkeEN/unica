@@ -140,7 +140,9 @@ const OrganizationDiscussionPage = () => {
         id,
         title,
         newTopicCategory,
-        comment
+        comment,
+        toast,
+        t
       );
       if (res.local_id) {
         router.push("/organizations/" + id + "/discussion/" + res.local_id);
