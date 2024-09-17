@@ -39,18 +39,22 @@ const DiscussionCategoryManagerPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure();
 
+  const _handleListDiscussionCategories = (page, pageSize, id) => {
+    orgCtx.handleListDiscussionCategories(page, pageSize, id)
+    .then((res) => {
+      setCategories(res.results);
+      setCategoryCount(res.count);
+    })
+    .catch((error) => {
+      setCategories([]);
+      setCategoryCount(0);
+    })
+  }
+
   useEffect(() => {
     const id = Number(router.query.id);
     if (id) {
-      orgCtx.handleListDiscussionCategories(page, pageSize, id)
-      .then((res) => {
-        setCategories(res.results);
-        setCategoryCount(res.count);
-      })
-      .catch((error) => {
-        setCategories([]);
-        setCategoryCount(0);
-      })
+      _handleListDiscussionCategories(page, pageSize, id);
     } else {
       setCategories([]);
       setCategoryCount(0);
@@ -65,15 +69,7 @@ const DiscussionCategoryManagerPage = () => {
         title: t("Services.discussion.createCategory.success"),
         status: "success",
       });
-      orgCtx.handleListDiscussionCategories(page, pageSize, id)
-      .then((res) => {
-        setCategories(res.results);
-        setCategoryCount(res.count);
-      })
-      .catch((error) => {
-        setCategories([]);
-        setCategoryCount(0);
-      })
+      _handleListDiscussionCategories(page, pageSize, id);      
       onClose();
     } catch (error) {
       if (error.request && error.request.status === 403) {
@@ -105,15 +101,7 @@ const DiscussionCategoryManagerPage = () => {
         title: t("Services.discussion.updateCategory.success"),
         status: "success",
       });
-      orgCtx.handleListDiscussionCategories(page, pageSize, id)
-      .then((res) => {
-        setCategories(res.results);
-        setCategoryCount(res.count);
-      })
-      .catch((error) => {
-        setCategories([]);
-        setCategoryCount(0);
-      })
+      _handleListDiscussionCategories(page, pageSize, id);
       onClose();
     } catch (error) {
       if (error.request && error.request.status === 403) {
@@ -135,15 +123,7 @@ const DiscussionCategoryManagerPage = () => {
         title: t("Services.discussion.deleteCategory.success"),
         status: "success",
       });
-      orgCtx.handleListDiscussionCategories(page, pageSize, id)
-      .then((res) => {
-        setCategories(res.results);
-        setCategoryCount(res.count);
-      })
-      .catch((error) => {
-        setCategories([]);
-        setCategoryCount(0);
-      })
+      _handleListDiscussionCategories(page, pageSize, id);
       onDeleteClose();
     } catch (error) {
       if (error.request && error.request.status === 403) {

@@ -247,8 +247,7 @@ const DiscussionTopicPage = () => {
           title: t("Services.discussion.createComment.error-400"),
           status: "error",
         });
-      }
-      else {
+      } else {
         toast({
           title: t("Services.discussion.createComment.error"),
           status: "error",
@@ -270,8 +269,7 @@ const DiscussionTopicPage = () => {
       setHasMoreReverse(true);
       const res = await handleListComments(lastPage, pageSize);
       setComments(res.results);
-    }
-    else {
+    } else {
       const res = await handleListComments(lastPage, pageSize);
       setComments([...comments, res.results[res.results.length - 1]]);
     }
