@@ -160,9 +160,7 @@ const OrganizationDiscussionPage = () => {
         id,
         title,
         newTopicCategory,
-        comment,
-        toast,
-        t
+        comment
       );
       if (res.local_id) {
         router.push("/organizations/" + id + "/discussion/" + res.local_id);
@@ -175,7 +173,20 @@ const OrganizationDiscussionPage = () => {
       console.error("Failed to create topic:", error);
       if (error.request && error.request.status === 403) {
         orgCtx.toastNoPermissionAndRedirect();
-      } else {
+      } 
+      else if (error.request && error.request.status === 429) {
+        toast({
+          title: t("Services.discussion.createTopic.error-429"),
+          status: "error",
+        })
+      }
+      else if (error.request && error.request.status === 400) {
+        toast({
+          title: t("Services.discussion.createTopic.error-400"),
+          status: "error",
+        })
+      }
+      else {
         toast({
           title: t("Services.discussion.createTopic.error"),
           status: "error",

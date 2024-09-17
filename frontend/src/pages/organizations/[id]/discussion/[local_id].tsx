@@ -226,7 +226,7 @@ const DiscussionTopicPage = () => {
 
   const handleSubmission = async () => {
     try {
-      const res = await createComment(org_id, topic_local_id, newComment, toast, t);
+      const res = await createComment(org_id, topic_local_id, newComment);
       if (res.local_id) {
         setNewCommentLocalId(res.local_id);
         setTimeout(() => {
@@ -237,7 +237,18 @@ const DiscussionTopicPage = () => {
       console.error("Failed to create comment:", error);
       if (error.request && error.request.status === 403) {
         orgCtx.toastNoPermissionAndRedirect();
-      } else {
+      } else if (error.request && error.request.status === 429) {
+        toast({
+          title: t("Services.discussion.createComment.error-429"),
+          status: "error",
+        });
+      } else if (error.request && error.request.status === 400) {
+        toast({
+          title: t("Services.discussion.createComment.error-400"),
+          status: "error",
+        });
+      }
+      else {
         toast({
           title: t("Services.discussion.createComment.error"),
           status: "error",

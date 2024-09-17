@@ -37,7 +37,7 @@ export async function listTopics(id: number, page: number, pageSize: number, cat
   }
 }
 
-export async function createTopic(id: number, title: string, category_id: number, init_comment: string, toast: (args: { title: string; description: string; status: string }) => void, t: (key: string) => string) {
+export async function createTopic(id: number, title: string, category_id: number, init_comment: string) {
   try {
     const response = await request.post(`/api/organization/${id}/discussion/topic/create/`, {
       title: title,
@@ -48,20 +48,6 @@ export async function createTopic(id: number, title: string, category_id: number
     });
     return response.data;
   } catch (error) {
-    if (error.response && error.response.status === 429) {
-      toast({
-        title: t("Services.discussion.createTopic.error"), 
-        description: t("Services.discussion.createTopic.error-429"), 
-        status: "error",
-      })
-    }
-    else if (error.response && error.response.status === 400) {
-      toast({
-        title: t("Services.discussion.createTopic.error"), 
-        description: t("Services.discussion.createTopic.error-400"), 
-        status: "error",
-      })
-    }
     console.error('Failed to create topic', error);
     throw error;
   }
@@ -93,7 +79,7 @@ export async function listComments(id: number, page: number, pageSize: number, l
   }
 }
 
-export async function createComment(id: number, topic_local_id: number, content: string, toast: (args: { title: string; description: string; status: string }) => void, t: (key: string) => string) {
+export async function createComment(id: number, topic_local_id: number, content: string) {
   try {
     const response = await request.post(`/api/organization/${id}/discussion/comment/create/`, {
       topic_local_id: topic_local_id,
@@ -101,24 +87,8 @@ export async function createComment(id: number, topic_local_id: number, content:
     });
     return response.data;
   } catch (error) {
-    if (error.response && error.response.status === 429) {
-      toast({
-        title: t("Services.discussion.createComment.error"), 
-        description: t("Services.discussion.createComment.error-429"), 
-        status: "error",
-      })
-    }
-    else if (error.response && error.response.status === 400) {
-      toast({
-        title: t("Services.discussion.createComment.error"), 
-        description: t("Services.discussion.createComment.error-400"), 
-        status: "error",
-      })
-    }
-    else {
       console.error('Failed to create comment', error);
       throw error;
-    }
   }
 }
 
