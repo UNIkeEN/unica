@@ -60,15 +60,21 @@ const DiscussionCategoryManagerPage = () => {
   const handleCreateCategory = async () => {
     try {
       const id = Number(router.query.id);
-      const res = await createCategory(id, newCategory);
-      if (res) {
-        toast({
-          title: t("Services.discussion.createCategory.success"),
-          status: "success",
-        });
-        setCategories(res);
-        onClose();
-      }
+      await createCategory(id, newCategory);
+      toast({
+        title: t("Services.discussion.createCategory.success"),
+        status: "success",
+      });
+      orgCtx.handleListDiscussionCategories(page, pageSize, id)
+      .then((res) => {
+        setCategories(res.results);
+        setCategoryCount(res.count);
+      })
+      .catch((error) => {
+        setCategories([]);
+        setCategoryCount(0);
+      })
+      onClose();
     } catch (error) {
       if (error.request && error.request.status === 403) {
         orgCtx.toastNoPermissionAndRedirect();
@@ -94,15 +100,21 @@ const DiscussionCategoryManagerPage = () => {
       return;
     try {
       const id = Number(router.query.id);
-      const res = await updateCategory(id, category.id, newCategory);
-      if (res) {
-        toast({
-          title: t("Services.discussion.updateCategory.success"),
-          status: "success",
-        });
-        setCategories(res);
-        onClose();
-      }
+      await updateCategory(id, category.id, newCategory);
+      toast({
+        title: t("Services.discussion.updateCategory.success"),
+        status: "success",
+      });
+      orgCtx.handleListDiscussionCategories(page, pageSize, id)
+      .then((res) => {
+        setCategories(res.results);
+        setCategoryCount(res.count);
+      })
+      .catch((error) => {
+        setCategories([]);
+        setCategoryCount(0);
+      })
+      onClose();
     } catch (error) {
       if (error.request && error.request.status === 403) {
         orgCtx.toastNoPermissionAndRedirect();
@@ -118,15 +130,21 @@ const DiscussionCategoryManagerPage = () => {
   const handleDeleteCategory = async (category_id: number) => {
     try {
       const id = Number(router.query.id);
-      const res = await deleteCategory(id, category_id);
-      if (res) {
-        toast({
-          title: t("Services.discussion.deleteCategory.success"),
-          status: "success",
-        });
-        setCategories(res);
-        onDeleteClose();
-      }
+      await deleteCategory(id, category_id);
+      toast({
+        title: t("Services.discussion.deleteCategory.success"),
+        status: "success",
+      });
+      orgCtx.handleListDiscussionCategories(page, pageSize, id)
+      .then((res) => {
+        setCategories(res.results);
+        setCategoryCount(res.count);
+      })
+      .catch((error) => {
+        setCategories([]);
+        setCategoryCount(0);
+      })
+      onDeleteClose();
     } catch (error) {
       if (error.request && error.request.status === 403) {
         orgCtx.toastNoPermissionAndRedirect();

@@ -403,12 +403,12 @@ def edit_comment(request, id):
     responses={
         201: openapi.Response(
             description="Category created successfully",
-            schema=DiscussionCategorySerializer(many=True)
+            schema=DiscussionCategorySerializer
         ),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
         404: openapi.Response(description="Discussion not found"),
     },
-    operation_description="Create a new category for a discussion and return the updated list of categories.",
+    operation_description="Create a new category for a discussion.",
     tags=["Organization/Discussion"]
 )
 @api_view(['POST'])
@@ -425,10 +425,7 @@ def create_category(request, id):
     serializer = DiscussionCategorySerializer(data=request.data)
     if serializer.is_valid():
         serializer.save(discussion=discussion)
-        # return all categories
-        categories = discussion.categories.all().order_by('name')
-        updated_serializer = DiscussionCategorySerializer(categories, many=True)
-        return Response(updated_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -505,13 +502,13 @@ def list_categories(request, id):
     responses={
         200: openapi.Response(
             description="Category updated successfully",
-            schema=DiscussionCategorySerializer(many=True)
+            schema=DiscussionCategorySerializer
         ),
         400: openapi.Response(description="Bad request, need category_id and category_value"),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
         404: openapi.Response(description="Discussion or Category not found"),
     },
-    operation_description="Update an existing category for a discussion and return the updated list of categories.",
+    operation_description="Update an existing category for a discussion.",
     tags=["Organization/Discussion"]
 )
 @api_view(['PATCH'])
@@ -539,10 +536,7 @@ def update_category(request, id):
     serializer = DiscussionCategorySerializer(category_instance, data=category_value, partial=True)
     if serializer.is_valid():
         serializer.save()
-        # return all categories
-        categories = discussion.categories.all().order_by('name')
-        updated_serializer = DiscussionCategorySerializer(categories, many=True)
-        return Response(updated_serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -557,14 +551,11 @@ def update_category(request, id):
         required=['category_id'],
     ),
     responses={
-        200: openapi.Response(
-            description="Category deleted successfully",
-            schema=DiscussionCategorySerializer(many=True)
-        ),
+        200: openapi.Response(description="Category deleted successfully"),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
         404: openapi.Response(description="Discussion or Category not found"),
     },
-    operation_description="Delete an existing category from a discussion and return the updated list of categories.",
+    operation_description="Delete an existing category from a discussion.",
     tags=["Organization/Discussion"]
 )
 @api_view(['POST'])
@@ -587,10 +578,7 @@ def delete_category(request, id):
         return Response({'detail': 'Category not found'}, status=status.HTTP_404_NOT_FOUND)
 
     category_instance.delete()
-    # return all categories
-    categories = discussion.categories.all().order_by('name')
-    updated_serializer = DiscussionCategorySerializer(categories, many=True)
-    return Response(updated_serializer.data, status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_200_OK)
 
 @swagger_auto_schema(
     method='post',
