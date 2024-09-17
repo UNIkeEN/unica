@@ -11,7 +11,11 @@ from emoji import is_emoji
 from .models import Discussion
 from api.organization.decorators import organization_permission_classes
 from .serializers import *
+from rest_framework.throttling import UserRateThrottle
+from rest_framework.decorators import throttle_classes
 
+class DiscussionThrottle(UserRateThrottle):
+    scope = 'discussion'
 
 @swagger_auto_schema(
     method='post',
@@ -56,6 +60,7 @@ def enable_discussion(request, id):
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner', 'Member'])
+@throttle_classes([DiscussionThrottle])
 def create_topic(request, id):
     organization = request.organization
     if not hasattr(organization, 'discussion'):
@@ -230,6 +235,7 @@ def delete_topic(request, id):
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner', 'Member'])
+@throttle_classes([DiscussionThrottle])
 def create_comment(request, id):
     organization = request.organization
     topic_local_id = request.data.get('topic_local_id')
@@ -376,6 +382,7 @@ def delete_comment(request, id):
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner', 'Member'])
+@throttle_classes([DiscussionThrottle])
 def edit_comment(request, id):
     organization = request.organization
     topic_local_id = request.data.get('topic_local_id')

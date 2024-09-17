@@ -389,6 +389,8 @@
             },
             "createComment": {
                 "error": "Failed to create comment",
+                "error-429": "Too many requests, please try again in 1 minute.",
+                "error-400": "The content should not be empty.",
                 "success": "Comment created successfully"
             },
             "deleteComment": {
@@ -406,6 +408,8 @@
             "createTopic": {
                 "button": "Create Topic",
                 "error": "Failed to create topic",
+                "error-429": "Too many requests, please try again in 1 minute.",
+                "error-400": "Neither the title nor the content should be empty.",
                 "success": "Topic created successfully"
             },
             "createCategory": {

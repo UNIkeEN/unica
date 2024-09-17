@@ -170,6 +170,12 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.ScopedRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'discussion': '12/minute',  # This translates to 1 request every 5 seconds (12 requests per minute).
+    }
 }
 
 # OAuth Providers

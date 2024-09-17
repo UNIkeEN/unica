@@ -237,7 +237,18 @@ const DiscussionTopicPage = () => {
       console.error("Failed to create comment:", error);
       if (error.request && error.request.status === 403) {
         orgCtx.toastNoPermissionAndRedirect();
-      } else {
+      } else if (error.request && error.request.status === 429) {
+        toast({
+          title: t("Services.discussion.createComment.error-429"),
+          status: "error",
+        });
+      } else if (error.request && error.request.status === 400) {
+        toast({
+          title: t("Services.discussion.createComment.error-400"),
+          status: "error",
+        });
+      }
+      else {
         toast({
           title: t("Services.discussion.createComment.error"),
           status: "error",

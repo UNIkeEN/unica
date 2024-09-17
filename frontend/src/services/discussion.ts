@@ -87,8 +87,8 @@ export async function createComment(id: number, topic_local_id: number, content:
     });
     return response.data;
   } catch (error) {
-    console.error('Failed to create comment', error);
-    throw error;
+      console.error('Failed to create comment', error);
+      throw error;
   }
 }
 
