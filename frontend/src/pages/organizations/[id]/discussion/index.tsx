@@ -301,7 +301,6 @@ const OrganizationDiscussionPage = () => {
         setComment={(comment) => { setComment(comment); }}
         title={title}
         setTitle={(title) => { setTitle(title); }}
-        categories={categories}
         newTopicCategory={newTopicCategory}
         setNewTopicCategory={(category) => { setNewTopicCategory(category); }}
         onOKCallback={handleCreateTopic}

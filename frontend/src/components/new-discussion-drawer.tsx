@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import MarkdownEditor from "@/components/markdown-editor";
 import {
   Button,
@@ -24,12 +24,15 @@ import {
   MenuList,
   MenuOptionGroup,
   MenuItemOption,
-  useMediaQuery
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { FiChevronDown, FiMaximize2, FiMinimize2 } from "react-icons/fi";
 import { DiscussionTopicCategory } from "@/models/discussion";
 import CategoryIcon from "@/components/category-icon";
+import InfiniteScroll from "react-infinite-scroller";
+import { useRouter } from "next/router";
+import OrganizationContext from "@/contexts/organization";
+import { BeatLoader } from "react-spinners";
 
 interface NewDiscussionDrawerProps extends DrawerProps {
   drawerTitle: string;
@@ -37,7 +40,6 @@ interface NewDiscussionDrawerProps extends DrawerProps {
   comment: string;
   setComment: (comment: string) => void;
   onOKCallback: () => void;
-  categories?: DiscussionTopicCategory[];
   newTopicCategory?: number;
   setNewTopicCategory?: (categoryId: number) => void;
   title?: string;
@@ -50,7 +52,6 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
   comment,
   setComment,
   onOKCallback,
-  categories,
   newTopicCategory,
   setNewTopicCategory,
   title,
@@ -59,6 +60,13 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
 }) => {
   const [fullHeight, setFullHeight] = useState<boolean>(false);
   const [isTitleTooLong, setIsTitleTooLong] = useState<boolean>(false);
+  const [categories, setCategories] = useState<DiscussionTopicCategory[]>([]);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
+  const [hasMore, setHasMore] = useState(true);
+
+  const router = useRouter();
+  const orgCtx = useContext(OrganizationContext);
   const _width = useBreakpointValue({ base: "100%", md: "60%" });
   const contentRef = useRef(null);
   const [drawerheight, setDrawerHeight] = useState("auto");
@@ -82,6 +90,24 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
       }, 100);
     }
   }, [fullHeight]);
+
+  useEffect(() => {
+    if (variant === "topic") {
+      orgCtx.handleListDiscussionCategories(page, pageSize, Number(router.query.id)).then((res) => {
+        setCategories(res.results);
+        setHasMore(res.next !== null);
+      });
+    }
+  }, [variant]);
+
+  const loadMore = async () => {
+    console.log("load more");
+    orgCtx.handleListDiscussionCategories(page + 1, pageSize, Number(router.query.id)).then((res) => {
+      setCategories([...categories, ...res.results]);
+      setHasMore(res.next !== null);
+      setPage(page + 1);
+    });
+  };
 
   return (
     <Drawer
@@ -155,24 +181,35 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
                     </HStack>
                   )}
                 </MenuButton>
-                <MenuList maxHeight='300px' overflow='auto'>
-                  <MenuOptionGroup
-                    defaultValue={String(newTopicCategory)}
-                    type="radio"
-                    onChange={(value) => setNewTopicCategory(Number(value))}
-                  >
-                    <MenuItemOption value="0">
-                      <Text>{t("NewDiscussionDrawer.drawer.uncategorized")}</Text>
-                    </MenuItemOption>
-                    {categories?.map((category) => (
-                      <MenuItemOption key={category.id} value={String(category.id)}>
-                        <HStack spacing={2}>
-                          <CategoryIcon category={category} size="md" />
-                          <Text>{category.name}</Text>
-                        </HStack>
+                <MenuList height='300px' overflow='auto'>
+                  <InfiniteScroll
+                    loadMore={loadMore}
+                    hasMore={hasMore}
+                    useWindow={false}
+                    initialLoad={false}
+                    loader={
+                      <HStack justifyContent='center' mt='5'>
+                        <BeatLoader size={8} color='gray' />
+                      </HStack>
+                    }>
+                    <MenuOptionGroup
+                      defaultValue={String(newTopicCategory)}
+                      type="radio"
+                      onChange={(value) => setNewTopicCategory(Number(value))}
+                    >
+                      <MenuItemOption value="0">
+                        <Text>{t("NewDiscussionDrawer.drawer.uncategorized")}</Text>
                       </MenuItemOption>
-                    ))}
-                  </MenuOptionGroup>
+                      {categories?.map((category) => (
+                        <MenuItemOption key={category.id} value={String(category.id)}>
+                          <HStack spacing={2}>
+                            <CategoryIcon category={category} size="md" />
+                            <Text>{category.name}</Text>
+                          </HStack>
+                        </MenuItemOption>
+                      ))}
+                    </MenuOptionGroup>
+                  </InfiniteScroll>
                 </MenuList>
               </Menu>
             </Grid>
