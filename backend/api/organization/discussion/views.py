@@ -11,7 +11,11 @@ from emoji import is_emoji
 from .models import Discussion
 from api.organization.decorators import organization_permission_classes
 from .serializers import *
+from rest_framework.throttling import UserRateThrottle
+from rest_framework.decorators import throttle_classes
 
+class DiscussionThrottle(UserRateThrottle):
+    scope = 'discussion'
 
 @swagger_auto_schema(
     method='post',
@@ -56,6 +60,7 @@ def enable_discussion(request, id):
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner', 'Member'])
+@throttle_classes([DiscussionThrottle])
 def create_topic(request, id):
     organization = request.organization
     if not hasattr(organization, 'discussion'):
@@ -230,6 +235,7 @@ def delete_topic(request, id):
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner', 'Member'])
+@throttle_classes([DiscussionThrottle])
 def create_comment(request, id):
     organization = request.organization
     topic_local_id = request.data.get('topic_local_id')
@@ -376,6 +382,7 @@ def delete_comment(request, id):
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner', 'Member'])
+@throttle_classes([DiscussionThrottle])
 def edit_comment(request, id):
     organization = request.organization
     topic_local_id = request.data.get('topic_local_id')
@@ -403,12 +410,12 @@ def edit_comment(request, id):
     responses={
         201: openapi.Response(
             description="Category created successfully",
-            schema=DiscussionCategorySerializer(many=True)
+            schema=DiscussionCategorySerializer
         ),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
         404: openapi.Response(description="Discussion not found"),
     },
-    operation_description="Create a new category for a discussion and return the updated list of categories.",
+    operation_description="Create a new category for a discussion.",
     tags=["Organization/Discussion"]
 )
 @api_view(['POST'])
@@ -425,16 +432,20 @@ def create_category(request, id):
     serializer = DiscussionCategorySerializer(data=request.data)
     if serializer.is_valid():
         serializer.save(discussion=discussion)
-        # return all categories
-        categories = discussion.categories.all().order_by('name')
-        updated_serializer = DiscussionCategorySerializer(categories, many=True)
-        return Response(updated_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 @swagger_auto_schema(
-    method='get',
+    method='post',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'page': openapi.Schema(type=openapi.TYPE_INTEGER, default=1),
+            'page_size': openapi.Schema(type=openapi.TYPE_INTEGER, default=20),
+        }
+    ),
     responses={
         200: openapi.Response(
             description="List of categories in the discussion",
@@ -443,10 +454,10 @@ def create_category(request, id):
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
         404: openapi.Response(description="Discussion not found"),
     },
-    operation_description="Retrieve a list of categories in the discussion.",
+    operation_description="Retrieve a paginated list of categories in the discussion.",
     tags=["Organization/Discussion"]
 )
-@api_view(['GET'])
+@api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner', 'Member'])
@@ -457,9 +468,20 @@ def list_categories(request, id):
     except Discussion.DoesNotExist:
         return Response({'detail': 'Discussion not found'}, status=status.HTTP_404_NOT_FOUND)
     
+    class CustomPagination(PageNumberPagination):
+        page_size_query_param = 'page_size'
+
+    paginator = CustomPagination()
+
+    request.query_params._mutable = True
+    request.query_params['page'] = request.data.get('page', 1)
+    request.query_params['page_size'] = request.data.get('page_size', 20)
+    request.query_params._mutable = False
+    
     categories = discussion.categories.all().order_by('name')
-    serializer = DiscussionCategorySerializer(categories, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    result_page = paginator.paginate_queryset(categories, request)
+    serializer = DiscussionCategorySerializer(result_page, many=True)
+    return paginator.get_paginated_response(serializer.data)
 
 
 @swagger_auto_schema(
@@ -487,13 +509,13 @@ def list_categories(request, id):
     responses={
         200: openapi.Response(
             description="Category updated successfully",
-            schema=DiscussionCategorySerializer(many=True)
+            schema=DiscussionCategorySerializer
         ),
         400: openapi.Response(description="Bad request, need category_id and category_value"),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
         404: openapi.Response(description="Discussion or Category not found"),
     },
-    operation_description="Update an existing category for a discussion and return the updated list of categories.",
+    operation_description="Update an existing category for a discussion.",
     tags=["Organization/Discussion"]
 )
 @api_view(['PATCH'])
@@ -521,10 +543,7 @@ def update_category(request, id):
     serializer = DiscussionCategorySerializer(category_instance, data=category_value, partial=True)
     if serializer.is_valid():
         serializer.save()
-        # return all categories
-        categories = discussion.categories.all().order_by('name')
-        updated_serializer = DiscussionCategorySerializer(categories, many=True)
-        return Response(updated_serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -539,14 +558,11 @@ def update_category(request, id):
         required=['category_id'],
     ),
     responses={
-        200: openapi.Response(
-            description="Category deleted successfully",
-            schema=DiscussionCategorySerializer(many=True)
-        ),
+        200: openapi.Response(description="Category deleted successfully"),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
         404: openapi.Response(description="Discussion or Category not found"),
     },
-    operation_description="Delete an existing category from a discussion and return the updated list of categories.",
+    operation_description="Delete an existing category from a discussion.",
     tags=["Organization/Discussion"]
 )
 @api_view(['POST'])
@@ -569,7 +585,38 @@ def delete_category(request, id):
         return Response({'detail': 'Category not found'}, status=status.HTTP_404_NOT_FOUND)
 
     category_instance.delete()
-    # return all categories
-    categories = discussion.categories.all().order_by('name')
-    updated_serializer = DiscussionCategorySerializer(categories, many=True)
-    return Response(updated_serializer.data, status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_200_OK)
+
+@swagger_auto_schema(
+    method='post',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={ 'category_id': openapi.Schema(type=openapi.TYPE_INTEGER) },
+        required=['category_id']
+    ),
+    responses={
+        200: openapi.Response(
+            description="Category retrieved successfully",
+            schema=DiscussionCategorySerializer
+        ),
+        404: openapi.Response(description="Category not found"),
+        403: openapi.Response(description="Authenticated user does not have the required permissions"),
+    },
+    operation_description="Retrieve a discussion category in this organization.",
+    tags=["Organization/Discussion"]
+)
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@organization_permission_classes(['Owner', 'Member'])
+def get_category_info(request, id):
+    organization = request.organization
+    if not hasattr(organization, 'discussion'):
+        return Response({'detail': 'Discussion not enabled in this organization'}, status=status.HTTP_404_NOT_FOUND)
+    category_id = request.data.get('category_id')
+    try:
+        category = DiscussionCategory.objects.get(discussion=organization.discussion, id=category_id)
+    except DiscussionCategory.DoesNotExist:
+        return Response({'detail': 'Category not found or has been deleted'}, status=status.HTTP_404_NOT_FOUND)
+    serializer = DiscussionCategorySerializer(category)
+    return Response(serializer.data, status=status.HTTP_200_OK)

@@ -237,6 +237,16 @@ const DiscussionTopicPage = () => {
       console.error("Failed to create comment:", error);
       if (error.request && error.request.status === 403) {
         orgCtx.toastNoPermissionAndRedirect();
+      } else if (error.request && error.request.status === 429) {
+        toast({
+          title: t("Services.discussion.createComment.error-429"),
+          status: "error",
+        });
+      } else if (error.request && error.request.status === 400) {
+        toast({
+          title: t("Services.discussion.createComment.error-400"),
+          status: "error",
+        });
       } else {
         toast({
           title: t("Services.discussion.createComment.error"),
@@ -259,8 +269,7 @@ const DiscussionTopicPage = () => {
       setHasMoreReverse(true);
       const res = await handleListComments(lastPage, pageSize);
       setComments(res.results);
-    }
-    else {
+    } else {
       const res = await handleListComments(lastPage, pageSize);
       setComments([...comments, res.results[res.results.length - 1]]);
     }

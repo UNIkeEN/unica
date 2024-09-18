@@ -389,6 +389,8 @@
             },
             "createComment": {
                 "error": "创建评论失败",
+                "error-429": "请求速度太快，请等待1分钟后再试",
+                "error-400": "评论内容不能为空",
                 "success": "评论已成功创建"
             },
             "deleteComment": {
@@ -406,6 +408,8 @@
             "createTopic": {
                 "button": "创建话题",
                 "error": "创建话题失败",
+                "error-429": "请求速度太快，请等待1分钟后再试",
+                "error-400": "话题标题和内容均不能为空",
                 "success": "话题已成功创建"
             },
             "createCategory": {

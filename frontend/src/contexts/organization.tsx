@@ -21,7 +21,7 @@ interface OrganizationContextType {
   setBasicInfo: (org: Organization) => void;
   // Shared Global State and Update Handlers (shared by different components and pages)
   handleGetProjects: (page: number, pageSize: number, org_id: number) => Promise<any>;
-  handleListDiscussionCategories: (org_id: number) => Promise<any>;
+  handleListDiscussionCategories: (page: number, pageSize: number, org_id: number) => Promise<any>;
 }
 
 const OrganizationContext = createContext<OrganizationContextType>({
@@ -35,7 +35,7 @@ const OrganizationContext = createContext<OrganizationContextType>({
   setUserRole: () => {},
   setBasicInfo: () => {},
   handleGetProjects: (page: number, pageSize: number, org_id: number) => null,
-  handleListDiscussionCategories: (org_id: number) => null
+  handleListDiscussionCategories: (page: number, pageSize: number, org_id: number) => null
 });
 
 export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -106,10 +106,10 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
     }
   };
 
-  const handleListDiscussionCategories = async (org_id: number) => {
+  const handleListDiscussionCategories = async (page: number, pageSize: number, org_id: number) => {
     if (!org_id || (orgInfo && !orgInfo.is_discussion_enabled)) return null;
     try {
-      const res = await listCategories(org_id);
+      const res = await listCategories(org_id, page, pageSize);
       return res;
     } catch (error) {
       if (error.request && error.request.status === 403) {

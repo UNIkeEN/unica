@@ -13,13 +13,14 @@ import {
 } from "@chakra-ui/react";
 import OrganizationContext from "@/contexts/organization";
 import { useToast } from "@/contexts/toast";
-import RichList from "@/components/rich-list";
 import { DiscussionTopicCategory, emptyCategory } from "@/models/discussion";
 import { MemberRoleEnum } from "@/models/organization";
+import { createCategory, deleteCategory, updateCategory } from "@/services/discussion";
+import RichList from "@/components/rich-list";
 import CreateCategoryModal from "@/components/modals/create-category-modal";
 import CategoryIcon from "@/components/category-icon";
-import { createCategory, deleteCategory, updateCategory } from "@/services/discussion";
 import GenericAlertDialog from "@/components/modals/generic-alert-dialog";
+import Pagination from "@/components/pagination";
 
 const DiscussionCategoryManagerPage = () => {
   const orgCtx = useContext(OrganizationContext);
@@ -28,36 +29,48 @@ const DiscussionCategoryManagerPage = () => {
   const toast = useToast();
 
   const [categories, setCategories] = useState<DiscussionTopicCategory[]>([]);
+  const [categoryCount, setCategoryCount] = useState(0);
   const [newCategory, setNewCategory] = useState<DiscussionTopicCategory>(emptyCategory);
   const [selectedCategory, setSelectedCategory] = useState<DiscussionTopicCategory | null>(null);
   const [isUpdate, setIsUpdate] = useState(false); // update or create
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure();
 
+  const _handleListDiscussionCategories = (page, pageSize, id) => {
+    orgCtx.handleListDiscussionCategories(page, pageSize, id)
+    .then((res) => {
+      setCategories(res.results);
+      setCategoryCount(res.count);
+    })
+    .catch((error) => {
+      setCategories([]);
+      setCategoryCount(0);
+    })
+  }
+
   useEffect(() => {
     const id = Number(router.query.id);
     if (id) {
-      orgCtx.handleListDiscussionCategories(id)
-      .then((res) => {setCategories(res);})
-      .catch((error) => {setCategories([]);})
+      _handleListDiscussionCategories(page, pageSize, id);
     } else {
       setCategories([]);
+      setCategoryCount(0);
     }
-  }, [router.query.id]);
+  }, [router.query.id, page, pageSize]);
 
   const handleCreateCategory = async () => {
     try {
       const id = Number(router.query.id);
-      const res = await createCategory(id, newCategory);
-      if (res) {
-        toast({
-          title: t("Services.discussion.createCategory.success"),
-          status: "success",
-        });
-        setCategories(res);
-        onClose();
-      }
+      await createCategory(id, newCategory);
+      toast({
+        title: t("Services.discussion.createCategory.success"),
+        status: "success",
+      });
+      _handleListDiscussionCategories(page, pageSize, id);      
+      onClose();
     } catch (error) {
       if (error.request && error.request.status === 403) {
         orgCtx.toastNoPermissionAndRedirect();
@@ -83,15 +96,13 @@ const DiscussionCategoryManagerPage = () => {
       return;
     try {
       const id = Number(router.query.id);
-      const res = await updateCategory(id, category.id, newCategory);
-      if (res) {
-        toast({
-          title: t("Services.discussion.updateCategory.success"),
-          status: "success",
-        });
-        setCategories(res);
-        onClose();
-      }
+      await updateCategory(id, category.id, newCategory);
+      toast({
+        title: t("Services.discussion.updateCategory.success"),
+        status: "success",
+      });
+      _handleListDiscussionCategories(page, pageSize, id);
+      onClose();
     } catch (error) {
       if (error.request && error.request.status === 403) {
         orgCtx.toastNoPermissionAndRedirect();
@@ -107,15 +118,13 @@ const DiscussionCategoryManagerPage = () => {
   const handleDeleteCategory = async (category_id: number) => {
     try {
       const id = Number(router.query.id);
-      const res = await deleteCategory(id, category_id);
-      if (res) {
-        toast({
-          title: t("Services.discussion.deleteCategory.success"),
-          status: "success",
-        });
-        setCategories(res);
-        onDeleteClose();
-      }
+      await deleteCategory(id, category_id);
+      toast({
+        title: t("Services.discussion.deleteCategory.success"),
+        status: "success",
+      });
+      _handleListDiscussionCategories(page, pageSize, id);
+      onDeleteClose();
     } catch (error) {
       if (error.request && error.request.status === 403) {
         orgCtx.toastNoPermissionAndRedirect();
@@ -134,7 +143,7 @@ const DiscussionCategoryManagerPage = () => {
         <Flex alignItems="center">
           <Text pl={1}>
             {t("DiscussionCategoryManagerPage.text.total", {
-              count: categories ? categories.length : 0,
+              count: categoryCount,
             })}
           </Text>
           <Spacer />
@@ -151,6 +160,7 @@ const DiscussionCategoryManagerPage = () => {
         </Flex>
         <>
           <RichList titleAsLink
+            titleProps={{ color: "black" }}
             items={categories.map((item) => ({
               title: item.name,
               href: `/organizations/${router.query.id}/discussion?categoryId=${item.id}`,
@@ -188,6 +198,18 @@ const DiscussionCategoryManagerPage = () => {
             }))}
           />
         </>
+        {categoryCount > 0 &&
+          <Flex>
+            <Spacer />
+            <Pagination
+              total={Math.ceil(categoryCount / pageSize)}
+              current={page}
+              onPageChange={(page) => setPage(page)}
+              colorScheme="blue"
+              variant="subtle"
+            />
+          </Flex>
+        }
       </VStack>
 
       <CreateCategoryModal
