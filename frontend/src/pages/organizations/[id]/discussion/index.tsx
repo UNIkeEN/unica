@@ -99,10 +99,12 @@ const OrganizationDiscussionPage = () => {
   }, [router.query.id]);
 
   useEffect(() => {
-    const urlCatId = router.query.categoryId ? Number(router.query.categoryId) : 0;
-    setSelectedCategoryId(urlCatId);
-    setPageIndex(1)
-    handleListTopics(Number(router.query.id), 1, pageSize, urlCatId);
+    if (orgCtx.basicInfo?.is_discussion_enabled) {
+      const urlCatId = router.query.categoryId ? Number(router.query.categoryId) : 0;
+      setSelectedCategoryId(urlCatId);
+      setPageIndex(1)
+      handleListTopics(Number(router.query.id), 1, pageSize, urlCatId);
+    }
   }, [router.query.categoryId]);
 
   useEffect(() => {
