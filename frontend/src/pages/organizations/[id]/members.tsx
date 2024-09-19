@@ -147,7 +147,12 @@ const OrganizationMembersPage = () => {
         status: "success",
       });
       onCancelInviteModalClose();
-      handleGetOrganizationInvitations(Number(router.query.id), pageIndex, pageSize)
+      const lastPage = Math.ceil((pendingCount - 1) / pageSize);
+      if (pageIndex > lastPage) {
+        handlePageChange(lastPage);
+      } else {
+        handleGetOrganizationInvitations(Number(router.query.id), pageIndex, pageSize);
+      }
     } catch (error) {
       console.error("Failed to remove member:", error);
       if (
@@ -177,7 +182,12 @@ const OrganizationMembersPage = () => {
         status: "success",
       });
       onRemoveDialogClose();
-      handlGetOrganizationMembers(Number(router.query.id), pageIndex, pageSize);
+      const lastPage = Math.ceil((orgCtx.basicInfo.member_count - 1) / pageSize);
+      if (pageIndex > lastPage) {
+        handlePageChange(lastPage);
+      } else {
+        handlGetOrganizationMembers(Number(router.query.id), pageIndex, pageSize);
+      }
     } catch (error) {
       console.error("Failed to remove member:", error);
       if (
@@ -224,7 +234,11 @@ const OrganizationMembersPage = () => {
             <InviteMembersModal id={Number(router.query.id)}
             onOKCallback={()=>{
               if (ListDomain === "pending") {
-                handleGetOrganizationInvitations(Number(router.query.id), pageIndex, pageSize);
+                if (pageIndex !== 1) {
+                  handlePageChange(1);
+                } else {
+                  handleGetOrganizationInvitations(Number(router.query.id), pageIndex, pageSize);
+                }
               }
             }}/>
           </HStack>

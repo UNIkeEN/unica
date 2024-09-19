@@ -69,7 +69,12 @@ const DiscussionCategoryManagerPage = () => {
         title: t("Services.discussion.createCategory.success"),
         status: "success",
       });
-      _handleListDiscussionCategories(page, pageSize, id);      
+      const lastPage = Math.ceil((categoryCount + 1) / pageSize);
+      if (page !== lastPage) {
+        setPage(lastPage);
+      } else {
+        _handleListDiscussionCategories(page, pageSize, id);
+      }
       onClose();
     } catch (error) {
       if (error.request && error.request.status === 403) {
@@ -123,7 +128,12 @@ const DiscussionCategoryManagerPage = () => {
         title: t("Services.discussion.deleteCategory.success"),
         status: "success",
       });
-      _handleListDiscussionCategories(page, pageSize, id);
+      const lastPage = Math.ceil((categoryCount - 1) / pageSize);
+      if (page > lastPage) {
+        setPage(lastPage);
+      } else {
+        _handleListDiscussionCategories(page, pageSize, id);
+      }
       onDeleteClose();
     } catch (error) {
       if (error.request && error.request.status === 403) {
