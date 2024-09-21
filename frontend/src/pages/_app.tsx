@@ -21,7 +21,7 @@ i18n
   .use(initReactI18next)
   .init({
     resources: localeResources,
-    fallbackLng: 'en',
+    fallbackLng: process.env.NEXT_PUBLIC_I18N_FALLBACK_LANGUAGE || 'en',
     interpolation: {
       escapeValue: false,
     },
