@@ -62,7 +62,8 @@ INSTALLED_APPS = [
     'drf_yasg',
     # 'adrf',
     'api',
-    'oauth',
+    'files',
+    'oauth', 
     'django.contrib.admin',
 ]
 
@@ -154,6 +155,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+
+# Media files (Uploaded User Content)
+
+MEDIA_ROOT = os.environ.get('MEDIA_ROOT', 'user_content/')
+MEDIA_URL = os.environ.get('MEDIA_URL', '/user_content/')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
