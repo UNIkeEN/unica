@@ -8,3 +8,4 @@ mmh3
 drf-yasg
 jsonschema
 emoji
+python-magic
