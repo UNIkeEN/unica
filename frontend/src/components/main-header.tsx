@@ -6,7 +6,7 @@ const MainHeader = ({ breadcrumbs, title }) => {
   return (
     <Box>
       <Hide above='md'>
-        <VStack ml={6} spacing={0.5} align="flex-start">
+        <VStack ml={3} spacing={0.5} align="flex-start">
           <HStack>
             {
               breadcrumbs && breadcrumbs.map((item: any, index: number) => (
@@ -22,7 +22,7 @@ const MainHeader = ({ breadcrumbs, title }) => {
       </Hide>
             
       <Show above='md'>
-        <HStack ml={4} spacing={3}>
+        <HStack ml={3} spacing={3}>
           {
             breadcrumbs && breadcrumbs.map((item: any) => (
               <>

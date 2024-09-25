@@ -70,7 +70,7 @@ const OrgLayoutContent: React.FC<{ children: React.ReactNode }> = ({ children })
         <title>{orgCtx.basicInfo?.display_name}</title>
         <meta name="headerTitle" content={orgCtx.basicInfo?.display_name} />
       </Head>
-      <VStack spacing={6} align="stretch">
+      <VStack spacing={5} align="stretch">
         <NavTabs
           items={orgMenuItems
             .filter(item => !item.owner_only || (item.owner_only && orgCtx.userRole === MemberRoleEnum.OWNER))
