@@ -7,15 +7,43 @@ import ProjectContext, { ProjectContextProvider } from '@/contexts/project';
 import NavTabs from '@/components/nav-tabs';
 import Head from 'next/head';
 
+export const ProjectLayoutTab = () => {
+  const router = useRouter();
+  const { t } = useTranslation();
+
+  const projMenuItems = [
+    { icon: FiTrello, label: 'board' },
+    { icon: FiBookOpen, label: 'wiki' },
+    { icon: FiSettings, label: 'settings' },
+  ];
+
+  return (
+    <NavTabs
+      items={projMenuItems
+        .map((item) => ({
+          label:
+            <HStack spacing={2}>
+              <Icon as={item.icon} />
+              <Text>{t(`ProjectPages.${item.label}.title`)}</Text>
+            </HStack>
+          ,
+          value: `/projects/${router.query.id}/${item.label}`,
+      }))}
+      onClick={(value) => { router.push(value) }}
+      selectedKeys={[router.asPath]}
+    />
+  )
+}
+
 const ProjectLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <ProjectContextProvider>
-      <OrgLayoutContent>{children}</OrgLayoutContent>
+      <ProjectLayoutContent>{children}</ProjectLayoutContent>
     </ProjectContextProvider>
   );
 };
 
-const OrgLayoutContent: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const ProjectLayoutContent: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const projCtx = useContext(ProjectContext);
   const router = useRouter();
   const { t } = useTranslation();
@@ -25,12 +53,6 @@ const OrgLayoutContent: React.FC<{ children: React.ReactNode }> = ({ children })
     if (id) projCtx.updateAll(id);
     else projCtx.cleanUp();
   }, [router.query.id]);
-
-  const projMenuItems = [
-    { icon: FiTrello, label: 'board' },
-    { icon: FiBookOpen, label: 'wiki' },
-    { icon: FiSettings, label: 'settings' },
-  ];
 
   if (!projCtx.mounted) return (
     <>
@@ -55,20 +77,6 @@ const OrgLayoutContent: React.FC<{ children: React.ReactNode }> = ({ children })
         }
       </Head>
       <VStack spacing={6} align="stretch">
-        <NavTabs
-          items={projMenuItems
-            .map((item) => ({
-              label:
-                <HStack spacing={2}>
-                  <Icon as={item.icon} />
-                  <Text>{t(`ProjectPages.${item.label}.title`)}</Text>
-                </HStack>
-              ,
-              value: `/projects/${router.query.id}/${item.label}`,
-          }))}
-          onClick={(value) => { router.push(value) }}
-          selectedKeys={[router.asPath]}
-        />
         {children}
       </VStack>
     </>
