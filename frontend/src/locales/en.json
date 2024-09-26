@@ -123,6 +123,10 @@
             "activity": "{{count}} comments, last updated "
         }
     },
+    "Editable": {
+        "contentRequired": "Content is required",
+        "contentTooLong": "Content is too long"
+    },
     "Enums": {
         "chakra-colors": {
             "gray": "Gray",

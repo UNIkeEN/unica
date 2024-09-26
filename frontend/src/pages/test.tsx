@@ -6,6 +6,7 @@ import Pagination from "@/components/pagination";
 import ChakraColorSelector from "@/components/color-selector";
 import MarkdownEditor from "@/components/markdown-editor";
 import InfiniteScroll from 'react-infinite-scroller';
+import Editable from "@/components/editable";
 
 const ComponentTestPage = () => {
   const router = useRouter();
@@ -68,13 +69,15 @@ ReactDOM.render(
     setItemsButtom([...newItems, ...itemsButtom]);
   };
 
-  // 将滚动条位置设置到最底部
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (container) {
       container.scrollTop = container.scrollHeight;
     }
   }, []);
+
+  const [editableText, setEditableText] = React.useState("Editable Text");
+  const [isTextArea, setIsTextArea] = React.useState(false);
 
   const breadcrumbs = [
     { text: "Item1", link: "/" },
@@ -159,6 +162,19 @@ ReactDOM.render(
             ))}
           </InfiniteScroll>
         </Box>
+          
+        {/* Editable */}
+        <Editable
+          isTextArea={isTextArea}
+          value={editableText}
+          placeholder="Placeholder"
+          onEditSubmit={(value) => setEditableText(value)}
+          isRequired
+          maxLength={80}
+          title="hello"
+          mt={5}
+        />
+        <Button onClick={()=>{setIsTextArea(!isTextArea)}}>switch</Button>
 
       </VStack>
     </>

@@ -123,6 +123,10 @@
             "activity": "{{count}} 条回复，更新于 "
         }
     },
+    "Editable": {
+        "contentRequired": "输入的内容不能为空",
+        "contentTooLong": "输入的内容过长"
+    },
     "Enums": {
         "chakra-colors": {
             "gray": "灰色",
