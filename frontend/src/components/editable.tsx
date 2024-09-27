@@ -9,9 +9,8 @@ import {
   IconButton,
   Input,
   Textarea,
-  VStack,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FiCheck, FiX } from "react-icons/fi";
 
@@ -20,9 +19,11 @@ interface EditableProps extends BoxProps {
   value: string;
   onEditSubmit: (value: string) => void;
   title?: string;
+  localeKey?: string;
   placeholder?: string;
-  isRequired?: boolean;
-  maxLength?: number;
+  checkError?: (value: string) => number;
+  onFocus?: () => void;
+  onBlur?: () => void;
 }
 
 const Editable: React.FC<EditableProps> = ({
@@ -30,16 +31,18 @@ const Editable: React.FC<EditableProps> = ({
   value,
   onEditSubmit,
   title,
+  localeKey,
   placeholder = "",
-  isRequired = false,
-  maxLength = 200,
+  checkError = () => 0,
+  onFocus = () => {},
+  onBlur = () => {},
   ...boxProps
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [isContentNull, setIsContentNull] = useState(false);
-  const [isContentTooLong, setIsContentTooLong] = useState(false);
+  const [isInvalid, setIsInvalid] = useState(true);
   const [tempValue, setTempValue] = useState(value);
 
+  const ref = useRef(null);
   const { t } = useTranslation();
 
   const EditButtons = () => {
@@ -50,7 +53,7 @@ const Editable: React.FC<EditableProps> = ({
           size="sm"
           aria-label="submit"
           onClick={() => {
-            if ((isRequired && isContentNull) || isContentTooLong) return;
+            if (isInvalid) return;
             onEditSubmit(tempValue);
             setIsEditing(false);
           }}
@@ -62,8 +65,7 @@ const Editable: React.FC<EditableProps> = ({
           onClick={() => {
             setTempValue(value);
             setIsEditing(false);
-            setIsContentNull(false);
-            setIsContentTooLong(false);
+            setIsInvalid(false);
           }}
         />
       </HStack>
@@ -74,23 +76,21 @@ const Editable: React.FC<EditableProps> = ({
         aria-label="edit"
         onClick={() => {
           setIsEditing(true);
+          ref.current.focus();
         }}
         ml="auto"
-        mb={isTextArea ? "auto" : 0}
       />
     );
   };
 
   return (
     <Box {...boxProps}>
-      <FormControl
-        pb={5}
-        isInvalid={isContentTooLong || (isRequired && isContentNull)}
-      >
+      <FormControl pb={5} isInvalid={isInvalid && isEditing}>
         {title && <FormLabel>{title}</FormLabel>}
         {isTextArea ? (
-          <VStack>
+          <>
             <Textarea
+              ref={ref}
               value={tempValue}
               placeholder={placeholder}
               isReadOnly={!isEditing}
@@ -99,45 +99,55 @@ const Editable: React.FC<EditableProps> = ({
                 setTempValue(e.target.value);
               }}
               onBlur={() => {
-                setIsContentNull(tempValue.trim() === "");
-                setIsContentTooLong(tempValue.trim().length > maxLength);
+                setIsInvalid(checkError(tempValue) !== 0);
+                onBlur();
               }}
               onFocus={() => {
-                setIsContentNull(false);
-                setIsContentTooLong(false);
+                setIsInvalid(false);
+                onFocus();
               }}
             />
-            {EditButtons()}
-          </VStack>
+            <HStack>
+              <FormErrorMessage>
+                {localeKey &&
+                  (isInvalid && isEditing
+                    ? t(`${localeKey}.error-${checkError(tempValue)}`)
+                    : "")}
+              </FormErrorMessage>
+              <Box mt="2" ml="auto">{EditButtons()}</Box>
+            </HStack>
+          </>
         ) : (
-          <HStack>
-            <Input
-              value={tempValue}
-              placeholder={placeholder}
-              isReadOnly={!isEditing}
-              variant={isEditing ? "outline" : "unstyled"}
-              onChange={(e) => {
-                setTempValue(e.target.value);
-              }}
-              onBlur={() => {
-                setIsContentNull(tempValue.trim() === "");
-                setIsContentTooLong(tempValue.trim().length > maxLength);
-              }}
-              onFocus={() => {
-                setIsContentNull(false);
-                setIsContentTooLong(false);
-              }}
-            />
-            {EditButtons()}
-          </HStack>
+          <>
+            <HStack>
+              <Input
+                ref={ref}
+                value={tempValue}
+                placeholder={placeholder}
+                isReadOnly={!isEditing}
+                variant={isEditing ? "outline" : "unstyled"}
+                onChange={(e) => {
+                  setTempValue(e.target.value);
+                }}
+                onBlur={() => {
+                  setIsInvalid(checkError(tempValue) !== 0);
+                  onBlur();
+                }}
+                onFocus={() => {
+                  setIsInvalid(false);
+                  onFocus();
+                }}
+              />
+              {EditButtons()}
+            </HStack>
+            <FormErrorMessage>
+              {localeKey &&
+                (isInvalid && isEditing
+                  ? t(`${localeKey}.error-${checkError(tempValue)}`)
+                  : "")}
+            </FormErrorMessage>
+          </>
         )}
-        <FormErrorMessage>
-          {isContentNull
-            ? t("Editable.contentRequired")
-            : isRequired && isContentTooLong
-            ? t("Editable.contentTooLong")
-            : ""}
-        </FormErrorMessage>
       </FormControl>
     </Box>
   );

@@ -76,7 +76,7 @@ ReactDOM.render(
     }
   }, []);
 
-  const [editableText, setEditableText] = React.useState("Editable Text");
+  const [editableText, setEditableText] = React.useState("");
   const [isTextArea, setIsTextArea] = React.useState(false);
 
   const breadcrumbs = [
@@ -169,9 +169,17 @@ ReactDOM.render(
           value={editableText}
           placeholder="Placeholder"
           onEditSubmit={(value) => setEditableText(value)}
-          isRequired
-          maxLength={80}
+          checkError={(value) => {
+            if (value.trim() === "") {
+              return 1;
+            }
+            if (value.length > 80) {
+              return 2;
+            }
+            return 0;
+          }}
           title="hello"
+          localeKey="Editable"
           mt={5}
         />
         <Button onClick={()=>{setIsTextArea(!isTextArea)}}>switch</Button>
