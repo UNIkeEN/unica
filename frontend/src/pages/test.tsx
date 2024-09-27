@@ -180,7 +180,6 @@ ReactDOM.render(
             }
             return 0;
           }}
-          title="hello"
           localeKey="Editable"
           mt={5}
         />

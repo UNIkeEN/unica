@@ -4,7 +4,6 @@ import {
   BoxProps,
   FormControl,
   FormErrorMessage,
-  FormLabel,
   HStack,
   IconButton,
   Input,
@@ -18,7 +17,6 @@ interface EditableProps extends BoxProps {
   isTextArea: boolean;
   value: string;
   onEditSubmit: (value: string) => void;
-  title?: string;
   localeKey?: string;
   placeholder?: string;
   checkError?: (value: string) => number;
@@ -30,7 +28,6 @@ const Editable: React.FC<EditableProps> = ({
   isTextArea,
   value,
   onEditSubmit,
-  title,
   localeKey,
   placeholder = "",
   checkError = () => 0,
@@ -86,7 +83,6 @@ const Editable: React.FC<EditableProps> = ({
   return (
     <Box {...boxProps}>
       <FormControl pb={5} isInvalid={isInvalid && isEditing}>
-        {title && <FormLabel>{title}</FormLabel>}
         {isTextArea ? (
           <>
             <Textarea
