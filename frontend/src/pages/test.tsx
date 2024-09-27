@@ -7,6 +7,8 @@ import ChakraColorSelector from "@/components/color-selector";
 import MarkdownEditor from "@/components/markdown-editor";
 import InfiniteScroll from 'react-infinite-scroller';
 import Editable from "@/components/editable";
+import TaskCard from "@/components/task-card";
+import { MockTaskSummary } from "@/models/task";
 
 const ComponentTestPage = () => {
   const router = useRouter();
@@ -90,7 +92,7 @@ ReactDOM.render(
         <meta name="headerTitle" content="Test Page" />
         <meta name="headerBreadcrumbs" content={JSON.stringify(breadcrumbs)} />
       </Head>
-      <VStack>
+      <VStack mb={10}>
         <Button variant="ghost" colorScheme="green">
           Ghost
         </Button>
@@ -183,7 +185,8 @@ ReactDOM.render(
           mt={5}
         />
         <Button onClick={()=>{setIsTextArea(!isTextArea)}}>switch</Button>
-
+        
+        <TaskCard task={MockTaskSummary}/>
       </VStack>
     </>
   );
