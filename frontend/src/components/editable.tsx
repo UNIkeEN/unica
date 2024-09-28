@@ -8,8 +8,10 @@ import {
   IconButton,
   Input,
   Textarea,
+  Text,
+  Container,
 } from "@chakra-ui/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FiCheck, FiX } from "react-icons/fi";
 
@@ -19,6 +21,7 @@ interface EditableProps extends BoxProps {
   onEditSubmit: (value: string) => void;
   localeKey?: string;
   placeholder?: string;
+  textareaWidth?: string;
   checkError?: (value: string) => number;
   onFocus?: () => void;
   onBlur?: () => void;
@@ -30,6 +33,7 @@ const Editable: React.FC<EditableProps> = ({
   onEditSubmit,
   localeKey,
   placeholder = "",
+  textareaWidth = "sm",
   checkError = () => 0,
   onFocus = () => {},
   onBlur = () => {},
@@ -73,24 +77,27 @@ const Editable: React.FC<EditableProps> = ({
         aria-label="edit"
         onClick={() => {
           setIsEditing(true);
-          ref.current.focus();
         }}
-        ml="auto"
+        ml="2"
       />
     );
   };
 
+  useEffect(() => {
+    if (isEditing) {
+      ref.current.focus();
+    }
+  }, [isEditing]);
+
   return (
     <Box {...boxProps}>
-      <FormControl pb={5} isInvalid={isInvalid && isEditing}>
-        {isTextArea ? (
-          <>
+      {isEditing ? (
+        isTextArea ? (
+          <FormControl pb={5} isInvalid={isInvalid && isEditing}>
             <Textarea
               ref={ref}
               value={tempValue}
               placeholder={placeholder}
-              isReadOnly={!isEditing}
-              variant={isEditing ? "outline" : "unstyled"}
               onChange={(e) => {
                 setTempValue(e.target.value);
               }}
@@ -110,18 +117,18 @@ const Editable: React.FC<EditableProps> = ({
                     ? t(`${localeKey}.error-${checkError(tempValue)}`)
                     : "")}
               </FormErrorMessage>
-              <Box mt="2" ml="auto">{EditButtons()}</Box>
+              <Box mt="2" ml="auto">
+                {EditButtons()}
+              </Box>
             </HStack>
-          </>
+          </FormControl>
         ) : (
-          <>
+          <FormControl pb={5} isInvalid={isInvalid && isEditing}>
             <HStack>
               <Input
                 ref={ref}
                 value={tempValue}
                 placeholder={placeholder}
-                isReadOnly={!isEditing}
-                variant={isEditing ? "outline" : "unstyled"}
                 onChange={(e) => {
                   setTempValue(e.target.value);
                 }}
@@ -142,9 +149,19 @@ const Editable: React.FC<EditableProps> = ({
                   ? t(`${localeKey}.error-${checkError(tempValue)}`)
                   : "")}
             </FormErrorMessage>
-          </>
-        )}
-      </FormControl>
+          </FormControl>
+        )
+      ) : isTextArea ? (
+        <Container maxW={textareaWidth}>
+          {value}
+          {EditButtons()}
+        </Container>
+      ) : (
+        <HStack>
+          <Text>{value}</Text>
+          {EditButtons()}
+        </HStack>
+      )}
     </Box>
   );
 };

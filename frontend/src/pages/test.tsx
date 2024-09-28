@@ -146,7 +146,6 @@ ReactDOM.render(
         </Box>
 
         {/* Infinite Scroll Reverse */}
-        <Divider />
         <Box height="300px" overflow="auto" mt="8" ref={scrollContainerRef}>
           <InfiniteScroll
             loadMore={loadMoreButtom}
@@ -183,8 +182,9 @@ ReactDOM.render(
           localeKey="Editable"
           mt={5}
         />
-        <Button onClick={()=>{setIsTextArea(!isTextArea)}}>switch</Button>
+        <Button onClick={() => { setIsTextArea(!isTextArea) }}>{isTextArea ? "Textarea" : "Input"}</Button>
         
+        {/* TaskCard */}
         <TaskCard task={MockTaskSummary}/>
       </VStack>
     </>
