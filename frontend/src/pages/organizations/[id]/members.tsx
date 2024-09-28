@@ -257,10 +257,10 @@ const OrganizationMembersPage = () => {
                     {t(`Enums.organization.role.${member.role}`)}
                   </Text>
                   {ListDomain === "members"
-                    ? <Text fontSize="sm" className="secondary-text">
+                    ? <Text fontSize="sm" className="secondary-text" display={{ base: 'none', md: 'block' }} >
                         {t('OrganizationPages.members.list.joined_at', { date: ISOtoDate(member.joined_at) })}
                       </Text>
-                    : <Text fontSize="sm" className="secondary-text">
+                    : <Text fontSize="sm" className="secondary-text" display={{ base: 'none', md: 'block' }} >
                         {t('OrganizationPages.members.list.invited_at', { date: ISOtoDate(member.joined_at) })}
                       </Text>
                   }
