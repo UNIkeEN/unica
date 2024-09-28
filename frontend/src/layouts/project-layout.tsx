@@ -2,17 +2,19 @@ import React, { useContext, useEffect } from 'react';
 import { VStack, Text, HStack, Icon } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from "next/router";
-import { FiTrello, FiBookOpen, FiSettings } from 'react-icons/fi';
+import { FiBookOpen, FiSettings } from 'react-icons/fi';
+import { LuGalleryVerticalEnd, LuCircleDot } from "react-icons/lu";
 import ProjectContext, { ProjectContextProvider } from '@/contexts/project';
 import NavTabs from '@/components/nav-tabs';
 import Head from 'next/head';
 
-export const ProjectLayoutTab = () => {
+export const ProjectLayoutTabs = () => {
   const router = useRouter();
   const { t } = useTranslation();
 
   const projMenuItems = [
-    { icon: FiTrello, label: 'board' },
+    { icon: LuGalleryVerticalEnd, label: 'tasks' },
+    { icon: LuCircleDot, label: 'issues' },
     { icon: FiBookOpen, label: 'wiki' },
     { icon: FiSettings, label: 'settings' },
   ];

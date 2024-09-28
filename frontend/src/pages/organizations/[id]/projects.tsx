@@ -50,7 +50,7 @@ const OrganizationProjectsPage = () => {
           titleAsLink
           items={projectList.map((project) => ({
             title: project.display_name,
-            href: `/projects/${project.id}/board`,
+            href: `/projects/${project.id}/tasks`,
             body: (
               <Text fontSize="sm" className="secondary-text">
                 {t("General.updated_at", {

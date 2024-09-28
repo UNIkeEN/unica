@@ -353,8 +353,11 @@
         }
     },
     "ProjectPages": {
-        "board": {
-            "title": "看板"
+        "tasks": {
+            "title": "任务"
+        },
+        "issues": {
+            "title": "议题"
         },
         "wiki": {
             "title": "知识库"

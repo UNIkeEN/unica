@@ -353,8 +353,11 @@
         }
     },
     "ProjectPages": {
-        "board": {
-            "title": "Kanban"
+        "tasks": {
+            "title": "Tasks"
+        },
+        "issues": {
+            "title": "Issues"
         },
         "wiki": {
             "title": "Wiki"

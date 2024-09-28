@@ -63,7 +63,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         status: "success",
       });
       // onOKCallback();
-      router.push("/projects/" + res.id + "/board");
+      router.push("/projects/" + res.id + "/tasks");
     }
     setDescription("");
     setName("");

@@ -7,7 +7,7 @@ const ProjectDefaultPage = () => {
   useEffect(() => {
     const { id } = router.query;
     if (id) {
-      router.push(`/projects/${id}/board/`);
+      router.push(`/projects/${id}/tasks`);
     }
   }, [router]);
 

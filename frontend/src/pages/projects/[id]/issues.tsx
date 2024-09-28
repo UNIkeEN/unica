@@ -1,16 +1,18 @@
 import { useContext, useEffect } from "react";
 import { useTranslation } from 'react-i18next';
 import ProjectContext from "@/contexts/project";
+import { ProjectLayoutTabs } from "@/layouts/project-layout";
 
-const ProjectBoardPage = () => {
+const ProjectIssuesPage = () => {
   const projCtx = useContext(ProjectContext);
   const { t } = useTranslation();
 
   return (
     <>
-      <div>Board</div>
+      <ProjectLayoutTabs/>
+      <div>Project Issues</div>
     </>
   );
 };
 
-export default ProjectBoardPage;
+export default ProjectIssuesPage;
