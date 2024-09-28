@@ -39,42 +39,40 @@ const OrganizationProjectsPage = () => {
 
   return (
     <>
-      <VStack spacing={6} align="stretch">
-        <HStack w="100%" justifyContent="flex-end" align="center" spacing={3}>
-          <CreateProjectModal
-            organizationId={Number(router.query.id)}
-          />
-        </HStack>
+      <HStack w="100%" justifyContent="flex-end" align="center" spacing={3}>
+        <CreateProjectModal
+          organizationId={Number(router.query.id)}
+        />
+      </HStack>
 
-        <div>
-          <RichList
-            titleAsLink
-            items={projectList.map((project) => ({
-              title: project.display_name,
-              href: `/projects/${project.id}/board`,
-              body: (
-                <Text fontSize="sm" className="secondary-text">
-                  {t("General.updated_at", {
-                    time: formatRelativeTime(project.updated_at, t)
-                  })}
-                </Text>
-              ),
-            }))}
+      <div>
+        <RichList
+          titleAsLink
+          items={projectList.map((project) => ({
+            title: project.display_name,
+            href: `/projects/${project.id}/board`,
+            body: (
+              <Text fontSize="sm" className="secondary-text">
+                {t("General.updated_at", {
+                  time: formatRelativeTime(project.updated_at, t)
+                })}
+              </Text>
+            ),
+          }))}
+        />
+      </div>
+      {projectList && projectList.length > 0 && (
+        <Flex>
+          <Spacer />
+          <Pagination
+            total={Math.ceil(orgCtx.basicInfo?.project_count / pageSize)}
+            current={pageIndex}
+            onPageChange={(page) => setPageIndex(page)}
+            colorScheme="blue"
+            variant="subtle"
           />
-        </div>
-        {projectList && projectList.length > 0 && (
-          <Flex>
-            <Spacer />
-            <Pagination
-              total={Math.ceil(orgCtx.basicInfo?.project_count / pageSize)}
-              current={pageIndex}
-              onPageChange={(page) => setPageIndex(page)}
-              colorScheme="blue"
-              variant="subtle"
-            />
-          </Flex>
-        )}
-      </VStack>
+        </Flex>
+      )}
     </>
   );
 };

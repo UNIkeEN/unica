@@ -210,111 +210,109 @@ const OrganizationMembersPage = () => {
 
   return (
     <>
-      <VStack spacing={6} align="stretch">
-        {orgCtx.userRole === MemberRoleEnum.OWNER &&
-        <HStack w="100%" justifyContent="flex-end" align="center" spacing={3}>
-            <Menu closeOnSelect={true}>
-              <MenuButton as={Button} rightIcon={<FiChevronDown/>} w="auto" style={{ textAlign: 'left' }}>
-              {t('OrganizationPages.members.select.permission_group')}{t(`OrganizationPages.members.select.${ListDomain}`)}
-              </MenuButton>
-              <MenuList>
-                <MenuOptionGroup
-                  defaultValue={ListDomain}
-                  type="radio"
-                  onChange={(value) => handleListDomainChange(value as string)}
-                >
-                  {ListDomainOptions.map((option) => (
-                    <MenuItemOption key={option} value={option}>
-                      {t(`OrganizationPages.members.select.${option}`)}
-                    </MenuItemOption>
-                  ))}
-                </MenuOptionGroup>
-              </MenuList>
-            </Menu>
-            <InviteMembersModal id={Number(router.query.id)}
-            onOKCallback={()=>{
-              if (ListDomain === "pending") {
-                if (pageIndex !== 1) {
-                  handlePageChange(1);
-                } else {
-                  handleGetOrganizationInvitations(Number(router.query.id), pageIndex, pageSize);
-                }
+      {orgCtx.userRole === MemberRoleEnum.OWNER &&
+      <HStack w="100%" justifyContent="flex-end" align="center" spacing={3}>
+          <Menu closeOnSelect={true}>
+            <MenuButton as={Button} rightIcon={<FiChevronDown/>} w="auto" style={{ textAlign: 'left' }}>
+            {t('OrganizationPages.members.select.permission_group')}{t(`OrganizationPages.members.select.${ListDomain}`)}
+            </MenuButton>
+            <MenuList>
+              <MenuOptionGroup
+                defaultValue={ListDomain}
+                type="radio"
+                onChange={(value) => handleListDomainChange(value as string)}
+              >
+                {ListDomainOptions.map((option) => (
+                  <MenuItemOption key={option} value={option}>
+                    {t(`OrganizationPages.members.select.${option}`)}
+                  </MenuItemOption>
+                ))}
+              </MenuOptionGroup>
+            </MenuList>
+          </Menu>
+          <InviteMembersModal id={Number(router.query.id)}
+          onOKCallback={()=>{
+            if (ListDomain === "pending") {
+              if (pageIndex !== 1) {
+                handlePageChange(1);
+              } else {
+                handleGetOrganizationInvitations(Number(router.query.id), pageIndex, pageSize);
               }
-            }}/>
-          </HStack>
-        }
+            }
+          }}/>
+        </HStack>
+      }
 
-        
-        <div>
-          <RichList
-            items={listData.map((member) => ({
-              linePrefix: <UserAvatar user={member.user} size="md"/>,
-              title: member.user.display_name,
-              subtitle: member.user.username,
-              lineExtra:
-                <HStack spacing={4}>
-                  <Text fontSize="sm" className="secondary-text">
-                    {t(`Enums.organization.role.${member.role}`)}
-                  </Text>
-                  {ListDomain === "members"
-                    ? <Text fontSize="sm" className="secondary-text" display={{ base: 'none', md: 'block' }} >
-                        {t('OrganizationPages.members.list.joined_at', { date: ISOtoDate(member.joined_at) })}
-                      </Text>
-                    : <Text fontSize="sm" className="secondary-text" display={{ base: 'none', md: 'block' }} >
-                        {t('OrganizationPages.members.list.invited_at', { date: ISOtoDate(member.joined_at) })}
-                      </Text>
-                  }
-                  {ListDomain === "members" && orgCtx.userRole === MemberRoleEnum.OWNER &&
-                    <Menu>
-                      <MenuButton as={IconButton} size="sm" aria-label="Menu" icon={<FiMoreHorizontal />} />
-                      <MenuList>
-                        <MenuItem onClick={() => {
-                          setSelectedMember(member);
-                          onChangeRoleModalOpen();
-                        }}>
-                          {t("OrganizationPages.members.list.menu.change_role")}
-                        </MenuItem>
-                        <MenuItem onClick={() => {
-                          setSelectedMember(member);
-                          onRemoveDialogOpen();
-                        }}>
-                          {t("OrganizationPages.members.list.menu.remove")}
-                        </MenuItem>
-                      </MenuList>
-                    </Menu>
-                  }
-                  {ListDomain === "pending" && orgCtx.userRole === MemberRoleEnum.OWNER &&
-                        <Button onClick={() => {
-                          setSelectedMember(member);
-                          onCancelInviteModalOpen();
-                        }}
-                        size={'sm'}
-                        variant={'subtle'}
-                        colorScheme={'red'}
-                        >
-                          {t("OrganizationPages.members.list.menu.cancel_invitation")}
-                        </Button>
-                  }
-                </HStack>
-            }))} 
+      
+      <div>
+        <RichList
+          items={listData.map((member) => ({
+            linePrefix: <UserAvatar user={member.user} size="md"/>,
+            title: member.user.display_name,
+            subtitle: member.user.username,
+            lineExtra:
+              <HStack spacing={4}>
+                <Text fontSize="sm" className="secondary-text">
+                  {t(`Enums.organization.role.${member.role}`)}
+                </Text>
+                {ListDomain === "members"
+                  ? <Text fontSize="sm" className="secondary-text" display={{ base: 'none', md: 'block' }}>
+                      {t('OrganizationPages.members.list.joined_at', { date: ISOtoDate(member.joined_at) })}
+                    </Text>
+                  : <Text fontSize="sm" className="secondary-text" display={{ base: 'none', md: 'block' }}>
+                      {t('OrganizationPages.members.list.invited_at', { date: ISOtoDate(member.joined_at) })}
+                    </Text>
+                }
+                {ListDomain === "members" && orgCtx.userRole === MemberRoleEnum.OWNER &&
+                  <Menu>
+                    <MenuButton as={IconButton} size="sm" aria-label="Menu" icon={<FiMoreHorizontal />} />
+                    <MenuList>
+                      <MenuItem onClick={() => {
+                        setSelectedMember(member);
+                        onChangeRoleModalOpen();
+                      }}>
+                        {t("OrganizationPages.members.list.menu.change_role")}
+                      </MenuItem>
+                      <MenuItem onClick={() => {
+                        setSelectedMember(member);
+                        onRemoveDialogOpen();
+                      }}>
+                        {t("OrganizationPages.members.list.menu.remove")}
+                      </MenuItem>
+                    </MenuList>
+                  </Menu>
+                }
+                {ListDomain === "pending" && orgCtx.userRole === MemberRoleEnum.OWNER &&
+                      <Button onClick={() => {
+                        setSelectedMember(member);
+                        onCancelInviteModalOpen();
+                      }}
+                      size={'sm'}
+                      variant={'subtle'}
+                      colorScheme={'red'}
+                      >
+                        {t("OrganizationPages.members.list.menu.cancel_invitation")}
+                      </Button>
+                }
+              </HStack>
+          }))} 
+        />
+      </div>
+      {listData && listData.length > 0 &&
+        <Flex>
+          <Spacer />
+          <Pagination
+            total={
+              ListDomain === "members"
+                ? Math.ceil(orgCtx.basicInfo.member_count / pageSize)
+                : Math.ceil(pendingCount / pageSize)
+            }
+            current={pageIndex}
+            onPageChange={handlePageChange}
+            colorScheme="blue"
+            variant="subtle"
           />
-        </div>
-        {listData && listData.length > 0 &&
-          <Flex>
-            <Spacer />
-            <Pagination
-              total={
-                ListDomain === "members"
-                  ? Math.ceil(orgCtx.basicInfo.member_count / pageSize)
-                  : Math.ceil(pendingCount / pageSize)
-              }
-              current={pageIndex}
-              onPageChange={handlePageChange}
-              colorScheme="blue"
-              variant="subtle"
-            />
-          </Flex>}
-      </VStack>
+        </Flex>}
 
       {selectedMember && 
         <GenericAlertDialog
