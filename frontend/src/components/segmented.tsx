@@ -1,4 +1,9 @@
-import { Box, Button, HStack, BoxProps } from "@chakra-ui/react";
+import { 
+  Box, 
+  BoxProps, 
+  Button, 
+  HStack 
+} from "@chakra-ui/react";
 
 interface SegmentedControlProps extends BoxProps {
   size?: "xs" | "sm" | "md" | "lg";
