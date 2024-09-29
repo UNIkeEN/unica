@@ -21,7 +21,7 @@ const SegmentedControl: React.FC<SegmentedControlProps> = ({
 
   return (
     <Box
-      bgColor={`${colorScheme}.${colorScheme == 'gray' ? '100' : '500'}`}
+      bgColor={`${colorScheme}.100`}
       p={sp}
       borderRadius="md"
       display="inline-block"
@@ -48,7 +48,7 @@ const SegmentedControl: React.FC<SegmentedControlProps> = ({
                 key={item.label}
                 size={size}
                 colorScheme={colorScheme}
-                variant="solid"
+                variant="subtle"
                 onClick={() => onSelectItem(item.label)}
               >
                 {item.value}
