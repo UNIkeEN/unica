@@ -4,9 +4,11 @@ from dataclasses import dataclass
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import UploadedFile
 from django.core.files.storage import FileSystemStorage
+import pylibmagic
 from magic import Magic
 from rest_framework import serializers
 from typing import Optional, List, Callable
+import os
 from .models import UserFile
 
 def strict_type_check(file: UploadedFile, allowed_types: List[str]) -> bool:
@@ -62,12 +64,16 @@ class UserFileSerializer(serializers.ModelSerializer):
             file = self.cfg.preprocess(file)
 
         if self.cfg.target_name:
-            file_name = self.cfg.target_name
+            file_name = self.cfg.target_name + '.' + file.name.split('.')[-1]
         else:
             file_name = hashlib.md5((file.name + str(time.time())).encode()).hexdigest() + '.' + file.name.split('.')[-1]
 
         fs = FileSystemStorage(location=self.cfg.target_dir)
-        saved_file_name = fs.save(file_name, file)
-        user_file = UserFile.objects.create(user=user, file=saved_file_name)
+        if fs.exists(file_name):
+            fs.delete(file_name)
+        fs.save(file_name, file)
+        relative_file_path = os.path.join(self.cfg.target_dir, file_name)
+        user_file = UserFile.objects.create(user=user, file=relative_file_path)
+
 
         return user_file

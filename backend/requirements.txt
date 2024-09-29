@@ -9,3 +9,5 @@ drf-yasg
 jsonschema
 emoji
 python-magic
+pylibmagic
+pillow
