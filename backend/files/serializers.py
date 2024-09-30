@@ -4,11 +4,15 @@ from dataclasses import dataclass
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import UploadedFile
 from django.core.files.storage import FileSystemStorage
-import pylibmagic
-from magic import Magic
 from rest_framework import serializers
 from typing import Optional, List, Callable
 import os
+
+import platform
+if platform.system() == 'Darwin':
+    import pylibmagic
+from magic import Magic
+
 from .models import UserFile
 
 def strict_type_check(file: UploadedFile, allowed_types: List[str]) -> bool:
