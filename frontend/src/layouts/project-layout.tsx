@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { FiBookOpen, FiSettings } from 'react-icons/fi';
 import { LuGalleryVerticalEnd, LuCircleDot } from "react-icons/lu";
 import ProjectContext, { ProjectContextProvider } from '@/contexts/project';
-import NavTabs from '@/components/nav-tabs';
+import NavTabs from '@/components/common/nav-tabs';
 import Head from 'next/head';
 
 export const ProjectLayoutTabs = () => {

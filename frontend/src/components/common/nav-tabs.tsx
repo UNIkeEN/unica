@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tabs, TabList, Tab } from '@chakra-ui/react';
-import { NavMenuProps as NavTabsProps } from '@/components/nav-menu';
+import { NavMenuProps as NavTabsProps } from '@/components/common/nav-menu';
 
 const NavTabs: React.FC<NavTabsProps> = ({
   items,

@@ -20,7 +20,7 @@ import {
   ModalProps,
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
-import ChakraColorSelector from "@/components/color-selector";
+import ChakraColorSelector from "@/components/common/color-selector";
 import { DiscussionTopicCategory as Category } from "@/models/discussion";
 import { isOnlyEmoji } from "@/utils/string";
 

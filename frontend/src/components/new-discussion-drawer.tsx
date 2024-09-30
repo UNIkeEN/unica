@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import MarkdownEditor from "@/components/markdown-editor";
+import MarkdownEditor from "@/components/common/markdown-editor";
 import {
   Button,
   Drawer,

@@ -20,7 +20,7 @@ import AuthContext from "@/contexts/auth";
 import UserContext from "@/contexts/user";
 import { useRouter } from "next/router";
 import { useToast } from "@/contexts/toast";
-import RichList from "@/components/rich-list";
+import RichList from "@/components/common/rich-list";
 import { FiChevronDown } from "react-icons/fi";
 import { Organization, MemberRoleEnum } from '@/models/organization';
 import CreateOrganizationModal from "@/components/modals/create-organization-modal";

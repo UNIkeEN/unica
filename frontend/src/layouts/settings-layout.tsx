@@ -4,7 +4,7 @@ import { VStack } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from "next/router";
 import AuthContext from "@/contexts/auth";
-import NavTabs from '@/components/nav-tabs';
+import NavTabs from '@/components/common/nav-tabs';
 
 interface SettingsLayoutProps {
   children: React.ReactNode;

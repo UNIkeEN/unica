@@ -2,9 +2,9 @@ import React, { useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import Head from 'next/head';
 import { Button, VStack, Badge, Box, Divider } from "@chakra-ui/react";
-import Pagination from "@/components/pagination";
-import ChakraColorSelector from "@/components/color-selector";
-import MarkdownEditor from "@/components/markdown-editor";
+import Pagination from "@/components/common/pagination";
+import ChakraColorSelector from "@/components/common/color-selector";
+import MarkdownEditor from "@/components/common/markdown-editor";
 import InfiniteScroll from 'react-infinite-scroller';
 import Editable from "@/components/editable";
 import TaskCard from "@/components/task-card";
@@ -20,7 +20,7 @@ const ComponentTestPage = () => {
     }
   }, []);
 
-  //Pagination
+  //common/pagination
   const [currentPage, setCurrentPage] = React.useState(1);
   const totalPage = 10;
   const handlePageChange = (pageId: number) => {

@@ -22,9 +22,9 @@ import { DiscussionTopic, DiscussionTopicCategory } from "@/models/discussion";
 import { createTopic, getCategoryInfo, listTopics } from "@/services/discussion";
 import { formatRelativeTime } from "@/utils/datetime";
 import EnableDiscussionConfirmModal from "@/components/modals/enable-discussion-confirm-modal";
-import RichList from "@/components/rich-list";
-import NavMenu from "@/components/nav-menu";
-import Pagination from "@/components/pagination";
+import RichList from "@/components/common/rich-list";
+import NavMenu from "@/components/common/nav-menu";
+import Pagination from "@/components/common/pagination";
 import NewDiscussionDrawer from "@/components/new-discussion-drawer";
 import CategoryIcon from "@/components/category-icon";
 

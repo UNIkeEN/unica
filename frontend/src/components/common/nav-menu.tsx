@@ -1,6 +1,6 @@
 import React from 'react';
 import { VStack, Tooltip } from '@chakra-ui/react';
-import SelectableButton from '@/components/selectable-button';
+import SelectableButton from '@/components/common/selectable-button';
 
 export interface MenuItem {
   label: React.ReactNode;

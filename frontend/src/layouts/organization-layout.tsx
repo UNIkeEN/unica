@@ -6,7 +6,7 @@ import { FiHome, FiBook, FiUser, FiSettings } from 'react-icons/fi';
 import { LuMessagesSquare } from "react-icons/lu";
 import { MemberRoleEnum } from "@/models/organization";
 import OrganizationContext, { OrganizationContextProvider } from '@/contexts/organization';
-import NavTabs from '@/components/nav-tabs';
+import NavTabs from '@/components/common/nav-tabs';
 import Head from 'next/head';
 
 const OrganizationLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {

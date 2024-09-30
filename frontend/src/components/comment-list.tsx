@@ -1,4 +1,4 @@
-import MarkdownRenderer from "@/components/markdown-renderer";
+import MarkdownRenderer from "@/components/common/markdown-renderer";
 import DeleteDiscussionAlertDialog from "@/components/modals/delete-discussion-alert-dialog";
 import NewDiscussionDrawer from "@/components/new-discussion-drawer";
 import { UserAvatar } from "./user-info-popover";

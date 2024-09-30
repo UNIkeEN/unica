@@ -20,7 +20,7 @@ import {
 import { FiLogOut, FiChevronsLeft } from "react-icons/fi";
 import { useTranslation } from 'react-i18next';
 import { useRouter } from "next/router";
-import SelectableButton from "@/components/selectable-button";
+import SelectableButton from "@/components/common/selectable-button";
 import { Logout } from "@/services/auth";
 import AuthContext from "@/contexts/auth";
 import UserContext from "@/contexts/user";

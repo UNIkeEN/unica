@@ -16,11 +16,11 @@ import { useToast } from "@/contexts/toast";
 import { DiscussionTopicCategory, emptyCategory } from "@/models/discussion";
 import { MemberRoleEnum } from "@/models/organization";
 import { createCategory, deleteCategory, updateCategory } from "@/services/discussion";
-import RichList from "@/components/rich-list";
+import RichList from "@/components/common/rich-list";
 import CreateCategoryModal from "@/components/modals/create-category-modal";
 import CategoryIcon from "@/components/category-icon";
 import GenericAlertDialog from "@/components/modals/generic-alert-dialog";
-import Pagination from "@/components/pagination";
+import Pagination from "@/components/common/pagination";
 
 const DiscussionCategoryManagerPage = () => {
   const orgCtx = useContext(OrganizationContext);

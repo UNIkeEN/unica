@@ -13,7 +13,7 @@ import {
   TextProps,
   LinkProps
 } from "@chakra-ui/react";
-import Empty from "@/components/empty";
+import Empty from "@/components/common/empty";
 
 interface RichListItem {
   title: string | React.ReactNode;

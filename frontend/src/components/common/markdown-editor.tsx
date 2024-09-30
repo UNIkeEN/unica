@@ -16,7 +16,7 @@ import {
   Tooltip,
   useBreakpointValue
 } from '@chakra-ui/react';
-import MarkdownRenderer from '@/components/markdown-renderer';
+import MarkdownRenderer from '@/components/common/markdown-renderer';
 import { useTranslation } from 'next-i18next';
 import { FaMarkdown } from "react-icons/fa";
 import { FiBold, FiItalic, FiCode } from 'react-icons/fi';

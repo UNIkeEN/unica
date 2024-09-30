@@ -1,6 +1,6 @@
 import CreateProjectModal from "@/components/modals/create-project-modal";
-import Pagination from "@/components/pagination";
-import RichList from "@/components/rich-list";
+import Pagination from "@/components/common/pagination";
+import RichList from "@/components/common/rich-list";
 import AuthContext from "@/contexts/auth";
 import UserContext from "@/contexts/user";
 import { formatRelativeTime } from "@/utils/datetime";

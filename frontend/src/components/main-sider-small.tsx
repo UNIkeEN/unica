@@ -7,8 +7,8 @@ import {
 } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from "next/router";
-import NavMenu from '@/components/nav-menu';
-import SelectableButton from "@/components/selectable-button";
+import NavMenu from '@/components/common/nav-menu';
+import SelectableButton from "@/components/common/selectable-button";
 import { 
   FiHome,
   FiBook,
