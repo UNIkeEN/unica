@@ -1,16 +1,23 @@
-import { 
-  Box, 
-  BoxProps, 
-  Button, 
-  HStack 
+import {
+  Box,
+  BoxProps,
+  Button,
+  Stack,
+  Tooltip
 } from "@chakra-ui/react";
 
 interface SegmentedControlProps extends BoxProps {
   size?: "xs" | "sm" | "md" | "lg";
   colorScheme?: string;
-  items: {label: string, value:(string | React.ReactNode)}[];
+  items: {
+    label: string,
+    value: (string | React.ReactNode),
+    tooltip?: string
+  }[];
   selected: string;
   onSelectItem: (label: string) => void;
+  direction?: "row" | "column"; 
+  withTooltip?: boolean;
 }
 
 const SegmentedControl: React.FC<SegmentedControlProps> = ({
@@ -19,10 +26,12 @@ const SegmentedControl: React.FC<SegmentedControlProps> = ({
   items,
   selected,
   onSelectItem,
+  direction = "row",
+  withTooltip = false,
   ...boxProps
 }) => {
 
-  const sp = {xs: 1, sm: 1, md: 1, lg: 2}[size];
+  const sp = { xs: 1, sm: 1, md: 1, lg: 2 }[size];
 
   return (
     <Box
@@ -32,35 +41,36 @@ const SegmentedControl: React.FC<SegmentedControlProps> = ({
       display="inline-block"
       {...boxProps}
     >
-      <HStack spacing={sp}>
+      <Stack direction={direction} spacing={sp}>
         {items.map((item) => {
           const isSelected = selected === item.label;
-          if (isSelected) { return (
+
+          const button = (
             <Button
-                key={item.label}
-                size={size}
-                colorScheme={colorScheme}
-                variant="outline"
-                bgColor="white"
-                _hover={{ bgColor: "white" }}
-                _active={{ bgColor: "white" }}
-                onClick={() => onSelectItem(item.label)}
-              >
-                {item.value}
-              </Button>
-          )} else return (
-            <Button
-                key={item.label}
-                size={size}
-                colorScheme={colorScheme}
-                variant="subtle"
-                onClick={() => onSelectItem(item.label)}
-              >
-                {item.value}
-              </Button>
-          )
+              key={item.label}
+              size={size}
+              colorScheme={colorScheme}
+              variant={isSelected ? "outline" : "subtle"}
+              bgColor={isSelected ? "white" : `${colorScheme}.100`}
+              _hover={isSelected ? { bgColor: "white" } : { bg: `${colorScheme}.200` }}
+              _active={isSelected ? { bgColor: "white" } : { bg: `${colorScheme}.300` }}
+              onClick={() => onSelectItem(item.label)}
+            >
+              {item.value}
+            </Button>
+          );
+
+          return (
+            <Tooltip
+              key={item.label}
+              label={item.tooltip || item.label}
+              isDisabled={withTooltip || !item.tooltip}
+            >
+              {button}
+            </Tooltip>
+          );
         })}
-      </HStack>
+      </Stack>
     </Box>
   );
 };
