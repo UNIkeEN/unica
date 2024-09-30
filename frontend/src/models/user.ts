@@ -12,3 +12,17 @@ export interface UserBasicInfo {
   biography: string,
   username: string
 }
+
+export interface UserSettings {
+  title: string,
+  description: string,
+  initialValue: string,
+  multiLines: boolean
+}
+
+export interface UserSettingsSection {
+  index: number,
+  title: string,
+  subtitle: string,
+  settings: UserSettings[]
+}

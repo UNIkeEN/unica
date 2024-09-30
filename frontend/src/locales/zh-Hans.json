@@ -511,7 +511,18 @@
     "SettingsPages": {
         "header": "设置",
         "profile": {
-            "title": "个人资料设置"
+            "title": "个人资料设置",
+            "section": "选项",
+            "settings": {
+                "display_name": {
+                    "title": "昵称",
+                    "description": "你在本站显示的名称"
+                },
+                "bio": {
+                    "title": "简介",
+                    "description": "简短介绍一下你自己"
+                }
+            }
         },
         "appearance": {
             "title": "外观设置"

@@ -511,7 +511,18 @@
     "SettingsPages": {
         "header": "Settings",
         "profile": {
-            "title": "Profile Settings"
+            "title": "Profile Settings",
+            "section": "Section",
+            "settings": {
+                "display_name": {
+                    "title": "Display Name",
+                    "description": "The name displayed in the system"
+                },
+                "bio": {
+                    "title": "Biography",
+                    "description": "A brief introduction of yourself"
+                }
+            }
         },
         "appearance": {
             "title": "Appearance Settings"

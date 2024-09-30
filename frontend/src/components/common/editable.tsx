@@ -157,10 +157,12 @@ const Editable: React.FC<EditableProps> = ({
           {EditButtons()}
         </Container>
       ) : (
-        <HStack>
-          <Text>{value}</Text>
-          {EditButtons()}
-        </HStack>
+        <Container>
+          <HStack>
+            <Text>{value}</Text>
+            {EditButtons()}
+          </HStack>
+        </Container>
       )}
     </Box>
   );
