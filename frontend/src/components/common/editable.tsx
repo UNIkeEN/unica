@@ -152,7 +152,7 @@ const Editable: React.FC<EditableProps> = ({
           </FormControl>
         )
       ) : isTextArea ? (
-        <Container maxW={textareaWidth}>
+        <Container maxW={textareaWidth} whiteSpace="pre-wrap">
           {value}
           {EditButtons()}
         </Container>

@@ -1,14 +1,14 @@
-import React, { useEffect, useRef } from "react";
-import { useRouter } from "next/router";
-import Head from 'next/head';
-import { Button, VStack, Badge, Box, Divider } from "@chakra-ui/react";
-import Pagination from "@/components/common/pagination";
 import ChakraColorSelector from "@/components/common/color-selector";
+import Editable from "@/components/common/editable";
 import MarkdownEditor from "@/components/common/markdown-editor";
-import InfiniteScroll from 'react-infinite-scroller';
-import Editable from "@/components/editable";
+import Pagination from "@/components/common/pagination";
 import TaskCard from "@/components/task-card";
 import { MockTaskSummary } from "@/models/task";
+import { Badge, Box, Button, VStack } from "@chakra-ui/react";
+import Head from 'next/head';
+import { useRouter } from "next/router";
+import React, { useEffect, useRef } from "react";
+import InfiniteScroll from 'react-infinite-scroller';
 
 const ComponentTestPage = () => {
   const router = useRouter();
