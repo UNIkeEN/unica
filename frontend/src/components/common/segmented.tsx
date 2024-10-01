@@ -64,7 +64,7 @@ const SegmentedControl: React.FC<SegmentedControlProps> = ({
             <Tooltip
               key={item.label}
               label={item.tooltip || item.label}
-              isDisabled={withTooltip || !item.tooltip}
+              isDisabled={!withTooltip}
             >
               {button}
             </Tooltip>

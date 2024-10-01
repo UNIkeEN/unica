@@ -59,7 +59,7 @@
             "descriptionTooLong": "Description is too long"
         }
     },
-   "CreateProjectModal": {
+    "CreateProjectModal": {
         "modal": {
             "title": "Create New Project",
             "name": "Project Name",
@@ -156,7 +156,7 @@
             "user": "User"
         }
     },
-    "EnableDiscussionConfirmModal":{
+    "EnableDiscussionConfirmModal": {
         "modal": {
             "title": "Confirm to enable Discussion?",
             "body": {
@@ -167,8 +167,8 @@
             "confirm": "Confirm"
         }
     },
-    "Empty":{
-        "nodata":"No Data"
+    "Empty": {
+        "nodata": "No Data"
     },
     "General": {
         "loading": "Loading",
@@ -355,9 +355,9 @@
             }
         }
     },
-    "ProjectContext":{
-        "toast":{
-            "noPermission":"You do not have access to this project"
+    "ProjectContext": {
+        "toast": {
+            "noPermission": "You do not have access to this project"
         }
     },
     "ProjectPages": {
@@ -444,8 +444,8 @@
             "getProjects": {
                 "error": "Failed to get project list"
             },
-            "getProjectInfo":{
-                "error":"Failed to get project infomation"
+            "getProjectInfo": {
+                "error": "Failed to get project infomation"
             },
             "createProject": {
                 "success": "Created project successfully",
@@ -552,6 +552,15 @@
             "description": "Description",
             "global-properties": "Global Properties",
             "local-properties": "Local Properties"
+        }
+    },
+    "TaskDetailPanel": {
+        "segmented": {
+            "views": {
+                "kanban": "KanBan View",
+                "list": "List View",
+                "calendar": "Calendar View"
+            }
         }
     },
     "UserContext": {

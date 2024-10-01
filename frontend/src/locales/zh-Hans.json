@@ -156,7 +156,7 @@
             "user": "用户"
         }
     },
-    "EnableDiscussionConfirmModal":{
+    "EnableDiscussionConfirmModal": {
         "modal": {
             "title": "确认启用讨论？",
             "body": {
@@ -167,8 +167,8 @@
             "confirm": "确认"
         }
     },
-    "Empty":{
-        "nodata":"暂无数据"
+    "Empty": {
+        "nodata": "暂无数据"
     },
     "General": {
         "loading": "加载中",
@@ -355,9 +355,9 @@
             }
         }
     },
-    "ProjectContext":{
-        "toast":{
-            "noPermission":"您没有访问此项目的权限"
+    "ProjectContext": {
+        "toast": {
+            "noPermission": "您没有访问此项目的权限"
         }
     },
     "ProjectPages": {
@@ -552,6 +552,15 @@
             "description": "描述",
             "global-properties": "全局属性",
             "local-properties": "本地属性"
+        }
+    },
+    "TaskDetailPanel": {
+        "segmented": {
+            "views": {
+                "kanban": "看板视图",
+                "list": "列表视图",
+                "calendar": "日历视图"
+            }
         }
     },
     "UserContext": {
