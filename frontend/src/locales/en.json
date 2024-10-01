@@ -146,6 +146,14 @@
                 "Member": "Member",
                 "Pending": "Pending Invitation"
             }
+        },
+        "properties": {
+            "text": "Text",
+            "number": "Number",
+            "label": "Label",
+            "group": "Group",
+            "datetime": "Datetime",
+            "user": "User"
         }
     },
     "EnableDiscussionConfirmModal":{
@@ -531,6 +539,12 @@
     "TaskDetailActivities": {
         "title": {
             "activities": "Activities"
+        }
+    },
+    "TaskDetailControl": {
+        "title": {
+            "local-properties": "Add Local Properties",
+            "operation": "Operation"
         }
     },
     "TaskDetailProperties": {

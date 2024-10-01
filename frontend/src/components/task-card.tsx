@@ -5,7 +5,7 @@ import {
   Text,
   HStack
 } from '@chakra-ui/react'
-import { FiAlignLeft } from "react-icons/fi";
+import { LuText } from "react-icons/lu";
 import { TaskSummary } from '@/models/task'
 
 interface TaskCardProps extends BoxProps {
@@ -20,7 +20,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
   const cardBodyItems = [
     {
       condition: task.description,
-      content: <FiAlignLeft />
+      content: <LuText/>
     }
   ]
   

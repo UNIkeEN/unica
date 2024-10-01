@@ -146,6 +146,14 @@
                 "Member": "成员",
                 "Pending": "正在邀请"
             }
+        },
+        "properties": {
+            "text": "文本",
+            "number": "数字",
+            "label": "标签",
+            "group": "分组",
+            "datetime": "日期与时间",
+            "user": "用户"
         }
     },
     "EnableDiscussionConfirmModal":{
@@ -531,6 +539,12 @@
     "TaskDetailActivities": {
         "title": {
             "activities": "活动"
+        }
+    },
+    "TaskDetailControl": {
+        "title": {
+            "local-properties": "添加本地属性",
+            "operation": "操作"
         }
     },
     "TaskDetailProperties": {

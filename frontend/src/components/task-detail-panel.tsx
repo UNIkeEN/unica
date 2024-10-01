@@ -24,6 +24,7 @@ import { LuSquareDot, LuExternalLink, LuPanelRight } from "react-icons/lu";
 import { TaskDetail, MockTaskSummary } from '@/models/task';
 import TaskDetailProperties from '@/components/task-detail-properties';
 import TaskDetailActivities from '@/components/task-detail-activities';
+import TaskDetailControl from '@/components/task-detail-control';
 
 interface TaskDetailPanelProps {
   isOpen: boolean;
@@ -118,7 +119,7 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({
           <TaskDetailActivities task={taskDetail}/>
         </VStack>
 
-        <div/> 
+        <TaskDetailControl task={taskDetail}/>
         </Grid>
       </Box>
     )

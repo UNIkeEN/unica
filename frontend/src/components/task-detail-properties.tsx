@@ -1,12 +1,14 @@
+import { useState } from 'react';
 import {
   Box,
   BoxProps,
-  Heading,
   Text,
   VStack
 } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
 import { TaskDetail } from '@/models/task';
+import MarkdownEditor from '@/components/common/markdown-editor';
+import MarkdownRenderer from '@/components/common/markdown-renderer';
 
 interface TaskDetailPropertiesProps extends BoxProps {
   task: TaskDetail;
@@ -18,6 +20,8 @@ const TaskDetailProperties: React.FC<TaskDetailPropertiesProps> = ({
 }) => {
   const { t } = useTranslation();
 
+  const [isMdEditing, setIsMdEditing] = useState<boolean>(false);
+
   return (
     <Box {...boxProps}>
       <VStack spacing={6} align="stretch">
@@ -25,6 +29,10 @@ const TaskDetailProperties: React.FC<TaskDetailPropertiesProps> = ({
           <Text className="subtitle">
             {t('TaskDetailProperties.title.description')}
           </Text>
+          {task.description && isMdEditing 
+            ? <MarkdownEditor content={task.description} onContentChange={() => {/* TODO */}}/> 
+            : <MarkdownRenderer content={task.description}/>
+          }
         </VStack>
 
         <VStack spacing={2} align="stretch">
