@@ -33,6 +33,10 @@ body {
   color: var(--chakra-colors-gray-500);
 }
 
+.subtitle {
+  font-weight: 500;
+}
+
 .markdown-body {
   background-color: inherit !important;
 }

@@ -84,7 +84,7 @@ const MainSider = ({ onSwitchSider = () => {} }) => {
               selectedKeys={[router.asPath]}/>
               {
                 userCtx.organizations.length>5 &&
-                <SelectableButton mt={-1.5} fontSize="xs" onClick={() => {router.push('/organizations')}}>
+                <SelectableButton mt={-1.5} fontSize="xs" size="sm" onClick={() => {router.push('/organizations')}}>
                   <Text />{t('MainSider.my-organizations.button.more')}<Text/>
                 </SelectableButton>
               }

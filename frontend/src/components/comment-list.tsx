@@ -83,7 +83,7 @@ const CommentList: React.FC<CommentListProps> = ({
                   <Text
                     wordBreak="break-all"
                     fontSize="md"
-                    fontWeight="semibold"
+                    fontWeight="500"
                     color="black"
                   >
                     {item.user.display_name}
