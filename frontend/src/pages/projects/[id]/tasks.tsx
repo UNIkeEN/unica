@@ -29,7 +29,7 @@ const ProjectTasksPage = () => {
           <SegmentedControl 
             selected={selectedView} 
             onSelectItem={(s) => {setSelectedView(s)}}
-            size='xs' 
+            size='xs'
             items={viewTypeOptions}
           />
         </HStack>
