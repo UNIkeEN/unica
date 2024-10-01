@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { Project } from '@/models/project';
 import { getProjectInfo } from '@/services/project';
 
-interface OrganizationContextType {
+interface ProjectContextType {
   updateAll: (id: number) => void;
   cleanUp: () => void;
   toastNoPermissionAndRedirect: (userRole?: string) => void;
@@ -15,7 +15,7 @@ interface OrganizationContextType {
   setBasicInfo: (proj: Project) => void;
 }
 
-const ProjectContext = createContext<OrganizationContextType>({
+const ProjectContext = createContext<ProjectContextType>({
   updateAll: () => {},
   cleanUp: () => {},
   toastNoPermissionAndRedirect: () => {},
@@ -40,7 +40,7 @@ export const ProjectContextProvider: React.FC<{ children: React.ReactNode }> = (
     setTimeout(() => {
         router.push('/home');
     }, 2000);
-};
+  };
 
 const updateBasicInfo = async (id: number) => {
   if (!id) return;
@@ -60,8 +60,8 @@ const updateBasicInfo = async (id: number) => {
       }
       
       setProjectInfo(undefined);
-  }
-};
+    }
+  };
 
 
   const updateAll = (id: number) => {
