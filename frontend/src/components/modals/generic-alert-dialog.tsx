@@ -40,7 +40,7 @@ const GenericAlertDialog: React.FC<GenericAlertDialogProps> = ({
     >
       <AlertDialogOverlay>
         <AlertDialogContent>
-          <AlertDialogHeader fontSize="lg" fontWeight="bold">
+          <AlertDialogHeader>
             {title}
           </AlertDialogHeader>
           <AlertDialogCloseButton />
