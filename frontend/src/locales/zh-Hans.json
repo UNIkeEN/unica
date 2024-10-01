@@ -557,9 +557,9 @@
     "TaskDetailPanel":{
         "segmented":{
             "views":{
-                "KanbanView":"看板视图",
-                "ListView":"列表视图",
-                "CalendarView":"日历视图"
+                "kanban":"看板视图",
+                "list":"列表视图",
+                "calendar":"日历视图"
             }
         }
     },

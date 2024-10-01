@@ -557,9 +557,9 @@
     "TaskDetailPanel":{
         "segmented":{
             "views":{
-                "KanbanView":"KanBan View",
-                "ListView":"List View",
-                "CalendarView":"Calendar View"
+                "kanban":"KanBan View",
+                "list":"List View",
+                "calendar":"Calendar View"
             }
         }
     },
