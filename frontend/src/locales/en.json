@@ -528,6 +528,18 @@
             "title": "Appearance Settings"
         }
     },
+    "TaskDetailActivities": {
+        "title": {
+            "activities": "Activities"
+        }
+    },
+    "TaskDetailProperties": {
+        "title": {
+            "description": "Description",
+            "global-properties": "Global Properties",
+            "local-properties": "Local Properties"
+        }
+    },
     "UserContext": {
         "toast": {
             "error-2": "Failed to get user organization list"

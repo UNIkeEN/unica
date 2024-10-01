@@ -15,10 +15,15 @@ import {
   Editable,
   EditablePreview,
   EditableInput,
-  Text
+  Text,
+  Box,
+  Grid,
+  VStack
 } from '@chakra-ui/react';
 import { LuSquareDot, LuExternalLink, LuPanelRight } from "react-icons/lu";
 import { TaskDetail, MockTaskSummary } from '@/models/task';
+import TaskDetailProperties from '@/components/task-detail-properties';
+import TaskDetailActivities from '@/components/task-detail-activities';
 
 interface TaskDetailPanelProps {
   isOpen: boolean;
@@ -70,8 +75,8 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({
     return (
       <Flex alignItems="flex-start">
         <ModalHeader flex="1">
-          <Editable defaultValue={taskDetail?.title}>
-            <EditablePreview/>
+          <Editable defaultValue={taskDetail?.title} onBlur={() => {/* TODO: update task title */}}>
+            <EditablePreview />
             <EditableInput w="80%"/>
             <Text
               as="span"
@@ -104,18 +109,34 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({
     )
   }
   
+  const TaskDetailPanelContent = () => {
+    return (
+      <Box mx={6} mb={6}>
+        <Grid templateColumns="3fr 1fr" gap={6}>
+        <VStack spacing={6} align="stretch">
+          <TaskDetailProperties task={taskDetail}/>
+          <TaskDetailActivities task={taskDetail}/>
+        </VStack>
+
+        <div/> 
+        </Grid>
+      </Box>
+    )
+  }
+
   if (displayMode === "modal") {
     return (
       <Modal 
         isOpen={isOpen} 
         onClose={onClose} 
         isCentered
-        size="3xl"
+        size={{base: "2xl", lg: "3xl"}}
         autoFocus={false}
       >
         <ModalOverlay />
         <ModalContent>
           <TaskDetailPanelHeader />
+          <TaskDetailPanelContent />
         </ModalContent>
       </Modal>
     )
@@ -124,12 +145,13 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({
       <Drawer 
         isOpen={isOpen} 
         onClose={onClose}
-        size="xl"
+        size={{base: "lg", xl: "xl"}}
         autoFocus={false}
       >
         <DrawerOverlay />
         <DrawerContent>
           <TaskDetailPanelHeader />
+          <TaskDetailPanelContent />
         </DrawerContent>
       </Drawer>
     )

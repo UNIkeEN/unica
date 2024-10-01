@@ -528,6 +528,18 @@
             "title": "外观设置"
         }
     },
+    "TaskDetailActivities": {
+        "title": {
+            "activities": "活动"
+        }
+    },
+    "TaskDetailProperties": {
+        "title": {
+            "description": "描述",
+            "global-properties": "全局属性",
+            "local-properties": "本地属性"
+        }
+    },
     "UserContext": {
         "toast": {
             "error-2": "获取组织列表失败"

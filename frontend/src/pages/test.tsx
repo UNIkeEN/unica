@@ -4,11 +4,12 @@ import MarkdownEditor from "@/components/common/markdown-editor";
 import Pagination from "@/components/common/pagination";
 import TaskCard from "@/components/task-card";
 import { MockTaskSummary } from "@/models/task";
-import { Badge, Box, Button, VStack } from "@chakra-ui/react";
+import { Badge, Box, Button, VStack, useDisclosure } from "@chakra-ui/react";
 import Head from 'next/head';
 import { useRouter } from "next/router";
 import React, { useEffect, useRef } from "react";
 import InfiniteScroll from 'react-infinite-scroller';
+import TaskDetailPanel from "@/components/task-detail-panel";
 
 const ComponentTestPage = () => {
   const router = useRouter();
@@ -85,6 +86,8 @@ ReactDOM.render(
     { text: "Item1", link: "/" },
     { text: "Item2", link: "/projects" },
   ];
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <>
@@ -185,7 +188,12 @@ ReactDOM.render(
         <Button onClick={() => { setIsTextArea(!isTextArea) }}>{isTextArea ? "Textarea" : "Input"}</Button>
         
         {/* TaskCard */}
-        <TaskCard task={MockTaskSummary}/>
+        <TaskCard task={MockTaskSummary} onClick={onOpen}/>
+
+        <TaskDetailPanel
+          isOpen={isOpen}
+          onClose={onClose}
+        />
       </VStack>
     </>
   );
