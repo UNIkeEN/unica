@@ -554,6 +554,15 @@
             "local-properties": "本地属性"
         }
     },
+    "TaskDetailPanel":{
+        "segmented":{
+            "views":{
+                "KanbanView":"看板视图",
+                "ListView":"列表视图",
+                "CalendarView":"日历视图"
+            }
+        }
+    },
     "UserContext": {
         "toast": {
             "error-2": "获取组织列表失败"

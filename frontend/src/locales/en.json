@@ -554,6 +554,15 @@
             "local-properties": "Local Properties"
         }
     },
+    "TaskDetailPanel":{
+        "segmented":{
+            "views":{
+                "KanbanView":"KanBan View",
+                "ListView":"List View",
+                "CalendarView":"Calendar View"
+            }
+        }
+    },
     "UserContext": {
         "toast": {
             "error-2": "Failed to get user organization list"
