@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { HStack, Stack, Icon, Tooltip } from "@chakra-ui/react";
+import { HStack, Stack, Icon } from "@chakra-ui/react";
 import { LuKanban, LuList, LuCalendar } from "react-icons/lu";
 import { useTranslation } from 'react-i18next';
 import ProjectContext from "@/contexts/project";

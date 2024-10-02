@@ -1,5 +1,5 @@
 // Task Detail Panel, can switch between modal and drawer mode
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Modal,
   ModalOverlay,
@@ -25,6 +25,7 @@ import { TaskDetail, MockTaskSummary } from '@/models/task';
 import TaskDetailProperties from '@/components/task-detail-properties';
 import TaskDetailActivities from '@/components/task-detail-activities';
 import TaskDetailControl from '@/components/task-detail-control';
+import ProjectContext from '@/contexts/project';
 
 interface TaskDetailPanelProps {
   isOpen: boolean;
@@ -35,8 +36,9 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({
   isOpen,
   onClose,
 }) => {
-  const [taskDetail, setTaskDetail] = useState<any>(null);
+  const [taskDetail, setTaskDetail] = useState<TaskDetail | null>(null);
   const [displayMode, setDisplayMode] = useState<string>("");
+  const projCtx = useContext(ProjectContext);
 
   useEffect(() => {
     setDisplayMode(
@@ -69,7 +71,10 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({
       {
         label: "external",
         icon: <LuExternalLink />,
-        onClick: () => {/* TODO: new window */},
+        onClick: () => {
+          if (taskDetail?.id) 
+            window.open(`/projects/${projCtx.basicInfo.id}/tasks/${taskDetail.id}`)
+        },
       },
     ]
 
@@ -114,12 +119,11 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({
     return (
       <Box mx={6} mb={6}>
         <Grid templateColumns="3fr 1fr" gap={6}>
-        <VStack spacing={6} align="stretch">
-          <TaskDetailProperties task={taskDetail}/>
-          <TaskDetailActivities task={taskDetail}/>
-        </VStack>
-
-        <TaskDetailControl task={taskDetail}/>
+          <VStack spacing={6} align="stretch">
+            <TaskDetailProperties task={taskDetail}/>
+            <TaskDetailActivities task={taskDetail}/>
+          </VStack>
+          <TaskDetailControl task={taskDetail}/>
         </Grid>
       </Box>
     )

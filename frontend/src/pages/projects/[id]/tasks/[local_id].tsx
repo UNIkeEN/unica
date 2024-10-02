@@ -1,0 +1,63 @@
+import { useState } from "react"
+import {
+  Grid,
+  VStack,
+  Text,
+  Heading,
+  Editable,
+  EditableInput,
+  EditablePreview,
+  Show,
+  Hide
+} from "@chakra-ui/react";
+import Head from 'next/head';
+import { TaskDetail, MockTaskSummary } from "@/models/task";
+import TaskDetailProperties from "@/components/task-detail-properties";
+import TaskDetailActivities from "@/components/task-detail-activities";
+import TaskDetailControl from "@/components/task-detail-control";
+
+const ProjectTaskDetailPage = () => {
+  const [taskDetail, setTaskDetail] = useState<TaskDetail | null>(MockTaskSummary as TaskDetail);
+
+  return (
+    <>
+      <Heading 
+        as="h3" 
+        size="lg" 
+        wordBreak="break-all" 
+        px={1}
+      >
+        <Editable defaultValue={taskDetail?.title} onBlur={() => {/* TODO: update task title */}}>
+          <EditablePreview />
+          <EditableInput w="80%"/>
+          <Text
+            as="span"
+            fontWeight="normal"
+            color="gray.400"
+            ml={2}
+          >
+            {`#${taskDetail?.local_id}`}
+          </Text>
+        </Editable>
+      </Heading>
+      <Show above="xl">
+        <Grid templateColumns="3fr 2fr 1fr" gap={6}>
+          <TaskDetailProperties task={taskDetail}/>
+          <TaskDetailActivities task={taskDetail}/>
+          <TaskDetailControl task={taskDetail}/>
+        </Grid>
+      </Show>
+      <Hide above="xl">
+        <Grid templateColumns="3fr 1fr" gap={6}>
+          <VStack spacing={6} align="stretch">
+            <TaskDetailProperties task={taskDetail}/>
+            <TaskDetailActivities task={taskDetail}/>
+          </VStack>
+          <TaskDetailControl task={taskDetail}/>
+        </Grid>
+      </Hide>
+    </>
+  )
+}
+
+export default ProjectTaskDetailPage
