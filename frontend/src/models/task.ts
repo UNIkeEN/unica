@@ -17,9 +17,18 @@ export interface TaskDetail {
   // TBD
 }
 
+export const TaskPropertyEnums = [
+  "text",
+  "number",
+  "label",
+  "group",
+  "datetime",
+  "user"
+] as const;
+
 export const MockTaskSummary: TaskSummary = {
   id: 1,
   title: "Mock Task",
-  description: "Mock Desc",
+  description: "",
   local_id: 1,
 };

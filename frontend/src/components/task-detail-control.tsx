@@ -7,7 +7,7 @@ import {
 } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
 import { TaskDetail } from '@/models/task';
-import { PropertyEnums } from '@/models/enums';
+import { TaskPropertyEnums } from '@/models/task';
 import PropertyIcon from '@/components/property-icon';
 
 interface TaskDetailControlProps extends BoxProps {
@@ -29,7 +29,7 @@ const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
             {t("TaskDetailControl.title.local-properties")}
           </Text>
           <VStack spacing={0.5} align="stretch">
-            {PropertyEnums.map((item) => (
+            {TaskPropertyEnums.map((item) => (
               <Button size="sm" variant="ghost" textAlign="left" justifyContent="flex-start">
                 <PropertyIcon type={item} mr={2}/>
                 {t(`Enums.properties.${item}`)}

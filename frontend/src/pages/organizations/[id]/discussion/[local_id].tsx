@@ -207,7 +207,7 @@ const DiscussionTopicPage = () => {
   const loadMoreComments = async () => {
     if (isLoading) return;
     setIsLoading(true);
-    console.log("Load more comments");
+    // console.log("Load more comments");
     const res = await handleListComments(page + 1, pageSize);
     setComments([...comments, ...res.results]);
     setPage(page + 1);

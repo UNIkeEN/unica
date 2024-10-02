@@ -11,12 +11,3 @@ export const ChakraColorEnums = [
 ] as const;
 
 export type ColorSelectorType = (typeof ChakraColorEnums)[number];
-
-export const PropertyEnums = [
-  "text",
-  "number",
-  "label",
-  "group",
-  "datetime",
-  "user"
-] as const;

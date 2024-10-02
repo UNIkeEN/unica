@@ -29,10 +29,10 @@ const TaskDetailProperties: React.FC<TaskDetailPropertiesProps> = ({
           <Text className="subtitle">
             {t('TaskDetailProperties.title.description')}
           </Text>
-          {task.description && isMdEditing 
+          {task?.description && (isMdEditing 
             ? <MarkdownEditor content={task.description} onContentChange={() => {/* TODO */}}/> 
             : <MarkdownRenderer content={task.description}/>
-          }
+          )}
         </VStack>
 
         <VStack spacing={2} align="stretch">
