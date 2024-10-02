@@ -3,7 +3,7 @@ import Editable from "@/components/common/editable";
 import MarkdownEditor from "@/components/common/markdown-editor";
 import Pagination from "@/components/common/pagination";
 import TaskCard from "@/components/task-card";
-import { MockTaskSummary } from "@/models/task";
+import { MockTask } from "@/models/task";
 import { Badge, Box, Button, VStack, useDisclosure } from "@chakra-ui/react";
 import Head from 'next/head';
 import { useRouter } from "next/router";
@@ -188,7 +188,7 @@ ReactDOM.render(
         <Button onClick={() => { setIsTextArea(!isTextArea) }}>{isTextArea ? "Textarea" : "Input"}</Button>
         
         {/* TaskCard */}
-        <TaskCard task={MockTaskSummary} onClick={onOpen}/>
+        <TaskCard task={MockTask} onClick={onOpen}/>
 
         <TaskDetailPanel
           isOpen={isOpen}

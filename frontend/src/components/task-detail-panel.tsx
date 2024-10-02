@@ -21,7 +21,7 @@ import {
   VStack
 } from '@chakra-ui/react';
 import { LuSquareDot, LuExternalLink, LuPanelRight } from "react-icons/lu";
-import { TaskDetail, MockTaskSummary } from '@/models/task';
+import { Task, MockTask } from '@/models/task';
 import TaskDetailProperties from '@/components/task-detail-properties';
 import TaskDetailActivities from '@/components/task-detail-activities';
 import TaskDetailControl from '@/components/task-detail-control';
@@ -36,7 +36,7 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({
   isOpen,
   onClose,
 }) => {
-  const [taskDetail, setTaskDetail] = useState<TaskDetail | null>(null);
+  const [task, setTask] = useState<Task | null>(null);
   const [displayMode, setDisplayMode] = useState<string>("");
   const projCtx = useContext(ProjectContext);
 
@@ -47,7 +47,7 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({
 
     if (isOpen) {
       // TODO: fetch task detail
-      setTaskDetail(MockTaskSummary as TaskDetail);
+      setTask(MockTask as Task);
     }
   }, [isOpen]);
 
@@ -72,8 +72,8 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({
         label: "external",
         icon: <LuExternalLink />,
         onClick: () => {
-          if (taskDetail?.id) 
-            window.open(`/projects/${projCtx.basicInfo.id}/tasks/${taskDetail.id}`)
+          if (task?.id) 
+            window.open(`/projects/${projCtx.basicInfo.id}/tasks/${task.id}`)
         },
       },
     ]
@@ -81,7 +81,7 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({
     return (
       <Flex alignItems="flex-start">
         <ModalHeader flex="1">
-          <Editable defaultValue={taskDetail?.title} onBlur={() => {/* TODO: update task title */}}>
+          <Editable defaultValue={task?.title} onBlur={() => {/* TODO: update task title */}}>
             <EditablePreview />
             <EditableInput w="80%"/>
             <Text
@@ -90,7 +90,7 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({
               color="gray.400"
               ml={2}
             >
-              {`#${taskDetail?.local_id}`}
+              {`#${task?.local_id}`}
             </Text>
           </Editable>
         </ModalHeader>
@@ -120,10 +120,10 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({
       <Box mx={6} mb={6}>
         <Grid templateColumns="3fr 1fr" gap={6}>
           <VStack spacing={6} align="stretch">
-            <TaskDetailProperties task={taskDetail}/>
-            <TaskDetailActivities task={taskDetail}/>
+            <TaskDetailProperties task={task}/>
+            <TaskDetailActivities task={task}/>
           </VStack>
-          <TaskDetailControl task={taskDetail}/>
+          <TaskDetailControl task={task}/>
         </Grid>
       </Box>
     )

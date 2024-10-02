@@ -27,9 +27,9 @@ class Project(models.Model):
             self.id = mmh3.hash(str(self.display_name + timestamp), signed=False)
         super().save(*args, **kwargs)
         # Automatically create the associated board
-        if not hasattr(self, 'board'):
-            from .board.models import Board
-            Board.objects.create(project=self)
+        if not hasattr(self, 'tasks'):
+            from .task.models import TaskCollection
+            TaskCollection.objects.create(project=self)
 
     def __str__(self):
         return self.display_name

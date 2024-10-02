@@ -11,13 +11,13 @@ import {
   Hide
 } from "@chakra-ui/react";
 import Head from 'next/head';
-import { TaskDetail, MockTaskSummary } from "@/models/task";
+import { Task, MockTask } from "@/models/task";
 import TaskDetailProperties from "@/components/task-detail-properties";
 import TaskDetailActivities from "@/components/task-detail-activities";
 import TaskDetailControl from "@/components/task-detail-control";
 
 const ProjectTaskDetailPage = () => {
-  const [taskDetail, setTaskDetail] = useState<TaskDetail | null>(MockTaskSummary as TaskDetail);
+  const [task, setTask] = useState<Task | null>(MockTask);
 
   return (
     <>
@@ -27,7 +27,7 @@ const ProjectTaskDetailPage = () => {
         wordBreak="break-all" 
         px={1}
       >
-        <Editable defaultValue={taskDetail?.title} onBlur={() => {/* TODO: update task title */}}>
+        <Editable defaultValue={task?.title} onBlur={() => {/* TODO: update task title */}}>
           <EditablePreview />
           <EditableInput w="80%"/>
           <Text
@@ -36,24 +36,24 @@ const ProjectTaskDetailPage = () => {
             color="gray.400"
             ml={2}
           >
-            {`#${taskDetail?.local_id}`}
+            {`#${task?.local_id}`}
           </Text>
         </Editable>
       </Heading>
       <Show above="xl">
         <Grid templateColumns="3fr 2fr 1fr" gap={6}>
-          <TaskDetailProperties task={taskDetail}/>
-          <TaskDetailActivities task={taskDetail}/>
-          <TaskDetailControl task={taskDetail}/>
+          <TaskDetailProperties task={task}/>
+          <TaskDetailActivities task={task}/>
+          <TaskDetailControl task={task}/>
         </Grid>
       </Show>
       <Hide above="xl">
         <Grid templateColumns="3fr 1fr" gap={6}>
           <VStack spacing={6} align="stretch">
-            <TaskDetailProperties task={taskDetail}/>
-            <TaskDetailActivities task={taskDetail}/>
+            <TaskDetailProperties task={task}/>
+            <TaskDetailActivities task={task}/>
           </VStack>
-          <TaskDetailControl task={taskDetail}/>
+          <TaskDetailControl task={task}/>
         </Grid>
       </Hide>
     </>

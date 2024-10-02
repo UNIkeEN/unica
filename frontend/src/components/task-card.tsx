@@ -6,10 +6,10 @@ import {
   HStack
 } from '@chakra-ui/react'
 import { LuText } from "react-icons/lu";
-import { TaskSummary } from '@/models/task'
+import { Task } from '@/models/task'
 
 interface TaskCardProps extends BoxProps {
-  task: TaskSummary
+  task: Task
 }
 
 const TaskCard: React.FC<TaskCardProps> = ({

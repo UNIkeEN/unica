@@ -6,12 +6,12 @@ import {
   VStack
 } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
-import { TaskDetail } from '@/models/task';
+import { Task } from '@/models/task';
 import MarkdownEditor from '@/components/common/markdown-editor';
 import MarkdownRenderer from '@/components/common/markdown-renderer';
 
 interface TaskDetailPropertiesProps extends BoxProps {
-  task: TaskDetail;
+  task: Task;
 }
 
 const TaskDetailProperties: React.FC<TaskDetailPropertiesProps> = ({

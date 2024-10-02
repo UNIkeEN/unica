@@ -6,8 +6,8 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
-from .models import Board
-from .serializers import BoardSerializer
+from .models import TaskCollection
+from .serializers import TaskCollectionSerializer
 from ..decorators import project_basic_permission_required
 
 
@@ -20,7 +20,7 @@ from ..decorators import project_basic_permission_required
     responses={
         200: openapi.Response(
             description="Global property added or updated successfully",
-            schema=BoardSerializer
+            schema=TaskCollectionSerializer
         ),
         400: openapi.Response(description="Invalid input"),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
@@ -34,13 +34,13 @@ from ..decorators import project_basic_permission_required
 @permission_classes([IsAuthenticated])
 @project_basic_permission_required
 def add_or_update_global_property(request, id):
-    board = get_object_or_404(Board, project=request.project)
+    collection = get_object_or_404(TaskCollection, project=request.project)
     new_property = request.data
     try:
-        board.add_or_update_global_property(new_property)
+        collection.add_or_update_global_property(new_property)
     except ValueError as e:
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    serializer = BoardSerializer(board)
+    serializer = TaskCollectionSerializer(collection)
     return Response(serializer.data)
 
 
@@ -56,7 +56,7 @@ def add_or_update_global_property(request, id):
     responses={
         200: openapi.Response(
             description="Global property removed successfully",
-            schema=BoardSerializer
+            schema=TaskCollectionSerializer
         ),
         400: openapi.Response(description="Invalid input"),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
@@ -70,11 +70,11 @@ def add_or_update_global_property(request, id):
 @permission_classes([IsAuthenticated])
 @project_basic_permission_required
 def remove_global_property(request, id):
-    board = get_object_or_404(Board, project=request.project)
+    collection = get_object_or_404(TaskCollection, project=request.project)
     property_name = request.data.get('name')
     if not property_name:
         return Response({'error': 'Property name is required.'}, status=status.HTTP_400_BAD_REQUEST)
-    board.remove_global_property(property_name)
+    collection.remove_global_property(property_name)
     # TODO: clear the property values from all tasks
-    serializer = BoardSerializer(board)
+    serializer = TaskCollectionSerializer(collection)
     return Response(serializer.data)

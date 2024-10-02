@@ -6,8 +6,8 @@ from api.project.models import Project
 from api.models import AbstractComment
 
 
-class Board(models.Model):
-    project = models.OneToOneField(Project, related_name='board', on_delete=models.CASCADE)
+class TaskCollection(models.Model):
+    project = models.OneToOneField(Project, related_name='tasks', on_delete=models.CASCADE)
     global_properties = models.JSONField(default=list)  # global property definitions
 
     def add_or_update_global_property(self, new_prop):
@@ -31,13 +31,13 @@ class Board(models.Model):
 
 
 class Task(models.Model):
-    board = models.ForeignKey(Board, related_name='tasks', on_delete=models.CASCADE)
+    collection = models.ForeignKey(TaskCollection, related_name='tasks', on_delete=models.CASCADE)
     # static properties
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
+    local_id = models.IntegerField(editable=False)  # local id, in the same discussion(organization) scope
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    local_id = models.IntegerField(editable=False)  # local id, in the same discussion(organization) scope
     archived = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False) # soft delete
     # dynamic properties
@@ -48,7 +48,7 @@ class Task(models.Model):
         with transaction.atomic():
             if not self.local_id:
                 max_local_id = Task.objects.filter(
-                    board = self.board
+                    board = self.collection
                 ).select_for_update().aggregate(models.Max('local_id'))['local_id__max']
                 
                 if max_local_id is not None:
@@ -58,8 +58,8 @@ class Task(models.Model):
             super().save(*args, **kwargs)
 
         # Update the parent project's updated_at field
-        self.board.project.updated_at = timezone.now()
-        self.board.project.save()
+        self.collection.project.updated_at = timezone.now()
+        self.collection.project.save()
 
     def archive(self):
         self.archived = True
@@ -70,7 +70,7 @@ class Task(models.Model):
         self.save()
 
     def __str__(self):
-        return f"#{self.id} {self.title}"
+        return f"#{self.local_id} {self.title}"
     
 
 class TaskComment(AbstractComment):

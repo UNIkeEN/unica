@@ -6,12 +6,12 @@ import {
   Button
 } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
-import { TaskDetail } from '@/models/task';
+import { Task } from '@/models/task';
 import { TaskPropertyEnums } from '@/models/task';
 import PropertyIcon from '@/components/property-icon';
 
 interface TaskDetailControlProps extends BoxProps {
-  task: TaskDetail;
+  task: Task;
 }
 
 const TaskDetailControl: React.FC<TaskDetailControlProps> = ({

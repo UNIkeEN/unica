@@ -1,15 +1,14 @@
 import {
   Box,
   BoxProps,
-  Heading,
   Text,
   VStack
 } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
-import { TaskDetail } from '@/models/task';
+import { Task } from '@/models/task';
 
 interface TaskDetailActivitiesProps extends BoxProps {
-  task: TaskDetail;
+  task: Task;
 }
 
 const TaskDetailActivities: React.FC<TaskDetailActivitiesProps> = ({
