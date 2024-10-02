@@ -23,7 +23,7 @@ import OrganizationContext from "@/contexts/organization";
 import UserContext from "@/contexts/user";
 import { useToast } from '@/contexts/toast';
 import { OrganizationMember, MemberRoleEnum } from "@/models/organization";
-import { cancelInvitation, getOrganizationInvitations, getOrganizationMembers, removeMember } from "@/services/organization";
+import { cancelInvitation, listOrganizationInvitations, listOrganizationMembers, removeMember } from "@/services/organization";
 import RichList from "@/components/common/rich-list";
 import Pagination from "@/components/common/pagination";
 import InviteMembersModal from "@/components/modals/invite-members-modal";
@@ -68,16 +68,16 @@ const OrganizationMembersPage = () => {
   useEffect(() => {
     const id = Number(router.query.id);
     if (id) {
-      handlGetOrganizationMembers(Number(router.query.id), pageIndex, pageSize);
+      handlListOrganizationMembers(Number(router.query.id), pageIndex, pageSize);
     } else {
       setMemberList([]);
       setPendingList([]);
     }
   }, [router.query.id]);
 
-  const handlGetOrganizationMembers = async (id: number, page: number = 1, pageSize: number = 20) => {
+  const handlListOrganizationMembers = async (id: number, page: number = 1, pageSize: number = 20) => {
     try {
-      const res = await getOrganizationMembers(id, page, pageSize);
+      const res = await listOrganizationMembers(id, page, pageSize);
       orgCtx.setBasicInfo({
         ...orgCtx.basicInfo,
         member_count: res.count
@@ -88,18 +88,18 @@ const OrganizationMembersPage = () => {
         orgCtx.toastNoPermissionAndRedirect();
       } else {
         toast({
-          title: t('Services.organization.getOrganizationMembers.error'),
+          title: t('Services.organization.listOrganizationMembers.error'),
           status: 'error'
         });
       }
-      console.error('Failed to update organization members:', error);
+      console.error('Failed to list organization members:', error);
       setMemberList([]);
     }
   };
 
-  const handleGetOrganizationInvitations = async (id: number, page: number = 1, pageSize: number = 20) => {
+  const handleListOrganizationInvitations = async (id: number, page: number = 1, pageSize: number = 20) => {
     try {
-      const res = await getOrganizationInvitations(id, page, pageSize);
+      const res = await listOrganizationInvitations(id, page, pageSize);
       setPendingCount(res.count);
       setPendingList(res.results as OrganizationMember[]);
     } catch (error) {
@@ -107,11 +107,11 @@ const OrganizationMembersPage = () => {
         orgCtx.toastNoPermissionAndRedirect();
       } else {
         toast({
-          title: t('Services.organization.getOrganizationInvitations.error'),
+          title: t('Services.organization.listOrganizationInvitations.error'),
           status: 'error'
         });
       }
-      console.error('Failed to update organization members:', error);
+      console.error('Failed to list organization invitations:', error);
       setPendingCount(0);
       setPendingList([]);
     }
@@ -121,9 +121,9 @@ const OrganizationMembersPage = () => {
     setPageIndex(1);
     const id = Number(router.query.id);
     if (value === "pending" && orgCtx.userRole === MemberRoleEnum.OWNER) {
-      handleGetOrganizationInvitations(id, 1, pageSize)
+      handleListOrganizationInvitations(id, 1, pageSize)
     } else if (value === "members") {
-      handlGetOrganizationMembers(Number(router.query.id), 1, pageSize)
+      handlListOrganizationMembers(Number(router.query.id), 1, pageSize)
     }
     setListDomain(value);
   }
@@ -133,9 +133,9 @@ const OrganizationMembersPage = () => {
   const handlePageChange = (page: number) => {
     setPageIndex(page);
     if (ListDomain === "members") {
-      handlGetOrganizationMembers(Number(router.query.id), page, pageSize)
+      handlListOrganizationMembers(Number(router.query.id), page, pageSize)
     } else if (ListDomain === "pending") {
-      handleGetOrganizationInvitations(Number(router.query.id), page, pageSize)
+      handleListOrganizationInvitations(Number(router.query.id), page, pageSize)
     }
   };
 
@@ -151,7 +151,7 @@ const OrganizationMembersPage = () => {
       if (pageIndex > lastPage) {
         handlePageChange(lastPage);
       } else {
-        handleGetOrganizationInvitations(Number(router.query.id), pageIndex, pageSize);
+        handleListOrganizationInvitations(Number(router.query.id), pageIndex, pageSize);
       }
     } catch (error) {
       console.error("Failed to remove member:", error);
@@ -186,7 +186,7 @@ const OrganizationMembersPage = () => {
       if (pageIndex > lastPage) {
         handlePageChange(lastPage);
       } else {
-        handlGetOrganizationMembers(Number(router.query.id), pageIndex, pageSize);
+        handlListOrganizationMembers(Number(router.query.id), pageIndex, pageSize);
       }
     } catch (error) {
       console.error("Failed to remove member:", error);
@@ -236,7 +236,7 @@ const OrganizationMembersPage = () => {
               if (pageIndex !== 1) {
                 handlePageChange(1);
               } else {
-                handleGetOrganizationInvitations(Number(router.query.id), pageIndex, pageSize);
+                handleListOrganizationInvitations(Number(router.query.id), pageIndex, pageSize);
               }
             }
           }}/>
@@ -362,7 +362,7 @@ const OrganizationMembersPage = () => {
                 window.location.reload();
               }, 1000);
             } else {
-              handlGetOrganizationMembers(Number(router.query.id), pageIndex, pageSize);
+              handlListOrganizationMembers(Number(router.query.id), pageIndex, pageSize);
             }
           }}
         />

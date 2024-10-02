@@ -13,7 +13,7 @@ export async function createOrganization(name:string, description?:string) {
     }
 }
 
-export async function getUserOrganizations() {
+export async function listUserOrganizations() {
     try {
         const response = await request.get('/api/organization/list/');
         return response.data;
@@ -43,7 +43,7 @@ export async function leaveOrganization(id: number) {
   }
 }
 
-export async function getOrganizationMembers(id: number, page: number, pageSize: number) {
+export async function listOrganizationMembers(id: number, page: number, pageSize: number) {
     try {
         const response = await request.post(`/api/organization/${id}/members/list/`, {
             page: page,
@@ -93,7 +93,7 @@ export async function createInvitation(id: number, username: string) {
     }
 }
 
-export async function getOrganizationInvitations(id: number, page: number, pageSize: number) {
+export async function listOrganizationInvitations(id: number, page: number, pageSize: number) {
     try {
         const response = await request.post(`/api/organization/${id}/invite/list/`, {
             page: page,

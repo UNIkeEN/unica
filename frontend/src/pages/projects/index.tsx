@@ -23,7 +23,7 @@ const MyProjectsPage = () => {
   }, [authCtx]);
 
   useEffect(() => {
-    userCtx.handleGetProjects(pageIndex, pageSize)
+    userCtx.handleListProjects(pageIndex, pageSize)
     .then((res) => {
       setProjectList(res.results);
       setProjectCount(res.count);

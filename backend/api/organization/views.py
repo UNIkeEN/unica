@@ -58,7 +58,7 @@ def create_organization(request):
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
-def get_user_organizations(request):
+def list_user_organizations(request):
     memberships = Membership.objects.filter(user=request.user).exclude(role=Membership.PENDING)
     organizations = sorted(
         (membership.organization for membership in memberships),
@@ -176,7 +176,7 @@ def delete_organization(request, id):
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner', 'Member'])
-def get_organization_members(request, id):
+def list_organization_members(request, id):
     class CustomPagination(PageNumberPagination):
         page_size_query_param = 'page_size'
 
@@ -253,40 +253,7 @@ def remove_member(request, id):
         return Response({"detail": "User removed successfully"}, status=status.HTTP_200_OK)
     except Membership.DoesNotExist:
         return Response({"detail": "User not found in this organization"}, status=status.HTTP_404_NOT_FOUND)
-
-@swagger_auto_schema(
-    method='post',
-    request_body=openapi.Schema(
-        type=openapi.TYPE_OBJECT,
-        properties={
-            'username': openapi.Schema(type=openapi.TYPE_STRING, description='username of the user to cancel invitation'),
-        },
-        required=['username']
-    ),
-    responses={
-        200: openapi.Response(description="Cancel invitation successfully"),
-        403: openapi.Response(description="Authenticated user is not an owner of this organization"),
-        404: openapi.Response(description="User not found, or invitation not found"),
-    },
-    operation_description="Cancel a member invitation. Need 'Owner' permission.",
-    tags=["Organization/Membership"]
-)
-@api_view(['POST'])
-@authentication_classes([SessionAuthentication])
-@permission_classes([IsAuthenticated])
-@organization_permission_classes(['Owner'])
-def cancel_invitation(request, id):
-    username = request.data.get('username')
-    try:
-        user = User.objects.get(username=username)
-    except User.DoesNotExist:
-        return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-    try:
-        membership = Membership.objects.get(user=user, organization=request.organization, role=Membership.PENDING)
-        membership.delete()
-        return Response({"detail": "Cancel Invitation successfully"}, status=status.HTTP_200_OK)
-    except Membership.DoesNotExist:
-        return Response({"detail": "Invitation not found in this organization"}, status=status.HTTP_404_NOT_FOUND)
+    
 
 @swagger_auto_schema(
     method='post',
@@ -412,7 +379,7 @@ def create_invitation(request, id):
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner'])
-def get_organization_invitations(request, id):
+def list_organization_invitations(request, id):
     class CustomPagination(PageNumberPagination):
         page_size_query_param = 'page_size'
 
@@ -428,6 +395,41 @@ def get_organization_invitations(request, id):
     serializer = MembershipSerializer(result_page, many=True)
     return paginator.get_paginated_response(serializer.data)
 
+
+@swagger_auto_schema(
+    method='post',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'username': openapi.Schema(type=openapi.TYPE_STRING, description='username of the user to cancel invitation'),
+        },
+        required=['username']
+    ),
+    responses={
+        200: openapi.Response(description="Cancel invitation successfully"),
+        403: openapi.Response(description="Authenticated user is not an owner of this organization"),
+        404: openapi.Response(description="User not found, or invitation not found"),
+    },
+    operation_description="Cancel a member invitation. Need 'Owner' permission.",
+    tags=["Organization/Membership"]
+)
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@organization_permission_classes(['Owner'])
+def cancel_invitation(request, id):
+    username = request.data.get('username')
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+    try:
+        membership = Membership.objects.get(user=user, organization=request.organization, role=Membership.PENDING)
+        membership.delete()
+        return Response({"detail": "Cancel Invitation successfully"}, status=status.HTTP_200_OK)
+    except Membership.DoesNotExist:
+        return Response({"detail": "Invitation not found in this organization"}, status=status.HTTP_404_NOT_FOUND)
+    
 
 @swagger_auto_schema(
     method='post',

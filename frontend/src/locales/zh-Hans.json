@@ -441,7 +441,7 @@
             }
         },
         "projects": {
-            "getProjects": {
+            "listProjects": {
                 "error": "获取项目列表失败"
             },
             "getProjectInfo": {
@@ -465,11 +465,11 @@
                 "error": "创建组织失败",
                 "invalidInput": "无效的输入"
             },
-            "getUserOrganizations": {
-                "error": "获取组织列表失败"
-            },
             "checkUserOrgPermission": {
                 "error": "获取组织信息失败"
+            },
+            "listUserOrganizations": {
+                "error": "获取组织列表失败"
             },
             "leaveOrganization": {
                 "left": "已成功退出该组织",
@@ -478,7 +478,7 @@
                 "error-403": "不是该组织的成员",
                 "error-404": "组织不存在"
             },
-            "getOrganizationMembers": {
+            "listOrganizationMembers": {
                 "error": "获取成员列表失败"
             },
             "removeMember": {
@@ -502,7 +502,7 @@
                 "error-404": "未找到该用户",
                 "error-409": "该用户已被邀请或已是组织成员"
             },
-            "getOrganizationInvitations": {
+            "listOrganizationInvitations": {
                 "error": "未能获得待处理的邀请"
             },
             "respondInvitation": {

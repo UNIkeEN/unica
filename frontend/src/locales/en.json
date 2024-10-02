@@ -441,7 +441,7 @@
             }
         },
         "projects": {
-            "getProjects": {
+            "listProjects": {
                 "error": "Failed to get project list"
             },
             "getProjectInfo": {
@@ -465,11 +465,11 @@
                 "error": "Failed to create organization",
                 "invalidInput": "Invalid input"
             },
-            "getUserOrganizations": {
-                "error": "Failed to get user organization list"
-            },
             "checkUserOrgPermission": {
                 "error": "Failed to get organization information"
+            },
+            "listUserOrganizations": {
+                "error": "Failed to get user organization list"
             },
             "leaveOrganization": {
                 "left": "Left successfully",
@@ -478,7 +478,7 @@
                 "error-403": "Not a member of the organization",
                 "error-404": "Organization not found"
             },
-            "getOrganizationMembers": {
+            "listOrganizationMembers": {
                 "error": "Failed to get member list"
             },
             "removeMember": {
@@ -502,7 +502,7 @@
                 "error-404": "User not found",
                 "error-409": "User has been invited or is already a member"
             },
-            "getOrganizationInvitations": {
+            "listOrganizationInvitations": {
                 "error": "Failed to get pending invitations"
             },
             "respondInvitation": {

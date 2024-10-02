@@ -94,7 +94,7 @@ def create_project(request):
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
-def get_projects(request):
+def list_projects(request):
     org_id = request.data.get('org_id')
 
     def _get_projects():

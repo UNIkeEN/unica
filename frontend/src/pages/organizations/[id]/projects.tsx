@@ -29,7 +29,7 @@ const OrganizationProjectsPage = () => {
   useEffect(() => {
     const id = Number(router.query.id);
     if (id) {
-      orgCtx.handleGetProjects(pageIndex, pageSize, id)
+      orgCtx.handleListProjects(pageIndex, pageSize, id)
       .then((res) => {setProjectList(res);})
       .catch((error) => {setProjectList([]);})
     } else {

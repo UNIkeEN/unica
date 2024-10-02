@@ -4,9 +4,9 @@ import { useToast } from '@/contexts/toast';
 import { UserProfile } from '@/models/user';
 import { Organization } from '@/models/organization';
 import { getUserProfile } from '@/services/user';
-import { getUserOrganizations } from '@/services/organization';
+import { listUserOrganizations } from '@/services/organization';
 import { Project } from '@/models/project';
-import { getProjects } from '@/services/project';
+import { listProjects } from '@/services/project';
 
 
 interface UserContextType {
@@ -16,7 +16,7 @@ interface UserContextType {
   updateProfile: () => void;
   organizations: Organization[];
   updateOrganizations: () => void;
-  handleGetProjects: (page: number, pageSize: number) => Promise<any>;
+  handleListProjects: (page: number, pageSize: number) => Promise<any>;
 }
 
 const UserContext = createContext<UserContextType>({
@@ -26,7 +26,7 @@ const UserContext = createContext<UserContextType>({
   updateProfile: () => {},
   organizations: [],
   updateOrganizations: () => {},
-  handleGetProjects: (page: number, pageSize: number) => null,
+  handleListProjects: (page: number, pageSize: number) => null,
 });
 
 export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -52,11 +52,11 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   const updateOrganizations = useCallback(async () => {
     try {
-      const orgList = await getUserOrganizations();
+      const orgList = await listUserOrganizations();
       setOrganizations(orgList);
     } catch (error) {
       toast({
-        title: t('Services.organization.getUserOrganizations.error'),
+        title: t('Services.organization.listUserOrganizations.error'),
         status: 'error'
       })
       setOrganizations([]);
@@ -64,16 +64,16 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   }, [toast, t]);
 
-  const handleGetProjects = useCallback(async (page: number, pageSize: number) => {
+  const handleListProjects = useCallback(async (page: number, pageSize: number) => {
     try {
-      const projectList = await getProjects(page, pageSize);
+      const projectList = await listProjects(page, pageSize);
       return projectList;
     } catch (error) {
       toast({
-        title: t('Services.projects.getProjects.error'),
+        title: t('Services.projects.listProjects.error'),
         status: 'error'
       })
-      console.error('Failed to update user projects:', error);
+      console.error('Failed to list user projects:', error);
       throw error;
     }
   }, [toast, t]);
@@ -95,7 +95,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     updateProfile,
     organizations: organizations,
     updateOrganizations,
-    handleGetProjects,
+    handleListProjects,
   };
 
   return (
