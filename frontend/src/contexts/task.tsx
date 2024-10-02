@@ -4,15 +4,15 @@ interface TaskContextType {
   handleCreateTask: () => void;
   handleListTasks: () => Promise<any>;
   handleGetTaskDetail: () => Promise<any>;
-  handleUpdateTasks: (ids: number[]) => void; // support batch operation
-  handleDeleteTasks: (ids: number[]) => void;
+  handleUpdateTask: (ids: number[]) => void; 
+  handleDeleteTasks: (ids: number[]) => void; // support batch operation
 }
 
 const TaskContext = createContext<TaskContextType>({
   handleCreateTask: () => {},
   handleListTasks: async () => null,
   handleGetTaskDetail: async () => null,
-  handleUpdateTasks: () => {},
+  handleUpdateTask: () => {},
   handleDeleteTasks: () => {},
 });
 
@@ -24,7 +24,7 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     handleCreateTask: () => {},
     handleListTasks: async () => null,
     handleGetTaskDetail: async () => null,
-    handleUpdateTasks: () => {},
+    handleUpdateTask: () => {},
     handleDeleteTasks: () => {},
   };
 

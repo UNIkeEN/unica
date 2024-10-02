@@ -17,8 +17,10 @@ class TaskCollectionSerializer(serializers.ModelSerializer):
         return value
 
 
-class TaskSerializer(serializers.Serializer):
+class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = ['id', 'title', 'description', 'local_id', 'created_at', 'updated_at', 'archived', 'deleted', 'global_properties', 'local_properties']
+        read_only_fields = ['id', 'local_id', 'created_at', 'updated_at', 'deleted']
+
 

@@ -48,7 +48,7 @@ class Task(models.Model):
         with transaction.atomic():
             if not self.local_id:
                 max_local_id = Task.objects.filter(
-                    board = self.collection
+                    collection = self.collection
                 ).select_for_update().aggregate(models.Max('local_id'))['local_id__max']
                 
                 if max_local_id is not None:
