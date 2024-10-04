@@ -2,7 +2,7 @@ import Editable from "@/components/common/editable";
 import SettingsItem from "@/components/settings-item";
 import OrganizationContext from "@/contexts/organization";
 import UserContext from "@/contexts/user";
-import { UserSettingsSection } from "@/models/settings";
+import { SettingsSection } from "@/models/settings";
 import { updateUserProfile } from "@/services/user";
 import React, { useContext, useEffect } from "react";
 import { useState } from "react";
@@ -16,10 +16,10 @@ const ProfileSettingsPage = () => {
   const orgCtx = useContext(OrganizationContext);
 
   const [values, setValues] = useState<string[]>([]);
-  const settingsOptions: UserSettingsSection = {
+  const profileSettings: SettingsSection = {
     title: t("SettingsPages.profile.title"),
     subtitle: t("SettingsPages.profile.subtitle"),
-    settings: [
+    items: [
       {
         title: t("SettingsPages.profile.settings.display_name.title"),
         description: t(
@@ -52,7 +52,7 @@ const ProfileSettingsPage = () => {
   };
 
   useEffect(() => {
-    setValues(settingsOptions.settings.map((setting) => setting.initialValue));
+    setValues(profileSettings.items.map((setting) => setting.initialValue));
   }, []);
 
   useEffect(() => {
@@ -65,7 +65,7 @@ const ProfileSettingsPage = () => {
 
   const handleUpdateUserProfile = async (index: number, value: string) => {
     try {
-      const res = await updateUserProfile({
+      await updateUserProfile({
         display_name: index === 0 ? value : values[0],
         biography: index === 1 ? value : values[1],
       });
@@ -87,7 +87,7 @@ const ProfileSettingsPage = () => {
     userCtx.updateProfile();
   };
 
-  return <SettingsItem settingsOptions={settingsOptions} />;
+  return <SettingsItem settingsOptions={profileSettings} />;
 };
 
 export default ProfileSettingsPage;

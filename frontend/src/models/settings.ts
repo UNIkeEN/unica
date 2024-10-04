@@ -1,12 +1,12 @@
-export interface UserSettings {
+export interface SettingItem {
   title: string;
   description: string;
   initialValue: string;
   component: React.ReactNode;
 }
 
-export interface UserSettingsSection {
+export interface SettingsSection {
   title: string;
   subtitle: string;
-  settings: UserSettings[];
+  items: SettingItem[];
 }

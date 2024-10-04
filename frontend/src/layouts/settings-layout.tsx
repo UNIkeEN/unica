@@ -19,7 +19,7 @@ const SettingsLayout: React.FC<SettingsLayoutProps> = ({ children }) => {
     if (!authCtx.checkLoginAndRedirect()) return;
   }, [authCtx]);
 
-  const settingItems = ["profile", "appearance"];
+  const settingSections = ["profile", "appearance"];
 
   return (
     <Grid templateColumns="repeat(12, 1fr)" gap={6}>
@@ -31,7 +31,7 @@ const SettingsLayout: React.FC<SettingsLayoutProps> = ({ children }) => {
             onClick={(value) => {
               router.push(value);
             }}
-            items={settingItems.map((item) => ({
+            items={settingSections.map((item) => ({
               label: t(`SettingsPages.${item}.title`),
               value: `/settings/${item}`,
             }))}
