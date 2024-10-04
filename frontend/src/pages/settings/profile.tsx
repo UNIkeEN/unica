@@ -1,13 +1,14 @@
+import Head from "next/head";
+import React, { useContext, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Editable from "@/components/common/editable";
-import SettingsItem from "@/components/settings-item";
+import SettingsOption from "@/components/settings-option";
 import OrganizationContext from "@/contexts/organization";
+import { useToast } from "@/contexts/toast";
 import UserContext from "@/contexts/user";
 import { SettingsSection } from "@/models/settings";
 import { updateUserProfile } from "@/services/user";
-import React, { useContext, useEffect } from "react";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useToast } from "@/contexts/toast";
+import { Box, Divider, Text } from "@chakra-ui/react";
 
 const ProfileSettingsPage = () => {
   const { t } = useTranslation();
@@ -87,7 +88,35 @@ const ProfileSettingsPage = () => {
     userCtx.updateProfile();
   };
 
-  return <SettingsItem settingsOptions={profileSettings} />;
+  return (
+    <>
+      <Head>
+        <title>{`${t("SettingsPages.profile.title")} - Unica`}</title>
+        <meta name="headerTitle" content={t("SettingsPages.header")} />
+      </Head>
+      <Text mt={2} fontWeight="semibold" fontSize={20}>
+        {profileSettings.title}
+      </Text>
+      <Text mt={2} className="secondary-text" fontSize={16}>
+        {profileSettings.subtitle}
+      </Text>
+      <Box mt={4}>
+        {profileSettings.items.map((option, index) => (
+          <React.Fragment key={index}>
+            <SettingsOption
+              title={option.title}
+              description={option.description}
+            >
+              {option.component}
+            </SettingsOption>
+            {index !== profileSettings.items.length - 1 && (
+              <Divider marginY={3} />
+            )}
+          </React.Fragment>
+        ))}
+      </Box>
+    </>
+  );
 };
 
 export default ProfileSettingsPage;
