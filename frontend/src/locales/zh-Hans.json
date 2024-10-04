@@ -456,6 +456,10 @@
         "user": {
             "getUserProfile": {
                 "error": "获取用户信息失败"
+            },
+            "updateUserProfile": {
+                "success": "个人资料更新成功",
+                "error": "个人资料更新失败"
             }
         },
         "organization": {
@@ -520,7 +524,7 @@
         "header": "设置",
         "profile": {
             "title": "个人资料设置",
-            "section": "选项",
+            "subtitle": "修改你的个人资料",
             "settings": {
                 "display_name": {
                     "title": "昵称",

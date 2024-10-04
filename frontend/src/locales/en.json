@@ -456,6 +456,10 @@
         "user": {
             "getUserProfile": {
                 "error": "Failed to get user information"
+            },
+            "updateUserProfile": {
+                "success": "Updated profile successfully",
+                "error": "Failed to update profile"
             }
         },
         "organization": {
@@ -520,7 +524,7 @@
         "header": "Settings",
         "profile": {
             "title": "Profile Settings",
-            "section": "Section",
+            "subtitle": "Manage your personal information",
             "settings": {
                 "display_name": {
                     "title": "Display Name",

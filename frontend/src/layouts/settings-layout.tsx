@@ -1,10 +1,10 @@
 import { useContext, useEffect } from "react";
-import React from 'react';
-import { VStack } from '@chakra-ui/react';
-import { useTranslation } from 'react-i18next';
+import React from "react";
+import { Grid, GridItem, VStack, Text } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 import { useRouter } from "next/router";
 import AuthContext from "@/contexts/auth";
-import NavTabs from '@/components/common/nav-tabs';
+import NavMenu from "@/components/common/nav-menu";
 
 interface SettingsLayoutProps {
   children: React.ReactNode;
@@ -22,17 +22,24 @@ const SettingsLayout: React.FC<SettingsLayoutProps> = ({ children }) => {
   const settingItems = ["profile", "appearance"];
 
   return (
-    <VStack spacing={6} align="stretch">
-      <NavTabs 
-        items={settingItems.map((item) => ({
-            label: t(`SettingsPages.${item}.title`),
-            value: `/settings/${item}`,
-        }))}
-        onClick={(value) => {router.push(value)}}
-        selectedKeys={[router.asPath]}
-        />
-      {children}
-    </VStack>
+    <Grid templateColumns="repeat(12, 1fr)" gap={6}>
+      <GridItem colSpan={2}>
+        <VStack mt={8} align="stretch">
+          <NavMenu
+            spacing={2}
+            selectedKeys={[router.asPath]}
+            onClick={(value) => {
+              router.push(value);
+            }}
+            items={settingItems.map((item) => ({
+              label: t(`SettingsPages.${item}.title`),
+              value: `/settings/${item}`,
+            }))}
+          />
+        </VStack>
+      </GridItem>
+      <GridItem colSpan={9}>{children}</GridItem>
+    </Grid>
   );
 };
 

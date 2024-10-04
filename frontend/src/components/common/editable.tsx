@@ -75,7 +75,8 @@ const Editable: React.FC<EditableProps> = ({
         icon={<EditIcon />}
         size="sm"
         aria-label="edit"
-        onClick={() => {
+          onClick={() => {
+          setTempValue(value);
           setIsEditing(true);
         }}
         ml="2"
