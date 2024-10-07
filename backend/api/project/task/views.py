@@ -2,6 +2,7 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework import status
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -121,6 +122,82 @@ def update_task(request, id):
         serializer.save(collection=collection)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@swagger_auto_schema(
+    method='post',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'local_id': openapi.Schema(type=openapi.TYPE_INTEGER),
+        },
+        required=['local_id']
+    ),
+    responses={
+        204: openapi.Response(description="Task pinned successfully"),
+        400: openapi.Response(description="Maximum number of pinned tasks per user reached"),
+        403: openapi.Response(description="Authenticated user does not have the required permissions"),
+        404: openapi.Response(description="Project or task collection not found"),
+    },
+    operation_description="Pin an existing task.",
+    tags=["Project/Task"]
+)
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@project_basic_permission_required
+def pin_task(request, id):
+    collection = get_object_or_404(TaskCollection, project=request.project)
+
+    local_id = request.data.get('local_id')
+    
+    try:
+        task = collection.tasks.get(local_id=local_id)
+    except Task.DoesNotExist:
+        return Response({'detail': 'No task found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    with transaction.atomic():
+        pinned_tasks = Task.objects.filter(pinned_users=request.user).select_for_update()
+        if len(pinned_tasks) >= 5:
+            return Response({'detail': 'You can only pin up to 5 tasks.'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            task.pinned_users.add(request.user)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@swagger_auto_schema(
+    method='post',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'local_id': openapi.Schema(type=openapi.TYPE_INTEGER),
+        },
+        required=['local_id']
+    ),
+    responses={
+        204: openapi.Response(description="Task unpinned successfully"),
+        403: openapi.Response(description="Authenticated user does not have the required permissions"),
+        404: openapi.Response(description="Project or task collection not found"),
+    },
+    operation_description="Unpin an existing task.",
+    tags=["Project/Task"]
+)
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@project_basic_permission_required
+def unpin_task(request, id):
+    collection = get_object_or_404(TaskCollection, project=request.project)
+
+    local_id = request.data.get('local_id')
+    
+    try:
+        task = collection.tasks.get(local_id=local_id)
+    except Task.DoesNotExist:
+        return Response({'detail': 'No task found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    task.pinned_users.remove(request.user)
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @swagger_auto_schema(

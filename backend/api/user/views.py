@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from ..project.task.serializers import TaskSerializer
 from .serializers import UserProfileSerializer
 from files.serializers import UserFileSerializer, UserFileSerializerConfig
 from PIL import Image
@@ -101,3 +102,20 @@ def upload_user_avatar(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@swagger_auto_schema(
+    method='get',
+    responses={
+        200: openapi.Response(description="List of pinned tasks retrieved successfully"),
+    },
+    operation_description="Retrieve a list of pinned tasks of the authenticated user",
+    tags=["User"]
+)
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+def list_pinned_tasks(request):
+    serializer = TaskSerializer(request.user.pinned_tasks.all(), many=True)
+
+    return Response(serializer.data, status=status.HTTP_200_OK)

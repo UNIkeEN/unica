@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.db import models, transaction
 from jsonschema import validate, ValidationError as JSONSchemaValidationError
@@ -5,6 +6,7 @@ from .schemas import PROPERTY_SCHEMA
 from api.project.models import Project
 from api.models import AbstractComment
 
+User = get_user_model()
 
 class TaskCollection(models.Model):
     project = models.OneToOneField(Project, related_name='tasks', on_delete=models.CASCADE)
@@ -40,6 +42,7 @@ class Task(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     archived = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False) # soft delete
+    pinned_users = models.ManyToManyField(User, related_name='pinned_tasks')
     # dynamic properties
     global_properties = models.JSONField(default=dict)  # global property values
     local_properties = models.JSONField(default=dict)  # local property definitions and values
