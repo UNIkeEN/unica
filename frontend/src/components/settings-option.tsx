@@ -19,7 +19,7 @@ const SettingsOption: React.FC<SettingsOptionProps> = ({
       <Flex justify="space-between" alignItems="self-start" {...boxProps}>
         <VStack spacing={1} mr={2} alignItems="start" overflow="hidden">
           <HStack spacing={2} flexWrap="wrap">
-            <Text fontSize="md">
+            <Text fontSize="md" className="subtitle-bold">
               {title}
             </Text>
             {titleExtra}
