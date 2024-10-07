@@ -22,9 +22,9 @@ const SettingsLayout: React.FC<SettingsLayoutProps> = ({ children }) => {
   const settingSections = ["profile", "appearance"];
 
   return (
-    <Grid templateColumns="repeat(12, 1fr)" gap={6}>
-      <GridItem colSpan={2}>
-        <VStack mt={8} align="stretch">
+    <Grid templateColumns="1fr 3fr" gap={6}>
+      <GridItem>
+        <VStack align="stretch">
           <NavMenu
             spacing={2}
             selectedKeys={[router.asPath]}
@@ -38,7 +38,7 @@ const SettingsLayout: React.FC<SettingsLayoutProps> = ({ children }) => {
           />
         </VStack>
       </GridItem>
-      <GridItem colSpan={9}>{children}</GridItem>
+      <GridItem>{children}</GridItem>
     </Grid>
   );
 };

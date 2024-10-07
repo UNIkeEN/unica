@@ -94,13 +94,13 @@ const ProfileSettingsPage = () => {
         <title>{`${t("SettingsPages.profile.title")} - Unica`}</title>
         <meta name="headerTitle" content={t("SettingsPages.header")} />
       </Head>
-      <Text mt={2} fontWeight="semibold" fontSize={20}>
+      <Text fontSize="lg" className="subtitle">
         {profileSettings.title}
       </Text>
-      <Text mt={2} className="secondary-text" fontSize={16}>
+      <Text mt={1} className="secondary-text" fontSize={16}>
         {profileSettings.subtitle}
       </Text>
-      <Box mt={4}>
+      <Box mt={6}>
         {profileSettings.items.map((option, index) => (
           <React.Fragment key={index}>
             <SettingsOption

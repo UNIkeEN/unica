@@ -54,9 +54,9 @@ const RichList: React.FC<RichListProps> = ({
                     as={NextLink} 
                     href={item.href}
                     wordBreak="break-all"
+                    className="subtitle"
                     {...{
                       fontSize: "md",
-                      fontWeight: "500",
                       color: "blue.500",
                       _hover: { 
                         textDecoration: "underline",
@@ -71,9 +71,9 @@ const RichList: React.FC<RichListProps> = ({
                   typeof item.title === "string" ? (
                   <Text 
                     wordBreak="break-all"
+                    className="subtitle"
                     {...{
                       fontSize: "md",
-                      fontWeight: "500",
                       color: "black",
                       ...titleProps,
                     } as TextProps}
