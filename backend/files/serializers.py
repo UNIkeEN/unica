@@ -11,12 +11,12 @@ import os
 import platform
 if platform.system() == 'Darwin':
     import pylibmagic
-from magic import Magic
+import magic
 
 from .models import UserFile
 
 def strict_type_check(file: UploadedFile, allowed_types: List[str]) -> bool:
-    mime = Magic(mime=True)
+    mime = magic.Magic(mime=True)
     file_mime_type = mime.from_buffer(file.read(1024))
     file.seek(0)
 
