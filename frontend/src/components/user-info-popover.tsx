@@ -39,7 +39,7 @@ const UserInfoPopover: React.FC<UserInfoPopoverProps> = ({
         <PopoverBody p={4} maxW="18em">
           <VStack spacing={2} align="start">
             <HStack>
-              <Text fontSize="md" fontWeight="500" color="black">
+              <Text fontSize="md" className="subtitle-bold" color="black">
                 {user.display_name}
               </Text>
               <Text fontSize="md" className="secondary-text">

@@ -211,7 +211,7 @@ const OrganizationDiscussionPage = () => {
             display={{ base: "none", lg: "block" }}
         >
           <VStack spacing={4} align="stretch">
-            <Text ml={1} mt={2} className="subtitle">{t("OrganizationPages.discussion.subtitle.categories")}</Text>
+            <Text ml={1} mt={2} className="subtitle-bold">{t("OrganizationPages.discussion.subtitle.categories")}</Text>
             <NavMenu
               spacing={2}
               selectedKeys={[selectedCategoryId]}
@@ -250,7 +250,7 @@ const OrganizationDiscussionPage = () => {
         <GridItem colSpan={{ base: 5, lg: 4 }}>
           <VStack spacing={4} align="stretch">
             <Flex>
-              <Text ml={1} mt={2} className="subtitle">{t("OrganizationPages.discussion.subtitle.topics")}</Text>
+              <Text ml={1} mt={2} className="subtitle-bold">{t("OrganizationPages.discussion.subtitle.topics")}</Text>
               <Button onClick={onCreateTopicOpen} colorScheme="blue" ml="auto">
                 {t("OrganizationPages.discussion.button.createTopic")}
               </Button>

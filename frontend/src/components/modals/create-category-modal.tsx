@@ -68,7 +68,7 @@ const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
                 <Tag size="lg" p={2.5} colorScheme={category?.color || "gray"}>
                   {category?.emoji.slice(0,2) || "💬"}
                 </Tag>
-                <Text fontWeight="500" wordBreak="break-all" ml={2}>
+                <Text className="subtitle-bold" wordBreak="break-all" ml={2}>
                   {category?.name}
                 </Text>
               </Flex>

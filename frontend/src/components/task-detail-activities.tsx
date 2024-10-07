@@ -20,7 +20,7 @@ const TaskDetailActivities: React.FC<TaskDetailActivitiesProps> = ({
   return (
     <Box {...boxProps}>
       <VStack spacing={2} align="stretch">
-        <Text className="subtitle">
+        <Text className="subtitle-bold">
           {t('TaskDetailActivities.title.activities')}
         </Text>
       </VStack>

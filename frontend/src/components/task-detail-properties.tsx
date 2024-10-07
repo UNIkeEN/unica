@@ -26,7 +26,7 @@ const TaskDetailProperties: React.FC<TaskDetailPropertiesProps> = ({
     <Box {...boxProps}>
       <VStack spacing={6} align="stretch">
         <VStack spacing={2} align="stretch">
-          <Text className="subtitle">
+          <Text className="subtitle-bold">
             {t('TaskDetailProperties.title.description')}
           </Text>
           {task?.description && (isMdEditing 
@@ -36,13 +36,13 @@ const TaskDetailProperties: React.FC<TaskDetailPropertiesProps> = ({
         </VStack>
 
         <VStack spacing={2} align="stretch">
-          <Text className="subtitle">
+          <Text className="subtitle-bold">
             {t('TaskDetailProperties.title.global-properties')}
           </Text>
         </VStack>
 
         <VStack spacing={2} align="stretch">
-          <Text className="subtitle">
+          <Text className="subtitle-bold">
             {t('TaskDetailProperties.title.local-properties')}
           </Text>
         </VStack>

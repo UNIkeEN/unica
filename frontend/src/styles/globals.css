@@ -33,7 +33,7 @@ body {
   color: var(--chakra-colors-gray-500);
 }
 
-.subtitle {
+.subtitle-bold {
   font-weight: 500;
 }
 
