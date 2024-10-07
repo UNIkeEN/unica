@@ -528,11 +528,14 @@
             "settings": {
                 "display_name": {
                     "title": "昵称",
-                    "description": "你在本站显示的名称"
+                    "description": "你在本站显示的名称",
+                    "error-1": "昵称不能为空",
+                    "error-2": "输入的内容过长"
                 },
                 "bio": {
                     "title": "简介",
-                    "description": "简短介绍一下你自己"
+                    "description": "简短介绍一下你自己",
+                    "error-2": "输入的内容过长"
                 }
             }
         },

@@ -33,6 +33,10 @@ const ProfileSettingsPage = () => {
             value={values[0]}
             onEditSubmit={(value) => handleUpdateUserProfile(0, value)}
             placeholder={t("SettingsPages.profile.settings.display_name.title")}
+            localeKey="SettingsPages.profile.settings.display_name"
+            checkError={(value) => {
+              return value.length <= 0 ? 1 : value.length > 50 ? 2 : 0;
+            }}
           />
         ),
       },
@@ -46,6 +50,10 @@ const ProfileSettingsPage = () => {
             value={values[1]}
             onEditSubmit={(value) => handleUpdateUserProfile(1, value)}
             placeholder={t("SettingsPages.profile.settings.bio.title")}
+            localeKey="SettingsPages.profile.settings.bio"
+            checkError={(value) => {
+              return value.length > 200 ? 2 : 0;
+            }}
           />
         ),
       },

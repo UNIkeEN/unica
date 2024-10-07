@@ -528,11 +528,14 @@
             "settings": {
                 "display_name": {
                     "title": "Display Name",
-                    "description": "The name displayed in the system"
+                    "description": "The name displayed in the system",
+                    "error-1":"Display name cannot be empty",
+                    "error-2":"Input is too long"
                 },
                 "bio": {
                     "title": "Biography",
-                    "description": "A brief introduction of yourself"
+                    "description": "A brief introduction of yourself",
+                    "error-2":"Input is too long"
                 }
             }
         },
