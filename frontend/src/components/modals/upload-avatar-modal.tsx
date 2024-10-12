@@ -136,7 +136,7 @@ const AvatarUploader = () => {
             >
               {t("SettingsPages.profile.settings.avatar.modal.upload")}
             </Button>
-            <Button onClick={onClose}>
+            <Button onClick={clearState}>
               {t("SettingsPages.profile.settings.avatar.modal.cancel")}
             </Button>
           </ModalFooter>
