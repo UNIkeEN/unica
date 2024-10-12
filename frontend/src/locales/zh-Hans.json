@@ -460,6 +460,10 @@
             "updateUserProfile": {
                 "success": "个人资料更新成功",
                 "error": "个人资料更新失败"
+            },
+            "uploadUserAvatar": {
+                "success": "头像上传成功",
+                "error": "头像上传失败"
             }
         },
         "organization": {
@@ -526,6 +530,16 @@
             "title": "个人资料设置",
             "subtitle": "修改你的个人资料",
             "settings": {
+                "avatar": {
+                    "title": "头像",
+                    "description": "你在本站显示的头像",
+                    "modal": {
+                        "title": "更改头像",
+                        "tooLarge": "文件大小太大",
+                        "upload": "上传",
+                        "cancel": "取消"
+                    }
+                },
                 "display_name": {
                     "title": "昵称",
                     "description": "你在本站显示的名称",
@@ -534,7 +548,7 @@
                 },
                 "bio": {
                     "title": "简介",
-                    "description": "简短介绍一下你自己",
+                    "description": "对你自己的简单介绍",
                     "error-2": "输入的内容过长"
                 }
             }

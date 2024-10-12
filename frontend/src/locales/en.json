@@ -460,6 +460,10 @@
             "updateUserProfile": {
                 "success": "Updated profile successfully",
                 "error": "Failed to update profile"
+            },
+            "uploadAvatar": {
+                "success": "Uploaded avatar successfully",
+                "error": "Failed to upload avatar"
             }
         },
         "organization": {
@@ -526,6 +530,16 @@
             "title": "Profile Settings",
             "subtitle": "Manage your personal information",
             "settings": {
+                "avatar": {
+                    "title": "Avatar",
+                    "description": "The avatar displayed in the system",
+                    "modal": {
+                        "title": "Upload Avatar",
+                        "tooLarge": "File is too large",
+                        "upload": "Upload",
+                        "cancel": "Cancel"
+                    }
+                },
                 "display_name": {
                     "title": "Display Name",
                     "description": "The name displayed in the system",

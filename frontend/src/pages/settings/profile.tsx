@@ -9,6 +9,7 @@ import UserContext from "@/contexts/user";
 import { SettingsSection } from "@/models/settings";
 import { updateUserProfile } from "@/services/user";
 import { Box, Divider, Text } from "@chakra-ui/react";
+import AvatarUploader from "@/components/modals/upload-avatar-modal";
 
 const ProfileSettingsPage = () => {
   const { t } = useTranslation();
@@ -21,6 +22,12 @@ const ProfileSettingsPage = () => {
     title: t("SettingsPages.profile.title"),
     subtitle: t("SettingsPages.profile.subtitle"),
     items: [
+      {
+        title: t("SettingsPages.profile.settings.avatar.title"),
+        description: t("SettingsPages.profile.settings.avatar.description"),
+        initialValue: "",
+        component: <AvatarUploader />,
+      },
       {
         title: t("SettingsPages.profile.settings.display_name.title"),
         description: t(
