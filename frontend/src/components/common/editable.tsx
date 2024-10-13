@@ -1,4 +1,3 @@
-import { EditIcon } from "@chakra-ui/icons";
 import {
   Box,
   BoxProps,
@@ -10,10 +9,11 @@ import {
   Textarea,
   Text,
   Container,
+  VStack,
 } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FiCheck, FiX } from "react-icons/fi";
+import { FiCheck, FiX, FiEdit } from "react-icons/fi";
 
 interface EditableProps extends BoxProps {
   isTextArea: boolean;
@@ -72,7 +72,7 @@ const Editable: React.FC<EditableProps> = ({
       </HStack>
     ) : (
       <IconButton
-        icon={<EditIcon />}
+        icon={<FiEdit />}
         size="sm"
         aria-label="edit"
           onClick={() => {
@@ -124,7 +124,7 @@ const Editable: React.FC<EditableProps> = ({
             </HStack>
           </FormControl>
         ) : (
-          <FormControl pb={5} isInvalid={isInvalid && isEditing}>
+          <FormControl isInvalid={isInvalid && isEditing}>
             <HStack>
               <Input
                 ref={ref}
@@ -153,17 +153,15 @@ const Editable: React.FC<EditableProps> = ({
           </FormControl>
         )
       ) : isTextArea ? (
-        <Container maxW={textareaWidth} whiteSpace="pre-wrap">
+        <VStack maxW={textareaWidth} whiteSpace="pre-wrap">
           {value}
           {EditButtons()}
-        </Container>
+        </VStack>
       ) : (
-        <Container>
-          <HStack spacing={0}>
-            <Text>{value}</Text>
-            {EditButtons()}
-          </HStack>
-        </Container>
+        <HStack spacing={0}>
+          <Text>{value}</Text>
+          {EditButtons()}
+        </HStack>
       )}
     </Box>
   );

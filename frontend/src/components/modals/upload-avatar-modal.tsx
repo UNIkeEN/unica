@@ -1,13 +1,12 @@
 import { useContext, useState } from "react";
 import { UserAvatar } from "@/components/user-info-popover";
 import UserContext from "@/contexts/user";
-import { EditIcon } from "@chakra-ui/icons";
+import { FiEdit } from "react-icons/fi";
 import {
   Box,
   Container,
   HStack,
   IconButton,
-  Input,
   Button,
   Image,
   Modal,
@@ -88,18 +87,16 @@ const AvatarUploader = () => {
 
   return (
     <Box>
-      <Container>
-        <HStack>
-          {userCtx.profile && <UserAvatar size="md" user={userCtx.profile} />}
-          <IconButton
-            icon={<EditIcon />}
-            size="sm"
-            aria-label="edit"
-            onClick={onOpen}
-            ml="2"
-          />
-        </HStack>
-      </Container>
+      <HStack>
+        {userCtx.profile && <UserAvatar size="md" user={userCtx.profile} />}
+        <IconButton
+          icon={<FiEdit />}
+          size="sm"
+          aria-label="edit"
+          onClick={onOpen}
+          ml="2"
+        />
+      </HStack>
       <Modal isOpen={isOpen} onClose={clearState} isCentered>
         <ModalOverlay />
         <ModalContent>
@@ -110,7 +107,7 @@ const AvatarUploader = () => {
 
           <ModalBody>
             <FormControl isInvalid={avatarTooLarge}>
-              <Input
+              <input
                 type="file"
                 accept="image/jpeg, image/png"
                 onChange={handleFileChange}

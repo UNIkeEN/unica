@@ -22,7 +22,7 @@ const SettingsLayout: React.FC<SettingsLayoutProps> = ({ children }) => {
   const settingSections = ["profile", "appearance"];
 
   return (
-    <Grid mt={2} templateColumns="1fr 3fr" gap={6}>
+    <Grid mt={2} templateColumns="2fr 7fr" gap={6}>
       <GridItem>
         <VStack align="stretch">
           <NavMenu
