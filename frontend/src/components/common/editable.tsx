@@ -54,7 +54,7 @@ const Editable: React.FC<EditableProps> = ({
           aria-label="submit"
           onClick={() => {
             if (isInvalid) return;
-            onEditSubmit(tempValue);
+            if (tempValue !== value) onEditSubmit(tempValue);
             setIsEditing(false);
           }}
         />
@@ -152,17 +152,14 @@ const Editable: React.FC<EditableProps> = ({
           </FormControl>
         )
       ) : isTextArea ? (
-        <VStack
-          maxW={textareaWidth}
+        <Text 
+          maxW={textareaWidth} 
+          wordBreak="break-all" 
           whiteSpace="pre-wrap"
-          wordBreak="break-all"
-          alignItems="flex-end"
         >
-          <Text>
-            {value}
-            {EditButtons()}
-          </Text>
-        </VStack>
+          {value}
+          {EditButtons()}
+        </Text>
       ) : (
         <HStack spacing={0}>
           <Text>{value}</Text>

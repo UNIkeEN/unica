@@ -47,7 +47,7 @@ const UserInfoPopover: React.FC<UserInfoPopoverProps> = ({
                 {user.username}
               </Text>
             </HStack>
-            <Text fontSize="sm">
+            <Text fontSize="sm" wordBreak="break-all" whiteSpace="pre-wrap">
               {user.biography}
             </Text>
           </VStack>
