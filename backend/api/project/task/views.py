@@ -232,7 +232,7 @@ def delete_tasks_by_batch(request, id):
     if not all(isinstance(local_id, int) for local_id in local_ids):
         return Response({'detail': 'All local_ids must be integers.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    tasks = collection.tasks.filter(local_id__in=local_ids, deleted=False, archived=False)
+    tasks = collection.tasks.filter(local_id__in=local_ids, deleted=False)
     if not tasks.exists():
         return Response({'detail': 'No tasks found or tasks are already deleted.'}, status=status.HTTP_404_NOT_FOUND)
 
