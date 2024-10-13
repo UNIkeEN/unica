@@ -11,6 +11,7 @@ import {
   BoxProps
 } from "@chakra-ui/react";
 import { UserBasicInfo } from "@/models/user";
+import { getUserAvatarUrl } from "@/utils/url";
 
 interface UserAvatarProps extends BoxProps {
   user: UserBasicInfo;
@@ -69,6 +70,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
         <Avatar
           cursor="pointer"
           name={user.display_name}
+          src={getUserAvatarUrl(user.username)}
           size={size}
         />
       </Box>

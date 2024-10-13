@@ -24,6 +24,7 @@ import SelectableButton from "@/components/common/selectable-button";
 import { Logout } from "@/services/auth";
 import AuthContext from "@/contexts/auth";
 import UserContext from "@/contexts/user";
+import { getUserAvatarUrl } from "@/utils/url";
 
 const UserMenuArea = ({ onSwitchSider }) => {
 
@@ -51,7 +52,7 @@ const UserMenuArea = ({ onSwitchSider }) => {
                 justifyContent="flex-start"
               >
                 <HStack spacing={3}>
-                  <Avatar size="xs"/>
+                  <Avatar size="xs" src={getUserAvatarUrl(userCtx.profile?.username)}/>
                   <Text fontSize="lg" fontWeight="normal">{userCtx.profile?.display_name}</Text>
                 </HStack>
               </Button>

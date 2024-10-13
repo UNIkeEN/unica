@@ -7,6 +7,7 @@ from django.core.files.storage import FileSystemStorage
 from rest_framework import serializers
 from typing import Optional, List, Callable
 import os
+from unica.settings import MEDIA_ROOT
 
 import platform
 if platform.system() == 'Darwin':
@@ -71,6 +72,8 @@ class UserFileSerializer(serializers.ModelSerializer):
             file_name = self.cfg.target_name + '.' + file.name.split('.')[-1]
         else:
             file_name = hashlib.md5((file.name + str(time.time())).encode()).hexdigest() + '.' + file.name.split('.')[-1]
+        
+        self.cfg.target_dir = os.path.join(MEDIA_ROOT, self.cfg.target_dir)
 
         fs = FileSystemStorage(location=self.cfg.target_dir)
         if fs.exists(file_name):

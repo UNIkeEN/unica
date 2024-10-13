@@ -80,7 +80,7 @@ def upload_user_avatar(request):
     if not file:
         return Response({"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST)
 
-    def preprocess_image(uploaded_file):
+    def _preprocess_image(uploaded_file):
         image = Image.open(uploaded_file)
         image_io = BytesIO()
         image.save(image_io, format='PNG')
@@ -88,12 +88,12 @@ def upload_user_avatar(request):
         return ContentFile(image_io.read(), name=uploaded_file.name.replace(uploaded_file.name.split('.')[-1], 'png'))
 
     cfg = UserFileSerializerConfig(
-        target_dir='user_content/',
+        target_dir='avatar/',
         max_size=5 * 1024 * 1024,  # 5 MB
         allowed_types=['image/jpeg', 'image/png'],
         target_name = f"{request.user.username}",
         strict_check=True,
-        preprocess=preprocess_image
+        preprocess=_preprocess_image
     )
 
     serializer = UserFileSerializer(data={'file': file, 'user': request.user.id}, cfg=cfg)
