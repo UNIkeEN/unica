@@ -30,7 +30,13 @@ const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
           </Text>
           <VStack spacing={0.5} align="stretch">
             {TaskPropertyEnums.map((item) => (
-              <Button size="sm" variant="ghost" textAlign="left" justifyContent="flex-start">
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                textAlign="left" 
+                justifyContent="flex-start"
+                key={item}
+              >
                 <PropertyIcon type={item} mr={2}/>
                 {t(`Enums.properties.${item}`)}
               </Button>

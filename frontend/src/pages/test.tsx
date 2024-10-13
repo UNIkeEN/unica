@@ -141,7 +141,7 @@ ReactDOM.render(
             useWindow={false}
           >
             {items.map(item => (
-              <Box p={4} borderWidth="1px" borderRadius="md">
+              <Box p={4} borderWidth="1px" borderRadius="md" key={item}>
                 {item}
               </Box>
             ))}
@@ -160,7 +160,7 @@ ReactDOM.render(
             initialLoad={false}
           >
             {itemsButtom.map(item => (
-              <Box p={4} borderWidth="1px" borderRadius="md">
+              <Box p={4} borderWidth="1px" borderRadius="md" key={item}>
                 {'buttom' + item}
               </Box>
             ))}

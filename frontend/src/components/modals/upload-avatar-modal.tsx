@@ -113,7 +113,7 @@ const AvatarUploader = () => {
                 onChange={handleFileChange}
               />
               {preview && (
-                <Image src={preview} boxSize="100px" mt="3" mx="auto" />
+                <Image src={preview} alt="preview" boxSize="100px" mt="3" mx="auto" />
               )}
               <FormErrorMessage>
                 {avatarTooLarge

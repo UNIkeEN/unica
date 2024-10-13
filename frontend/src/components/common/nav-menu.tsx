@@ -26,7 +26,7 @@ const NavMenu: React.FC<NavMenuProps> = ({
   return (
     <VStack spacing={spacing} align="stretch">
       {items.map((item) => (
-        <Tooltip label={item.tooltip} placement="right">
+        <Tooltip label={item.tooltip} placement="right" key={item.value}>
           <VStack align="stretch">
             <SelectableButton
               key={item.value}

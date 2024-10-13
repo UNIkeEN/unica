@@ -40,7 +40,7 @@ const TasksKanbanView: React.FC = () => {
       </Head>
       <HStack spacing={6}>
         {group.map((group) => (
-          <KanbanColumn tasks={tasks}/>
+          <KanbanColumn tasks={tasks} key={group}/>
         ))}
       </HStack>
     </>
