@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { FiBookOpen, FiSettings } from 'react-icons/fi';
 import { LuGalleryVerticalEnd, LuCircleDot } from "react-icons/lu";
 import ProjectContext, { ProjectContextProvider } from '@/contexts/project';
+import { TaskContextProvider } from '@/contexts/task';
 import NavTabs from '@/components/common/nav-tabs';
 import Head from 'next/head';
 
@@ -40,7 +41,9 @@ export const ProjectLayoutTabs = () => {
 const ProjectLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <ProjectContextProvider>
-      <ProjectLayoutContent>{children}</ProjectLayoutContent>
+      <TaskContextProvider>
+        <ProjectLayoutContent>{children}</ProjectLayoutContent>
+      </TaskContextProvider>
     </ProjectContextProvider>
   );
 };

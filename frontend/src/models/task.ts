@@ -21,7 +21,7 @@ export const TaskPropertyEnums = [
 export const MockTask: Task = {
   id: 1,
   title: "Mock Task",
-  description: "",
+  description: "Mock Desc",
   local_id: 1,
   created_at: null,
   updated_at: null,

@@ -3,7 +3,8 @@ import {
   BoxProps,
   VStack,
   Text,
-  HStack
+  HStack,
+  Tooltip
 } from '@chakra-ui/react'
 import { LuText } from "react-icons/lu";
 import { Task } from '@/models/task'
@@ -26,10 +27,17 @@ const TaskCard: React.FC<TaskCardProps> = ({
   
   return (
     <Box 
-      w='sm'
+      w='xs'
       p={2.5}
       borderWidth='1px'
       borderRadius='lg'
+      bgColor='white'
+      _hover={{
+        borderColor: 'blue.400',
+        outline: '1px solid',
+        outlineColor: 'blue.400'
+      }}
+      cursor="pointer"
       {...boxProps}
     >
       <VStack spacing={0} align='left'>

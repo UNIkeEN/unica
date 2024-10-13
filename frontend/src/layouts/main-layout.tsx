@@ -90,7 +90,7 @@ const MainLayout = ({ children }) => {
         <Box
           display='block'
           w={isSmallSider ? "70px" : "2xs"}
-          bg="gray.50"
+          bg="white"
           p={4}
           overflowY="auto"
         >
@@ -121,7 +121,14 @@ const MainLayout = ({ children }) => {
       </Hide>
 
       {/* Main Content Area */}
-      <Flex flex="1" direction="column" borderLeftWidth="1px" overflow="hidden" bg={pageBgColor}>
+      <Flex 
+        flex="1" 
+        direction="column" 
+        borderLeftWidth="1px" 
+        overflow="hidden" 
+        bg={pageBgColor}
+        style={{transition: "background-color 0.3s ease;"}}
+      >
         {/* Header */}
         <Flex
           as="header"

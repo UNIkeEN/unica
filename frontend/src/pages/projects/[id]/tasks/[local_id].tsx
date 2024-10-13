@@ -12,9 +12,9 @@ import {
 } from "@chakra-ui/react";
 import Head from 'next/head';
 import { Task, MockTask } from "@/models/task";
-import TaskDetailProperties from "@/components/task-detail-properties";
-import TaskDetailActivities from "@/components/task-detail-activities";
-import TaskDetailControl from "@/components/task-detail-control";
+import TaskDetailProperties from "@/components/task/task-detail-properties";
+import TaskDetailActivities from "@/components/task/task-detail-activities";
+import TaskDetailControl from "@/components/task/task-detail-control";
 
 const ProjectTaskDetailPage = () => {
   const [task, setTask] = useState<Task | null>(MockTask);

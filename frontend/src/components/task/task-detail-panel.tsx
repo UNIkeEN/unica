@@ -22,9 +22,9 @@ import {
 } from '@chakra-ui/react';
 import { LuSquareDot, LuExternalLink, LuPanelRight } from "react-icons/lu";
 import { Task, MockTask } from '@/models/task';
-import TaskDetailProperties from '@/components/task-detail-properties';
-import TaskDetailActivities from '@/components/task-detail-activities';
-import TaskDetailControl from '@/components/task-detail-control';
+import TaskDetailProperties from '@/components/task/task-detail-properties';
+import TaskDetailActivities from '@/components/task/task-detail-activities';
+import TaskDetailControl from '@/components/task/task-detail-control';
 import ProjectContext from '@/contexts/project';
 
 interface TaskDetailPanelProps {
