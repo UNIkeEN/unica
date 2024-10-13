@@ -27,3 +27,13 @@ export const MockTask: Task = {
   updated_at: null,
   archived: false
 };
+
+export const MockTask2: Task = {
+  id: 2,
+  title: "Mock Task 2",
+  description: "",
+  local_id: 2,
+  created_at: null,
+  updated_at: null,
+  archived: false
+};

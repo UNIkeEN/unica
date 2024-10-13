@@ -193,6 +193,7 @@ ReactDOM.render(
         <TaskDetailPanel
           isOpen={isOpen}
           onClose={onClose}
+          task={MockTask}
         />
       </VStack>
     </>

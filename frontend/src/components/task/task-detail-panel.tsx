@@ -1,5 +1,5 @@
 // Task Detail Panel, can switch between modal and drawer mode
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Modal,
   ModalOverlay,
@@ -21,24 +21,25 @@ import {
   VStack
 } from '@chakra-ui/react';
 import { LuSquareDot, LuExternalLink, LuPanelRight } from "react-icons/lu";
-import { Task, MockTask } from '@/models/task';
+import { useRouter } from 'next/router';
+import { Task } from '@/models/task';
 import TaskDetailProperties from '@/components/task/task-detail-properties';
 import TaskDetailActivities from '@/components/task/task-detail-activities';
 import TaskDetailControl from '@/components/task/task-detail-control';
-import ProjectContext from '@/contexts/project';
 
 interface TaskDetailPanelProps {
   isOpen: boolean;
   onClose: () => void;
+  task: Task
 }
 
 const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({
   isOpen,
   onClose,
+  task,
 }) => {
-  const [task, setTask] = useState<Task | null>(null);
   const [displayMode, setDisplayMode] = useState<string>("");
-  const projCtx = useContext(ProjectContext);
+  const router = useRouter();
 
   useEffect(() => {
     setDisplayMode(
@@ -46,8 +47,7 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({
     );
 
     if (isOpen) {
-      // TODO: fetch task detail
-      setTask(MockTask as Task);
+      
     }
   }, [isOpen]);
 
@@ -72,8 +72,9 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({
         label: "external",
         icon: <LuExternalLink />,
         onClick: () => {
+          onClose();
           if (task?.id) 
-            window.open(`/projects/${projCtx.basicInfo.id}/tasks/${task.id}`)
+            window.open(`/projects/${router.query.id}/tasks/${task.id}`)
         },
       },
     ]

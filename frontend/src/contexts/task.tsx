@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { Task, MockTask } from '@/models/task';
+import { Task, MockTask, MockTask2 } from '@/models/task';
 
 interface TaskContextType {
   // shared state and update function in frontend
@@ -21,6 +21,7 @@ const TaskContext = createContext<TaskContextType>({
   setTasks: () => {},
   setTaskById: () => {},
   setTaskByLocalId: () => {},
+
   handleCreateTask: () => {},
   handleListTasks: async () => null,
   handleGetTaskDetail: async () => null,
@@ -34,7 +35,7 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   // TBD
   useEffect(() => {
-    setTasks([MockTask, MockTask])
+    setTasks([MockTask, MockTask2])
   }, []);
 
   const setTaskById = (id: number, updatedValue: Partial<Task>) => {
@@ -56,6 +57,7 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     setTasks: (tasks: Task[]) => setTasks(tasks),
     setTaskById: setTaskById,
     setTaskByLocalId: setTaskByLocalId,
+
     handleCreateTask: () => {},
     handleListTasks: async () => null,
     handleGetTaskDetail: async () => null,

@@ -1,16 +1,18 @@
-import { useContext, useState } from "react";
-import { HStack, Stack, Icon, Box } from "@chakra-ui/react";
+import { useState } from "react";
+import { 
+  HStack,
+  Stack,
+  Icon
+} from "@chakra-ui/react";
 import { LuKanban, LuList, LuCalendar } from "react-icons/lu";
 import { useTranslation } from 'react-i18next';
-import ProjectContext from "@/contexts/project";
 import { ProjectLayoutTabs } from "@/layouts/project-layout";
 import SegmentedControl from "@/components/common/segmented";
 import TasksKanbanView from "@/components/task/tasks-kanban-view";
 
 const ProjectTasksPage = () => {
-  const projCtx = useContext(ProjectContext);
   const { t } = useTranslation();
-  const [selectedView, setSelectedView] = useState<string>("kanban")
+  const [selectedView, setSelectedView] = useState<string>("kanban");
 
   const viewTypes = [
     { 

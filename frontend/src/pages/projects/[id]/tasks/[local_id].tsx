@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect, useContext } from "react"
 import {
   Grid,
   VStack,
@@ -10,24 +10,38 @@ import {
   Show,
   Hide
 } from "@chakra-ui/react";
-import Head from 'next/head';
-import { Task, MockTask } from "@/models/task";
+import { useRouter } from "next/router";
+import { ProjectLayoutTabs } from "@/layouts/project-layout";
+import { Task } from "@/models/task";
+import TaskContext from "@/contexts/task";
 import TaskDetailProperties from "@/components/task/task-detail-properties";
 import TaskDetailActivities from "@/components/task/task-detail-activities";
 import TaskDetailControl from "@/components/task/task-detail-control";
 
 const ProjectTaskDetailPage = () => {
-  const [task, setTask] = useState<Task | null>(MockTask);
+  const [task, setTask] = useState<Task | null>(null);
+  const taskCtx = useContext(TaskContext);
+  const router = useRouter();
+
+  useEffect(() => {
+    const target = taskCtx.tasks.find(task => task.local_id === Number(router.query.local_id)) || null;
+    if (target) setTask(target);
+    else {
+      // TBD: toast
+      setTimeout(() => router.push(`/projects/${router.query.id}/tasks`), 1000);
+    }
+  }, []);
 
   return (
     <>
+      <ProjectLayoutTabs />
       <Heading 
         as="h3" 
         size="lg" 
         wordBreak="break-all" 
         px={1}
       >
-        <Editable defaultValue={task?.title} onBlur={() => {/* TODO: update task title */}}>
+        <Editable value={task?.title} onBlur={() => {/* TODO: update task title */}}>
           <EditablePreview />
           <EditableInput w="80%"/>
           <Text
