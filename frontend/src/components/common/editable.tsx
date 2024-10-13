@@ -8,7 +8,6 @@ import {
   Input,
   Textarea,
   Text,
-  Container,
   VStack,
 } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
@@ -75,7 +74,7 @@ const Editable: React.FC<EditableProps> = ({
         icon={<FiEdit />}
         size="sm"
         aria-label="edit"
-          onClick={() => {
+        onClick={() => {
           setTempValue(value);
           setIsEditing(true);
         }}
@@ -153,9 +152,16 @@ const Editable: React.FC<EditableProps> = ({
           </FormControl>
         )
       ) : isTextArea ? (
-        <VStack maxW={textareaWidth} whiteSpace="pre-wrap" alignItems="flex-end">
-          <Text>{value}</Text>
-          {EditButtons()}
+        <VStack
+          maxW={textareaWidth}
+          whiteSpace="pre-wrap"
+          wordBreak="break-all"
+          alignItems="flex-end"
+        >
+          <Text>
+            {value}
+            {EditButtons()}
+          </Text>
         </VStack>
       ) : (
         <HStack spacing={0}>
