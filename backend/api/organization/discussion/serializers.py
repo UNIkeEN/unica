@@ -46,21 +46,14 @@ class DiscussionTopicSerializer(serializers.ModelSerializer):
 
 
 class DiscussionCommentSerializer(serializers.ModelSerializer):
-    user = UserBasicInfoSerializer()
+    user = UserBasicInfoSerializer( )
     class Meta:
         model = DiscussionComment
         fields = ['id', 'user', 'topic', 'content', 'created_at', 'updated_at', 'local_id', 'edited']
-
-
-class DiscussionCommentCreationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DiscussionComment
-        fields = ['content','local_id']
         read_only_fields = ['local_id']
 
-
 class DiscussionTopicCreationSerializer(serializers.ModelSerializer):
-    comment = DiscussionCommentCreationSerializer(required=False)
+    comment = DiscussionCommentSerializer(required=False)
     category = serializers.PrimaryKeyRelatedField(queryset=DiscussionCategory.objects.all(), required=False, allow_null=True)
 
     class Meta:
@@ -80,7 +73,6 @@ class DiscussionTopicCreationSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("The category does not belong to the same discussion.")
 
         return data
-
 
     def create(self, validated_data):
         discussion = self.context['discussion']

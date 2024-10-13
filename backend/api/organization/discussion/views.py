@@ -222,7 +222,7 @@ def delete_topic(request, id):
     responses={
         201: openapi.Response(
             description="Comment added successfully",
-            schema=DiscussionCommentCreationSerializer
+            schema=DiscussionCommentSerializer
         ),
         400: openapi.Response(description="Invalid input"),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
@@ -245,7 +245,7 @@ def create_comment(request, id):
     except DiscussionTopic.DoesNotExist:
         return Response({'detail': 'Topic not found or has been deleted'}, status=status.HTTP_404_NOT_FOUND)
 
-    serializer = DiscussionCommentCreationSerializer(data=request.data)
+    serializer = DiscussionCommentSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save(topic=topic, user=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -369,7 +369,7 @@ def delete_comment(request, id):
     responses={
         201: openapi.Response(
             description="Comment edited successfully",
-            schema=DiscussionCommentCreationSerializer
+            schema=DiscussionCommentSerializer 
         ),
         400: openapi.Response(description="Invalid input"),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
@@ -397,7 +397,7 @@ def edit_comment(request, id):
     except DiscussionComment.DoesNotExist:
         return Response({'detail': 'Comment not found'}, status=status.HTTP_404_NOT_FOUND)
     
-    serializer = DiscussionCommentCreationSerializer(comment, data=request.data, partial=True)
+    serializer = DiscussionCommentSerializer(comment, data=request.data, partial=True)
     if serializer.is_valid():
         serializer.save(topic=topic, user=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
