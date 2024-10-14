@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import React from "react";
-import { Grid, GridItem, VStack, Text } from "@chakra-ui/react";
+import { Grid, GridItem, VStack } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/router";
 import AuthContext from "@/contexts/auth";
@@ -22,7 +22,7 @@ const SettingsLayout: React.FC<SettingsLayoutProps> = ({ children }) => {
   const settingSections = ["profile", "appearance"];
 
   return (
-    <Grid mt={2} templateColumns="2fr 7fr" gap={6}>
+    <Grid mt={2} templateColumns="2fr 7fr" gap={6} minW="md">
       <GridItem>
         <VStack align="stretch">
           <NavMenu

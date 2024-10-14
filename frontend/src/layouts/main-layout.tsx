@@ -113,7 +113,7 @@ const MainLayout = ({ children }) => {
           <DrawerOverlay />
           <DrawerContent>
             {/* <DrawerCloseButton /> */}
-            <DrawerBody bg="gray.50" pt={4}>
+            <DrawerBody bg="white" pt={4}>
               <MainSider />
             </DrawerBody>
           </DrawerContent>

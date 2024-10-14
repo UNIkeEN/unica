@@ -37,6 +37,12 @@ body {
   font-weight: 500;
 }
 
+.ellipsis-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .markdown-body {
   background-color: inherit !important;
 }

@@ -51,9 +51,9 @@ const UserMenuArea = ({ onSwitchSider }) => {
                 textAlign="left"
                 justifyContent="flex-start"
               >
-                <HStack spacing={3}>
+                <HStack spacing={3} w="100%">
                   <Avatar size="xs" src={getUserAvatarUrl(userCtx.profile?.username)}/>
-                  <Text fontSize="lg" fontWeight="normal">{userCtx.profile?.display_name}</Text>
+                  <Text className="ellipsis-text" fontSize="lg" fontWeight="normal">{userCtx.profile?.display_name}</Text>
                 </HStack>
               </Button>
             </PopoverTrigger>
@@ -99,9 +99,9 @@ const UserMenuArea = ({ onSwitchSider }) => {
             textAlign="left"
             justifyContent="flex-start"
           >
-            <HStack spacing={3}>
+            <HStack spacing={3} w="100%">
               <Avatar size="xs"/>
-              <Text fontSize="lg" fontWeight="normal">{userCtx.profile?.display_name}</Text>
+              <Text className="ellipsis-text" fontSize="lg" fontWeight="normal">{userCtx.profile?.display_name}</Text>
             </HStack>
           </Button>
           <IconButton 
