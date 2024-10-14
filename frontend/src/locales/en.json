@@ -463,7 +463,8 @@
             },
             "uploadAvatar": {
                 "success": "Uploaded avatar successfully",
-                "error": "Failed to upload avatar"
+                "error": "Failed to upload avatar",
+                "tooLarge": "File is too large"
             }
         },
         "organization": {

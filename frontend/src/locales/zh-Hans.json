@@ -463,7 +463,8 @@
             },
             "uploadUserAvatar": {
                 "success": "头像上传成功",
-                "error": "头像上传失败"
+                "error": "头像上传失败",
+                "tooLarge": "文件大小太大"
             }
         },
         "organization": {
