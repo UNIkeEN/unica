@@ -243,7 +243,7 @@ const OrganizationDiscussionPage = () => {
               fontSize="xs" 
               href={`/organizations/${router.query.id}/discussion/categories`}
             >
-              {t(`OrganizationPages.discussion.button.allCategories${orgCtx.userRole === MemberRoleEnum.OWNER && "WithManage"}`)}
+              {t(`OrganizationPages.discussion.button.allCategories${orgCtx.userRole === MemberRoleEnum.OWNER ? "WithManage" : ""}`)}
             </Link>
           </VStack>
         </GridItem>
