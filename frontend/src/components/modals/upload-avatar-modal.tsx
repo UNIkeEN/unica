@@ -138,6 +138,9 @@ const AvatarUploader = () => {
       });
       userCtx.updateProfile();
       clearState();
+      setTimeout(() => {
+        history.go(0);
+      }, 1000);
     } catch (error) {
       if (error.message === "File too large") {
         toast({
