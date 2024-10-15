@@ -1,6 +1,5 @@
 import axios from 'axios';
-import { useContext, useEffect } from 'react';
-import AuthContext from '@/contexts/auth';
+import { useEffect } from 'react';
 
 export const request = axios.create({
   xsrfCookieName: "csrftoken",
@@ -31,7 +30,6 @@ export const setupInterceptors = (
 };
 
 export const useAxiosInterceptors = () => {
-  const authCtx = useContext(AuthContext);
 
   useEffect(() => {
     setupInterceptors();

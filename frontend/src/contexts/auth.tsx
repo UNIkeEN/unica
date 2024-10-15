@@ -10,6 +10,7 @@ interface AuthContextType {
   onLogin: (token: string) => void;
   onLogout: () => void;
   checkLoginAndRedirect: () => boolean;
+  currentVisitTime: number;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -18,10 +19,12 @@ const AuthContext = createContext<AuthContextType>({
   onLogin: () => { },
   onLogout: () => { },
   checkLoginAndRedirect: () => false,
+  currentVisitTime: 0,
 });
 
 export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [token, setToken] = useLocalStorage<string>('token', '');
+  const [visitTime, setVisitTime] = useState(Date.now());
   const userCtx = useContext(UserContext);
   const router = useRouter();
   const { t } = useTranslation();
@@ -54,6 +57,7 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     onLogin: loginHandler,
     onLogout: logoutHandler,
     checkLoginAndRedirect: checkLoginAndRedirect,
+    currentVisitTime: visitTime
   };
 
   return (

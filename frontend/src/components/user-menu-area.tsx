@@ -100,7 +100,7 @@ const UserMenuArea = ({ onSwitchSider }) => {
             justifyContent="flex-start"
           >
             <HStack spacing={3} w="100%">
-              <Avatar size="xs"/>
+              <Avatar size="xs" src={getUserAvatarUrl(userCtx.profile?.username)}/>
               <Text className="ellipsis-text" fontSize="lg" fontWeight="normal">{userCtx.profile?.display_name}</Text>
             </HStack>
           </Button>
