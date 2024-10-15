@@ -117,7 +117,7 @@ def update_task(request, id):
     if not task.exists():
         return Response({'detail': 'No task found.'}, status=status.HTTP_404_NOT_FOUND)
 
-    serializer = TaskSerializer(data=request.data, partial=False)
+    serializer = TaskSerializer(data=updated_value, partial=False)
     if serializer.is_valid():
         serializer.save(collection=collection)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
