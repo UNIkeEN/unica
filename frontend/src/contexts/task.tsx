@@ -1,8 +1,9 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import { Task, MockTask, MockTask2, EditableTask } from '@/models/task';
 import { createTask, deleteTasks, listTasks, updateTask } from '@/services/task';
 import { useRouter } from 'next/router';
-import { useToast } from './toast';
+import { useToast } from '@/contexts/toast';
+import ProjectContext from '@/contexts/project';
 import { useTranslation } from 'react-i18next';
 
 interface TaskContextType {
@@ -18,8 +19,6 @@ interface TaskContextType {
   handleGetTaskDetail: () => Promise<any>;
   handleUpdateTask: (pro_id: number, localId: number, updatedValue: Partial<EditableTask>) => void; 
   handleDeleteTasks: (pro_id: number, localIds: number[]) => void; // support batch operation
-
-  toastNoPermissionAndRedirect: (userRole?: string) => void;
 }
 
 const TaskContext = createContext<TaskContextType>({
@@ -33,12 +32,10 @@ const TaskContext = createContext<TaskContextType>({
   handleGetTaskDetail: async () => null,
   handleUpdateTask: () => {},
   handleDeleteTasks: () => { },
-  
-  toastNoPermissionAndRedirect: () => {}
 });
 
 export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const router = useRouter();
+  const projCtx = useContext(ProjectContext);
   const toast = useToast();
   const { t } = useTranslation();
 
@@ -48,17 +45,6 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
   useEffect(() => {
     setTasks([MockTask, MockTask2])
   }, []);
-
-  const toastNoPermissionAndRedirect = () => {
-    toast({
-        title: t('ProjectContext.toast.noPermission'),
-        status: 'error'
-    });
-
-    setTimeout(() => {
-        router.push('/home');
-    }, 2000);
-  };
 
   const setTaskById = (id: number, updatedValue: Partial<Task>) => {
     setTasks((prevTasks) =>
@@ -81,7 +67,7 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
       setTasks((prevTasks) => [...prevTasks, value as Task]);
     } catch (error) {
       if (error.request && error.request.status === 403) {
-        toastNoPermissionAndRedirect();
+        projCtx.toastNoPermissionAndRedirect();
       } else toast({
         title: t('Services.task.createTask.error'),
         status: 'error'
@@ -96,7 +82,7 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
       return res.results;
     } catch (error) {
       if (error.request && error.request.status === 403) {
-        toastNoPermissionAndRedirect();
+        projCtx.toastNoPermissionAndRedirect();
       } else toast({
         title: t('Services.task.listTask.error'),
         status: 'error'
@@ -108,14 +94,10 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     if (!pro_id) return;
     try {
       await updateTask(pro_id, localId, updatedValue);
-      setTasks((prevTasks) =>
-        prevTasks.map((task) =>
-          task.local_id === localId ? { ...task, ...updatedValue } : task
-        )
-      );
+      setTaskByLocalId(localId, updatedValue);
     } catch (error) {
       if (error.request && error.request.status === 403) {
-        toastNoPermissionAndRedirect();
+        projCtx.toastNoPermissionAndRedirect();
       } else toast({
         title: t('Services.task.updateTask.error'),
         status: 'error'
@@ -132,7 +114,7 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
       );
     } catch (error) {
       if (error.request && error.request.status === 403) {
-        toastNoPermissionAndRedirect();
+        projCtx.toastNoPermissionAndRedirect();
       } else toast({
         title: t('Services.task.deleteTasks.error'),
         status: 'error'
@@ -152,9 +134,7 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     handleListTasks: handleListTasks,
     handleGetTaskDetail: async () => null,
     handleUpdateTask: handleUpdateTask,
-    handleDeleteTasks: handleDeleteTasks,
-    
-    toastNoPermissionAndRedirect: () => {}
+    handleDeleteTasks: handleDeleteTasks
   };
 
   return (
