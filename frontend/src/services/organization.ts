@@ -1,6 +1,6 @@
 import { request } from "@/services/request";
 
-export async function createOrganization(name:string, description?:string) {
+export async function createOrganization(name: string, description?: string) {
     try {
         const response = await request.post('/api/organization/create/', {
             display_name: name,
@@ -23,9 +23,9 @@ export async function listUserOrganizations() {
     }
 };
 
-export async function checkUserOrgPermission(id: number) {
+export async function checkUserOrgPermission(org_id: number) {
     try {
-        const response = await request.get(`/api/organization/${id}/permission/`);
+        const response = await request.get(`/api/organization/${org_id}/permission/`);
         return response.data;
     } catch (error) {
         console.error('Failed to check permission and get organization basic info:', error);
@@ -33,9 +33,9 @@ export async function checkUserOrgPermission(id: number) {
     }
 }
 
-export async function leaveOrganization(id: number) {
+export async function leaveOrganization(org_id: number) {
   try {
-      const response = await request.delete(`/api/organization/${id}/leave/`);
+      const response = await request.delete(`/api/organization/${org_id}/leave/`);
       return response.data;
   } catch (error) {
       console.error('Failed to leave organization:', error);
@@ -43,11 +43,11 @@ export async function leaveOrganization(id: number) {
   }
 }
 
-export async function listOrganizationMembers(id: number, page: number, pageSize: number) {
+export async function listOrganizationMembers(org_id: number, page: number, page_size: number) {
     try {
-        const response = await request.post(`/api/organization/${id}/members/list/`, {
+        const response = await request.post(`/api/organization/${org_id}/members/list/`, {
             page: page,
-            page_size: pageSize
+            page_size: page_size
         });
         return response.data;
     } catch (error) {
@@ -56,9 +56,9 @@ export async function listOrganizationMembers(id: number, page: number, pageSize
     }
 }
 
-export async function removeMember(id: number, username: string) {
+export async function removeMember(org_id: number, username: string) {
     try {
-        const response = await request.post(`/api/organization/${id}/members/remove/`, {
+        const response = await request.post(`/api/organization/${org_id}/members/remove/`, {
             username: username
         });
         return response.data;
@@ -68,9 +68,9 @@ export async function removeMember(id: number, username: string) {
     }
 }
 
-export async function modifyMemberRole(id: number, username: string, new_role: string) {
+export async function modifyMemberRole(org_id: number, username: string, new_role: string) {
     try {
-        const response = await request.post(`/api/organization/${id}/members/role/`, {
+        const response = await request.post(`/api/organization/${org_id}/members/role/`, {
             username: username,
             new_role: new_role
         });
@@ -81,9 +81,9 @@ export async function modifyMemberRole(id: number, username: string, new_role: s
     }
 }
 
-export async function createInvitation(id: number, username: string) {
+export async function createInvitation(org_id: number, username: string) {
     try {
-        const response = await request.post(`/api/organization/${id}/invite/create/`, {
+        const response = await request.post(`/api/organization/${org_id}/invite/create/`, {
             username: username
         });
         return response.data;
@@ -93,11 +93,11 @@ export async function createInvitation(id: number, username: string) {
     }
 }
 
-export async function listOrganizationInvitations(id: number, page: number, pageSize: number) {
+export async function listOrganizationInvitations(org_id: number, page: number, page_size: number) {
     try {
-        const response = await request.post(`/api/organization/${id}/invite/list/`, {
+        const response = await request.post(`/api/organization/${org_id}/invite/list/`, {
             page: page,
-            page_size: pageSize
+            page_size: page_size
         });
         return response.data;
     } catch (error) {
@@ -106,9 +106,9 @@ export async function listOrganizationInvitations(id: number, page: number, page
     }
 }
 
-export async function respondInvitation(id: number,  accept: boolean) {
+export async function respondInvitation(org_id: number,  accept: boolean) {
     try {
-        const response = await request.post(`/api/organization/${id}/invite/respond/`, {
+        const response = await request.post(`/api/organization/${org_id}/invite/respond/`, {
             accept: accept
         });
         return response.data;
@@ -118,9 +118,9 @@ export async function respondInvitation(id: number,  accept: boolean) {
     }
 }
 
-export async function cancelInvitation(id: number, username: string) {
+export async function cancelInvitation(org_id: number, username: string) {
     try {
-        const response = await request.post(`/api/organization/${id}/invite/cancel/`, {
+        const response = await request.post(`/api/organization/${org_id}/invite/cancel/`, {
             username: username
         });
         return response.data;

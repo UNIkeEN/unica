@@ -1,11 +1,11 @@
 import { request } from "@/services/request";
 
-export async function createProject(name:string, description?:string, organizationId?:number) {
+export async function createProject(name: string, description?: string, org_id?: number) {
     try {
         const response = await request.post('/api/project/create/', {
             display_name: name,
             description: description,
-            org_id: organizationId
+            org_id: org_id
         });
         return response.data;
     } catch (error) {
@@ -14,12 +14,12 @@ export async function createProject(name:string, description?:string, organizati
     }
 }
 
-export async function listProjects(page: number, pageSize: number, organizationId?: number) {
+export async function listProjects(page: number, page_size: number, org_id?: number) {
   try {
       const response = await request.post(`/api/project/list/`, {
           page: page,
-          page_size: pageSize,
-          org_id: organizationId
+          page_size: page_size,
+          org_id: org_id
       });
       return response.data;
   } catch (error) {
@@ -28,9 +28,9 @@ export async function listProjects(page: number, pageSize: number, organizationI
   }
 }
 
-export async function getProjectInfo(id: number) {
+export async function getProjectInfo(proj_id: number) {
   try {
-      const response = await request.get(`/api/project/${id}/info/`);
+      const response = await request.get(`/api/project/${proj_id}/info/`);
       return response.data;
   } catch (error) {
       console.error('Failed to get project info:', error);

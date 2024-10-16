@@ -20,9 +20,9 @@ export async function updateUserProfile(data: Partial<UserProfile>) {
     }
 }
 
-export async function uploadUserAvatar(Formdata: FormData) {
+export async function uploadUserAvatar(formdata: FormData) {
     try {
-        const response = await request.post('/api/user/avatar/upload/', Formdata);
+        const response = await request.post('/api/user/avatar/upload/', formdata);
         return response.data;
     } catch (error) {
         console.log('Failed to upload user avatar:', error);

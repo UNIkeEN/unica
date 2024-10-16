@@ -1,9 +1,9 @@
 import { request } from "@/services/request";
 import { DiscussionTopicCategory } from "@/models/discussion";
 
-export async function enableDiscussion(id: number) {
+export async function enableDiscussion(org_id: number) {
   try {
-    const response = await request.post(`/api/organization/${id}/discussion/enable/`);
+    const response = await request.post(`/api/organization/${org_id}/discussion/enable/`);
     return response.data;
   } catch (error) {
     console.error('Failed to enable discussions', error);
@@ -11,9 +11,9 @@ export async function enableDiscussion(id: number) {
   }
 };
 
-export async function getTopicInfo(id: number, local_id: number) {
+export async function getTopicInfo(org_id: number, local_id: number) {
   try {
-    const response = await request.post(`/api/organization/${id}/discussion/topic/info/`, {
+    const response = await request.post(`/api/organization/${org_id}/discussion/topic/info/`, {
       topic_local_id: local_id,
     });
     return response.data;
@@ -23,11 +23,11 @@ export async function getTopicInfo(id: number, local_id: number) {
   }
 }
 
-export async function listTopics(id: number, page: number, pageSize: number, category_id?: number) {
+export async function listTopics(org_id: number, page: number, page_size: number, category_id?: number) {
   try {
-    const response = await request.post(`/api/organization/${id}/discussion/topic/list/`, {
+    const response = await request.post(`/api/organization/${org_id}/discussion/topic/list/`, {
       page: page,
-      page_size: pageSize,
+      page_size: page_size,
       category_id: category_id
     });
     return response.data;
@@ -37,9 +37,9 @@ export async function listTopics(id: number, page: number, pageSize: number, cat
   }
 }
 
-export async function createTopic(id: number, title: string, category_id: number, init_comment: string) {
+export async function createTopic(org_id: number, title: string, category_id: number, init_comment: string) {
   try {
-    const response = await request.post(`/api/organization/${id}/discussion/topic/create/`, {
+    const response = await request.post(`/api/organization/${org_id}/discussion/topic/create/`, {
       title: title,
       category: category_id,
       comment: {
@@ -53,9 +53,9 @@ export async function createTopic(id: number, title: string, category_id: number
   }
 }
 
-export async function deleteTopic(id: number, topic_local_id: number) {
+export async function deleteTopic(org_id: number, topic_local_id: number) {
   try {
-    const response = await request.post(`/api/organization/${id}/discussion/topic/delete/`, {
+    const response = await request.post(`/api/organization/${org_id}/discussion/topic/delete/`, {
       topic_local_id: topic_local_id
     });
     return response.data;
@@ -65,12 +65,12 @@ export async function deleteTopic(id: number, topic_local_id: number) {
   }
 }
 
-export async function listComments(id: number, page: number, pageSize: number, local_id: number) {
+export async function listComments(org_id: number, page: number, page_size: number, local_id: number) {
   try {
-    const response = await request.post(`/api/organization/${id}/discussion/comment/list/` ,{
+    const response = await request.post(`/api/organization/${org_id}/discussion/comment/list/` ,{
       topic_local_id: local_id,
       page: page,
-      page_size: pageSize
+      page_size: page_size
     });
     return response.data;
   } catch (error) {
@@ -79,9 +79,9 @@ export async function listComments(id: number, page: number, pageSize: number, l
   }
 }
 
-export async function createComment(id: number, topic_local_id: number, content: string) {
+export async function createComment(org_id: number, topic_local_id: number, content: string) {
   try {
-    const response = await request.post(`/api/organization/${id}/discussion/comment/create/`, {
+    const response = await request.post(`/api/organization/${org_id}/discussion/comment/create/`, {
       topic_local_id: topic_local_id,
       content: content
     });
@@ -92,9 +92,9 @@ export async function createComment(id: number, topic_local_id: number, content:
   }
 }
 
-export async function editComment(id: number, topic_local_id: number, comment_local_id: number, content: string) {
+export async function editComment(org_id: number, topic_local_id: number, comment_local_id: number, content: string) {
   try {
-    const response = await request.patch(`/api/organization/${id}/discussion/comment/update/`, {
+    const response = await request.patch(`/api/organization/${org_id}/discussion/comment/update/`, {
       comment_local_id: comment_local_id,
       topic_local_id: topic_local_id,
       content: content
@@ -106,9 +106,9 @@ export async function editComment(id: number, topic_local_id: number, comment_lo
   }
 }
 
-export async function deleteComment(id: number, topic_local_id: number, comment_local_id: number) {
+export async function deleteComment(org_id: number, topic_local_id: number, comment_local_id: number) {
   try {
-    const response = await request.post(`/api/organization/${id}/discussion/comment/delete/`, {
+    const response = await request.post(`/api/organization/${org_id}/discussion/comment/delete/`, {
       comment_local_id: comment_local_id,
       topic_local_id: topic_local_id
     });
@@ -119,9 +119,9 @@ export async function deleteComment(id: number, topic_local_id: number, comment_
   }
 }
 
-export async function createCategory(id: number, category: DiscussionTopicCategory) {
+export async function createCategory(org_id: number, category: DiscussionTopicCategory) {
   try {
-    const response = await request.post(`/api/organization/${id}/discussion/category/create/`, category);
+    const response = await request.post(`/api/organization/${org_id}/discussion/category/create/`, category);
     return response.data;
   } catch (error) {
     console.error('Failed to create category', error);
@@ -129,9 +129,9 @@ export async function createCategory(id: number, category: DiscussionTopicCatego
   }
 }
 
-export async function getCategoryInfo(id: number, category_id: number) {
+export async function getCategoryInfo(org_id: number, category_id: number) {
   try {
-    const response = await request.post(`/api/organization/${id}/discussion/category/info/`, {
+    const response = await request.post(`/api/organization/${org_id}/discussion/category/info/`, {
       category_id: category_id
     });
     return response.data;
@@ -141,11 +141,11 @@ export async function getCategoryInfo(id: number, category_id: number) {
   }
 }
 
-export async function listCategories(id: number, page: number, pageSize: number) {
+export async function listCategories(org_id: number, page: number, page_size: number) {
   try {
-    const response = await request.post(`/api/organization/${id}/discussion/category/list/`, {
+    const response = await request.post(`/api/organization/${org_id}/discussion/category/list/`, {
       page: page,
-      page_size: pageSize
+      page_size: page_size
     });
     return response.data;
   } catch (error) {
@@ -154,9 +154,9 @@ export async function listCategories(id: number, page: number, pageSize: number)
   }
 }
 
-export async function updateCategory(id: number, category_id: number, category_value: DiscussionTopicCategory) {
+export async function updateCategory(org_id: number, category_id: number, category_value: DiscussionTopicCategory) {
   try {
-    const response = await request.patch(`/api/organization/${id}/discussion/category/update/`, {
+    const response = await request.patch(`/api/organization/${org_id}/discussion/category/update/`, {
       category_id: category_id,
       category_value: category_value
     });
@@ -167,9 +167,9 @@ export async function updateCategory(id: number, category_id: number, category_v
   }
 }
 
-export async function deleteCategory(id: number, category_id: number) {
+export async function deleteCategory(org_id: number, category_id: number) {
   try {
-    const response = await request.post(`/api/organization/${id}/discussion/category/delete/`, {
+    const response = await request.post(`/api/organization/${org_id}/discussion/category/delete/`, {
       category_id: category_id
     });
     return response.data;

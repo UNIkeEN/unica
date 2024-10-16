@@ -11,11 +11,11 @@ export async function createTask(proj_id: number, task: Partial<EditableTask>) {
     }
 }
 
-export async function listTasks(proj_id: number, page: number, pageSize: number) {
+export async function listTasks(proj_id: number, page: number, page_size: number) {
     try {
         const response = await request.post(`/api/project/${proj_id}/task/list/`, {
             page: page,
-            page_size: pageSize
+            page_size: page_size
         });
         return response.data;
     } catch (error) {
