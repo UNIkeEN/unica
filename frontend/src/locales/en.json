@@ -529,8 +529,7 @@
                 "error": "Failed to get task list"
             },
             "createTask": {
-                "success": "Created task successfully",
-                "created": "Successfully created task: {{name}}",
+                "created": "Successfully created task: {{title}}",
                 "error": "Failed to create task"
             },
             "updateTask": {

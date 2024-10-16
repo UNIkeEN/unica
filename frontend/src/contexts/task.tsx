@@ -68,7 +68,7 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
       await createTask(proj_id, value);
       setTasks((prevTasks) => [...prevTasks, value as Task]);
       toast({
-        title: t('Services.task.createTask.success'),
+        title: t('Services.task.createTask.created', { title: value.title }),
         status: 'success'
       })
     } catch (error) {

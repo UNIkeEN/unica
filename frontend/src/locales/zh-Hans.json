@@ -529,8 +529,7 @@
                 "error": "获取任务列表失败"
             },
             "createTask": {
-                "success": "创建任务成功",
-                "created": "任务 “{{name}}” 已成功创建",
+                "created": "任务 “{{title}}” 已成功创建",
                 "error": "创建任务失败"
             },
             "updateTask": {
