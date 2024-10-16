@@ -1,5 +1,9 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { Task, MockTask, MockTask2 } from '@/models/task';
+import { Task, MockTask, MockTask2, EditableTask } from '@/models/task';
+import { createTask, deleteTasks, listTasks, updateTask } from '@/services/task';
+import { useRouter } from 'next/router';
+import { useToast } from './toast';
+import { useTranslation } from 'react-i18next';
 
 interface TaskContextType {
   // shared state and update function in frontend
@@ -9,11 +13,13 @@ interface TaskContextType {
   setTaskByLocalId: (localId: number, updatedValue: Partial<Task>) => void;
 
   // operation function with backend
-  handleCreateTask: () => void;
-  handleListTasks: () => Promise<any>;
+  handleCreateTask: (pro_id: number, task: Partial<EditableTask>) => void;
+  handleListTasks: (pro_id: number, page: number, pageSize: number) => Promise<any>;
   handleGetTaskDetail: () => Promise<any>;
-  handleUpdateTask: (localId: number, updatedValue: Partial<Task>) => void; 
-  handleDeleteTasks: (localIds: number[]) => void; // support batch operation
+  handleUpdateTask: (pro_id: number, localId: number, updatedValue: Partial<EditableTask>) => void; 
+  handleDeleteTasks: (pro_id: number, localIds: number[]) => void; // support batch operation
+
+  toastNoPermissionAndRedirect: (userRole?: string) => void;
 }
 
 const TaskContext = createContext<TaskContextType>({
@@ -26,10 +32,15 @@ const TaskContext = createContext<TaskContextType>({
   handleListTasks: async () => null,
   handleGetTaskDetail: async () => null,
   handleUpdateTask: () => {},
-  handleDeleteTasks: () => {}
+  handleDeleteTasks: () => { },
+  
+  toastNoPermissionAndRedirect: () => {}
 });
 
 export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const router = useRouter();
+  const toast = useToast();
+  const { t } = useTranslation();
 
   const [tasks, setTasks] = useState<Task[] | undefined>([]);
 
@@ -37,6 +48,17 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
   useEffect(() => {
     setTasks([MockTask, MockTask2])
   }, []);
+
+  const toastNoPermissionAndRedirect = () => {
+    toast({
+        title: t('ProjectContext.toast.noPermission'),
+        status: 'error'
+    });
+
+    setTimeout(() => {
+        router.push('/home');
+    }, 2000);
+  };
 
   const setTaskById = (id: number, updatedValue: Partial<Task>) => {
     setTasks((prevTasks) =>
@@ -52,17 +74,87 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
       ));
   };
 
+  const handleCreateTask = async (pro_id: number, value: Partial<EditableTask>) => {
+    if (!pro_id) return;
+    try {
+      await createTask(pro_id, value);
+      setTasks((prevTasks) => [...prevTasks, value as Task]);
+    } catch (error) {
+      if (error.request && error.request.status === 403) {
+        toastNoPermissionAndRedirect();
+      } else toast({
+        title: t('Services.task.createTask.error'),
+        status: 'error'
+      })
+    }
+  };
+
+  const handleListTasks = async (pro_id: number, page: number, pageSize: number) => {
+    if (!pro_id) return null;
+    try {
+      const res = await listTasks(pro_id, page, pageSize);
+      return res.results;
+    } catch (error) {
+      if (error.request && error.request.status === 403) {
+        toastNoPermissionAndRedirect();
+      } else toast({
+        title: t('Services.task.listTask.error'),
+        status: 'error'
+      })
+    }
+  };
+
+  const handleUpdateTask = async (pro_id: number, localId: number, updatedValue: Partial<EditableTask>) => {
+    if (!pro_id) return;
+    try {
+      await updateTask(pro_id, localId, updatedValue);
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.local_id === localId ? { ...task, ...updatedValue } : task
+        )
+      );
+    } catch (error) {
+      if (error.request && error.request.status === 403) {
+        toastNoPermissionAndRedirect();
+      } else toast({
+        title: t('Services.task.updateTask.error'),
+        status: 'error'
+      })
+    }
+  };
+
+  const handleDeleteTasks = async (pro_id: number, localIds: number[]) => {
+    if (!pro_id) return;
+    try {
+      await deleteTasks(pro_id, localIds);
+      setTasks((prevTasks) =>
+        prevTasks.filter((task) => !localIds.includes(task.local_id))
+      );
+    } catch (error) {
+      if (error.request && error.request.status === 403) {
+        toastNoPermissionAndRedirect();
+      } else toast({
+        title: t('Services.task.deleteTasks.error'),
+        status: 'error'
+      })
+    }
+  };
+
+  
+
   const contextValue = {
     tasks: tasks,
     setTasks: (tasks: Task[]) => setTasks(tasks),
     setTaskById: setTaskById,
     setTaskByLocalId: setTaskByLocalId,
 
-    handleCreateTask: () => {},
-    handleListTasks: async () => null,
+    handleCreateTask: handleCreateTask,
+    handleListTasks: handleListTasks,
     handleGetTaskDetail: async () => null,
-    handleUpdateTask: () => {},
-    handleDeleteTasks: () => {}
+    handleUpdateTask: handleUpdateTask,
+    handleDeleteTasks: handleDeleteTasks,
+    
+    toastNoPermissionAndRedirect: () => {}
   };
 
   return (

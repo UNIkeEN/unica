@@ -523,6 +523,24 @@
                 "error-403": "权限不足，仅管理员可取消邀请",
                 "error-404": "未找到该邀请"
             }
+        },
+        "task": {
+            "listTasks": {
+                "error": "获取任务列表失败"
+            },
+            "createTask": {
+                "success": "创建任务成功",
+                "created": "任务 “{{name}}” 已成功创建",
+                "error": "创建任务失败"
+            },
+            "updateTask": {
+                "success": "更新任务成功",
+                "error": "更新任务失败"
+            },
+            "deleteTasks": {
+                "success": "删除任务成功",
+                "error": "删除任务失败"
+            }
         }
     },
     "SettingsPages": {

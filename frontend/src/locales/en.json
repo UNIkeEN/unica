@@ -523,6 +523,24 @@
                 "error-403": "Only owner can cancel invitation",
                 "error-404": "Invitation not found"
             }
+        },
+        "task": {
+            "listTasks": {
+                "error": "Failed to get task list"
+            },
+            "createTask": {
+                "success": "Created task successfully",
+                "created": "Successfully created task: {{name}}",
+                "error": "Failed to create task"
+            },
+            "updateTask": {
+                "success": "Updated task successfully",
+                "error": "Failed to update task"
+            },
+            "deleteTasks": {
+                "success": "Deleted tasks successfully",
+                "error": "Failed to delete tasks"
+            }
         }
     },
     "SettingsPages": {

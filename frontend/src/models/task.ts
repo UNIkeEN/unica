@@ -9,6 +9,12 @@ export interface Task {
   // TBD
 }
 
+export interface EditableTask {
+  title: string;
+  description: string;
+  archived: boolean;
+}
+
 export const TaskPropertyEnums = [
   "text",
   "number",
