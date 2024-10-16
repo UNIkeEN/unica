@@ -14,11 +14,11 @@ interface TaskContextType {
   setTaskByLocalId: (localId: number, updatedValue: Partial<Task>) => void;
 
   // operation function with backend
-  handleCreateTask: (pro_id: number, task: Partial<EditableTask>) => void;
-  handleListTasks: (pro_id: number, page: number, pageSize: number) => Promise<any>;
+  handleCreateTask: (task: Partial<EditableTask>) => void;
+  handleListTasks: (page: number, pageSize: number) => Promise<any>;
   handleGetTaskDetail: () => Promise<any>;
-  handleUpdateTask: (pro_id: number, localId: number, updatedValue: Partial<EditableTask>) => void; 
-  handleDeleteTasks: (pro_id: number, localIds: number[]) => void; // support batch operation
+  handleUpdateTask: (localId: number, updatedValue: Partial<EditableTask>, toastOnSuccess: boolean) => void; 
+  handleDeleteTasks: (localIds: number[]) => void; // support batch operation
 }
 
 const TaskContext = createContext<TaskContextType>({
@@ -38,6 +38,8 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const projCtx = useContext(ProjectContext);
   const toast = useToast();
   const { t } = useTranslation();
+  const router = useRouter();
+  const proj_id = Number(router.query.id);
 
   const [tasks, setTasks] = useState<Task[] | undefined>([]);
 
@@ -60,11 +62,15 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
       ));
   };
 
-  const handleCreateTask = async (pro_id: number, value: Partial<EditableTask>) => {
-    if (!pro_id) return;
+  const handleCreateTask = async (value: Partial<EditableTask>) => {
+    if (!proj_id) return;
     try {
-      await createTask(pro_id, value);
+      await createTask(proj_id, value);
       setTasks((prevTasks) => [...prevTasks, value as Task]);
+      toast({
+        title: t('Services.task.createTask.success'),
+        status: 'success'
+      })
     } catch (error) {
       if (error.request && error.request.status === 403) {
         projCtx.toastNoPermissionAndRedirect();
@@ -75,10 +81,10 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   };
 
-  const handleListTasks = async (pro_id: number, page: number, pageSize: number) => {
-    if (!pro_id) return null;
+  const handleListTasks = async (page: number, pageSize: number) => {
+    if (!proj_id) return null;
     try {
-      const res = await listTasks(pro_id, page, pageSize);
+      const res = await listTasks(proj_id, page, pageSize);
       return res.results;
     } catch (error) {
       if (error.request && error.request.status === 403) {
@@ -90,11 +96,17 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   };
 
-  const handleUpdateTask = async (pro_id: number, localId: number, updatedValue: Partial<EditableTask>) => {
-    if (!pro_id) return;
+  const handleUpdateTask = async (localId: number, updatedValue: Partial<EditableTask>, toastOnSuccess: boolean) => {
+    if (!proj_id) return;
     try {
-      await updateTask(pro_id, localId, updatedValue);
+      await updateTask(proj_id, localId, updatedValue);
       setTaskByLocalId(localId, updatedValue);
+      if (toastOnSuccess) {
+        toast({
+          title: t('Services.task.updateTask.success'),
+          status: 'success'
+        })
+      }
     } catch (error) {
       if (error.request && error.request.status === 403) {
         projCtx.toastNoPermissionAndRedirect();
@@ -105,13 +117,17 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   };
 
-  const handleDeleteTasks = async (pro_id: number, localIds: number[]) => {
-    if (!pro_id) return;
+  const handleDeleteTasks = async (localIds: number[]) => {
+    if (!proj_id) return;
     try {
-      await deleteTasks(pro_id, localIds);
+      await deleteTasks(proj_id, localIds);
       setTasks((prevTasks) =>
         prevTasks.filter((task) => !localIds.includes(task.local_id))
       );
+      toast({
+        title: t('Services.task.deleteTasks.success'),
+        status: 'success'
+      })
     } catch (error) {
       if (error.request && error.request.status === 403) {
         projCtx.toastNoPermissionAndRedirect();
