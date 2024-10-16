@@ -12,7 +12,6 @@ import {
   Flex,
   Icon,
   IconButton,
-  Avatar,
   Portal,
   Show,
   Hide
@@ -20,11 +19,11 @@ import {
 import { FiLogOut, FiChevronsLeft } from "react-icons/fi";
 import { useTranslation } from 'react-i18next';
 import { useRouter } from "next/router";
+import { UserAvatar } from "@/components/user-info-popover";
 import SelectableButton from "@/components/common/selectable-button";
 import { Logout } from "@/services/auth";
 import AuthContext from "@/contexts/auth";
 import UserContext from "@/contexts/user";
-import { useUserAvatarUrl } from "@/utils/url";
 
 const UserMenuArea = ({ onSwitchSider }) => {
 
@@ -52,7 +51,7 @@ const UserMenuArea = ({ onSwitchSider }) => {
                 justifyContent="flex-start"
               >
                 <HStack spacing={3} w="100%">
-                  <Avatar size="xs" src={useUserAvatarUrl(userCtx.profile?.username)}/>
+                  <UserAvatar size="xs" user={userCtx.profile} withPopover={false}/>
                   <Text className="ellipsis-text" fontSize="lg" fontWeight="normal">{userCtx.profile?.display_name}</Text>
                 </HStack>
               </Button>
@@ -100,7 +99,7 @@ const UserMenuArea = ({ onSwitchSider }) => {
             justifyContent="flex-start"
           >
             <HStack spacing={3} w="100%">
-              <Avatar size="xs" src={useUserAvatarUrl(userCtx.profile?.username)}/>
+              <UserAvatar size="xs" user={userCtx.profile} withPopover={false}/>
               <Text className="ellipsis-text" fontSize="lg" fontWeight="normal">{userCtx.profile?.display_name}</Text>
             </HStack>
           </Button>

@@ -1,9 +1,10 @@
+import { useContext } from 'react';
 import {
   Flex,
   Text,
   VStack,
   Icon,
-  Divider,
+  Divider
 } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from "next/router";
@@ -20,12 +21,15 @@ import {
   FiBookmark,
   FiChevronsRight
 } from "react-icons/fi";
+import UserContext from '@/contexts/user';
+import { UserAvatar } from './user-info-popover';
 
 
 const MainSiderSmall = ({ onSwitchSider }) => {
   
   const router = useRouter();
   const { t } = useTranslation();
+  const userCtx = useContext(UserContext);
 
   const topMenuItems = [
     { icon: FiHome, label: t('HomePage.header'), value: '/home' },
@@ -37,6 +41,7 @@ const MainSiderSmall = ({ onSwitchSider }) => {
   return (
     <Flex direction="column" h="100%" justifyContent="space-between">
       <VStack spacing={2} overflowY="auto">
+        <UserAvatar size="xs" user={userCtx.profile} withPopover={false}/>
         <SelectableButton size="sm" colorScheme="gray" onClick={onSwitchSider}>
           <FiChevronsRight/>
         </SelectableButton>

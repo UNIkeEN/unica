@@ -4,6 +4,7 @@ import {
   PopoverTrigger,
   PopoverContent,
   PopoverBody,
+  PopoverProps,
   Text,
   VStack,
   HStack,
@@ -15,11 +16,12 @@ import { useUserAvatarUrl } from "@/utils/url";
 
 interface UserAvatarProps extends BoxProps {
   user: UserBasicInfo;
+  withPopover?: boolean;
   trigger?: "hover" | "click";
   size?: string;
 }
 
-interface UserInfoPopoverProps {
+interface UserInfoPopoverProps extends PopoverProps {
   user: UserBasicInfo;
   trigger?: "hover" | "click";
   children: React.ReactNode;
@@ -28,11 +30,12 @@ interface UserInfoPopoverProps {
 const UserInfoPopover: React.FC<UserInfoPopoverProps> = ({ 
   user, 
   trigger = "hover", 
-  children 
+  children,
+  ...popoverProps
 }) => {
 
   return (
-    <Popover closeOnBlur trigger={trigger} isLazy>
+    <Popover closeOnBlur trigger={trigger} isLazy {...popoverProps}>
       <PopoverTrigger>
         {children}
       </PopoverTrigger>
@@ -59,23 +62,34 @@ const UserInfoPopover: React.FC<UserInfoPopoverProps> = ({
 
 const UserAvatar: React.FC<UserAvatarProps> = ({ 
   user, 
+  withPopover = true,
   trigger = "hover", 
   size = "md",
   ...boxProps
 }) => {
 
-  return (
-    <UserInfoPopover user={user} trigger={trigger}>
-      <Box {...boxProps}>
-        <Avatar
-          cursor="pointer"
-          name={user.display_name}
-          src={useUserAvatarUrl(user.username)}
-          size={size}
-        />
-      </Box>
-    </UserInfoPopover>
-  );
+  if (withPopover)
+    return (
+      <UserInfoPopover user={user} trigger={trigger}>
+        <Box {...boxProps}>
+          <Avatar
+            cursor="pointer"
+            name={user?.display_name || ""}
+            src={useUserAvatarUrl(user?.username)}
+            size={size}
+          />
+        </Box>
+      </UserInfoPopover>
+    );
+  else return (
+    <Box {...boxProps}>
+      <Avatar
+        name={user?.display_name || ""}
+        src={useUserAvatarUrl(user?.username)}
+        size={size}
+      />
+    </Box>
+  )
 };
 
 export { UserAvatar, UserInfoPopover };
