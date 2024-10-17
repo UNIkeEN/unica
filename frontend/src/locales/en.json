@@ -195,6 +195,20 @@
             "copied": "Copied the address to clipboard"
         }
     },
+    "CreateTaskModal":{
+        "modal": {
+            "title": "Create new task",
+            "name": "Task name",
+            "description": "Description",
+            "save": "Save",
+            "cancel": "Cancel"
+        },
+        "FormErrorMessage": {
+            "titleRequired": "Title is required",
+            "titleTooLong": "Title is too long",
+            "descriptionTooLong": "Description is too long"
+        }
+    },
     "LeaveOrganizationAlertDialog": {
         "dialog": {
             "title": "Leave Organization",
@@ -268,6 +282,16 @@
         },
         "button": {
             "create": "New Project"
+        }
+    },
+    "MyTasksPage":{
+        "title": "My Tasks",
+        "header": "My Tasks",
+        "list": {
+            "updated_at": "Updated {{time}}"
+        },
+        "button": {
+            "create": "New Task"
         }
     },
     "NewDiscussionDrawer": {

@@ -195,6 +195,20 @@
             "copied": "已复制该地址至剪贴板"
         }
     },
+    "CreateTaskModal":{
+        "modal": {
+            "title": "创建新任务",
+            "name": "任务名称",
+            "description": "任务描述",
+            "save": "保存",
+            "cancel": "取消"
+        },
+        "FormErrorMessage": {
+            "nameRequired": "任务名称不能为空",
+            "nameTooLong": "任务名称不得超过 20 字",
+            "descriptionTooLong": "任务描述不得超过 200 字"
+        }
+    },
     "LeaveOrganizationAlertDialog": {
         "dialog": {
             "title": "退出组织",
@@ -268,6 +282,16 @@
         },
         "button": {
             "create": "创建新项目"
+        }
+    },
+    "MyTasksPage":{
+        "title": "我的任务",
+        "header": "任务",
+        "list": {
+            "updated_at": "更新于 {{time}}"
+        },
+        "button": {
+            "create": "创建新任务"
         }
     },
     "NewDiscussionDrawer": {
