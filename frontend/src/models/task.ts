@@ -9,7 +9,7 @@ export interface Task {
   // TBD
 }
 
-export interface EditableTask {
+export interface EditableTaskField {
   title: string;
   description: string;
   archived: boolean;

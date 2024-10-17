@@ -1,7 +1,7 @@
-import { EditableTask } from "@/models/task";
+import { EditableTaskField } from "@/models/task";
 import { request } from "@/services/request";
 
-export async function createTask(proj_id: number, task: Partial<EditableTask>) {
+export async function createTask(proj_id: number, task: Partial<EditableTaskField>) {
     try {
         const response = await request.post(`/api/project/${proj_id}/task/create/`, task);
         return response.data;
@@ -11,12 +11,9 @@ export async function createTask(proj_id: number, task: Partial<EditableTask>) {
     }
 }
 
-export async function listTasks(proj_id: number, page: number, page_size: number) {
+export async function listTasks(proj_id: number) {
     try {
-        const response = await request.post(`/api/project/${proj_id}/task/list/`, {
-            page: page,
-            page_size: page_size
-        });
+        const response = await request.post(`/api/project/${proj_id}/task/list/`);
         return response.data;
     } catch (error) {
         console.error('Failed to list tasks', error);
@@ -36,7 +33,7 @@ export async function deleteTasks(proj_id: number, local_ids: number[]) {
     }
 }
 
-export async function updateTask(proj_id: number, local_id: number, updated_value: Partial<EditableTask>) {
+export async function updateTask(proj_id: number, local_id: number, updated_value: Partial<EditableTaskField>) {
     try {
         const response = await request.patch(`/api/project/${proj_id}/task/update/`, {
             local_id: local_id,

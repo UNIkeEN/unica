@@ -45,21 +45,17 @@ def create_task(request, id):
     method='post',
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
-        properties={
-            'page': openapi.Schema(type=openapi.TYPE_INTEGER, default=1),
-            'page_size': openapi.Schema(type=openapi.TYPE_INTEGER, default=20),
-        },
         required=[]
     ),
     responses={
         200: openapi.Response(
-            description="List of tasks retrieved successfully",
+            description="List of all tasks retrieved successfully",
             schema=TaskSerializer(many=True)
         ),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
         404: openapi.Response(description="Project or task collection not found")
     },
-    operation_description="Retrieve a paginated list of tasks for a specific task collection.",
+    operation_description="Retrieve a non-paginated list of all tasks",
     tags=["Project/Task"]
 )
 @api_view(['POST'])
@@ -68,22 +64,10 @@ def create_task(request, id):
 @project_basic_permission_required
 def list_tasks(request, id):
     collection = get_object_or_404(TaskCollection, project=request.project)
-
-    class CustomPagination(PageNumberPagination):
-        page_size_query_param = 'page_size'
-
-    paginator = CustomPagination()
-
-    request.query_params._mutable = True
-    request.query_params['page'] = request.data.get('page', 1)
-    request.query_params['page_size'] = request.data.get('page_size', 20)
-    request.query_params._mutable = False
-
     tasks = collection.tasks.filter(deleted=False, archived=False).order_by('-updated_at')
-    result_page = paginator.paginate_queryset(tasks, request)
-    serializer = TaskSerializer(result_page, many=True)
+    serializer = TaskSerializer(tasks, many=True)
 
-    return paginator.get_paginated_response(serializer.data)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @swagger_auto_schema(
