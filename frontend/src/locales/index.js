@@ -2,9 +2,8 @@
 import en from './en.json';
 import zh_Hans from './zh-Hans.json';
 import zh_Hant from './zh-Hant.json';
-import { useRouter } from 'next/router';
 import i18n from 'i18next';
-import i18nConfig from '@/../next-i18next.config.mjs';
+import { i18nConfig } from '../../next-i18next.config.mjs';
 
 export const localeResources = {
   "en": {
@@ -30,7 +29,8 @@ export function changeLanguageWithRouter(router) {
     changeLanguage(currentLocale);
   } else {
     // If the user explicitly added the default locale in the URL (/zh-Hans/home)
-    if (currentLocale === DEFAULT_LOCALE && router.asPath.includes(`/${DEFAULT_LOCALE}/`)) {
+    console.warn(window.location.href)
+    if (currentLocale === DEFAULT_LOCALE && window.location.href.includes(`/${DEFAULT_LOCALE}/`)) {
       changeLanguage(DEFAULT_LOCALE);
     } else if (storedLocale) {
       // Otherwise use the locale from localStorage

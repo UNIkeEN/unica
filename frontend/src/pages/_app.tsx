@@ -38,7 +38,7 @@ function App({ Component, pageProps }: AppProps) {
     changeLanguageWithRouter(router); // Detect and apply the correct locale on app load
 
     setMounted(true);
-  }, [router]);
+  }, [router.locale]);
 
 
   if (!mounted) return <></>;
