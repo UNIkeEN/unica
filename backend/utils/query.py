@@ -1,5 +1,6 @@
 from typing import Union, List, Optional, Type
 from django.db.models import QuerySet, Q, Model
+from rest_framework.pagination import PageNumberPagination
 from drf_yasg import openapi
 from enum import Enum
 
@@ -68,6 +69,19 @@ class QueryOptions:
         )
 
 
+class CustomPagination(PageNumberPagination):
+    def paginate_queryset(self, queryset, options):
+        page = options.page or 1
+        page_size = options.page_size or self.page_size
+        self.page = page
+
+        paginator = self.django_paginator_class(queryset, page_size)
+        self.page = paginator.page(self.page)
+        
+        return paginator.count, list(self.page)
+    
+
+
 class QueryExecutor:
     def __init__(self, base_query: Union[QuerySet, Type[Model]], options: QueryOptions, 
                  supported_steps: Optional[List[QuerySteps]] = None):
@@ -111,9 +125,10 @@ class QueryExecutor:
 
     def _apply_pagination(self) -> QuerySet:
         if QuerySteps.PAGINATION in self.supported_steps and self.options.page and self.options.page_size:
-            offset = (self.options.page - 1) * self.options.page_size
-            return self.query[offset:offset + self.options.page_size]  # pagination in dataset-query level
-        return self.query
+            paginator = CustomPagination()
+            count, paginated_queryset = paginator.paginate_queryset(self.query, self.options)
+            return count, paginated_queryset
+        return self.query.count(), self.query
 
     def execute(self, search_fields: Optional[List[str]] = None) -> QuerySet:
         """
