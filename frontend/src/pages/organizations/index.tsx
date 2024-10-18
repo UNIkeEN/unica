@@ -12,16 +12,18 @@ import {
   Text,
   HStack,
   Show,
+  Flex,
+  Spacer,
   useDisclosure,
 } from "@chakra-ui/react";
-
+import { FiChevronDown } from "react-icons/fi";
 import { useTranslation } from 'react-i18next';
 import AuthContext from "@/contexts/auth";
 import UserContext from "@/contexts/user";
 import { useRouter } from "next/router";
 import { useToast } from "@/contexts/toast";
 import RichList from "@/components/common/rich-list";
-import { FiChevronDown } from "react-icons/fi";
+import Pagination from "@/components/common/pagination";
 import { Organization, MemberRoleEnum } from '@/models/organization';
 import CreateOrganizationModal from "@/components/modals/create-organization-modal";
 import GenericAlertDialog from "@/components/modals/generic-alert-dialog";
@@ -35,25 +37,39 @@ const MyOrganizationsPage = () => {
   const toast = useToast();
   const router = useRouter();
   const { t } = useTranslation();
-  const [orgSortBy, setOrgSortBy] = useState<string>('updated_at'); // updated_at, created_at, display_name
-  const sortOptions = ['created_at', 'updated_at', 'display_name'];
+  const [orgSortBy, setOrgSortBy] = useState<string>('updated_at');
+  const [pageIndex, setPageIndex] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(20);
+  const [orgList, setOrgList] = useState<Organization[]>([]);
+  const [orgCount, setOrgCount] = useState<number>(0);
   const [selectedOrg, setSelectedOrg] = useState<Organization | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const sortOptions = {
+    created_at: '-created_at',
+    updated_at: '-updated_at',
+    display_name: 'display_name'
+  };
 
   useEffect(() => {
     if (!authCtx.checkLoginAndRedirect()) return;
   }, [authCtx]);
 
-  const sortOrganizations = (orgs: Organization[], orgSortBy: string): Organization[] => {
-    return [...orgs].sort((a, b) => {
-      if (orgSortBy === 'created_at' || orgSortBy === 'updated_at') {
-        return new Date(b[orgSortBy]).getTime() - new Date(a[orgSortBy]).getTime();
-      } else if (orgSortBy === 'display_name') {
-        return a.display_name.localeCompare(b.display_name);
-      }
-      return 0;
-    });
-  };
+  useEffect(() => {
+    updateListOrganizations();
+  }, [pageIndex, pageSize, orgSortBy]);
+
+  const updateListOrganizations = () => {
+    userCtx.handleListOrganizations(pageIndex, pageSize, sortOptions[orgSortBy])
+    .then((res) => {
+      setOrgList(res.results);
+      setOrgCount(res.count);
+    })
+    .catch((error) => {
+      setOrgList([]);
+      setOrgCount(0);
+    })
+  }
 
   const handleLeaveOrganization = async () => {
     try {
@@ -64,7 +80,7 @@ const MyOrganizationsPage = () => {
       });
       onClose();
       setSelectedOrg(null);
-      userCtx.updateOrganizations();
+      updateListOrganizations();
     } catch (error) {
       console.error("Failed to leave organization:", error);
       if (
@@ -104,9 +120,9 @@ const MyOrganizationsPage = () => {
                 type="radio"
                 onChange={(value) => setOrgSortBy(value as string)}
               >
-                {sortOptions.map((option) => (
-                  <MenuItemOption key={option} value={option}>
-                    {t(`MyOrganizationsPage.select.by_${option}`)}
+                {Object.keys(sortOptions).map(key => (
+                  <MenuItemOption key={key} value={key}>
+                    {t(`MyOrganizationsPage.select.by_${key}`)}
                   </MenuItemOption>
                 ))}
               </MenuOptionGroup>
@@ -117,7 +133,7 @@ const MyOrganizationsPage = () => {
 
         <div>
           <RichList titleAsLink
-            items={sortOrganizations(userCtx.organizations, orgSortBy).map((item) => ({
+            items={orgList.map((item) => ({
               title: item.display_name,
               href: `organizations/${item.id}/overview`,
               subtitle: item.description,
@@ -154,6 +170,18 @@ const MyOrganizationsPage = () => {
             }))} 
           />
         </div>
+        {orgList && orgList.length > 0 && (
+          <Flex>
+            <Spacer />
+            <Pagination
+              total={Math.ceil(orgCount / pageSize)}
+              current={pageIndex}
+              onPageChange={(page) => setPageIndex(page)}
+              colorScheme="blue"
+              variant="subtle"
+            />
+          </Flex>
+        )}
         {selectedOrg &&
           <GenericAlertDialog 
           isOpen={isOpen} 

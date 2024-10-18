@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import {
   Flex,
   Text,
@@ -14,6 +14,7 @@ import UserMenuArea from "@/components/user-menu-area";
 import NavMenu from '@/components/common/nav-menu';
 import SelectableButton from "@/components/common/selectable-button";
 import UserContext from '@/contexts/user';
+import { Organization } from '@/models/organization';
 import { 
   FiHome,
   FiBook,
@@ -36,6 +37,14 @@ const MainSider = ({ onSwitchSider = () => {} }) => {
     { icon: FiUsers, label: t('MyOrganizationsPage.header'), value: '/organizations' },
     { icon: FiSettings, label: t('SettingsPages.header'), value: '/settings' },
   ];
+
+  const [recentOrgs, setRecentOrgs] = useState<Organization[]>([]);
+
+  useEffect(() => {
+    userCtx.handleListOrganizations(1, 5, "-updated_at")
+    .then((data) => {setRecentOrgs(data.results)})
+    .catch((error) => {setRecentOrgs([])})
+  }, []);
 
   return (
     <Flex direction="column" h="100%" justifyContent="space-between">
@@ -68,11 +77,11 @@ const MainSider = ({ onSwitchSider = () => {} }) => {
         </VStack>
 
         {/* Organizations */}
-        {userCtx.organizations && userCtx.organizations.length>0 &&
+        {recentOrgs && recentOrgs.length>0 &&
           <VStack spacing={2} align="stretch">
             <Text fontSize="sm" className="secondary-text" ml={3}>{t('MainSider.my-organizations.title')}</Text>
             <NavMenu 
-              items={userCtx.organizations.slice(0, 5).map((item) => ({
+              items={recentOrgs.map((item) => ({
                 value: `/organizations/${item.id}/overview`,
                 label: 
                     <HStack spacing={2} overflow="hidden">
@@ -83,7 +92,7 @@ const MainSider = ({ onSwitchSider = () => {} }) => {
               onClick={(value) => {router.push(value)}}
               selectedKeys={[router.asPath]}/>
               {
-                userCtx.organizations.length>5 &&
+                recentOrgs.length>5 &&
                 <SelectableButton mt={-1.5} fontSize="xs" size="sm" onClick={() => {router.push('/organizations')}}>
                   <Text />{t('MainSider.my-organizations.button.more')}<Text/>
                 </SelectableButton>

@@ -1,4 +1,5 @@
 import { request } from "@/services/request";
+import { QueryOptions } from "@/models/query";
 
 export async function createOrganization(name: string, description?: string) {
     try {
@@ -13,9 +14,9 @@ export async function createOrganization(name: string, description?: string) {
     }
 }
 
-export async function listUserOrganizations() {
+export async function listUserOrganizations(query: Partial<QueryOptions> = {}) {
     try {
-        const response = await request.get('/api/organization/list/');
+        const response = await request.post('/api/organization/list/', query);
         return response.data;
     } catch (error) {
         console.error('Failed to get user organizations:', error);

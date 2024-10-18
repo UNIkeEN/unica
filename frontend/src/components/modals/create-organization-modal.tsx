@@ -1,4 +1,3 @@
-import UserContext from "@/contexts/user";
 import { createOrganization } from "@/services/organization";
 import {
   Button,
@@ -17,16 +16,17 @@ import {
   Textarea,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useContext, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useToast } from "@/contexts/toast";
 import { useTranslation } from "react-i18next";
+import { useRouter } from "next/router";
 
 const CreateOrganizationModal = ({ size = "lg" }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { t } = useTranslation();
   const toast = useToast();
-  const userCtx = useContext(UserContext);
   const initialRef = useRef(null);
+  const router = useRouter();
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -35,9 +35,8 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
   const [descriptionTooLong, setDescriptionTooLong] = useState(false);
 
   const handleSave = async () => {
-    const success = await handleCreateOrganization(name.trim(), description);
-    if (success) {
-      userCtx.updateOrganizations();
+    const res = await handleCreateOrganization(name.trim(), description);
+    if (res) {
       toast({
         title: t("Services.organization.createOrganization.created", {
           name: name.trim(),
@@ -47,6 +46,7 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
       onClose();
       setDescription("");
       setName("");
+      router.push(`/organizations/${res.id}/overview`)
     }
   };
 
@@ -55,8 +55,7 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
     description: string
   ) => {
     try {
-      await createOrganization(name, description);
-      return true;
+      return await createOrganization(name, description);
     } catch (error) {
       console.error("Failed to create organization:", error);
       if (error.response.status === 400) {
@@ -66,7 +65,7 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
           status: "error",
         });
       }
-      return false;
+      return null;
     }
   };
 
