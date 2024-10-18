@@ -34,23 +34,25 @@ export default function useLocalStorage<T>(
   const [storedValue, setStoredValue] = useState<T>(() => {
     let result: T | null;
 
-    const item = localStorage.getItem(key);
-    if (item === null) {
-      return getValue(null, initialValue);
-    }
-
-    try {
-      const parsed = JSON.parse(item);
-      if (!parsed) {
-        throw new Error("Empty value");
+    if (typeof window !== "undefined") {
+      const item = localStorage.getItem(key);
+      if (item === null) {
+        return getValue(null, initialValue);
       }
 
-      result = parsed;
-    } catch {
-      // Casting to T (which should resolve to string) because JSON.parse would
-      // throw an error if "foo" was passed, but properly casting "true" or "1"
-      // to their respective types
-      result = item as unknown as T;
+      try {
+        const parsed = JSON.parse(item);
+        if (!parsed) {
+          throw new Error("Empty value");
+        }
+
+        result = parsed;
+      } catch {
+        // Casting to T (which should resolve to string) because JSON.parse would
+        // throw an error if "foo" was passed, but properly casting "true" or "1"
+        // to their respective types
+        result = item as unknown as T;
+      }
     }
 
     return getValue(result, initialValue);
