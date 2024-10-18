@@ -1,6 +1,5 @@
 import { useToast } from "@/contexts/toast";
 import React, { useState, useRef, useContext } from "react";
-import { createTask } from "@/services/task";
 import {
   Button,
   FormControl,
@@ -35,7 +34,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
   const { t } = useTranslation();
   const toast = useToast();
   const router = useRouter();
-  const { handleCreateTask } = useContext(TaskContext);
+  const taskCtx = useContext(TaskContext);
   const initialRef = useRef(null);
 
   const [title, setTitle] = useState("");
@@ -50,7 +49,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
       description,
     };
 
-    await handleCreateTask(task);
+    await taskCtx.handleCreateTask(task);
 
     toast({
       title: t("Services.task.createTask.created", { title: task.title }),
@@ -80,7 +79,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
         <ModalContent>
           <ModalHeader>
             {t("MyTasksPage.button.create")}
-            </ModalHeader>
+          </ModalHeader>
           <ModalCloseButton />
 
           <ModalBody pb={5}>
@@ -93,7 +92,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                 onChange={(e) => setTitle(e.target.value)}
                 onBlur={() => {
                   setIsTitleNull(title.trim() === "");
-                  setTitleTooLong(title.trim().length > 20);
+                  setTitleTooLong(title.trim().length > 100);
                 }}
                 onFocus={() => {
                   setIsTitleNull(false);
@@ -104,7 +103,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                 {isTitleNull
                   ? t("CreateTaskModal.FormErrorMessage.titleRequired")
                   : titleTooLong
-                    ? t("CreateTaskModal.FormErrorMessage.titleTooLong")
+                    ? t("CreateTaskModal.FormErrorMessage.titleTooLong",{ max: 100 })
                     : ""}
               </FormErrorMessage>
             </FormControl>
@@ -120,7 +119,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
               />
               <FormErrorMessage>
                 {descriptionTooLong
-                  ? t("CreateTaskModal.FormErrorMessage.descriptionTooLong")
+                  ? t("CreateTaskModal.FormErrorMessage.descriptionTooLong",{ max: 200 })
                   : ""}
               </FormErrorMessage>
             </FormControl>
