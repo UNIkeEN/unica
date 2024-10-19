@@ -14,11 +14,11 @@ interface TaskContextType {
   setTaskByLocalId: (localId: number, updatedValue: Partial<Task>) => void;
 
   // operation function with backend
-  handleCreateTask: (task: Partial<EditableTaskField>) => void;
+  handleCreateTask: (task: Partial<EditableTaskField>) => Promise<any>;
   handleListTasks: () => Promise<any>;  // list all, without pagination
   handleGetTaskDetail: () => Promise<any>;
-  handleUpdateTask: (localId: number, updatedValue: Partial<EditableTaskField>, toastOnSuccess: boolean) => void; 
-  handleDeleteTasks: (localIds: number[]) => void; // support batch operation
+  handleUpdateTask: (localId: number, updatedValue: Partial<EditableTaskField>, toastOnSuccess: boolean) => Promise<any>; 
+  handleDeleteTasks: (localIds: number[]) => Promise<any>; // support batch operation
 }
 
 const TaskContext = createContext<TaskContextType>({
@@ -27,11 +27,11 @@ const TaskContext = createContext<TaskContextType>({
   setTaskById: () => {},
   setTaskByLocalId: () => {},
 
-  handleCreateTask: () => {},
+  handleCreateTask: () => null,
   handleListTasks: async () => null,
   handleGetTaskDetail: async () => null,
-  handleUpdateTask: () => {},
-  handleDeleteTasks: () => { },
+  handleUpdateTask: () => null,
+  handleDeleteTasks: () => null,
 });
 
 export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -47,7 +47,7 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     handleListTasks()
     .then((res) => setTasks(res))
     .catch((error) => setTasks([]))
-  }, []);
+  }, [proj_id]);
 
   const setTaskById = (id: number, updatedValue: Partial<Task>) => {
     setTasks((prevTasks) =>
@@ -64,14 +64,15 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   const handleCreateTask = async (value: Partial<EditableTaskField>) => {
-    if (!proj_id) return;
+    if (!proj_id) return null;
     try {
-      await createTask(proj_id, value);
-      setTasks((prevTasks) => [...prevTasks, value as Task]);
+      const res = await createTask(proj_id, value);
+      setTasks((prevTasks) => [res as Task, ...prevTasks]);
       toast({
         title: t('Services.task.createTask.created', { title: value.title }),
         status: 'success'
       })
+      return res;
     } catch (error) {
       if (error.request && error.request.status === 403) {
         projCtx.toastNoPermissionAndRedirect();
@@ -79,6 +80,7 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
         title: t('Services.task.createTask.error'),
         status: 'error'
       })
+      return null;
     }
   };
 
@@ -94,13 +96,14 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
         title: t('Services.task.listTask.error'),
         status: 'error'
       })
+      return null;
     }
   };
 
   const handleUpdateTask = async (localId: number, updatedValue: Partial<EditableTaskField>, toastOnSuccess: boolean) => {
-    if (!proj_id) return;
+    if (!proj_id) return null;
     try {
-      await updateTask(proj_id, localId, updatedValue);
+      const res = await updateTask(proj_id, localId, updatedValue);
       setTaskByLocalId(localId, updatedValue);
       if (toastOnSuccess) {
         toast({
@@ -108,6 +111,7 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
           status: 'success'
         })
       }
+      return res;
     } catch (error) {
       if (error.request && error.request.status === 403) {
         projCtx.toastNoPermissionAndRedirect();
@@ -115,13 +119,14 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
         title: t('Services.task.updateTask.error'),
         status: 'error'
       })
+      return null;
     }
   };
 
   const handleDeleteTasks = async (localIds: number[]) => {
-    if (!proj_id) return;
+    if (!proj_id) return null;
     try {
-      await deleteTasks(proj_id, localIds);
+      const res = await deleteTasks(proj_id, localIds);
       setTasks((prevTasks) =>
         prevTasks.filter((task) => !localIds.includes(task.local_id))
       );
@@ -129,6 +134,7 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
         title: t('Services.task.deleteTasks.success'),
         status: 'success'
       })
+      return res;
     } catch (error) {
       if (error.request && error.request.status === 403) {
         projCtx.toastNoPermissionAndRedirect();
@@ -136,6 +142,7 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
         title: t('Services.task.deleteTasks.error'),
         status: 'error'
       })
+      return null;
     }
   };
 

@@ -73,6 +73,19 @@
             "descriptionTooLong": "项目描述不得超过 200 字"
         }
     },
+    "CreateTaskModal":{
+        "modal": {
+            "title": "创建新任务",
+            "taskTitle": "标题",
+            "description": "描述",
+            "save": "保存",
+            "cancel": "取消"
+        },
+        "FormErrorMessage": {
+            "titleRequired": "任务标题不能为空",
+            "titleTooLong": "任务标题不得超过 100 字"
+        }
+    },
     "DeleteCategoryAlertDialog": {
         "dialog": {
             "title": "删除分类",
@@ -369,6 +382,9 @@
                     "list": "列表视图",
                     "calendar": "日历视图"
                 }
+            },
+            "button": {
+                "create": "新任务"
             }
         },
         "issues": {

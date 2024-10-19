@@ -73,6 +73,19 @@
             "descriptionTooLong": "Description is too long"
         }
     },
+    "CreateTaskModal":{
+        "modal": {
+            "title": "Create New Task",
+            "taskTitle": "Title",
+            "description": "Description",
+            "save": "Save",
+            "cancel": "Cancel"
+        },
+        "FormErrorMessage": {
+            "titleRequired": "Title is required",
+            "titleTooLong": "Title is too long"
+        }
+    },
     "DeleteCategoryAlertDialog": {
         "dialog": {
             "title": "Delete Category",
@@ -369,6 +382,9 @@
                     "list": "List View",
                     "calendar": "Calendar View"
                 }
+            },
+            "button": {
+                "create": "New Task"
             }
         },
         "issues": {

@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { ProjectLayoutTabs } from "@/layouts/project-layout";
 import SegmentedControl from "@/components/common/segmented";
 import TasksKanbanView from "@/components/task/tasks-kanban-view";
+import CreateTaskModal from "@/components/modals/create-task-modal";
 
 const ProjectTasksPage = () => {
   const { t } = useTranslation();
@@ -40,7 +41,7 @@ const ProjectTasksPage = () => {
         spacing={2}
       >
         <ProjectLayoutTabs />
-        <HStack spacing={2} ml="auto">
+        <HStack spacing={3} ml="auto">
           <SegmentedControl
             selected={selectedView}
             onSelectItem={(s) => { setSelectedView(s) }}
@@ -52,6 +53,8 @@ const ProjectTasksPage = () => {
             }))}
             withTooltip={true}
           />
+
+          <CreateTaskModal />
         </HStack>
       </Stack>
 

@@ -105,7 +105,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{t("MyProjectsPage.button.create")}</ModalHeader>
+          <ModalHeader>{t("CreateProjectModal.modal.title")}</ModalHeader>
           <ModalCloseButton />
 
           <ModalBody pb={5}>
