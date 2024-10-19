@@ -282,6 +282,11 @@
         },
         "button": {
             "create": "New Project"
+        },
+        "task":{
+            "button":{ 
+                "create": "New Task"
+            }
         }
     },
     "MyTasksPage":{

@@ -282,6 +282,11 @@
         },
         "button": {
             "create": "创建新项目"
+        },
+        "task":{
+            "button":{ 
+                "create": "创建新任务"
+            }
         }
     },
     "MyTasksPage":{

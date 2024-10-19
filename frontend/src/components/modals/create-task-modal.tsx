@@ -1,5 +1,6 @@
 import { useToast } from "@/contexts/toast";
 import React, { useState, useRef, useContext } from "react";
+import { createTask } from "@/services/task";
 import {
   Button,
   FormControl,
@@ -19,15 +20,13 @@ import {
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/router";
 import TaskContext from "@/contexts/task";
-import { EditableTask } from "@/models/task";
+import { EditableTaskField } from "@/models/task";
 
 interface CreateTaskModalProps {
-  proj_id: number;
   size?: string;
 }
 
 const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
-  proj_id,
   size = "lg",
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -41,10 +40,9 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
   const [description, setDescription] = useState("");
   const [isTitleNull, setIsTitleNull] = useState(false);
   const [titleTooLong, setTitleTooLong] = useState(false);
-  const [descriptionTooLong, setDescriptionTooLong] = useState(false);
 
   const handleSave = async () => {
-    const task: Partial<EditableTask> = {
+    const task: Partial<EditableTaskField> = {
       title: title.trim(),
       description,
     };
@@ -59,13 +57,12 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
     setTitle("");
     setDescription("");
     onClose();
-    router.push(`/projects/${proj_id}/tasks`);
   };
 
   return (
     <>
       <Button onClick={onOpen} colorScheme="blue">
-        {t("MyTasksPage.button.create")}
+        {t("MyProjectsPage.task.button.create")}
       </Button>
 
       <Modal
@@ -78,7 +75,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>
-            {t("MyTasksPage.button.create")}
+            {t("MyProjectsPage.task.button.create")}
           </ModalHeader>
           <ModalCloseButton />
 
@@ -103,25 +100,18 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                 {isTitleNull
                   ? t("CreateTaskModal.FormErrorMessage.titleRequired")
                   : titleTooLong
-                    ? t("CreateTaskModal.FormErrorMessage.titleTooLong",{ max: 100 })
+                    ? t("CreateTaskModal.FormErrorMessage.titleTooLong", { max: 100 })
                     : ""}
               </FormErrorMessage>
             </FormControl>
 
-            <FormControl isInvalid={descriptionTooLong}>
+            <FormControl>
               <FormLabel>{t("CreateTaskModal.modal.description")}</FormLabel>
               <Textarea
                 placeholder={t("CreateTaskModal.modal.description")}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                onBlur={() => setDescriptionTooLong(description.length > 200)}
-                onFocus={() => setDescriptionTooLong(false)}
               />
-              <FormErrorMessage>
-                {descriptionTooLong
-                  ? t("CreateTaskModal.FormErrorMessage.descriptionTooLong",{ max: 200 })
-                  : ""}
-              </FormErrorMessage>
             </FormControl>
           </ModalBody>
 
@@ -130,7 +120,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
               colorScheme="blue"
               mr={3}
               onClick={handleSave}
-              isDisabled={isTitleNull || titleTooLong || descriptionTooLong}
+              isDisabled={isTitleNull || titleTooLong}
             >
               {t("CreateTaskModal.modal.save")}
             </Button>
