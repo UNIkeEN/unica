@@ -559,7 +559,8 @@
             },
             "createTask": {
                 "created": "任务 “{{title}}” 已成功创建",
-                "error": "创建任务失败"
+                "error": "创建任务失败",
+                "invalidInput": "无效的输入"
             },
             "updateTask": {
                 "success": "更新任务成功",

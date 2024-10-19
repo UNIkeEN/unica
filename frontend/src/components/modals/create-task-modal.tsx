@@ -1,6 +1,5 @@
 import { useToast } from "@/contexts/toast";
 import React, { useState, useRef, useContext } from "react";
-import { createTask } from "@/services/task";
 import {
   Button,
   FormControl,
@@ -49,14 +48,9 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
 
     await taskCtx.handleCreateTask(task);
 
-    toast({
-      title: t("Services.task.createTask.created", { title: task.title }),
-      status: "success",
-    });
-
+    onClose();
     setTitle("");
     setDescription("");
-    onClose();
   };
 
   return (
