@@ -16,6 +16,7 @@ import SettingsLayout from '@/layouts/settings-layout';
 import { useAxiosInterceptors } from '@/services/request';
 import theme from '../theme';
 import '@/styles/globals.css';
+import { changeLanguageWithRouter, changeLanguage } from '@/locales';
 
 i18n
   .use(initReactI18next)
@@ -34,16 +35,11 @@ function App({ Component, pageProps }: AppProps) {
   useAxiosInterceptors();
   
   useEffect(() => {
-    // detect language in route (like '/[locale]/...')
-    const currentLang = router.locale || 'zh-Hans';
-    if (!Object.keys(localeResources).includes(currentLang)) {
-      i18n.changeLanguage('zh-Hans');
-    } else {
-      i18n.changeLanguage(currentLang);
-    }
+    changeLanguageWithRouter(router); // Detect and apply the correct locale on app load
 
     setMounted(true);
   }, [router.locale]);
+
 
   if (!mounted) return <></>;
 

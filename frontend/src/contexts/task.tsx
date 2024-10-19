@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { Task, MockTask, MockTask2, EditableTask } from '@/models/task';
+import { Task, MockTask, MockTask2, EditableTaskField } from '@/models/task';
 import { createTask, deleteTasks, listTasks, updateTask } from '@/services/task';
 import { useRouter } from 'next/router';
 import { useToast } from '@/contexts/toast';
@@ -14,10 +14,10 @@ interface TaskContextType {
   setTaskByLocalId: (localId: number, updatedValue: Partial<Task>) => void;
 
   // operation function with backend
-  handleCreateTask: (task: Partial<EditableTask>) => void;
-  handleListTasks: (page: number, pageSize: number) => Promise<any>;
+  handleCreateTask: (task: Partial<EditableTaskField>) => void;
+  handleListTasks: () => Promise<any>;  // list all, without pagination
   handleGetTaskDetail: () => Promise<any>;
-  handleUpdateTask: (localId: number, updatedValue: Partial<EditableTask>, toastOnSuccess: boolean) => void; 
+  handleUpdateTask: (localId: number, updatedValue: Partial<EditableTaskField>, toastOnSuccess: boolean) => void; 
   handleDeleteTasks: (localIds: number[]) => void; // support batch operation
 }
 
@@ -43,9 +43,10 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   const [tasks, setTasks] = useState<Task[] | undefined>([]);
 
-  // TBD
   useEffect(() => {
-    setTasks([MockTask, MockTask2])
+    handleListTasks()
+    .then((res) => setTasks(res))
+    .catch((error) => setTasks([]))
   }, []);
 
   const setTaskById = (id: number, updatedValue: Partial<Task>) => {
@@ -62,7 +63,7 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
       ));
   };
 
-  const handleCreateTask = async (value: Partial<EditableTask>) => {
+  const handleCreateTask = async (value: Partial<EditableTaskField>) => {
     if (!proj_id) return;
     try {
       await createTask(proj_id, value);
@@ -81,11 +82,11 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   };
 
-  const handleListTasks = async (page: number, pageSize: number) => {
-    if (!proj_id) return null;
+  const handleListTasks = async () => {
+    if (!proj_id) return [];
     try {
-      const res = await listTasks(proj_id, page, pageSize);
-      return res.results;
+      const res = await listTasks(proj_id);
+      return res;
     } catch (error) {
       if (error.request && error.request.status === 403) {
         projCtx.toastNoPermissionAndRedirect();
@@ -96,7 +97,7 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   };
 
-  const handleUpdateTask = async (localId: number, updatedValue: Partial<EditableTask>, toastOnSuccess: boolean) => {
+  const handleUpdateTask = async (localId: number, updatedValue: Partial<EditableTaskField>, toastOnSuccess: boolean) => {
     if (!proj_id) return;
     try {
       await updateTask(proj_id, localId, updatedValue);

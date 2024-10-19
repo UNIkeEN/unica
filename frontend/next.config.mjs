@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-import { i18n } from './next-i18next.config.mjs';
+import { i18nConfig } from './next-i18next.config.mjs';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import dotenv from 'dotenv';
@@ -11,7 +11,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 const isDev = process.env.NODE_ENV === 'development';
 
 const nextConfig = {
-  i18n,
+  i18n: i18nConfig,
   reactStrictMode: true,
   async rewrites() {
     if (isDev) {
