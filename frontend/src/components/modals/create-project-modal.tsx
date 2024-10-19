@@ -63,11 +63,11 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         status: "success",
       });
       // onOKCallback();
+      setDescription("");
+      setName("");
+      onClose();
       router.push("/projects/" + res.id + "/tasks");
     }
-    setDescription("");
-    setName("");
-    onClose();
   };
 
   const handleCreateProject = async (

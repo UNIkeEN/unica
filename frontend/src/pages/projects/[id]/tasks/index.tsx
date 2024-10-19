@@ -48,7 +48,7 @@ const ProjectTasksPage = () => {
             items={viewTypes.map(item => ({
               ...item,
               value: <Icon as={item.icon} boxSize={13}/>,
-              tooltip: t(`TaskDetailPanel.segmented.views.${item.label}`)
+              tooltip: t(`ProjectPages.tasks.segmented.views.${item.label}`)
             }))}
             withTooltip={true}
           />

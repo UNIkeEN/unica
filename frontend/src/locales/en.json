@@ -362,7 +362,14 @@
     },
     "ProjectPages": {
         "tasks": {
-            "title": "Tasks"
+            "title": "Tasks",
+            "segmented": {
+                "views": {
+                    "kanban": "KanBan View",
+                    "list": "List View",
+                    "calendar": "Calendar View"
+                }
+            }
         },
         "issues": {
             "title": "Issues"
@@ -591,15 +598,6 @@
             "description": "Description",
             "global-properties": "Global Properties",
             "local-properties": "Local Properties"
-        }
-    },
-    "TaskDetailPanel": {
-        "segmented": {
-            "views": {
-                "kanban": "KanBan View",
-                "list": "List View",
-                "calendar": "Calendar View"
-            }
         }
     },
     "UserContext": {

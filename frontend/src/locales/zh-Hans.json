@@ -362,7 +362,14 @@
     },
     "ProjectPages": {
         "tasks": {
-            "title": "任务"
+            "title": "任务",
+            "segmented": {
+                "views": {
+                    "kanban": "看板视图",
+                    "list": "列表视图",
+                    "calendar": "日历视图"
+                }
+            }
         },
         "issues": {
             "title": "议题"
@@ -591,15 +598,6 @@
             "description": "描述",
             "global-properties": "全局属性",
             "local-properties": "本地属性"
-        }
-    },
-    "TaskDetailPanel": {
-        "segmented": {
-            "views": {
-                "kanban": "看板视图",
-                "list": "列表视图",
-                "calendar": "日历视图"
-            }
         }
     },
     "UserContext": {
