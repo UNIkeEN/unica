@@ -25,9 +25,9 @@ import { LuList, LuTextQuote, LuListTodo, LuStrikethrough, LuListOrdered, LuHead
 interface MarkdownEditorProps extends BoxProps {
   content: string;
   onContentChange: (content: string) => void;
-  size?: string;
+  size?: "sm" | "md";
   colorScheme?: string;
-  resize?: "none" | "vertical"
+  resize?: "none" | "vertical";
 }
 
 const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ 
@@ -310,7 +310,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
                 ref={textareaRef}
                 value={content}
                 onChange={(e) => onContentChange(e.target.value)}
-                minHeight="200px"
+                minHeight={size == "sm" ? "150px" : "200px"}
                 h={resize==="none" ? "100%" : "auto"}
                 resize={resize}
                 overflow="auto"
@@ -319,7 +319,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               <Button 
                 variant="ghost" 
                 colorScheme="gray"
-                size="sm"
+                size={size == "sm" ? "xs" : "sm"}
                 leftIcon={<FaMarkdown />}
                 onClick={() => {
                   window.open('https://www.markdownguide.org/', '_blank');
