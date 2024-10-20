@@ -2,10 +2,8 @@ import React, { createContext, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '@/contexts/toast';
 import { UserProfile } from '@/models/user';
-import { Organization } from '@/models/organization';
 import { getUserProfile } from '@/services/user';
 import { listUserOrganizations } from '@/services/organization';
-import { Project } from '@/models/project';
 import { listProjects } from '@/services/project';
 
 
@@ -14,8 +12,7 @@ interface UserContextType {
   cleanUp: () => void;
   profile: UserProfile | undefined;
   updateProfile: () => void;
-  organizations: Organization[];
-  updateOrganizations: () => void;
+  handleListOrganizations: (page: number, page_size: number, order_by: string) => Promise<any>;
   handleListProjects: (page: number, pageSize: number) => Promise<any>;
 }
 
@@ -24,14 +21,12 @@ const UserContext = createContext<UserContextType>({
   cleanUp: () => {},
   profile: {} as UserProfile | undefined,
   updateProfile: () => {},
-  organizations: [],
-  updateOrganizations: () => {},
-  handleListProjects: (page: number, pageSize: number) => null,
+  handleListOrganizations: () => null,
+  handleListProjects: () => null,
 });
 
 export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [profile, setProfile] = useState(undefined);
-  const [organizations, setOrganizations] = useState<Organization[]>([]);
   const toast = useToast();
   const { t } = useTranslation();
 
@@ -50,17 +45,17 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }    
   }, [toast, t]);
 
-  const updateOrganizations = useCallback(async () => {
+  const handleListOrganizations = useCallback(async (page: number, page_size: number, order_by: string = '-updated_at') => {
     try {
-      const orgList = await listUserOrganizations();
-      setOrganizations(orgList);
+      const orgList = await listUserOrganizations({page, page_size, order_by});
+      return orgList;
     } catch (error) {
       toast({
         title: t('Services.organization.listUserOrganizations.error'),
         status: 'error'
       })
-      setOrganizations([]);
       console.error('Failed to update user organizations:', error);
+      throw error;
     }
   }, [toast, t]);
 
@@ -80,12 +75,10 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   const updateAll = useCallback(() => {
     updateProfile();
-    updateOrganizations();
-  }, [updateProfile, updateOrganizations]);
+  }, [updateProfile]);
 
   const cleanUp = useCallback(() => {
     setProfile(undefined);
-    setOrganizations([]);
   }, [toast, t]);
 
   const contextValue = {
@@ -93,8 +86,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     cleanUp,
     profile: profile,
     updateProfile,
-    organizations: organizations,
-    updateOrganizations,
+    handleListOrganizations,
     handleListProjects,
   };
 

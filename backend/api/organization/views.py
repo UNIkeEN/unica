@@ -12,6 +12,7 @@ from api.organization.models import Organization, Membership
 from api.project.models import Project
 from .serializers import OrganizationCreationSerializer, OrganizationSerializer, MembershipSerializer
 from .decorators import organization_permission_classes
+from utils.query import QuerySteps, QueryExecutor, QueryOptions
 from utils.mails import send_email
 
 User = get_user_model()
@@ -45,7 +46,10 @@ def create_organization(request):
 
 
 @swagger_auto_schema(
-    method='get',
+    method='post',
+    request_body=QueryOptions().to_openapi_schema(
+        [QuerySteps.ORDER_BY, QuerySteps.PAGINATION]
+    ),
     responses={
         200: openapi.Response(
             description="List of organizations the user belongs to",
@@ -55,18 +59,30 @@ def create_organization(request):
     operation_description="Retrieve a list of organizations the authenticated user belongs to.",
     tags=["Organization"]
 )
-@api_view(['GET'])
+@api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def list_user_organizations(request):
-    memberships = Membership.objects.filter(user=request.user).exclude(role=Membership.PENDING)
-    organizations = sorted(
-        (membership.organization for membership in memberships),
-        key=lambda org: org.updated_at,
-        reverse=True
-    )
+    base_query = Membership.objects.filter(user=request.user).exclude(role=Membership.PENDING)
+    options = QueryOptions.build_from_request(request)
+
+    if options.order_by.startswith('-'):
+        options.order_by = f"-organization__{options.order_by[1:]}"
+    else:
+        options.order_by = f"organization__{options.order_by}"
+
+    count, memberships = QueryExecutor(
+        base_query=base_query,
+        options=options,
+        supported_steps=[QuerySteps.ORDER_BY, QuerySteps.PAGINATION]
+    ).execute()
+
+    organizations = [membership.organization for membership in memberships]
     serializer = OrganizationSerializer(organizations, many=True, context={'request': request})
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response({
+        'count': count,
+        'results': serializer.data
+    }, status=status.HTTP_200_OK)
 
 
 @swagger_auto_schema(
