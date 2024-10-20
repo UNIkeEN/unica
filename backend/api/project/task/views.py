@@ -97,13 +97,14 @@ def update_task(request, id):
     if not updated_value:
         return Response({'detail': 'New Value is required for update.'}, status=status.HTTP_400_BAD_REQUEST)
     
-    task = collection.tasks.get(local_id=local_id)
-    if not task.exists():
+    try:
+        task = collection.tasks.get(local_id=local_id)
+    except Task.DoesNotExist:
         return Response({'detail': 'No task found.'}, status=status.HTTP_404_NOT_FOUND)
 
-    serializer = TaskSerializer(data=updated_value, partial=False)
+    serializer = TaskSerializer(task, data=updated_value, partial=True) 
     if serializer.is_valid():
-        serializer.save(collection=collection)
+        serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
