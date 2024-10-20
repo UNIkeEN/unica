@@ -25,9 +25,9 @@ const ProjectTaskDetailPage = () => {
 
   useEffect(() => {
     const target = taskCtx.tasks.find(task => task.local_id === Number(router.query.local_id)) || null;
-    if (target) setTask(target);
+    if (target) setTask(target);  // TODO: get from backend, not use taskCtx(not loaded and not newest)
     else {
-      // TBD: toast
+      // TODO: toast
       setTimeout(() => router.push(`/projects/${router.query.id}/tasks`), 1000);
     }
   }, []);

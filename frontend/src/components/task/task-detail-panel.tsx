@@ -56,75 +56,76 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({
     setDisplayMode(mode);
   }
 
-  const TaskDetailPanelHeader = () => {
-    const modeBtnList = [
-      {
-        label: "modal",
-        icon: <LuSquareDot />,
-        onClick: () => onDisplayModeChange("modal"),
+  const modeBtnList = [
+    {
+      label: "modal",
+      icon: <LuSquareDot />,
+      onClick: () => onDisplayModeChange("modal"),
+    },
+    {
+      label: "drawer",
+      icon: <LuPanelRight />,
+      onClick: () => onDisplayModeChange("drawer"),
+    },
+    {
+      label: "external",
+      icon: <LuExternalLink />,
+      onClick: () => {
+        onClose();
+        if (task?.id) 
+          window.open(`/projects/${router.query.id}/tasks/${task.id}`)
       },
-      {
-        label: "drawer",
-        icon: <LuPanelRight />,
-        onClick: () => onDisplayModeChange("drawer"),
-      },
-      {
-        label: "external",
-        icon: <LuExternalLink />,
-        onClick: () => {
-          onClose();
-          if (task?.id) 
-            window.open(`/projects/${router.query.id}/tasks/${task.id}`)
-        },
-      },
-    ]
+    },
+  ]
 
+  const TaskDetailPanelHeader = () => {
     return (
-      <Flex alignItems="flex-start">
-        <ModalHeader flex="1">
-          <Editable defaultValue={task?.title} onBlur={() => {/* TODO: update task title */}}>
-            <EditablePreview />
-            <EditableInput w="80%"/>
-            <Text
-              as="span"
-              fontWeight="normal"
-              color="gray.400"
-              ml={2}
-            >
-              {`#${task?.local_id}`}
-            </Text>
-          </Editable>
-        </ModalHeader>
-        <HStack spacing={6} ml="auto" mt={3} mr={3}>
-          <HStack spacing={1}>
-            {modeBtnList.map(mode => (
-              <IconButton 
-                key={mode.label} 
-                aria-label={mode.label}
-                icon={mode.icon} 
-                variant="ghost" 
-                size="sm"
-                fontSize="15px"
-                onClick={mode.onClick}
-                isActive={displayMode === mode.label}
-              />
-            ))}
-          </HStack>
-          <CloseButton onClick={onClose}/>
-        </HStack>
-      </Flex>
+      <ModalHeader wordBreak="break-all" p={0}>
+        <Editable defaultValue={task?.title} onBlur={() => {/* TODO: update task title */}}>
+          <EditablePreview />
+          <EditableInput w="80%"/>
+          <Text
+            as="span"
+            fontWeight="normal"
+            color="gray.400"
+            ml={2}
+          >
+            {`#${task?.local_id}`}
+          </Text>
+        </Editable>
+      </ModalHeader>
     )
   }
   
   const TaskDetailPanelContent = () => {
     return (
-      <Box mx={6} mb={6}>
-        <Grid templateColumns="3fr 1fr" gap={6}>
+      <Box m={5}>
+        <Grid templateColumns="3fr 1fr" gap={8}>
           <VStack spacing={6} align="stretch">
+            <TaskDetailPanelHeader />
             <TaskDetailProperties task={task}/>
             <TaskDetailActivities task={task}/>
           </VStack>
-          <TaskDetailControl task={task}/>
+          <VStack spacing={6} align="stretch">
+            <HStack spacing={6} ml="auto" mr={-2} mt={-2}>
+              <HStack spacing={1}>
+                {modeBtnList.map(mode => (
+                  <IconButton 
+                    key={mode.label} 
+                    aria-label={mode.label}
+                    icon={mode.icon} 
+                    variant="ghost" 
+                    size="sm"
+                    fontSize="15px"
+                    onClick={mode.onClick}
+                    isActive={displayMode === mode.label}
+                  />
+                ))}
+              </HStack>
+              <CloseButton onClick={onClose}/>
+            </HStack>
+            <TaskDetailControl task={task}/>
+          </VStack>
         </Grid>
       </Box>
     )
@@ -141,7 +142,6 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({
       >
         <ModalOverlay />
         <ModalContent>
-          <TaskDetailPanelHeader />
           <TaskDetailPanelContent />
         </ModalContent>
       </Modal>
@@ -156,7 +156,6 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({
       >
         <DrawerOverlay />
         <DrawerContent>
-          <TaskDetailPanelHeader />
           <TaskDetailPanelContent />
         </DrawerContent>
       </Drawer>

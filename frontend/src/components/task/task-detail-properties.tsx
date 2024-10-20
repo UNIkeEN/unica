@@ -31,7 +31,13 @@ const TaskDetailProperties: React.FC<TaskDetailPropertiesProps> = ({
           </Text>
           {task?.description && (isMdEditing 
             ? <MarkdownEditor content={task.description} onContentChange={() => {/* TODO */}}/> 
-            : <MarkdownRenderer content={task.description}/>
+            : <MarkdownRenderer content={task.description}
+              sx={{
+                ".markdown-body": {
+                  fontSize: "var(--chakra-fontSizes-sm)"
+                },
+              }}
+            />
           )}
         </VStack>
 

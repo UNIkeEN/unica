@@ -18,6 +18,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { LuPlus } from "react-icons/lu";
 import TaskContext from "@/contexts/task";
+import MarkdownEditor from "@/components/common/markdown-editor";
 
 interface CreateTaskModalProps {
   size?: string;
@@ -93,10 +94,10 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
 
             <FormControl>
               <FormLabel>{t("CreateTaskModal.modal.description")}</FormLabel>
-              <Textarea
-                placeholder={t("CreateTaskModal.modal.description")}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+              <MarkdownEditor 
+                content={description}
+                onContentChange={(content) => setDescription(content)}
+                resize="none"
               />
             </FormControl>
           </ModalBody>
