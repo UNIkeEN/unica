@@ -6,6 +6,7 @@ export interface Task {
   created_at: string;
   updated_at: string;
   archived: boolean;
+  deleted: boolean;
   // TBD
 }
 
@@ -31,7 +32,8 @@ export const MockTask: Task = {
   local_id: 1,
   created_at: null,
   updated_at: null,
-  archived: false
+  archived: false,
+  deleted: false
 };
 
 export const MockTask2: Task = {
@@ -41,5 +43,6 @@ export const MockTask2: Task = {
   local_id: 2,
   created_at: null,
   updated_at: null,
-  archived: false
+  archived: false,
+  deleted: false
 };

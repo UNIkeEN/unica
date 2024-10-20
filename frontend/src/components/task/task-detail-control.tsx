@@ -3,12 +3,26 @@ import {
   BoxProps,
   Text,
   VStack,
-  Button
+  Button,
+  Icon
 } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
+import { 
+  LuTrash2,
+  LuArchive,
+  LuArchiveRestore,
+  LuCopy
+} from "react-icons/lu";
 import { Task } from '@/models/task';
 import { TaskPropertyEnums } from '@/models/task';
 import PropertyIcon from '@/components/property-icon';
+
+export const taskOperationList = [
+  {key: "duplicate", icon: LuCopy, color: "black", condition: (task: Task) => true},
+  {key: "archive", icon: LuArchive, color: "black", condition: (task: Task) => !task.archived},
+  {key: "unarchive", icon: LuArchiveRestore, color: "black", condition: (task: Task) => task.archived},
+  {key: "delete", icon: LuTrash2, color: "red", condition: (task: Task) => !task.deleted}
+]
 
 interface TaskDetailControlProps extends BoxProps {
   task: Task;
@@ -49,7 +63,19 @@ const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
             {t("TaskDetailControl.title.operation")}
           </Text>
           <VStack spacing={0.5} align="stretch">
-            
+            {taskOperationList.map((item) => (
+              item.condition(task) && (<Button 
+                size="sm" 
+                variant="ghost" 
+                color={item.color}
+                textAlign="left" 
+                justifyContent="flex-start"
+                key={item.key}
+              >
+                <Icon as={item.icon} mr={2}/>
+                {t(`TaskDetailControl.button.${item.key}`)}
+              </Button>
+            )))}
           </VStack>
         </VStack>
 

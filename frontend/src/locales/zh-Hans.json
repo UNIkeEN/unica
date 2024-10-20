@@ -608,6 +608,12 @@
         "title": {
             "local-properties": "添加本地属性",
             "operation": "操作"
+        },
+        "button": {
+            "duplicate": "生成副本",
+            "delete": "删除",
+            "archive": "归档",
+            "unarchive": "取消归档"
         }
     },
     "TaskDetailProperties": {
@@ -615,6 +621,13 @@
             "description": "描述",
             "global-properties": "全局属性",
             "local-properties": "本地属性"
+        },
+        "button": {
+            "description": {
+                "edit": "编辑",
+                "save": "保存",
+                "cancel": "取消"
+            }
         }
     },
     "UserContext": {

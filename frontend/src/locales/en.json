@@ -608,6 +608,12 @@
         "title": {
             "local-properties": "Add Local Properties",
             "operation": "Operation"
+        },
+        "button": {
+            "duplicate": "Duplicate",
+            "delete": "Delete",
+            "archive": "Archive",
+            "unarchive": "Unarchive"
         }
     },
     "TaskDetailProperties": {
@@ -615,6 +621,13 @@
             "description": "Description",
             "global-properties": "Global Properties",
             "local-properties": "Local Properties"
+        },
+        "button": {
+            "description": {
+                "edit": "Edit",
+                "save": "Save",
+                "cancel": "Cancel"
+            }
         }
     },
     "UserContext": {
