@@ -117,7 +117,7 @@ const CommentList: React.FC<CommentListProps> = ({
                 </HStack>
               </Flex>
               <MarkdownRenderer
-                content={item.content}
+                content={item.deleted === true ? t("DiscussionTopicPage.text.isDeleted") : item.content}
                 minHeight="90px"
                 width="100%"
               />

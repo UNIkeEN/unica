@@ -153,7 +153,7 @@ const DiscussionTopicPage = () => {
   }, [mainAreaBoxRef]);
 
   useEffect(() => {
-    if (!scrollReverse) return;
+    if (!scrollReverse || !hasMoreReverse) return;
     const container = mainAreaBoxRef.current;
     if (container && container.scrollHeight <= container.clientHeight) {
       loadMoreCommentsReverse();
@@ -188,7 +188,6 @@ const DiscussionTopicPage = () => {
       setCommentsCount(res.count);
       if (res.count <= page * pageSize) setHasMore(false);
       if (page === 1) setHasMoreReverse(false);
-      console.log("Get comments list:", res);
       return res;
     } catch (error) {
       console.error("Failed to get comment list:", error);
@@ -207,7 +206,6 @@ const DiscussionTopicPage = () => {
   const loadMoreComments = async () => {
     if (isLoading) return;
     setIsLoading(true);
-    // console.log("Load more comments");
     const res = await handleListComments(page + 1, pageSize);
     setComments([...comments, ...res.results]);
     setPage(page + 1);
@@ -217,7 +215,6 @@ const DiscussionTopicPage = () => {
   const loadMoreCommentsReverse = async () => {
     if (isLoading) return;
     setIsLoading(true);
-    console.log("Load more comments reverse");
     const res = await handleListComments(page - 1, pageSize);
     setComments([...res.results, ...comments]);
     setPage(page - 1);
@@ -262,18 +259,16 @@ const DiscussionTopicPage = () => {
     setNewComment("");
     onClose();
 
+    await handleListComments(1, pageSize); // Refresh commentCount
     const lastPage = Math.ceil((commentsCount + 1) / pageSize);
-    if (hasMore && !scrollReverse) {
-      setPage(lastPage);
-      setScrollReverse(true);
-      setHasMoreReverse(true);
-      const res = await handleListComments(lastPage, pageSize);
-      setComments(res.results);
-    } else {
-      const res = await handleListComments(lastPage, pageSize);
-      setComments([...comments, res.results[res.results.length - 1]]);
-    }
-    mainAreaBoxRef.current.scrollTop = mainAreaBoxRef.current.scrollHeight;
+    setPage(lastPage);
+    setHasMoreReverse(lastPage > 1);
+    setScrollReverse(true);
+    const res = await handleListComments(lastPage, pageSize);
+    setComments(res.results);
+    setTimeout(() => {
+      mainAreaBoxRef.current.scrollTop = mainAreaBoxRef.current.scrollHeight;
+    }, 100);
   };
 
   const handleDeleteTopic = async () => {
@@ -317,12 +312,16 @@ const DiscussionTopicPage = () => {
       }
       return;
     }
-    if (!scrollReverse && hasMore) {
-      const res = await handleListComments(page, pageSize);
-      setComments([...comments.filter((c) => c.local_id !== comment.local_id), res.results[res.results.length - 1]]);
-    }
-    else
-      setComments(comments.filter((c) => c.local_id !== comment.local_id));
+    setComments(
+      comments.map((c) =>
+        c.local_id === comment.local_id
+          ? {
+            ...c,
+            deleted : true
+          } : c
+      )
+    );
+    setCommentsCount(commentsCount - 1);
   };
 
   const handleEditComment = async (

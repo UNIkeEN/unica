@@ -133,7 +133,8 @@
             "activity": "Activity"
         },
         "text": {
-            "activity": "{{count}} comments, last updated "
+            "activity": "{{count}} comments, last updated ",
+            "isDeleted": "(This comment has been deleted)"
         }
     },
     "Editable": {

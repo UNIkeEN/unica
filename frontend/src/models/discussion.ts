@@ -20,6 +20,7 @@ export interface DiscussionComment {
   updated_at: string;
   local_id: number;
   edited: boolean;
+  deleted: boolean;
 }
 
 export interface DiscussionTopicCategory {

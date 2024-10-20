@@ -133,7 +133,8 @@
             "activity": "活动"
         },
         "text": {
-            "activity": "{{count}} 条回复，更新于 "
+            "activity": "{{count}} 条回复，更新于 ",
+            "isDeleted": "（该评论已被删除）"
         }
     },
     "Editable": {
