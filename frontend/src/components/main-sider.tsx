@@ -44,7 +44,7 @@ const MainSider = ({ onSwitchSider = () => {} }) => {
     userCtx.handleListOrganizations(1, 5, "-updated_at")
     .then((data) => {setRecentOrgs(data.results)})
     .catch((error) => {setRecentOrgs([])})
-  }, [router]);
+  }, []);
 
   return (
     <Flex direction="column" h="100%" justifyContent="space-between">
