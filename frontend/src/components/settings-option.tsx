@@ -3,7 +3,7 @@ import React from "react";
 
 interface SettingsOptionProps extends BoxProps {
   title: string;
-  description: string;
+  description?: string;
   titleExtra?: string;
   children: React.ReactNode;
 }
@@ -24,7 +24,7 @@ const SettingsOption: React.FC<SettingsOptionProps> = ({
             </Text>
             {titleExtra}
           </HStack>
-          <Text fontSize="sm" color="gray.500">{description}</Text>
+          {description && <Text fontSize="sm" color="gray.500">{description}</Text>}
         </VStack>
         {children}
       </Flex>

@@ -569,34 +569,46 @@
     "SettingsPages": {
         "header": "设置",
         "profile": {
-            "title": "个人资料设置",
-            "subtitle": "修改你的个人资料",
-            "settings": {
-                "avatar": {
-                    "title": "头像",
-                    "description": "你在本站显示的头像",
-                    "modal": {
-                        "title": "更改头像",
-                        "tooLarge": "文件大小太大",
-                        "upload": "上传",
-                        "cancel": "取消"
+            "title": "个人资料",
+            "publicProfile": {
+                "title": "公开个人资料",
+                "subtitle": "管理您的公开个人资料",
+                "settings": {
+                    "avatar": {
+                        "title": "头像",
+                        "modal": {
+                            "title": "更改头像",
+                            "tooLarge": "文件大小太大",
+                            "upload": "上传",
+                            "cancel": "取消"
+                        }
+                    },
+                    "display_name": {
+                        "title": "昵称",
+                        "description": "您的昵称将会在 Unica 各处显示",
+                        "error-1": "昵称不能为空",
+                        "error-2": "输入的内容过长"
+                    },
+                    "bio": {
+                        "title": "简介",
+                        "description": "对您自己的简单介绍",
+                        "error-2": "输入的内容过长"
                     }
-                },
-                "display_name": {
-                    "title": "昵称",
-                    "description": "你在本站显示的名称",
-                    "error-1": "昵称不能为空",
-                    "error-2": "输入的内容过长"
-                },
-                "bio": {
-                    "title": "简介",
-                    "description": "对你自己的简单介绍",
-                    "error-2": "输入的内容过长"
                 }
             }
         },
         "appearance": {
-            "title": "外观设置"
+            "title": "外观",
+            "appearance": {
+                "title": "外观",
+                "subtitle": "管理 Unica 的界面显示",
+                "settings": {
+                    "language": {
+                        "title": "语言",
+                        "description": "本站界面的显示语言，仅应用于本设备"
+                    }
+                }
+            }
         }
     },
     "TaskDetailActivities": {

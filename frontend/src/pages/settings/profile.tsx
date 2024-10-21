@@ -19,19 +19,18 @@ const ProfileSettingsPage = () => {
 
   const [values, setValues] = useState<string[]>([]);
   const profileSettings: SettingsSection = {
-    title: t("SettingsPages.profile.title"),
-    subtitle: t("SettingsPages.profile.subtitle"),
+    title: t("SettingsPages.profile.publicProfile.title"),
+    subtitle: t("SettingsPages.profile.publicProfile.subtitle"),
     items: [
       {
-        title: t("SettingsPages.profile.settings.avatar.title"),
-        description: t("SettingsPages.profile.settings.avatar.description"),
+        title: t("SettingsPages.profile.publicProfile.settings.avatar.title"),
         initialValue: "",
         component: <AvatarUploader />,
       },
       {
-        title: t("SettingsPages.profile.settings.display_name.title"),
+        title: t("SettingsPages.profile.publicProfile.settings.display_name.title"),
         description: t(
-          "SettingsPages.profile.settings.display_name.description"
+          "SettingsPages.profile.publicProfile.settings.display_name.description"
         ),
         initialValue: "",
         component: (
@@ -39,8 +38,8 @@ const ProfileSettingsPage = () => {
             isTextArea={false}
             value={values[0]}
             onEditSubmit={(value) => handleUpdateUserProfile(0, value)}
-            placeholder={t("SettingsPages.profile.settings.display_name.title")}
-            localeKey="SettingsPages.profile.settings.display_name"
+            placeholder={t("SettingsPages.profile.publicProfile.publicProfile.settings.display_name.title")}
+            localeKey="SettingsPages.publicProfile.profile.publicProfile.settings.display_name"
             checkError={(value) => {
               return value.length <= 0 ? 1 : value.length > 50 ? 2 : 0;
             }}
@@ -48,16 +47,16 @@ const ProfileSettingsPage = () => {
         ),
       },
       {
-        title: t("SettingsPages.profile.settings.bio.title"),
-        description: t("SettingsPages.profile.settings.bio.description"),
+        title: t("SettingsPages.profile.publicProfile.settings.bio.title"),
+        description: t("SettingsPages.profile.publicProfile.settings.bio.description"),
         initialValue: "",
         component: (
           <Editable
             isTextArea={true}
             value={values[1]}
             onEditSubmit={(value) => handleUpdateUserProfile(1, value)}
-            placeholder={t("SettingsPages.profile.settings.bio.title")}
-            localeKey="SettingsPages.profile.settings.bio"
+            placeholder={t("SettingsPages.profile.publicProfile.settings.bio.title")}
+            localeKey="SettingsPages.profile.publicProfile.settings.bio"
             checkError={(value) => {
               return value.length > 200 ? 2 : 0;
             }}

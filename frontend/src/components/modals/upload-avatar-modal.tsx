@@ -163,7 +163,7 @@ const AvatarUploader = () => {
   return (
     <Box>
       <HStack>
-        {userCtx.profile && <UserAvatar size="md" user={userCtx.profile} withPopover={false}/>}
+        {userCtx.profile && <UserAvatar size="lg" user={userCtx.profile} withPopover={false}/>}
         <IconButton
           icon={<FiEdit />}
           size="sm"

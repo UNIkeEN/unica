@@ -569,34 +569,46 @@
     "SettingsPages": {
         "header": "Settings",
         "profile": {
-            "title": "Profile Settings",
-            "subtitle": "Manage your personal information",
-            "settings": {
-                "avatar": {
-                    "title": "Avatar",
-                    "description": "The avatar displayed in the system",
-                    "modal": {
-                        "title": "Upload Avatar",
-                        "tooLarge": "File is too large",
-                        "upload": "Upload",
-                        "cancel": "Cancel"
+            "title": "Profile",
+            "publicProfile": {
+                "title": "Public Profile",
+                "subtitle": "Manage your personal information",
+                "settings": {
+                    "avatar": {
+                        "title": "Avatar",
+                        "modal": {
+                            "title": "Upload Avatar",
+                            "tooLarge": "File is too large",
+                            "upload": "Upload",
+                            "cancel": "Cancel"
+                        }
+                    },
+                    "display_name": {
+                        "title": "Display Name",
+                        "description": "Your display name may appear around Unica where you are mentioned",
+                        "error-1":"Display name cannot be empty",
+                        "error-2":"Input is too long"
+                    },
+                    "bio": {
+                        "title": "Biography",
+                        "description": "A brief introduction of yourself",
+                        "error-2":"Input is too long"
                     }
-                },
-                "display_name": {
-                    "title": "Display Name",
-                    "description": "The name displayed in the system",
-                    "error-1":"Display name cannot be empty",
-                    "error-2":"Input is too long"
-                },
-                "bio": {
-                    "title": "Biography",
-                    "description": "A brief introduction of yourself",
-                    "error-2":"Input is too long"
                 }
             }
         },
         "appearance": {
-            "title": "Appearance Settings"
+            "title": "Appearance",
+            "appearance": {
+                "title": "Appearance",
+                "subtitle": "Manage how Unica looks to you",
+                "settings": {
+                    "language": {
+                        "title": "Language",
+                        "description": "The language of the site's display interface, apply to this device only"
+                    }
+                }
+            }
         }
     },
     "TaskDetailActivities": {
