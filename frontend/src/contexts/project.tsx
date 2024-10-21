@@ -39,7 +39,7 @@ export const ProjectContextProvider: React.FC<{ children: React.ReactNode }> = (
 
     setTimeout(() => {
         router.push('/home');
-    }, 2000);
+    }, 1500);
   };
 
 const updateBasicInfo = async (id: number) => {
@@ -56,7 +56,7 @@ const updateBasicInfo = async (id: number) => {
               title: t('Services.projects.getProjectInfo.error'),
               status: 'error'
           });
-          setTimeout(() => { router.push('/home'); }, 2000);
+          setTimeout(() => { router.push('/home'); }, 1500);
       }
       
       setProjectInfo(undefined);

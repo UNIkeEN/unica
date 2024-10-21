@@ -66,7 +66,9 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
       setDescription("");
       setName("");
       onClose();
-      router.push("/projects/" + res.id + "/tasks");
+      setTimeout(() => {
+        router.push("/projects/" + res.id + "/tasks");
+      }, 1500);
     }
   };
 

@@ -28,7 +28,7 @@ const ProjectTaskDetailPage = () => {
     if (target) setTask(target);  // TODO: get from backend, not use taskCtx(not loaded and not newest)
     else {
       // TODO: toast
-      setTimeout(() => router.push(`/projects/${router.query.id}/tasks`), 1000);
+      setTimeout(() => router.push(`/projects/${router.query.id}/tasks`), 1500);
     }
   }, []);
 

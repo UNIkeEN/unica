@@ -37,7 +37,9 @@ const EnableDiscussionConfirmModal = () => {
         is_discussion_enabled: true,
       });
       onClose();
-      router.push(`/organizations/${router.query.id}/discussion/categories`);
+      setTimeout(() => {
+        router.push(`/organizations/${router.query.id}/discussion/categories`);
+      }, 1500);
     } catch (error) {
       console.error("Failed to enable discussion:", error);
       if (error.response && error.response.status === 403) {

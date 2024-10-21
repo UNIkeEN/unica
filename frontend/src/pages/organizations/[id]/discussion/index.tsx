@@ -162,11 +162,13 @@ const OrganizationDiscussionPage = () => {
         comment
       );
       if (res.local_id) {
-        router.push("/organizations/" + id + "/discussion/" + res.local_id);
         toast({
           title: t("Services.discussion.createTopic.success"),
           status: "success",
         });
+        setTimeout(() => {
+          router.push("/organizations/" + id + "/discussion/" + res.local_id);
+        }, 1500);
       }
     } catch (error) {
       console.error("Failed to create topic:", error);

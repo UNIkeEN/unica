@@ -46,8 +46,9 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
       onClose();
       setDescription("");
       setName("");
-      router.push(`/organizations/${res.id}/overview`);
-      history.go(0);
+      setTimeout(() => {
+        window.location.assign(`/organizations/${res.id}/overview`);
+      }, 1500);
     }
   };
 

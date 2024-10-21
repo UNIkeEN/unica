@@ -57,7 +57,7 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
       setTimeout(() => {
         if (role === MemberRoleEnum.NO_PERMISSION) window.location.assign('/home'); // use location.assign instead router.push to reload main layout
         else window.location.reload();
-      }, 2000);
+      }, 1500);
     }
   };
 
@@ -79,7 +79,7 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
           title: t('Services.organization.checkUserOrgPermission.error'),
           status: 'error'
         });
-        setTimeout(() => { router.push('/home'); }, 2000);
+        setTimeout(() => { router.push('/home'); }, 1500);
       }
       setUserRole(undefined);
       setOrgInfo(undefined);

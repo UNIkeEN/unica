@@ -360,7 +360,7 @@ const OrganizationMembersPage = () => {
             if (selectedMember.user.username === userCtx.profile.username) {
               setTimeout(() => {
                 window.location.reload();
-              }, 1000);
+              }, 1500);
             } else {
               handlListOrganizationMembers(Number(router.query.id), pageIndex, pageSize);
             }

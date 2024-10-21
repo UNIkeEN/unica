@@ -178,7 +178,9 @@ const DiscussionTopicPage = () => {
         });
       }
       setTopic(null);
-      router.push(`/organizations/${org_id}/discussion/`);
+      setTimeout(() => {
+        router.push(`/organizations/${org_id}/discussion/`);
+      }, 1500);
     }
   };
 
@@ -290,7 +292,9 @@ const DiscussionTopicPage = () => {
       title: t("Services.discussion.deleteTopic.success"),
       status: "success",
     });
-    router.push(`/organizations/${org_id}/discussion/`);
+    setTimeout(() => {
+      router.push(`/organizations/${org_id}/discussion/`);
+    }, 1500);
   };
 
   const handleDeleteComment = async (comment: DiscussionComment) => {

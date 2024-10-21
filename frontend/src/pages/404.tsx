@@ -19,7 +19,7 @@ const NotFoundPage = () => {
     } else {
       const timer = setTimeout(() => {
         router.push('/home');
-      }, 1000);
+      }, 1500);
       return () => clearTimeout(timer);
     }
   }, [seconds, router]);

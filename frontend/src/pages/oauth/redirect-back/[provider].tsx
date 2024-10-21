@@ -26,7 +26,9 @@ const OAuthRedirectBack = () => {
             title: t('Services.auth.jAccountAuth.error'),
             status: 'error',
           })
-          router.push('/login');
+          setTimeout(() => {
+            router.push('/login');
+          }, 1500);
         });
       }
     };
