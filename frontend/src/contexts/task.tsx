@@ -69,7 +69,7 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
       const res = await createTask(proj_id, value);
       setTasks((prevTasks) => [res as Task, ...prevTasks]);
       toast({
-        title: t('Services.task.createTask.created', { title: value.title }),
+        title: t('Services.task.createTask.created', { title: value.title.length > 20 ? value.title.slice(0, 20) + '...' : value.title }),
         status: 'success'
       })
       return res;
