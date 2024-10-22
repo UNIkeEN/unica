@@ -32,14 +32,12 @@ const EnableDiscussionConfirmModal = () => {
         title: t("Services.discussion.enableDiscussion.success"),
         status: "success",
       });
+      router.push(`/organizations/${router.query.id}/discussion/categories`);
       orgCtx.setBasicInfo({
         ...orgCtx.basicInfo,
         is_discussion_enabled: true,
       });
       onClose();
-      setTimeout(() => {
-        router.push(`/organizations/${router.query.id}/discussion/categories`);
-      }, 1500);
     } catch (error) {
       console.error("Failed to enable discussion:", error);
       if (error.response && error.response.status === 403) {

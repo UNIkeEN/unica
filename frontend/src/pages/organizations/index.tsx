@@ -81,6 +81,9 @@ const MyOrganizationsPage = () => {
       onClose();
       setSelectedOrg(null);
       updateListOrganizations();
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
     } catch (error) {
       console.error("Failed to leave organization:", error);
       if (
