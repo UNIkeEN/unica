@@ -1,4 +1,5 @@
 {
+    "cancel": "Cancel",
     "CancelInvitationDialog": {
         "dialog": {
             "title": "Delete",
@@ -24,6 +25,7 @@
             "original-poster": "OP"
         }
     },
+    "confirm": "Confirm",
     "CreateCategoryModal": {
         "modal": {
             "title": {
@@ -73,7 +75,7 @@
             "descriptionTooLong": "Description is too long"
         }
     },
-    "CreateTaskModal":{
+    "CreateTaskModal": {
         "modal": {
             "title": "Create New Task",
             "taskTitle": "Title",
@@ -108,6 +110,10 @@
             "delete": "Delete",
             "cancel": "Cancel"
         }
+    },
+    "delete_task": {
+        "title": "Confirm Delete",
+        "content": "Are you sure you want to delete this task?"
     },
     "DiscussionCategoryManagerPage": {
         "button": {

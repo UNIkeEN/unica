@@ -1,3 +1,4 @@
+import React, { useState, useContext } from 'react';
 import {
   Box,
   BoxProps,
@@ -16,6 +17,8 @@ import {
 import { Task } from '@/models/task';
 import { TaskPropertyEnums } from '@/models/task';
 import PropertyIcon from '@/components/property-icon';
+import GenericAlertDialog from '../modals/generic-alert-dialog';
+import TaskContext from '@/contexts/task';
 
 export const taskOperationList = [
   {key: "duplicate", icon: LuCopy, color: "black", condition: (task: Task) => true},
@@ -33,6 +36,21 @@ const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
   ...boxProps
 }) => {
   const { t } = useTranslation();
+  const { handleDeleteTasks } = useContext(TaskContext);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleDeleteClick = () => {
+    setIsDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      await handleDeleteTasks([task.local_id]); // 假设使用 local_id
+      setIsDialogOpen(false); // 关闭对话框
+    } catch (error) {
+      console.error("Delete task failed:", error);
+    }
+  };
 
   return (
     <Box {...boxProps}>
@@ -64,22 +82,34 @@ const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
           </Text>
           <VStack spacing={0.5} align="stretch">
             {taskOperationList.map((item) => (
-              item.condition(task) && (<Button 
-                size="sm" 
-                variant="ghost" 
-                color={item.color}
-                textAlign="left" 
-                justifyContent="flex-start"
-                key={item.key}
-              >
-                <Icon as={item.icon} mr={2}/>
-                {t(`TaskDetailControl.button.${item.key}`)}
-              </Button>
-            )))}
+              item.condition(task) && (
+                <Button 
+                  size="sm" 
+                  variant="ghost" 
+                  color={item.color}
+                  textAlign="left" 
+                  justifyContent="flex-start"
+                  key={item.key}
+                  onClick={item.key === "delete" ? handleDeleteClick : undefined} // 处理删除按钮点击
+                >
+                  <Icon as={item.icon} mr={2}/>
+                  {t(`TaskDetailControl.button.${item.key}`)}
+                </Button>
+              )
+            ))}
           </VStack>
         </VStack>
 
       </VStack>
+      <GenericAlertDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        title={t('delete_task.title')}
+        body={t('delete_task.content')}
+        btnOK={t('confirm')}
+        btnCancel={t('cancel')}
+        onOKCallback={handleConfirmDelete}
+      />
     </Box>
   )
 }

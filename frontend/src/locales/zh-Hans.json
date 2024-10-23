@@ -1,4 +1,5 @@
 {
+    "cancel": "取消",
     "CancelInvitationDialog": {
         "dialog": {
             "title": "取消邀请",
@@ -24,6 +25,7 @@
             "original-poster": "楼主"
         }
     },
+    "confirm": "确认",
     "CreateCategoryModal": {
         "modal": {
             "title": {
@@ -108,6 +110,10 @@
             "delete": "删除",
             "cancel": "取消"
         }
+    },
+    "delete_task": {
+        "title": "确认删除",
+        "content": "您确定要删除此任务吗？"
     },
     "DiscussionCategoryManagerPage": {
         "button": {
