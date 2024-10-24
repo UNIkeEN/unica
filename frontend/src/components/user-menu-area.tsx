@@ -42,7 +42,7 @@ const UserMenuArea = ({ onSwitchSider }) => {
     <>
       <Show above="md">
         <Flex w="100%" justifyContent="space-between" alignItems="center">
-          <Popover placement="bottom-start" closeOnBlur trigger="hover" isLazy>
+          <Popover placement="bottom-start" closeOnBlur trigger="hover" isLazy autoFocus={false}>
             <PopoverTrigger>
               <Button 
                 variant='ghost'  

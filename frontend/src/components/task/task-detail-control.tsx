@@ -22,41 +22,45 @@ import TaskContext from '@/contexts/task';
 import { useDisclosure } from '@chakra-ui/react';
 import { truncateString } from '@/utils/string';
 
+interface TaskDetailControlProps extends BoxProps {
+  task: Task;
+}
+
 const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
   task,
   ...boxProps
 }) => {
   const { t } = useTranslation();
   const { handleDeleteTasks } = useContext(TaskContext);
-  const { isOpen: isDeleteTaskDialogOpen, onOpen: onDeleteTaskDialog, onClose: closeDeleteTaskDialog } = useDisclosure();
+  const { isOpen: isDeleteTaskDialogOpen, onOpen: onDeleteTaskDialog, onClose: onDeleteTaskDialogClose } = useDisclosure();
 
   const taskOperationList = [
     {
       key: "duplicate",
       icon: LuCopy,
       color: "black",
-      condition: () => true, 
+      condition: true, 
       onClick: () => {}
     },
     {
       key: "archive",
       icon: LuArchive,
       color: "black",
-      condition: () => !task.archived, 
+      condition: !task.archived, 
       onClick: () => {}
     },
     {
       key: "unarchive",
       icon: LuArchiveRestore,
       color: "black",
-      condition: () => task.archived, 
+      condition: task.archived, 
       onClick: () => {}
     },
     {
       key: "delete",
       icon: LuTrash2,
       color: "red",
-      condition: () => !task.deleted, 
+      condition: !task.deleted, 
       onClick: () => onDeleteTaskDialog()
     }
   ];
@@ -90,7 +94,7 @@ const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
           </Text>
           <VStack spacing={0.5} align="stretch">
             {taskOperationList.map((item) => (
-              item.condition() && ( 
+              item.condition && ( 
                 <Button
                     size="sm"
                     variant="ghost"
@@ -98,7 +102,7 @@ const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
                     textAlign="left"
                     justifyContent="flex-start"
                     key={item.key}
-                    onClick={() => item.onClick()} 
+                    onClick={item.onClick} 
                 >
                     <Icon as={item.icon} mr={2} />
                     {t(`TaskDetailControl.button.${item.key}`)}
@@ -111,18 +115,14 @@ const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
 
       <GenericAlertDialog
         isOpen={isDeleteTaskDialogOpen}
-        onClose={closeDeleteTaskDialog}
+        onClose={onDeleteTaskDialogClose}
         title={t('DeleteTaskDialog.dialog.title')}
         body={t('DeleteTaskDialog.dialog.content', { taskName: truncateString(task.title, 20) })}
         btnOK={t('DeleteTaskDialog.dialog.confirm')}
         btnCancel={t('DeleteTaskDialog.dialog.cancel')}
         onOKCallback={async () => {
-          try {
-            await handleDeleteTasks([task.local_id]); 
-            closeDeleteTaskDialog(); 
-          } catch (error) {
-            console.error("Delete task failed:", error);
-          }
+            handleDeleteTasks([task.local_id]); 
+            onDeleteTaskDialogClose(); 
         }}
       />
     </Box>

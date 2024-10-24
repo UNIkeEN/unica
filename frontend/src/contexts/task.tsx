@@ -1,10 +1,11 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { Task, MockTask, MockTask2, EditableTaskField } from '@/models/task';
+import { Task, EditableTaskField } from '@/models/task';
 import { createTask, deleteTasks, listTasks, updateTask } from '@/services/task';
 import { useRouter } from 'next/router';
 import { useToast } from '@/contexts/toast';
-import ProjectContext from '@/contexts/project';
 import { useTranslation } from 'react-i18next';
+import ProjectContext from '@/contexts/project';
+import { truncateString } from '@/utils/string';
 
 interface TaskContextType {
   // shared state and update function in frontend
@@ -69,7 +70,7 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
       const res = await createTask(proj_id, value);
       setTasks((prevTasks) => [res as Task, ...prevTasks]);
       toast({
-        title: t('Services.task.createTask.created', { title: value.title.length > 20 ? value.title.slice(0, 20) + '...' : value.title }),
+        title: t('Services.task.createTask.created', { title: truncateString(value.title, 20)}),
         status: 'success'
       })
       return res;
