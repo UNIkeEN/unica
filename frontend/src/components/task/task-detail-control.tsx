@@ -17,7 +17,7 @@ import {
 import { Task } from '@/models/task';
 import { TaskPropertyEnums } from '@/models/task';
 import PropertyIcon from '@/components/property-icon';
-import GenericAlertDialog from '../modals/generic-alert-dialog';
+import GenericAlertDialog from '@/components/modals/generic-alert-dialog';
 import TaskContext from '@/contexts/task';
 import { useDisclosure } from '@chakra-ui/react';
 
@@ -34,28 +34,28 @@ const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
       key: "duplicate",
       icon: LuCopy,
       color: "black",
-      condition: (task: Task) => true,
+      condition: () => true, 
       onClick: () => {}
     },
     {
       key: "archive",
       icon: LuArchive,
       color: "black",
-      condition: (task: Task) => !task.archived,
+      condition: () => !task.archived, 
       onClick: () => {}
     },
     {
       key: "unarchive",
       icon: LuArchiveRestore,
       color: "black",
-      condition: (task: Task) => task.archived,
+      condition: () => task.archived, 
       onClick: () => {}
     },
     {
       key: "delete",
       icon: LuTrash2,
       color: "red",
-      condition: (task: Task) => !task.deleted,
+      condition: () => !task.deleted, 
       onClick: () => onOpen()
     }
   ];
@@ -89,7 +89,7 @@ const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
           </Text>
           <VStack spacing={0.5} align="stretch">
             {taskOperationList.map((item) => (
-              item.condition(task) && (
+              item.condition() && ( 
                 <Button
                     size="sm"
                     variant="ghost"
@@ -97,7 +97,7 @@ const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
                     textAlign="left"
                     justifyContent="flex-start"
                     key={item.key}
-                    onClick={() => item.onClick(task)} 
+                    onClick={() => item.onClick()} 
                 >
                     <Icon as={item.icon} mr={2} />
                     {t(`TaskDetailControl.button.${item.key}`)}

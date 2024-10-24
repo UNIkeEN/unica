@@ -89,7 +89,7 @@
     "DeleteCategoryAlertDialog": {
         "dialog": {
             "title": "Delete Category",
-            "content": "Are you sure you want to delete the category {{name}}? All topics under this category will be marked as uncategorized.",
+            "content": "Are you sure to delete the category {{name}}? ",
             "confirm": "Delete",
             "cancel": "Cancel"
         }
