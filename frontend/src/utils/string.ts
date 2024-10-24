@@ -7,3 +7,10 @@ export const isOnlyEmoji = (text: string): boolean => {
 
   return emojiPattern.test(text);
 };
+
+export const truncateString = (origin: string, maxLength: number, useEllipsis: boolean = true): string => {
+  if (maxLength <= 0) return '';
+  return origin.length > maxLength 
+    ? origin.slice(0, maxLength) + (useEllipsis ? '...' : '') 
+    : origin;
+};

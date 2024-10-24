@@ -112,7 +112,7 @@
     "DeleteTaskDialog": {
         "dialog": {
             "title": "Delete Task",
-            "content": "Are you sure you want to delete the task '{{taskName}}'? This action cannot be undone.",
+            "content": "Are you sure you want to delete the task '{{taskName}}'? ",
             "confirm": "Delete",
             "cancel": "Cancel"
         }

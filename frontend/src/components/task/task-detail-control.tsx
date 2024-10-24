@@ -20,6 +20,7 @@ import PropertyIcon from '@/components/property-icon';
 import GenericAlertDialog from '@/components/modals/generic-alert-dialog';
 import TaskContext from '@/contexts/task';
 import { useDisclosure } from '@chakra-ui/react';
+import { truncateString } from '@/utils/string';
 
 const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
   task,
@@ -27,7 +28,7 @@ const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
 }) => {
   const { t } = useTranslation();
   const { handleDeleteTasks } = useContext(TaskContext);
-  const { isOpen: isDeleteTaskDialogOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isDeleteTaskDialogOpen, onOpen: onDeleteTaskDialog, onClose: closeDeleteTaskDialog } = useDisclosure();
 
   const taskOperationList = [
     {
@@ -56,7 +57,7 @@ const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
       icon: LuTrash2,
       color: "red",
       condition: () => !task.deleted, 
-      onClick: () => onOpen()
+      onClick: () => onDeleteTaskDialog()
     }
   ];
 
@@ -110,15 +111,15 @@ const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
 
       <GenericAlertDialog
         isOpen={isDeleteTaskDialogOpen}
-        onClose={onClose}
+        onClose={closeDeleteTaskDialog}
         title={t('DeleteTaskDialog.dialog.title')}
-        body={t('DeleteTaskDialog.dialog.content', { taskName: task.title })}
+        body={t('DeleteTaskDialog.dialog.content', { taskName: truncateString(task.title, 20) })}
         btnOK={t('DeleteTaskDialog.dialog.confirm')}
         btnCancel={t('DeleteTaskDialog.dialog.cancel')}
         onOKCallback={async () => {
           try {
             await handleDeleteTasks([task.local_id]); 
-            onClose(); 
+            closeDeleteTaskDialog(); 
           } catch (error) {
             console.error("Delete task failed:", error);
           }
