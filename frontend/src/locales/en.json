@@ -73,7 +73,7 @@
             "descriptionTooLong": "Description is too long"
         }
     },
-    "CreateTaskModal":{
+    "CreateTaskModal": {
         "modal": {
             "title": "Create New Task",
             "taskTitle": "Title",
@@ -89,7 +89,7 @@
     "DeleteCategoryAlertDialog": {
         "dialog": {
             "title": "Delete Category",
-            "content": "Are you sure you want to delete the category {{name}}? All topics under this category will be marked as uncategorized.",
+            "content": "Are you sure to delete the category {{name}}? ",
             "confirm": "Delete",
             "cancel": "Cancel"
         }
@@ -106,6 +106,14 @@
             "title": "Delete Comment",
             "content": "Are you sure you want to delete this comment?",
             "delete": "Delete",
+            "cancel": "Cancel"
+        }
+    },
+    "DeleteTaskDialog": {
+        "dialog": {
+            "title": "Delete Task",
+            "content": "Are you sure you want to delete the task '{{taskName}}'? ",
+            "confirm": "Delete",
             "cancel": "Cancel"
         }
     },

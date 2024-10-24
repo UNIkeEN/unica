@@ -109,6 +109,14 @@
             "cancel": "取消"
         }
     },
+    "DeleteTaskDialog": {
+        "dialog": {
+            "title": "任务删除",
+            "content": "您确定要删除任务 '{{taskName}}' 吗？",
+            "confirm": "删除",
+            "cancel": "取消"
+        }
+    },
     "DiscussionCategoryManagerPage": {
         "button": {
             "create": "新分类",
