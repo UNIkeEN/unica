@@ -1,6 +1,7 @@
 from typing import Union, List, Optional, Type
 from django.db.models import QuerySet, Q, Model
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.serializers import Serializer
 from drf_yasg import openapi
 from enum import Enum
 
@@ -32,7 +33,8 @@ class QueryOptions:
             filters=data.get('filters', {})
         )
     
-    def to_openapi_schema(self, supported_steps: List[str]) -> openapi.Schema:
+    @staticmethod
+    def to_openapi_schema(supported_steps: List[str]) -> openapi.Schema:
         properties = {}
 
         if QuerySteps.FILTERS in supported_steps:
@@ -69,6 +71,23 @@ class QueryOptions:
         )
 
 
+class QueryResult:
+    def __init__(self, count: int, queryset: QuerySet):
+        self.count = count
+        self.queryset = queryset
+
+    def __iter__(self):
+        yield self.count
+        yield self.queryset
+
+    def paginated_serialize(self, serializer_class: Type[Serializer], **kwargs) -> dict:
+        serializer = serializer_class(self.queryset, many=True, **kwargs)
+        return {
+            'count': self.count,
+            'results': serializer.data
+        }
+    
+
 class CustomPagination(PageNumberPagination):
     def paginate_queryset(self, queryset, options):
         page = options.page or 1
@@ -80,7 +99,6 @@ class CustomPagination(PageNumberPagination):
         
         return paginator.count, list(self.page)
     
-
 
 class QueryExecutor:
     def __init__(self, base_query: Union[QuerySet, Type[Model]], options: QueryOptions, 
@@ -123,14 +141,14 @@ class QueryExecutor:
             self.query = self.query.order_by(self.options.order_by)
         return self
 
-    def _apply_pagination(self) -> QuerySet:
+    def _apply_pagination(self) -> QueryResult:
         if QuerySteps.PAGINATION in self.supported_steps and self.options.page and self.options.page_size:
             paginator = CustomPagination()
             count, paginated_queryset = paginator.paginate_queryset(self.query, self.options)
-            return count, paginated_queryset
-        return self.query.count(), self.query
+            return QueryResult(count, paginated_queryset)
+        return QueryResult(self.query.count(), self.query)
 
-    def execute(self, search_fields: Optional[List[str]] = None) -> QuerySet:
+    def execute(self, search_fields: Optional[List[str]] = None) -> QueryResult:
         """
         Executes the query and returns the queryset.
         :param search_fields: List of fields that support searching
