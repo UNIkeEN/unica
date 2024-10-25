@@ -27,8 +27,10 @@ const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
   ...boxProps
 }) => {
   const { t } = useTranslation();
-  const { handleDeleteTasks } = useContext(TaskContext);
+  const { handleDeleteTasks, handleUpdateTask } = useContext(TaskContext);
   const { isOpen: isDeleteTaskDialogOpen, onOpen: onDeleteTaskDialog, onClose: closeDeleteTaskDialog } = useDisclosure();
+  const { isOpen: isArchiveDialogOpen, onOpen: onArchiveDialogOpen, onClose: closeArchiveDialog } = useDisclosure();
+  const { isOpen: isUnarchiveDialogOpen, onOpen: onUnarchiveDialogOpen, onClose: closeUnarchiveDialog } = useDisclosure();
 
   const taskOperationList = [
     {
@@ -43,21 +45,21 @@ const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
       icon: LuArchive,
       color: "black",
       condition: () => !task.archived, 
-      onClick: () => {}
+      onClick: onArchiveDialogOpen
     },
     {
       key: "unarchive",
       icon: LuArchiveRestore,
       color: "black",
       condition: () => task.archived, 
-      onClick: () => {}
+      onClick: onUnarchiveDialogOpen
     },
     {
       key: "delete",
       icon: LuTrash2,
       color: "red",
       condition: () => !task.deleted, 
-      onClick: () => onDeleteTaskDialog()
+      onClick: onDeleteTaskDialog
     }
   ];
 
@@ -98,7 +100,7 @@ const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
                     textAlign="left"
                     justifyContent="flex-start"
                     key={item.key}
-                    onClick={() => item.onClick()} 
+                    onClick={item.onClick} 
                 >
                     <Icon as={item.icon} mr={2} />
                     {t(`TaskDetailControl.button.${item.key}`)}
@@ -124,6 +126,34 @@ const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
             console.error("Delete task failed:", error);
           }
         }}
+      />
+
+      <GenericConfirmDialog
+        isOpen={isArchiveDialogOpen}
+        onClose={closeArchiveDialog}
+        title={t('ArchiveTaskDialog.dialog.title')}
+        body={t('ArchiveTaskDialog.dialog.content', { taskName: truncateString(task.title, 20) })}
+        btnOK={t('ArchiveTaskDialog.dialog.confirm')}
+        btnCancel={t('ArchiveTaskDialog.dialog.cancel')}
+        onOKCallback={async () => {
+          await handleUpdateTask(task.local_id, { archived: true }, true);
+          closeArchiveDialog();
+        }}
+        isAlert={false}
+      />
+
+      <GenericConfirmDialog
+        isOpen={isUnarchiveDialogOpen}
+        onClose={closeUnarchiveDialog}
+        title={t('UnarchiveTaskDialog.dialog.title')}
+        body={t('UnarchiveTaskDialog.dialog.content', { taskName: truncateString(task.title, 20) })}
+        btnOK={t('UnarchiveTaskDialog.dialog.confirm')}
+        btnCancel={t('UnarchiveTaskDialog.dialog.cancel')}
+        onOKCallback={async () => {
+          await handleUpdateTask(task.local_id, { archived: false }, true);
+          closeUnarchiveDialog();
+        }}
+        isAlert={false} 
       />
     </Box>
   );
