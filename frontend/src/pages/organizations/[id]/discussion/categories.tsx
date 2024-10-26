@@ -19,7 +19,7 @@ import { createCategory, deleteCategory, updateCategory } from "@/services/discu
 import RichList from "@/components/common/rich-list";
 import CreateCategoryModal from "@/components/modals/create-category-modal";
 import CategoryIcon from "@/components/category-icon";
-import GenericAlertDialog from "@/components/modals/generic-alert-dialog";
+import GenericConfirmDialog from "@/components/modals/generic-confirm-dialog";
 import Pagination from "@/components/common/pagination";
 
 const DiscussionCategoryManagerPage = () => {
@@ -240,7 +240,7 @@ const DiscussionCategoryManagerPage = () => {
       </CreateCategoryModal>
 
       {selectedCategory && (
-        <GenericAlertDialog
+        <GenericConfirmDialog
           isOpen={isDeleteOpen}
           onClose={onDeleteClose}
           title={t("DeleteCategoryAlertDialog.dialog.title")}

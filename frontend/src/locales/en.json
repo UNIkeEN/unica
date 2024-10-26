@@ -1,4 +1,12 @@
 {
+    "ArchiveTaskDialog": {
+        "dialog": {
+            "title": "Archive Task",
+            "content": "Are you sure you want to archive the task \"{{taskName}}\"?",
+            "confirm": "Archive",
+            "cancel": "Cancel"
+        }
+    },
     "CancelInvitationDialog": {
         "dialog": {
             "title": "Delete",
@@ -648,6 +656,14 @@
                 "save": "Save",
                 "cancel": "Cancel"
             }
+        }
+    },
+    "UnarchiveTaskDialog": {
+        "dialog": {
+            "title": "Unarchive Task",
+            "content": "Are you sure you want to unarchive the task \"{{taskName}}\"?",
+            "confirm": "Unarchive",
+            "cancel": "Cancel"
         }
     },
     "UserContext": {
