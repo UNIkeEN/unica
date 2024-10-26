@@ -17,7 +17,7 @@ import {
 import { Task } from '@/models/task';
 import { TaskPropertyEnums } from '@/models/task';
 import PropertyIcon from '@/components/property-icon';
-import GenericAlertDialog from '@/components/modals/generic-alert-dialog';
+import GenericConfirmDialog from '@/components/modals/generic-confirm-dialog';
 import TaskContext from '@/contexts/task';
 import { useDisclosure } from '@chakra-ui/react';
 import { truncateString } from '@/utils/string';
@@ -113,7 +113,7 @@ const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
         </VStack>
       </VStack>
 
-      <GenericAlertDialog
+      <GenericConfirmDialog
         isOpen={isDeleteTaskDialogOpen}
         onClose={onDeleteTaskDialogClose}
         title={t('DeleteTaskDialog.dialog.title')}
