@@ -26,10 +26,8 @@ def compare_keys(base_keys, target_keys):
 
 def main(locale_key):
     locales_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '.'))
-    print(f"Locales path: {locales_path}")
 
     base_locale_path = os.path.join(locales_path, f"{locale_key}.json")
-    print(f"Base locale path: {base_locale_path}")
 
     if not os.path.exists(base_locale_path):
         print(f"Locale file '{locale_key}.json' not found in locales folder.")
@@ -41,17 +39,23 @@ def main(locale_key):
     for file_name in os.listdir(locales_path):
         if file_name.endswith('.json') and file_name != f"{locale_key}.json":
             target_locale_path = os.path.join(locales_path, file_name)
-            print(f"Comparing with: {target_locale_path}") 
             target_locale = load_locale_file(target_locale_path)
             target_keys = sorted(flatten_dict(target_locale))
 
             missing, extra = compare_keys(base_keys, target_keys)
 
-            print(f"\nComparing '{locale_key}.json' with '{file_name}':")
-            for key in missing:
-                print(colored(f"Missing: {key}", 'red'))
-            for key in extra:
-                print(colored(f"Extra: {key}", 'green'))
+            if not missing and not extra:
+                print(colored(f"'{file_name}' is identical to '{locale_key}.json'.", 'green'))
+            else:
+                # Summary format with m and n counts
+                print(f"Comparing {file_name}：")
+                print(f"{len(missing)} missing, {len(extra)} extra keys")
+                
+                for key in missing:
+                    print(colored(f"  Missing:   {key}", 'red'))
+                for key in extra:
+                    print(colored(f"  Extra:     {key}", 'green'))
+            print("-" * 40)
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
