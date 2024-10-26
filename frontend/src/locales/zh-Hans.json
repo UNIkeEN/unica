@@ -1,4 +1,12 @@
 {
+    "ArchiveTaskDialog": {
+        "dialog": {
+            "title": "归档任务",
+            "content": "确定要将任务“{{taskName}}”归档吗？",
+            "confirm": "归档",
+            "cancel": "取消"
+        }
+    },
     "CancelInvitationDialog": {
         "dialog": {
             "title": "取消邀请",
@@ -648,6 +656,14 @@
                 "save": "保存",
                 "cancel": "取消"
             }
+        }
+    },
+    "UnarchiveTaskDialog": {
+        "dialog": {
+            "title": "取消归档任务",
+            "content": "确定要将任务“{{taskName}}”取消归档吗？",
+            "confirm": "取消归档",
+            "cancel": "取消"
         }
     },
     "UserContext": {

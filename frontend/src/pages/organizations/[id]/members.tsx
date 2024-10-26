@@ -28,7 +28,7 @@ import RichList from "@/components/common/rich-list";
 import Pagination from "@/components/common/pagination";
 import InviteMembersModal from "@/components/modals/invite-members-modal";
 import ChangeMemberRoleModal from "@/components/modals/change-member-role-modal";
-import GenericAlertDialog from "@/components/modals/generic-alert-dialog";
+import GenericConfirmDialog from "@/components/modals/generic-confirm-dialog";
 import { UserAvatar } from "@/components/user-info-popover";
 
 const OrganizationMembersPage = () => {
@@ -315,7 +315,7 @@ const OrganizationMembersPage = () => {
         </Flex>}
 
       {selectedMember && 
-        <GenericAlertDialog
+        <GenericConfirmDialog
           isOpen={isRemoveDialogOpen}
           onClose={onRemoveDialogClose}
           title={t('RemoveUserAlertDialog.dialog.title')}
@@ -332,7 +332,7 @@ const OrganizationMembersPage = () => {
         />
       }
       {selectedMember && 
-        <GenericAlertDialog
+        <GenericConfirmDialog
           isOpen={isCancelInviteModalOpen}
           onClose={onCancelInviteModalClose}
           title={t('CancelInvitationDialog.dialog.title')}
