@@ -1,3 +1,61 @@
+"""
+Locale Comparison Script
+
+This script compares locale JSON files in a directory, checking for missing or extra keys 
+compared to a reference locale file. It helps ensure consistency across different language 
+files by identifying any discrepancies in key-value pairs.
+
+Usage:
+    python compare.py <locale_key>
+
+Parameters:
+    locale_key : str
+        The locale key representing the base language (e.g., "en" or "zh-Hans"). This key 
+        determines the reference locale file against which all other locale files will be compared. 
+        The reference file should be named "<locale_key>.json" and located in the same directory 
+        as this script.
+
+Functionality:
+- Loads and flattens the key structure of JSON files for easy comparison.
+- Compares the base locale file with each target locale file.
+- Highlights missing and extra keys in target files relative to the base file.
+- Provides color-coded output to indicate missing (red) and extra (green) keys.
+
+Example Execution:
+    python compare.py en
+
+This command will:
+- Compare "en.json" (base locale file) to all other JSON files in the directory.
+- Output missing and extra keys for each target file, if any, using color coding.
+
+--------------------------------------------------------------------------------
+
+语言文件对比脚本
+
+此脚本用于对比目录中的多语言 JSON 文件，检查相对于参考语言文件的缺少或多余的键，以确保不同语言文件之间的键值对一致性。
+
+使用方法：
+    python compare.py <locale_key>
+
+参数：
+    locale_key : str
+        代表基础语言的键（例如 "en" 或 "zh-Hans"）。该键指定参考语言文件，
+        脚本将根据此文件与其他语言文件进行对比。参考文件应命名为 "<locale_key>.json"，并位于与此脚本相同的目录下。
+
+功能：
+- 加载并扁平化 JSON 文件的键结构，便于对比。
+- 将基础语言文件与每个目标语言文件进行对比。
+- 输出每个目标文件中相对于基础文件的缺少和多余键。
+- 使用颜色编码，缺少的键用红色标记，多余的键用绿色标记。
+
+示例执行：
+    python compare.py en
+
+此命令将：
+- 使用 "en.json" 作为基础语言文件，与目录中的其他 JSON 文件进行对比。
+- 输出每个目标文件中缺少和多余的键（若存在），并进行颜色编码。
+"""
+
 import json
 import os
 import sys
