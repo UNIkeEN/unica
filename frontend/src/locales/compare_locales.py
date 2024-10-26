@@ -25,8 +25,7 @@ def compare_keys(base_keys, target_keys):
     return sorted(missing), sorted(extra)
 
 def main(locale_key):
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    locales_path = os.path.abspath(os.path.join(script_dir, '..', '..', 'frontend', 'src', 'locales'))
+    locales_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '.'))
     print(f"Locales path: {locales_path}")
 
     base_locale_path = os.path.join(locales_path, f"{locale_key}.json")
