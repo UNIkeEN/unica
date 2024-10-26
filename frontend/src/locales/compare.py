@@ -59,6 +59,6 @@ def main(locale_key):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python compare_locales.py <locale_key>")
+        print("Usage: python compare.py <locale_key>")
     else:
         main(sys.argv[1])
