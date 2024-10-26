@@ -47,7 +47,6 @@ def main(locale_key):
             if not missing and not extra:
                 print(colored(f"'{file_name}' is identical to '{locale_key}.json'.", 'green'))
             else:
-                # Summary format with m and n counts
                 print(f"Comparing {file_name}：")
                 print(f"{len(missing)} missing, {len(extra)} extra keys")
                 
