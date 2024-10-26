@@ -26,7 +26,7 @@ import RichList from "@/components/common/rich-list";
 import Pagination from "@/components/common/pagination";
 import { Organization, MemberRoleEnum } from '@/models/organization';
 import CreateOrganizationModal from "@/components/modals/create-organization-modal";
-import GenericAlertDialog from "@/components/modals/generic-alert-dialog";
+import GenericConfirmDialog from "@/components/modals/generic-confirm-dialog";
 import { leaveOrganization } from "@/services/organization";
 import OrganizationContext from "@/contexts/organization";
 
@@ -186,7 +186,7 @@ const MyOrganizationsPage = () => {
           </Flex>
         )}
         {selectedOrg &&
-          <GenericAlertDialog 
+          <GenericConfirmDialog 
           isOpen={isOpen} 
           onClose={onClose} 
           title={t('LeaveOrganizationAlertDialog.dialog.title')}
