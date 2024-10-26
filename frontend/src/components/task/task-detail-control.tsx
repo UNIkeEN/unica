@@ -32,10 +32,25 @@ const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const { handleDeleteTasks, handleUpdateTask } = useContext(TaskContext);
-  const { isOpen: isDeleteTaskDialogOpen, onOpen: onDeleteTaskDialog, onClose: onDeleteTaskDialogClose } = useDisclosure();
-  const { isOpen: isArchiveDialogOpen, onOpen: onArchiveDialogOpen, onClose: onArchiveDialogClose } = useDisclosure();
-  const { isOpen: isUnarchiveDialogOpen, onOpen: onUnarchiveDialogOpen, onClose: onUnarchiveDialogClose } = useDisclosure();
+  const { tasks, setTasks, handleDeleteTasks, handleUpdateTask } = useContext(TaskContext);
+
+  const { 
+    isOpen: isDeleteTaskDialogOpen, 
+    onOpen: onDeleteTaskDialog, 
+    onClose: onDeleteTaskDialogClose 
+  } = useDisclosure();
+
+  const { 
+    isOpen: isArchiveDialogOpen, 
+    onOpen: onArchiveDialogOpen, 
+    onClose: onArchiveDialogClose 
+  } = useDisclosure();
+
+  const { 
+    isOpen: isUnarchiveDialogOpen, 
+    onOpen: onUnarchiveDialogOpen, 
+    onClose: onUnarchiveDialogClose 
+  } = useDisclosure();
 
   const taskOperationList = [
     {
@@ -124,8 +139,8 @@ const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
         btnOK={t('DeleteTaskDialog.dialog.confirm')}
         btnCancel={t('DeleteTaskDialog.dialog.cancel')}
         onOKCallback={async () => {
-            handleDeleteTasks([task.local_id]); 
-            onDeleteTaskDialogClose(); 
+          const res = await handleDeleteTasks([task.local_id]); 
+          if (res) onDeleteTaskDialogClose(); 
         }}
       />
 
@@ -137,8 +152,11 @@ const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
         btnOK={t('ArchiveTaskDialog.dialog.confirm')}
         btnCancel={t('ArchiveTaskDialog.dialog.cancel')}
         onOKCallback={async () => {
-          await handleUpdateTask(task.local_id, { archived: true }, true);
-          onArchiveDialogClose();
+          const res = await handleUpdateTask(task.local_id, { archived: true }, true);
+          if (res) {
+            onArchiveDialogClose();
+            setTasks(tasks.filter((t) => t.local_id !== task.local_id));
+          }
         }}
         isAlert={false}
       />
@@ -151,8 +169,11 @@ const TaskDetailControl: React.FC<TaskDetailControlProps> = ({
         btnOK={t('UnarchiveTaskDialog.dialog.confirm')}
         btnCancel={t('UnarchiveTaskDialog.dialog.cancel')}
         onOKCallback={async () => {
-          await handleUpdateTask(task.local_id, { archived: false }, true);
-          onUnarchiveDialogClose();
+          const res = await handleUpdateTask(task.local_id, { archived: false }, true);
+          if (res) {
+            onUnarchiveDialogClose();
+            setTasks([...tasks, task]);
+          }
         }}
         isAlert={false} 
       />
