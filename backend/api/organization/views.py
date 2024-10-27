@@ -12,7 +12,7 @@ from api.organization.models import Organization, Membership
 from api.project.models import Project
 from .serializers import OrganizationCreationSerializer, OrganizationSerializer, MembershipSerializer
 from .decorators import organization_permission_classes
-from utils.query import QuerySteps, QueryExecutor, QueryOptions
+from utils.query import QuerySteps, QueryExecutor, QueryOptions, QueryResult
 from utils.mails import send_email
 
 User = get_user_model()
@@ -47,7 +47,7 @@ def create_organization(request):
 
 @swagger_auto_schema(
     method='post',
-    request_body=QueryOptions().to_openapi_schema(
+    request_body=QueryOptions.to_openapi_schema(
         [QuerySteps.ORDER_BY, QuerySteps.PAGINATION]
     ),
     responses={
@@ -78,11 +78,11 @@ def list_user_organizations(request):
     ).execute()
 
     organizations = [membership.organization for membership in memberships]
-    serializer = OrganizationSerializer(organizations, many=True, context={'request': request})
-    return Response({
-        'count': count,
-        'results': serializer.data
-    }, status=status.HTTP_200_OK)
+    response_data = QueryResult(count, organizations).paginated_serialize(
+        OrganizationSerializer,
+        context={'request': request}
+    )
+    return Response(response_data, status=status.HTTP_200_OK)
 
 
 @swagger_auto_schema(
