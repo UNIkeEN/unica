@@ -143,7 +143,7 @@ const OrganizationMembersPage = () => {
     try {
       await cancelInvitation(Number(router.query.id), username);
       toast({
-        title: t("Services.organization.cancelInvitation.cancelSuccess"),
+        title: t("Services.organization.cancelInvitation.canceled"),
         status: "success",
       });
       onCancelInviteModalClose();
