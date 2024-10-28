@@ -1,4 +1,12 @@
 {
+    "ArchiveTaskDialog": {
+        "dialog": {
+            "title": "歸檔任務",
+            "content": "確定要將任務“{{taskName}}”歸檔嗎？",
+            "confirm": "歸檔",
+            "cancel": "取消"
+        }
+    },
     "CancelInvitationDialog": {
         "dialog": {
             "title": "取消邀請",
@@ -26,7 +34,10 @@
     },
     "CreateCategoryModal": {
         "modal": {
-            "title": "創建新分類",
+            "title": {
+                "create": "創建新分類",
+                "edit": "編輯分類"
+            },
             "preview": "預覽",
             "name": "名稱",
             "emoji": "Emoji 圖標",
@@ -70,6 +81,27 @@
             "descriptionTooLong": "項目描述不得超過 200 字"
         }
     },
+    "CreateTaskModal": {
+        "modal": {
+            "title": "創建新任務",
+            "taskTitle": "標題",
+            "description": "描述",
+            "save": "保存",
+            "cancel": "取消"
+        },
+        "FormErrorMessage": {
+            "titleRequired": "任務標題不能為空",
+            "titleTooLong": "任務標題不得超過 100 字"
+        }
+    },
+    "DeleteCategoryAlertDialog": {
+        "dialog": {
+            "title": "刪除分類",
+            "content": "確定要刪除分類 {{name}} 嗎？該分類的已有話題將被標記為未分類",
+            "confirm": "刪除",
+            "cancel": "取消"
+        }
+    },
     "DeleteDiscussionAlertDialog": {
         "topic": {
             "title": "刪除話題",
@@ -85,6 +117,14 @@
             "cancel": "取消"
         }
     },
+    "DeleteTaskDialog": {
+        "dialog": {
+            "title": "任務刪除",
+            "content": "您確定要刪除任務 “{{taskName}}” 嗎？",
+            "confirm": "刪除",
+            "cancel": "取消"
+        }
+    },
     "DiscussionCategoryManagerPage": {
         "button": {
             "create": "新分類",
@@ -97,14 +137,25 @@
     },
     "DiscussionTopicPage": {
         "button": {
-            "reply": "回覆",
+            "reply": "回復",
             "share": "分享"
         },
         "drawer": {
             "reply": "添加評論",
             "editComment": "編輯評論"
         },
-        "loading": "加載中..."
+        "sider": {
+            "category": "分類",
+            "activity": "活動"
+        },
+        "text": {
+            "activity": "{{count}} 條回覆，更新於 ",
+            "isDeleted": "（該評論已被刪除）"
+        }
+    },
+    "Editable": {
+        "error-1": "輸入的內容不能為空",
+        "error-2": "輸入的內容過長"
     },
     "Enums": {
         "chakra-colors": {
@@ -125,9 +176,17 @@
                 "Member": "成員",
                 "Pending": "正在邀請"
             }
+        },
+        "properties": {
+            "text": "文本",
+            "number": "數字",
+            "label": "標籤",
+            "group": "分組",
+            "datetime": "日期與時間",
+            "user": "用戶"
         }
     },
-    "EnableDiscussionConfirmModal":{
+    "EnableDiscussionConfirmModal": {
         "modal": {
             "title": "確認啟用討論？",
             "body": {
@@ -138,8 +197,8 @@
             "confirm": "確認"
         }
     },
-    "Empty":{
-        "nodata":"暫無數據"
+    "Empty": {
+        "nodata": "暫無數據"
     },
     "General": {
         "loading": "加載中",
@@ -175,19 +234,19 @@
         }
     },
     "LoginPage": {
-        "title": "登錄",
+        "title": "登入",
         "button": {
-            "jaccount": "使用 jAccount 登錄"
+            "jaccount": "使用 jAccount 登入"
         },
         "toast": {
-            "need-login": "請先登錄",
-            "session-expired": "會話已過期，請重新登錄"
+            "need-login": "請先登入",
+            "session-expired": "會話已過期，請重新登入"
         }
     },
     "MainSider": {
         "user-popover": {
             "button": {
-                "logout": "退出登錄"
+                "logout": "退出登入"
             }
         },
         "pinned": {
@@ -245,8 +304,13 @@
         "drawer": {
             "setTitle": "標題",
             "setComment": "初始評論",
+            "setCategory": "未分類",
             "submit": "提交",
-            "cancel": "取消"
+            "cancel": "取消",
+            "uncategorized": "未分類"
+        },
+        "FormErrorMessage": {
+            "titleTooLong": "標題不得超過 40 字"
         }
     },
     "NotFoundPage": {
@@ -274,85 +338,356 @@
                 "invite": "邀請新成員"
             },
             "select": {
-                "permission": "篩選權限",
-                "all": "全部成員"
+                "permission_group": "分組：",
+                "members": "已加入",
+                "pending": "正在邀請"
             },
-            "RoleTag": {
-                "pending": "等待接受"
-            },
-            "MemberListItem": {
-                "you": "（您）",
-                "leave": "退出",
-                "remove": "移除",
-                "changeRole": "修改身份"
-            }
-        },
-        "settings": {
-            "title": "設置",
-            "section_title": {
-                "base": "基本設置",
-                "danger": "危險區域"
-            },
-            "name": "名稱",
-            "description": "描述",
-            "delete": "刪除",
-            "save": "保存"
-        }
-    },
-    "ProjectPages": {
-        "overview": {
-            "title": "概覽",
-            "button": {
-                "add-discussion": "發起新討論"
+            "list": {
+                "joined_at": "於 {{date}} 加入",
+                "invited_at": "於 {{date}} 發送邀請",
+                "menu": {
+                    "change_role": "修改身份",
+                    "remove": "從組織移除",
+                    "cancel_invitation": "刪除"
+                }
             }
         },
         "discussion": {
             "title": "討論",
+            "text": {
+                "notEnabled": "當前組織的討論功能尚未啟用。啟用後，此處將可用於廣播通知、推進任務進度，為整個組織開展討論。"
+            },
+            "subtitle": {
+                "categories": "分類",
+                "topics": "話題"
+            },
             "button": {
-                "new-topic": "新話題",
-                "create-category": "新分類"
-            },
-            "topic": {
-                "closed": "（已關閉）",
-                "reply": "回覆"
-            },
-            "comment": {
-                "replying": "正在回覆 {{user}} 的評論"
+                "enable": "啟用討論",
+                "createTopic": "創建話題",
+                "viewAllTopics": "查看所有話題",
+                "allCategories": "全部分類",
+                "allCategoriesWithManage": "全部分類與管理"
             }
         },
         "settings": {
-            "title": "設置",
-            "section_title": {
-                "base": "基本設置",
-                "danger": "危險區域"
+            "title": "設置"
+        },
+        "invitation": {
+            "text": {
+                "description": "@{{orgName}} 組織已向您發送邀請。"
             },
-            "name": "名稱",
-            "description": "描述",
-            "delete": "刪除",
-            "save": "保存"
+            "button": {
+                "accept": "加入 @{{orgName}}",
+                "decline": "拒絕"
+            },
+            "toast": {
+                "error": "操作失敗"
+            }
         }
     },
-    "RemoveMemberAlertDialog": {
+    "ProjectContext": {
+        "toast": {
+            "noPermission": "您沒有訪問此項目的權限"
+        }
+    },
+    "ProjectPages": {
+        "tasks": {
+            "title": "任務",
+            "segmented": {
+                "views": {
+                    "kanban": "看板視圖",
+                    "list": "列表視圖",
+                    "calendar": "日曆視圖"
+                }
+            },
+            "button": {
+                "create": "新任務"
+            }
+        },
+        "issues": {
+            "title": "議題"
+        },
+        "wiki": {
+            "title": "知識庫"
+        },
+        "settings": {
+            "title": "設置"
+        }
+    },
+    "RemoveUserAlertDialog": {
         "dialog": {
-            "title": "移除成員",
-            "content": "確定將 {{displayUsername}}({{username}}) 從 {{orgName}} 中移除嗎？",
+            "title": "移除用戶",
+            "content": "{{displayUsername}}({{username}}) 將從 {{orgName}} 組織移除.",
             "confirm": "移除",
             "cancel": "取消"
         }
     },
-    "ReplyCommentBox": {
-        "input": {
-            "placeholder": "回覆 {{user}}..."
+    "Services": {
+        "auth": {
+            "jAccountAuth": {
+                "error": "認證失敗"
+            }
         },
-        "button": {
-            "reply": "回覆"
+        "discussion": {
+            "enableDiscussion": {
+                "success": "討論功能已啟用",
+                "error": "操作失敗"
+            },
+            "getTopicInfo": {
+                "error": "獲取話題失敗"
+            },
+            "listTopics": {
+                "error": "獲取話題列表失敗"
+            },
+            "listComments": {
+                "error": "獲取評論列表失敗"
+            },
+            "createComment": {
+                "error": "創建評論失敗",
+                "error-429": "請求速度太快，請等待1分鐘後再試",
+                "error-400": "評論內容不能為空",
+                "success": "評論已成功創建"
+            },
+            "deleteComment": {
+                "error": "刪除評論失敗",
+                "success": "評論已成功刪除"
+            },
+            "editComment": {
+                "error": "編輯評論失敗",
+                "success": "評論已成功編輯"
+            },
+            "deleteTopic": {
+                "error": "刪除話題失敗",
+                "success": "話題已成功刪除"
+            },
+            "createTopic": {
+                "button": "創建話題",
+                "error": "創建話題失敗",
+                "error-429": "請求速度太快，請等待1分鐘後再試",
+                "error-400": "話題標題和內容均不能為空",
+                "success": "話題已成功創建"
+            },
+            "createCategory": {
+                "error": "創建分類失敗",
+                "success": "分類已成功創建"
+            },
+            "deleteCategory": {
+                "error": "刪除分類失敗",
+                "success": "分類已成功刪除"
+            },
+            "updateCategory": {
+                "error": "更新分類失敗",
+                "success": "分類已成功更新"
+            }
+        },
+        "projects": {
+            "listProjects": {
+                "error": "獲取項目列表失敗"
+            },
+            "getProjectInfo": {
+                "error": "獲取項目信息失敗"
+            },
+            "createProject": {
+                "success": "創建項目成功",
+                "created": "項目 “{{name}}” 已成功創建",
+                "error": "創建項目失敗"
+            }
+        },
+        "user": {
+            "getUserProfile": {
+                "error": "獲取用戶信息失敗"
+            },
+            "updateUserProfile": {
+                "success": "個人資料更新成功",
+                "error": "個人資料更新失敗"
+            },
+            "uploadUserAvatar": {
+                "success": "頭像上傳成功",
+                "error": "頭像上傳失敗",
+                "tooLarge": "文件大小太大"
+            }
+        },
+        "organization": {
+            "createOrganization": {
+                "success": "創建組織成功",
+                "created": "組織 “{{name}}” 已成功創建",
+                "error": "創建組織失敗",
+                "invalidInput": "無效的輸入"
+            },
+            "checkUserOrgPermission": {
+                "error": "獲取組織信息失敗"
+            },
+            "listUserOrganizations": {
+                "error": "獲取組織列表失敗"
+            },
+            "leaveOrganization": {
+                "left": "已成功退出該組織",
+                "error": "退出組織失敗",
+                "error-400": "無法退出作為唯一管理員的組織",
+                "error-403": "不是該組織的成員",
+                "error-404": "組織不存在"
+            },
+            "listOrganizationMembers": {
+                "error": "獲取成員列表失敗"
+            },
+            "removeMember": {
+                "removed": "已成功移除",
+                "error": "移除用戶失敗",
+                "error-400": "無法移除唯一管理員，請刪除組織或設置其他管理員後退出",
+                "error-403": "權限不足，僅管理員可移除成員",
+                "error-404": "用戶不存在或非該組織成員"
+            },
+            "modifyMemberRole": {
+                "changed": "已成功修改",
+                "error": "修改用戶身份失敗",
+                "error-400": "無法修改唯一管理員的身份",
+                "error-403": "權限不足，僅管理員可修改成員身份",
+                "error-404": "用戶不存在或非該組織成員"
+            },
+            "createInvitation": {
+                "created": "已成功向 {{username}} 發送邀請",
+                "error": "邀請成員失敗",
+                "error-403": "權限不足，僅管理員可邀請新成員",
+                "error-404": "未找到該用戶",
+                "error-409": "該用戶已被邀請或已是組織成員"
+            },
+            "listOrganizationInvitations": {
+                "error": "未能獲得待處理的邀請"
+            },
+            "respondInvitation": {
+                "error": "未能回應邀請"
+            },
+            "cancelInvitation": {
+                "canceled": "已成功取消邀請",
+                "error": "取消邀請失敗",
+                "error-403": "權限不足，僅管理員可取消邀請",
+                "error-404": "未找到該邀請"
+            }
+        },
+        "task": {
+            "listTasks": {
+                "error": "獲取任務列表失敗"
+            },
+            "createTask": {
+                "created": "任務 “{{title}}” 已成功創建",
+                "error": "創建任務失敗"
+            },
+            "updateTask": {
+                "success": "更新任務成功",
+                "error": "更新任務失敗"
+            },
+            "deleteTasks": {
+                "success": "刪除任務成功",
+                "error": "刪除任務失敗"
+            }
         }
     },
-    "Toast": {
-        "copied": "已複製"
+    "SettingsPages": {
+        "header": "設置",
+        "profile": {
+            "title": "個人資料",
+            "publicProfile": {
+                "title": "公開個人資料",
+                "subtitle": "管理您的公開個人資料",
+                "settings": {
+                    "avatar": {
+                        "title": "頭像",
+                        "modal": {
+                            "title": "更改頭像",
+                            "tooLarge": "文件大小太大",
+                            "upload": "上傳",
+                            "cancel": "取消"
+                        }
+                    },
+                    "display_name": {
+                        "title": "暱稱",
+                        "description": "您的暱稱將會在 Unica 各處顯示",
+                        "error-1": "暱稱不能為空",
+                        "error-2": "輸入的內容過長"
+                    },
+                    "bio": {
+                        "title": "簡介",
+                        "description": "對您自己的簡單介紹",
+                        "error-2": "輸入的內容過長"
+                    }
+                }
+            }
+        },
+        "appearance": {
+            "title": "外觀",
+            "appearance": {
+                "title": "外觀",
+                "subtitle": "管理 Unica 的界面顯示",
+                "settings": {
+                    "language": {
+                        "title": "語言",
+                        "description": "本站界面的顯示語言，僅應用於本設備"
+                    }
+                }
+            }
+        }
     },
-    "UnauthorizedPage": {
-        "title": "無權訪問",
-        "text": "無權訪問"
+    "TaskDetailActivities": {
+        "title": {
+            "activities": "活動"
+        }
+    },
+    "TaskDetailControl": {
+        "title": {
+            "local-properties": "添加本地屬性",
+            "operation": "操作"
+        },
+        "button": {
+            "duplicate": "生成副本",
+            "delete": "刪除",
+            "archive": "歸檔",
+            "unarchive": "取消歸檔"
+        }
+    },
+    "TaskDetailProperties": {
+        "title": {
+            "description": "描述",
+            "global-properties": "全局屬性",
+            "local-properties": "本地屬性"
+        },
+        "button": {
+            "description": {
+                "edit": "編輯",
+                "save": "保存",
+                "cancel": "取消"
+            }
+        }
+    },
+    "UnarchiveTaskDialog": {
+        "dialog": {
+            "title": "取消歸檔任務",
+            "content": "確定要將任務“{{taskName}}”取消歸檔嗎？",
+            "confirm": "取消歸檔",
+            "cancel": "取消"
+        }
+    },
+    "UserContext": {
+        "toast": {
+            "error-2": "獲取組織列表失敗"
+        }
+    },
+    "Utils": {
+        "datetime": {
+            "formatRelativeTime": {
+                "now": "現在",
+                "minutes-ago": "{{count}} 分鐘前",
+                "last-hour": "1 小時前",
+                "hours-ago": "{{count}} 小時前",
+                "yesterday": "昨天",
+                "others": "{{time}}"
+            }
+        },
+        "share": {
+            "shareContent": {
+                "share-success": "分享成功",
+                "copy-success": "已複製至剪貼板",
+                "copy-url-success": "已複製該地址至剪貼板"
+            }
+        }
     }
 }

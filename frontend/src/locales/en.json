@@ -501,7 +501,7 @@
                 "success": "Updated profile successfully",
                 "error": "Failed to update profile"
             },
-            "uploadAvatar": {
+            "uploadUserAvatar": {
                 "success": "Uploaded avatar successfully",
                 "error": "Failed to upload avatar",
                 "tooLarge": "File is too large"

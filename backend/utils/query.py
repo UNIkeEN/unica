@@ -1,4 +1,4 @@
-from typing import Union, List, Optional, Type
+from typing import Union, List, Dict, Optional, Type
 from django.db.models import QuerySet, Q, Model
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.serializers import Serializer
@@ -34,7 +34,11 @@ class QueryOptions:
         )
     
     @staticmethod
-    def to_openapi_schema(supported_steps: List[str]) -> openapi.Schema:
+    def to_openapi_schema(
+            supported_steps: List[str], 
+            extra_schemas: Dict[str, openapi.Schema] = None
+        ) -> openapi.Schema:
+
         properties = {}
 
         if QuerySteps.FILTERS in supported_steps:
@@ -64,6 +68,8 @@ class QueryOptions:
                 description="Number of items per page",
                 default=20
             )
+        if extra_schemas:
+            properties.update(extra_schemas)
 
         return openapi.Schema(
             type=openapi.TYPE_OBJECT,

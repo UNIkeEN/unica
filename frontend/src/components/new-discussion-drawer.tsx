@@ -95,16 +95,15 @@ const NewDiscussionDrawer: React.FC<NewDiscussionDrawerProps> = ({
     if (variant === "topic") {
       orgCtx.handleListDiscussionCategories(page, pageSize, Number(router.query.id)).then((res) => {
         setCategories(res.results);
-        setHasMore(res.next !== null);
+        setHasMore(res.count > page * pageSize);
       });
     }
   }, [variant]);
 
   const loadMore = async () => {
-    console.log("load more");
     orgCtx.handleListDiscussionCategories(page + 1, pageSize, Number(router.query.id)).then((res) => {
       setCategories([...categories, ...res.results]);
-      setHasMore(res.next !== null);
+      setHasMore(res.count > (page + 1) * pageSize);
       setPage(page + 1);
     });
   };

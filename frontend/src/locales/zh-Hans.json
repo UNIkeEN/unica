@@ -558,7 +558,7 @@
                 "error": "未能回应邀请"
             },
             "cancelInvitation": {
-                "cancelSuccess": "已成功取消邀请",
+                "canceled": "已成功取消邀请",
                 "error": "取消邀请失败",
                 "error-403": "权限不足，仅管理员可取消邀请",
                 "error-404": "未找到该邀请"

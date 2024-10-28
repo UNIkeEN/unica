@@ -11,7 +11,7 @@ export const shareContent = async (
 ) => {
 
   const shareText = onlyCopyUrl ? url : `【${title}】\n${text}\n${url}`;
-  if (navigator.share) {   
+  if (typeof navigator.share !== "undefined") {   
     // browser support navigator.share
     try {
       await navigator.share({
