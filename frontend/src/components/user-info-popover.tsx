@@ -67,29 +67,28 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
   size = "md",
   ...boxProps
 }) => {
+  const avatarUrl = useUserAvatarUrl(user?.username); 
 
-  if (withPopover)
-    return (
-      <UserInfoPopover user={user} trigger={trigger}>
-        <Box {...boxProps}>
+  return (
+    <Box {...boxProps}>
+      {withPopover ? (
+        <UserInfoPopover user={user} trigger={trigger}>
           <Avatar
             cursor="pointer"
             name={user?.display_name || ""}
-            src={useUserAvatarUrl(user?.username)}
+            src={avatarUrl} 
             size={size}
           />
-        </Box>
-      </UserInfoPopover>
-    );
-  else return (
-    <Box {...boxProps}>
-      <Avatar
-        name={user?.display_name || ""}
-        src={useUserAvatarUrl(user?.username)}
-        size={size}
-      />
+        </UserInfoPopover>
+      ) : (
+        <Avatar
+          name={user?.display_name || ""}
+          src={avatarUrl} 
+          size={size}
+        />
+      )}
     </Box>
-  )
+  );
 };
 
 export { UserAvatar, UserInfoPopover };
