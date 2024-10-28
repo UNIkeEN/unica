@@ -39,7 +39,7 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const logoutHandler = useCallback(() => {
     setToken('');
     userCtx.cleanUp();
-    // router.push('/login');
+    router.push('/login');
   }, [userCtx, setToken, router]);
 
   const checkLoginAndRedirect = () => {
