@@ -24,15 +24,15 @@ const CategoryIcon: React.FC<CategoryIconProps> = ({
     <Box {...boxProps}>
       <Tooltip 
         isDisabled={!withTooltip}
-        label={category.name || t('CategoryIcon.uncategorized')}
+        label={category?.name || t('CategoryIcon.uncategorized')}
       >
         <Tag 
           size={size} 
           p={size === "lg" ? 2.5 : 1.5} 
-          colorScheme={category.color || "gray"}
-          color={category.name? "black" : "transparent"}
+          colorScheme={category?.color || "gray"}
+          color={category?.name? "black" : "transparent"}
         >
-          {category.emoji || "💬"}
+          {category?.emoji || "💬"}
         </Tag>
       </Tooltip>
     </Box>
