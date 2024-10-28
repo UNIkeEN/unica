@@ -83,6 +83,8 @@ const MainLayout = ({ children }) => {
   
   if (!authCtx.isLoggedIn) {return <>{children}</>;}
 
+  if (window.location.href.startsWith('/login')) {return <>{children}</>;}
+
   return (
     <Flex h="100vh" overflow="hidden">
       {/* Desktop Sidebar */}

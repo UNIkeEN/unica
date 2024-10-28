@@ -16,7 +16,7 @@ const LoginPage = () => {
   useEffect(() => {
     const { next, expired } = router.query;
 
-    if (authCtx.isLoggedIn) {
+    if (authCtx.isLoggedIn && !expired) {
       router.push(next as string || '/');
     }
 
@@ -25,9 +25,10 @@ const LoginPage = () => {
         title: t('LoginPage.toast.session-expired'),
         status: 'warning',
       });
-      let url = new URL(window.location.href);
-      url.searchParams.delete('expired');
-      window.history.replaceState(null, null, url.toString());
+      authCtx.onLogout()
+      // let url = new URL(window.location.href);
+      // url.searchParams.delete('expired');
+      // window.history.replaceState(null, null, url.toString());
     } else if (next && !authCtx.isLoggedIn) {
       toast({
         title: t('LoginPage.toast.need-login'),

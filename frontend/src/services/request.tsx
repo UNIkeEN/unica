@@ -16,8 +16,11 @@ export const setupInterceptors = (
     response => response,
     error => {
       if (error.config.url.startsWith('/api/')) {
-        if (error.response && error.response.data.detail === "身份认证信息未提供。") {  // Error Detail is from Django
-          window.location.href = "/oauth/session-expired";
+        if (error.response && error.response.data.detail === "身份认证信息未提供。" && !window.location.href.startsWith('/login')) {  // Error Detail is from Django
+          if (localStorage.getItem('token'))
+            window.location.href = `/login?next=${encodeURIComponent(window.location.pathname)}&expired=true`;
+          else
+            window.location.href = `/login?next=${encodeURIComponent(window.location.pathname)}`;
         } else {
           return Promise.reject(error);
         }
