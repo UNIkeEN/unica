@@ -104,10 +104,10 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
     }
   };
 
-  const handleListDiscussionCategories = async (page: number, pageSize: number, org_id: number) => {
+  const handleListDiscussionCategories = async (page: number, page_size: number, org_id: number) => {
     if (!org_id || (orgInfo && !orgInfo.is_discussion_enabled)) return null;
     try {
-      const res = await listCategories(org_id, page, pageSize);
+      const res = await listCategories(org_id, {page, page_size});
       return res;
     } catch (error) {
       if (error.request && error.request.status === 403) {

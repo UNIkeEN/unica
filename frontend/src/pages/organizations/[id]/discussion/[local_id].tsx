@@ -184,9 +184,9 @@ const DiscussionTopicPage = () => {
     }
   };
 
-  const handleListComments = async (page: number = 1, pageSize: number = 20) => {
+  const handleListComments = async (page: number = 1, page_size: number = 20) => {
     try {
-      const res = await listComments(org_id, page, pageSize, topic_local_id);
+      const res = await listComments(org_id, topic_local_id, {page, page_size});
       setCommentsCount(res.count);
       if (res.count <= page * pageSize) setHasMore(false);
       if (page === 1) setHasMoreReverse(false);

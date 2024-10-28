@@ -6,13 +6,14 @@ from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-import emoji
 from emoji import is_emoji
+from rest_framework.throttling import UserRateThrottle
+from rest_framework.decorators import throttle_classes
 from .models import Discussion
 from api.organization.decorators import organization_permission_classes
 from .serializers import *
-from rest_framework.throttling import UserRateThrottle
-from rest_framework.decorators import throttle_classes
+from utils.query import QuerySteps, QueryExecutor, QueryOptions
+
 
 class DiscussionThrottle(UserRateThrottle):
     scope = 'discussion'
@@ -120,13 +121,8 @@ def get_topic_info(request, id):
 # topic list
 @swagger_auto_schema(
     method='post',
-    request_body=openapi.Schema(
-        type=openapi.TYPE_OBJECT,
-        properties={
-            'page': openapi.Schema(type=openapi.TYPE_INTEGER, default=1),
-            'page_size': openapi.Schema(type=openapi.TYPE_INTEGER, default=20),
-            'category_id': openapi.Schema(type=openapi.TYPE_INTEGER, default=None)
-        }
+    request_body=QueryOptions.to_openapi_schema(
+        [QuerySteps.PAGINATION, QuerySteps.FILTERS]
     ),
     responses={
         200: openapi.Response(
@@ -144,28 +140,20 @@ def get_topic_info(request, id):
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner', 'Member'])
 def list_topics(request, id):
-    class CustomPagination(PageNumberPagination):
-        page_size_query_param = 'page_size'
-
-    paginator = CustomPagination()
-
-    request.query_params._mutable = True
-    request.query_params['page'] = request.data.get('page', 1)
-    request.query_params['page_size'] = request.data.get('page_size', 20)
-    request.query_params._mutable = False
-
     organization = request.organization
     if not hasattr(organization, 'discussion'):
         return Response({'detail': 'Discussion not enabled in this organization'}, status=status.HTTP_404_NOT_FOUND)
 
-    category_id = request.data.get('category_id')
-    if category_id:
-        topics = DiscussionTopic.objects.filter(discussion=organization.discussion, category=category_id, deleted=False).order_by('-updated_at')
-    else:
-        topics = DiscussionTopic.objects.filter(discussion=organization.discussion, deleted=False).order_by('-updated_at')
-    result_page = paginator.paginate_queryset(topics, request)
-    serializer = DiscussionTopicSerializer(result_page, many=True)
-    return paginator.get_paginated_response(serializer.data)
+    base_query = DiscussionTopic.objects.filter(discussion=organization.discussion, deleted=False).order_by('-updated_at')
+    result = QueryExecutor(
+        base_query,
+        options=QueryOptions.build_from_request(request),
+        supported_steps=[QuerySteps.FILTERS, QuerySteps.PAGINATION]
+    ).execute().paginated_serialize(
+        DiscussionTopicSerializer
+    )
+
+    return Response(result, status=status.HTTP_200_OK)
 
 
 # delete_topic
@@ -254,14 +242,9 @@ def create_comment(request, id):
 
 @swagger_auto_schema(
     method='post',
-    request_body=openapi.Schema(
-        type=openapi.TYPE_OBJECT,
-        properties={
-            'topic_local_id': openapi.Schema(type=openapi.TYPE_INTEGER),
-            'page': openapi.Schema(type=openapi.TYPE_INTEGER, default=1),
-            'page_size': openapi.Schema(type=openapi.TYPE_INTEGER, default=20),
-        },
-        required=['topic_local_id']
+    request_body=QueryOptions.to_openapi_schema(
+        [QuerySteps.PAGINATION], 
+        {'topic_local_id': openapi.Schema(type=openapi.TYPE_INTEGER)}
     ),
     responses={
         200: openapi.Response(
@@ -287,21 +270,16 @@ def list_comment(request, id):
     except DiscussionTopic.DoesNotExist:
         return Response({'detail': 'Topic not found or has been deleted'}, status=status.HTTP_404_NOT_FOUND)
 
-    class CustomPagination(PageNumberPagination):
-        page_size_query_param = 'page_size'
+    base_query = topic.comments.filter(deleted=False).order_by('created_at')
+    result = QueryExecutor(
+        base_query,
+        options=QueryOptions.build_from_request(request),
+        supported_steps=[QuerySteps.PAGINATION]
+    ).execute().paginated_serialize(
+        DiscussionCommentSerializer
+    )
 
-    paginator = CustomPagination()
-
-    request.query_params._mutable = True
-    request.query_params['page'] = request.data.get('page', 1)
-    request.query_params['page_size'] = request.data.get('page_size', 20)
-    request.query_params._mutable = False
-
-    comments = topic.comments.filter(deleted=False).order_by('created_at')
-    result_page = paginator.paginate_queryset(comments, request)
-    serializer = DiscussionCommentSerializer(result_page, many=True)
-
-    return paginator.get_paginated_response(serializer.data)
+    return Response(result, status=status.HTTP_200_OK)
 
 
 @swagger_auto_schema(
@@ -439,12 +417,8 @@ def create_category(request, id):
 
 @swagger_auto_schema(
     method='post',
-    request_body=openapi.Schema(
-        type=openapi.TYPE_OBJECT,
-        properties={
-            'page': openapi.Schema(type=openapi.TYPE_INTEGER, default=1),
-            'page_size': openapi.Schema(type=openapi.TYPE_INTEGER, default=20),
-        }
+    request_body=QueryOptions.to_openapi_schema(
+        [QuerySteps.PAGINATION]
     ),
     responses={
         200: openapi.Response(
@@ -468,20 +442,16 @@ def list_categories(request, id):
     except Discussion.DoesNotExist:
         return Response({'detail': 'Discussion not found'}, status=status.HTTP_404_NOT_FOUND)
     
-    class CustomPagination(PageNumberPagination):
-        page_size_query_param = 'page_size'
-
-    paginator = CustomPagination()
-
-    request.query_params._mutable = True
-    request.query_params['page'] = request.data.get('page', 1)
-    request.query_params['page_size'] = request.data.get('page_size', 20)
-    request.query_params._mutable = False
+    base_query = discussion.categories.all().order_by('name')
+    result = QueryExecutor(
+        base_query,
+        options=QueryOptions.build_from_request(request),
+        supported_steps=[QuerySteps.PAGINATION]
+    ).execute().paginated_serialize(
+        DiscussionCategorySerializer
+    )
     
-    categories = discussion.categories.all().order_by('name')
-    result_page = paginator.paginate_queryset(categories, request)
-    serializer = DiscussionCategorySerializer(result_page, many=True)
-    return paginator.get_paginated_response(serializer.data)
+    return Response(result, status=status.HTTP_200_OK)
 
 
 @swagger_auto_schema(
