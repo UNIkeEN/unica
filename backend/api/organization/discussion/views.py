@@ -43,11 +43,25 @@ def enable_discussion(request, id):
 #create_topic
 @swagger_auto_schema(
     method='post',
-    request_body=DiscussionTopicCreationSerializer,
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'title': openapi.Schema(type=openapi.TYPE_STRING, description='Title of the discussion topic'),
+            'category_id': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID of the category'),
+            'comment': openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'content': openapi.Schema(type=openapi.TYPE_STRING, description='Content of the first comment')
+                },
+                required=['content']
+            )
+        },
+        required=['title', 'comment']
+    ),
     responses={
         201: openapi.Response(
             description="Discussion topic created successfully",
-            schema=DiscussionTopicCreationSerializer
+            schema=DiscussionTopicSerializer
         ),
         400: openapi.Response(description="Invalid input"),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
@@ -65,17 +79,11 @@ def create_topic(request, id):
     organization = request.organization
     if not hasattr(organization, 'discussion'):
         return Response({'detail': 'Discussion not enabled in this organization'}, status=status.HTTP_404_NOT_FOUND)
+    
+    if request.data.get('category_id') == 0:
+        request.data.pop('category_id', None) 
 
-    data = request.data
-    if 'category' in data and data['category']:
-        category_id = data['category']
-        try:
-            category = DiscussionCategory.objects.get(id=category_id)
-        except DiscussionCategory.DoesNotExist:
-            return Response({'detail': 'Category not found'}, status=status.HTTP_404_NOT_FOUND)
-    else:
-        data['category'] = None
-    serializer = DiscussionTopicCreationSerializer(data=data, context={'discussion': organization.discussion, 'request': request})
+    serializer = DiscussionTopicSerializer(data=request.data, context={'discussion': organization.discussion, 'request': request})
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -222,7 +230,7 @@ def delete_topic(request, id):
     responses={
         201: openapi.Response(
             description="Comment added successfully",
-            schema=DiscussionCommentCreationSerializer
+            schema=DiscussionCommentSerializer
         ),
         400: openapi.Response(description="Invalid input"),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
@@ -245,7 +253,7 @@ def create_comment(request, id):
     except DiscussionTopic.DoesNotExist:
         return Response({'detail': 'Topic not found or has been deleted'}, status=status.HTTP_404_NOT_FOUND)
 
-    serializer = DiscussionCommentCreationSerializer(data=request.data)
+    serializer = DiscussionCommentSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save(topic=topic, user=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -369,7 +377,7 @@ def delete_comment(request, id):
     responses={
         201: openapi.Response(
             description="Comment edited successfully",
-            schema=DiscussionCommentCreationSerializer
+            schema=DiscussionCommentSerializer
         ),
         400: openapi.Response(description="Invalid input"),
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
@@ -397,7 +405,7 @@ def edit_comment(request, id):
     except DiscussionComment.DoesNotExist:
         return Response({'detail': 'Comment not found'}, status=status.HTTP_404_NOT_FOUND)
     
-    serializer = DiscussionCommentCreationSerializer(comment, data=request.data, partial=True)
+    serializer = DiscussionCommentSerializer(comment, data=request.data, partial=True)
     if serializer.is_valid():
         serializer.save(topic=topic, user=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
