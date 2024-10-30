@@ -8,7 +8,8 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ['id', 'display_name', 'description', 'created_at', 'updated_at', 'owner_type', 'owner']
+        fields = ['id', 'display_name', 'description', 'created_at', 'updated_at', 'owner_type', 'owner','owner_id']
+        read_only_fields = ['id','created_at', 'updated_at', 'owner_type', 'owner','owner_id']
 
     def get_owner_type(self, obj):
         if obj.is_user_project():
@@ -27,8 +28,3 @@ class ProjectSerializer(serializers.ModelSerializer):
         return None
     
   
-class ProjectCreationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Project
-        fields = ['id', 'display_name', 'description', 'created_at', 'updated_at', 'owner_type', 'owner_id']
-        read_only_fields = ['id']

@@ -11,7 +11,7 @@ from django.contrib.auth import get_user_model
 from ..organization.models import Organization
 from ..organization.decorators import organization_permission_classes
 from .models import Project
-from .serializers import ProjectSerializer, ProjectCreationSerializer
+from .serializers import ProjectSerializer
 from .decorators import project_basic_permission_required
 
 User = get_user_model()
@@ -61,7 +61,7 @@ def create_project(request):
 
     owner_type, owner_id = owner_info
 
-    serializer = ProjectCreationSerializer(data={
+    serializer = ProjectSerializer(data={
         'display_name': display_name,
         'description': description,
         'owner_type': owner_type.pk,
