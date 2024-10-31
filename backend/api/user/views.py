@@ -12,6 +12,7 @@ from .serializers import UserProfileSerializer
 from files.serializers import UserFileSerializer, UserFileSerializerConfig
 from PIL import Image
 from io import BytesIO
+from utils.query import QuerySteps, QueryExecutor, QueryOptions
 
 
 class UserProfileAPIView(APIView):
@@ -105,17 +106,29 @@ def upload_user_avatar(request):
 
 
 @swagger_auto_schema(
-    method='get',
+    method='post',
+    request_body=QueryOptions.to_openapi_schema(
+        [QuerySteps.PAGINATION],
+        extra_schemas={}
+    ),
     responses={
         200: openapi.Response(description="List of pinned tasks retrieved successfully"),
     },
     operation_description="Retrieve a list of pinned tasks of the authenticated user",
     tags=["User"]
 )
-@api_view(['GET'])
+@api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def list_pinned_tasks(request):
-    serializer = TaskSerializer(request.user.pinned_tasks.all(), many=True)
+    base_query = request.user.pinned_tasks.all()
+    result = QueryExecutor(
+        base_query,
+        options=QueryOptions.build_from_request(request),
+        supported_steps=[QuerySteps.PAGINATION]
+    ).execute().paginated_serialize(
+        TaskSerializer
+    )
 
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(result, status=status.HTTP_200_OK)
+
