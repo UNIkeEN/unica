@@ -43,6 +43,11 @@ body {
   text-overflow: ellipsis;
 }
 
+/* Markdown Renderer */
 .markdown-body {
   background-color: inherit !important;
+}
+
+.hljs {
+  padding: 0 !important;
 }

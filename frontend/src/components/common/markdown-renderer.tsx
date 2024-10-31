@@ -22,14 +22,21 @@ const MarkdownRenderer: React.FC<MdRendererProps> = ({
 }) => {
 
   return (
-      <Box {...boxProps} style={{ wordWrap: 'break-word', overflowWrap: 'break-word'}}>
+      <Box 
+        style={{ 
+          wordWrap: 'break-word', 
+          overflowWrap: 'break-word', 
+          wordBreak: 'break-word'
+        }}
+        {...boxProps} 
+      >
         <ReactMarkdown
-            className='markdown-body'
-            remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeRaw, rehypeSanitize, rehypeHighlight]}
-            skipHtml={false}
+          className='markdown-body'
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeRaw, rehypeSanitize, rehypeHighlight]}
+          skipHtml={false}
         >
-            {content}
+          {content}
         </ReactMarkdown>
       </Box>
   )
