@@ -101,7 +101,7 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({
     return (
       <Box m={5}>
         <Grid templateColumns="3fr 1fr" gap={8}>
-          <VStack spacing={6} align="stretch">
+          <VStack spacing={6} align="stretch" overflowX="hidden">
             <TaskDetailPanelHeader />
             <TaskDetailProperties task={task}/>
             <TaskDetailActivities task={task}/>

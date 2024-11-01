@@ -79,7 +79,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   const cleanUp = useCallback(() => {
     setProfile(undefined);
-  }, [toast, t]);
+  }, []);
 
   const contextValue = {
     updateAll,
