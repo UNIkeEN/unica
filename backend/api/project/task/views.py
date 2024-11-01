@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import TaskCollection, Task
 from .serializers import TaskCollectionSerializer, TaskSerializer
 from ..decorators import project_basic_permission_required
+from utils.query import QuerySteps, QueryExecutor, QueryOptions
 
 
 @swagger_auto_schema(
@@ -43,9 +44,8 @@ def create_task(request, id):
 
 @swagger_auto_schema(
     method='post',
-    request_body=openapi.Schema(
-        type=openapi.TYPE_OBJECT,
-        required=[]
+    request_body=QueryOptions.to_openapi_schema(
+        [QuerySteps.PAGINATION, QuerySteps.FILTERS]
     ),
     responses={
         200: openapi.Response(
@@ -55,7 +55,7 @@ def create_task(request, id):
         403: openapi.Response(description="Authenticated user does not have the required permissions"),
         404: openapi.Response(description="Project or task collection not found")
     },
-    operation_description="Retrieve a non-paginated list of all tasks",
+    operation_description="Retrieve a paginated list of all tasks with optional filters",
     tags=["Project/Task"]
 )
 @api_view(['POST'])
@@ -64,10 +64,16 @@ def create_task(request, id):
 @project_basic_permission_required
 def list_tasks(request, id):
     collection = get_object_or_404(TaskCollection, project=request.project)
-    tasks = collection.tasks.filter(deleted=False, archived=False).order_by('-updated_at')
-    serializer = TaskSerializer(tasks, many=True)
+    base_query = collection.tasks.filter(deleted=False, archived=False)
 
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    result = QueryExecutor(
+        base_query,
+        options=QueryOptions.build_from_request(request),
+        supported_steps=[QuerySteps.PAGINATION, QuerySteps.FILTERS]
+    ).execute().paginated_serialize(TaskSerializer)
+
+    return Response(result, status=status.HTTP_200_OK)
+
 
 
 @swagger_auto_schema(
@@ -212,7 +218,7 @@ def delete_tasks_by_batch(request, id):
     collection = get_object_or_404(TaskCollection, project=request.project)
     local_ids = request.data.get('local_ids')
 
-    if not local_ids or not isinstance(local_ids, list):
+    if not local_ids or not isinstance(local_ids, ):
         return Response({'detail': 'Invalid local_ids. Must be a list of integers.'}, status=status.HTTP_400_BAD_REQUEST)
     if not all(isinstance(local_id, int) for local_id in local_ids):
         return Response({'detail': 'All local_ids must be integers.'}, status=status.HTTP_400_BAD_REQUEST)
