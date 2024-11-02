@@ -77,7 +77,7 @@ def create_project(request):
 @swagger_auto_schema(
     method='post',
     request_body=QueryOptions.to_openapi_schema(
-    [QuerySteps.PAGINATION, QuerySteps.FILTERS],
+        [QuerySteps.PAGINATION, QuerySteps.FILTERS],
     extra_schemas={
         'org_id': openapi.Schema(type=openapi.TYPE_INTEGER, description='Organization ID')
     }

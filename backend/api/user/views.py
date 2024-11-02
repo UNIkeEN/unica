@@ -109,7 +109,6 @@ def upload_user_avatar(request):
     method='post',
     request_body=QueryOptions.to_openapi_schema(
         [QuerySteps.PAGINATION],
-        extra_schemas={}
     ),
     responses={
         200: openapi.Response(description="List of pinned tasks retrieved successfully"),

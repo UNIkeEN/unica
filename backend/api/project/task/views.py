@@ -218,7 +218,7 @@ def delete_tasks_by_batch(request, id):
     collection = get_object_or_404(TaskCollection, project=request.project)
     local_ids = request.data.get('local_ids')
 
-    if not local_ids or not isinstance(local_ids, ):
+    if not local_ids or not isinstance(local_ids,list):
         return Response({'detail': 'Invalid local_ids. Must be a list of integers.'}, status=status.HTTP_400_BAD_REQUEST)
     if not all(isinstance(local_id, int) for local_id in local_ids):
         return Response({'detail': 'All local_ids must be integers.'}, status=status.HTTP_400_BAD_REQUEST)

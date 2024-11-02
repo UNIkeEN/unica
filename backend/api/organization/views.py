@@ -166,8 +166,8 @@ def delete_organization(request, id):
 
 @swagger_auto_schema(
     method='post',
-   request_body=QueryOptions.to_openapi_schema(
-    [QuerySteps.PAGINATION]
+    request_body=QueryOptions.to_openapi_schema(
+        [QuerySteps.PAGINATION]
     ),
     responses={
         200: openapi.Response(
@@ -364,7 +364,7 @@ def create_invitation(request, id):
 @swagger_auto_schema(
     method='post',
     request_body=QueryOptions.to_openapi_schema(
-    [QuerySteps.PAGINATION]
+        [QuerySteps.PAGINATION]
     ),
     responses={
         200: openapi.Response(
