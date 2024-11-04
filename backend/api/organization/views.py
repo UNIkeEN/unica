@@ -10,7 +10,7 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from api.organization.models import Organization, Membership
 from api.project.models import Project
-from .serializers import OrganizationCreationSerializer, OrganizationSerializer, MembershipSerializer
+from .serializers import OrganizationSerializer, MembershipSerializer
 from .decorators import organization_permission_classes
 from utils.query import QuerySteps, QueryExecutor, QueryOptions, QueryResult
 from utils.mails import send_email
@@ -20,11 +20,11 @@ User = get_user_model()
 
 @swagger_auto_schema(
     method='post',
-    request_body=OrganizationCreationSerializer,
+    request_body=OrganizationSerializer,
     responses={
         201: openapi.Response(
             description="Organization successfully created",
-            schema=OrganizationCreationSerializer
+            schema=OrganizationSerializer
         ),
         400: openapi.Response(
             description="Invalid input data"
@@ -37,7 +37,7 @@ User = get_user_model()
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def create_organization(request):
-    serializer = OrganizationCreationSerializer(data=request.data)
+    serializer = OrganizationSerializer(data=request.data)
     if serializer.is_valid():
         organization = serializer.save()
         Membership.objects.create(user=request.user, organization=organization, role=Membership.OWNER)
@@ -117,11 +117,11 @@ def check_user_organization_permission(request, id):
 
 @swagger_auto_schema(
     method='patch',
-    request_body=OrganizationCreationSerializer(partial=True),
+    request_body=OrganizationSerializer(partial=True),
     responses={
         200: openapi.Response(
             description="Organization updated successfully",
-            schema=OrganizationCreationSerializer()
+            schema=OrganizationSerializer()
         ),
         400: openapi.Response(description="Invalid input data"),
         403: openapi.Response(description="Authenticated user is not an owner of this organization"),
@@ -135,7 +135,7 @@ def check_user_organization_permission(request, id):
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(required_roles=['Owner'])
 def update_organization(request, id):
-    serializer = OrganizationCreationSerializer(request.organization, data=request.data, partial=True)
+    serializer = OrganizationSerializer(request.organization, data=request.data, partial=True)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -478,3 +478,4 @@ def respond_invitation(request, id):
         membership.delete()
         return Response({"detail": "Invitation declined successfully"}, status=status.HTTP_200_OK)
     
+    #     return data
