@@ -13,7 +13,7 @@ class MembershipSerializer(serializers.ModelSerializer):
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
-    role = serializers.SerializerMethodField()
+    role = serializers.SerializerMethodField(read_only=True)
     member_count = serializers.SerializerMethodField()  # All members, include owner
     owner_count = serializers.SerializerMethodField()
     project_count = serializers.SerializerMethodField()
@@ -22,9 +22,11 @@ class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
         fields = ['id', 'display_name', 'description', 'created_at', 'updated_at', 'role', 'member_count', 'owner_count', 'project_count', 'is_discussion_enabled']
-        read_only_fields = ['id']
-
+        read_only_fields = ['id', 'created_at', 'updated_at']
     def get_role(self, obj):
+        user = self.context.get('request').user if 'request' in self.context else None
+        if not user or not user.is_authenticated:
+            return None
         user = self.context['request'].user
         membership = Membership.objects.filter(user=user, organization=obj).first()
         return membership.role if membership else None
@@ -40,13 +42,6 @@ class OrganizationSerializer(serializers.ModelSerializer):
     
     def get_is_discussion_enabled(self, obj):
         return hasattr(obj, "discussion")
-
-
-class OrganizationCreationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Organization
-        fields = ['id', 'display_name', 'description', 'created_at', 'updated_at']
-        read_only_fields = ['id']
 
     # def validate(self, data):
     #     display_name = data.get('display_name')
