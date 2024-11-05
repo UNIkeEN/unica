@@ -59,13 +59,9 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   }, [toast, t]);
 
-  const handleListProjects = useCallback(async (page: number, pageSize: number) => {
+  const handleListProjects = useCallback(async (page: number, page_size: number) => {
     try {
-      const query = {
-        page,
-        page_size: pageSize,
-      };
-      const projectList = await listProjects(query);
+      const projectList = await listProjects({page, page_size});
       return projectList;
     } catch (error) {
       toast({

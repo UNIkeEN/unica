@@ -77,7 +77,7 @@ const OrganizationMembersPage = () => {
 
   const handlListOrganizationMembers = async (id: number, page: number = 1, page_size: number = 20) => {
     try {
-      const res = await listOrganizationMembers(id,{page, page_size});
+      const res = await listOrganizationMembers(id, {page, page_size});
       orgCtx.setBasicInfo({
         ...orgCtx.basicInfo,
         member_count: res.count

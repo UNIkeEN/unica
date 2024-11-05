@@ -86,15 +86,11 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
     }
   };
 
-  const handleListProjects = async (page: number, pageSize: number, org_id: number) => {
+  const handleListProjects = async (page: number, page_size: number, org_id: number) => {
     if (!org_id) return null;
     
     try {
-      const query = {
-        page,
-        page_size: pageSize,
-      };
-      const projectList = await listProjects(query, org_id);
+      const projectList = await listProjects({page, page_size}, org_id);
       setOrgInfo({ ...orgInfo, project_count: projectList.count });
       return projectList.results;
     } catch (error) {

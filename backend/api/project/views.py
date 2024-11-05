@@ -77,12 +77,11 @@ def create_project(request):
 @swagger_auto_schema(
     method='post',
     request_body=QueryOptions.to_openapi_schema(
-        [QuerySteps.PAGINATION, QuerySteps.FILTERS],
-    extra_schemas={
-        'org_id': openapi.Schema(type=openapi.TYPE_INTEGER, description='Organization ID')
-    }
+        [QuerySteps.PAGINATION],
+        extra_schemas={
+            'org_id': openapi.Schema(type=openapi.TYPE_INTEGER, description='Organization ID')
+        }
     ),
-
     responses={
         200: openapi.Response(description="Successfully get list of projects", schema=ProjectSerializer(many=True)),
         404: openapi.Response(description="Organization not found"),
