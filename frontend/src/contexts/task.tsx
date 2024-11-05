@@ -94,7 +94,7 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
       if (error.request && error.request.status === 403) {
         projCtx.toastNoPermissionAndRedirect();
       } else toast({
-        title: t('Services.task.listTask.error'),
+        title: t('Services.task.listTasks.error'),
         status: 'error'
       })
       return null;
