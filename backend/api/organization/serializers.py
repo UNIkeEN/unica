@@ -22,11 +22,9 @@ class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
         fields = ['id', 'display_name', 'description', 'created_at', 'updated_at', 'role', 'member_count', 'owner_count', 'project_count', 'is_discussion_enabled']
-        read_only_fields = ['id', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at', 'role', 'member_count', 'owner_count', 'project_count', 'is_discussion_enabled']
+        
     def get_role(self, obj):
-        user = self.context.get('request').user if 'request' in self.context else None
-        if not user or not user.is_authenticated:
-            return None
         user = self.context['request'].user
         membership = Membership.objects.filter(user=user, organization=obj).first()
         return membership.role if membership else None

@@ -16,17 +16,15 @@ import {
   Textarea,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useRef, useState, useContext } from "react";
+import { useRef, useState } from "react";
 import { useToast } from "@/contexts/toast";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/router";
-import OrganizationContext from "@/contexts/organization";
 
 const CreateOrganizationModal = ({ size = "lg" }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { t } = useTranslation();
   const toast = useToast();
-  const { updateAll } = useContext(OrganizationContext); 
   const initialRef = useRef(null);
   const router = useRouter();
 
@@ -45,7 +43,6 @@ const CreateOrganizationModal = ({ size = "lg" }) => {
         }),
         status: "success",
       });
-      updateAll(res.id); 
       onClose();
       setDescription("");
       setName("");

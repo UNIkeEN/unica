@@ -37,7 +37,7 @@ User = get_user_model()
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def create_organization(request):
-    serializer = OrganizationSerializer(data=request.data)
+    serializer = OrganizationSerializer(data=request.data, context={'request': request})
     if serializer.is_valid():
         organization = serializer.save()
         Membership.objects.create(user=request.user, organization=organization, role=Membership.OWNER)
@@ -135,7 +135,7 @@ def check_user_organization_permission(request, id):
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(required_roles=['Owner'])
 def update_organization(request, id):
-    serializer = OrganizationSerializer(request.organization, data=request.data, partial=True)
+    serializer = OrganizationSerializer(request.organization, data=request.data, partial=True, context={'request': request})
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
