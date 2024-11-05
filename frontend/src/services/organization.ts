@@ -44,12 +44,9 @@ export async function leaveOrganization(org_id: number) {
   }
 }
 
-export async function listOrganizationMembers(org_id: number, page: number, page_size: number) {
+export async function listOrganizationMembers(org_id: number, query: Partial<QueryOptions>) {
     try {
-        const response = await request.post(`/api/organization/${org_id}/members/list/`, {
-            page: page,
-            page_size: page_size
-        });
+        const response = await request.post(`/api/organization/${org_id}/members/list/`,query);
         return response.data;
     } catch (error) {
         console.error('Failed to get organization members:', error);
@@ -94,12 +91,9 @@ export async function createInvitation(org_id: number, username: string) {
     }
 }
 
-export async function listOrganizationInvitations(org_id: number, page: number, page_size: number) {
+export async function listOrganizationInvitations(org_id: number, query: Partial<QueryOptions>) {
     try {
-        const response = await request.post(`/api/organization/${org_id}/invite/list/`, {
-            page: page,
-            page_size: page_size
-        });
+        const response = await request.post(`/api/organization/${org_id}/invite/list/`, query);
         return response.data;
     } catch (error) {
         console.error('Failed to get organization invitations:', error);
