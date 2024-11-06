@@ -130,11 +130,15 @@ const OrganizationDiscussionPage = () => {
   const handleListTopics = async (
     id: number,
     page: number = 1,
-    pageSize: number = 20,
-    categoryId?: number
+    page_size: number = 20,
+    category_id?: number
   ) => {
     try {
-      const res = await listTopics(id, page, pageSize, categoryId);
+      const res = await listTopics(id, {
+        page,
+        page_size,
+        filters: category_id? {'category_id' : category_id} : {}
+      });
       setTopicCount(res.count);
       setTopicList(res.results);
     } catch (error) {

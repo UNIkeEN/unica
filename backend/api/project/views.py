@@ -13,6 +13,7 @@ from ..organization.decorators import organization_permission_classes
 from .models import Project
 from .serializers import ProjectSerializer, ProjectCreationSerializer
 from .decorators import project_basic_permission_required
+from utils.query import QuerySteps, QueryExecutor, QueryOptions
 
 User = get_user_model()
 
@@ -75,11 +76,9 @@ def create_project(request):
 
 @swagger_auto_schema(
     method='post',
-    request_body=openapi.Schema(
-        type=openapi.TYPE_OBJECT,
-        properties={
-            'page': openapi.Schema(type=openapi.TYPE_INTEGER, default=1),
-            'page_size': openapi.Schema(type=openapi.TYPE_INTEGER, default=20),
+    request_body=QueryOptions.to_openapi_schema(
+        [QuerySteps.PAGINATION],
+        extra_schemas={
             'org_id': openapi.Schema(type=openapi.TYPE_INTEGER, description='Organization ID')
         }
     ),
@@ -97,32 +96,28 @@ def create_project(request):
 def list_projects(request):
     org_id = request.data.get('org_id')
 
-    def _get_projects():
-        if org_id:
-            @organization_permission_classes(['Owner', 'Member'])
-            def __internal_func(request, id):
-                return Project.objects.filter(owner_type=ContentType.objects.get_for_model(Organization), owner_id=id).order_by('-updated_at')
-            
-            return __internal_func(request, id = org_id)
-        else:
-            return Project.objects.filter(owner_type=ContentType.objects.get_for_model(User), owner_id=request.user.id).order_by('-updated_at')
+    if org_id:
+        @organization_permission_classes(['Owner', 'Member'])
+        def __internal_func():
+            return Project.objects.filter(owner_type=ContentType.objects.get_for_model(Organization), owner_id=org_id).order_by('-updated_at')
+        
+        projects = __internal_func()
+    else:
+        projects = Project.objects.filter(owner_type=ContentType.objects.get_for_model(User), owner_id=request.user.id).order_by('-updated_at')
 
-    projects = _get_projects()
     if isinstance(projects, Response):  # return 403 or 404 response from @organization_permission_classes
         return projects
 
-    class CustomPagination(PageNumberPagination):
-        page_size_query_param = 'page_size'
-    paginator = CustomPagination()
+    result = QueryExecutor(
+        projects,
+        options=QueryOptions.build_from_request(request),
+        supported_steps=[QuerySteps.PAGINATION]
+    ).execute().paginated_serialize(
+        ProjectSerializer
+    )
 
-    request.query_params._mutable = True
-    request.query_params['page'] = request.data.get('page', 1)
-    request.query_params['page_size'] = request.data.get('page_size', 20)
-    request.query_params._mutable = False
+    return Response(result, status=status.HTTP_200_OK)
 
-    result_page = paginator.paginate_queryset(projects, request)
-    serializer = ProjectSerializer(result_page, many=True)
-    return paginator.get_paginated_response(serializer.data)
 
 
 @swagger_auto_schema(

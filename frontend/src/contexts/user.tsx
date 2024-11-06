@@ -59,19 +59,20 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   }, [toast, t]);
 
-  const handleListProjects = useCallback(async (page: number, pageSize: number) => {
+  const handleListProjects = useCallback(async (page: number, page_size: number) => {
     try {
-      const projectList = await listProjects(page, pageSize);
+      const projectList = await listProjects({page, page_size});
       return projectList;
     } catch (error) {
       toast({
         title: t('Services.projects.listProjects.error'),
-        status: 'error'
-      })
+        status: 'error',
+      });
       console.error('Failed to list user projects:', error);
       throw error;
     }
   }, [toast, t]);
+  
 
   const updateAll = useCallback(() => {
     updateProfile();

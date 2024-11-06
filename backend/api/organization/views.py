@@ -166,12 +166,8 @@ def delete_organization(request, id):
 
 @swagger_auto_schema(
     method='post',
-    request_body=openapi.Schema(
-        type=openapi.TYPE_OBJECT,
-        properties={
-            'page': openapi.Schema(type=openapi.TYPE_INTEGER, default=1),
-            'page_size': openapi.Schema(type=openapi.TYPE_INTEGER, default=20),
-        }
+    request_body=QueryOptions.to_openapi_schema(
+        [QuerySteps.PAGINATION]
     ),
     responses={
         200: openapi.Response(
@@ -193,20 +189,18 @@ def delete_organization(request, id):
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner', 'Member'])
 def list_organization_members(request, id):
-    class CustomPagination(PageNumberPagination):
-        page_size_query_param = 'page_size'
+    base_query = Membership.objects.filter(organization=request.organization).exclude(role=Membership.PENDING).order_by('-joined_at')
 
-    paginator = CustomPagination()
+    result = QueryExecutor(
+        base_query,
+        options=QueryOptions.build_from_request(request),
+        supported_steps=[QuerySteps.PAGINATION]
+    ).execute().paginated_serialize(
+        MembershipSerializer
+    )
 
-    request.query_params._mutable = True
-    request.query_params['page'] = request.data.get('page', 1)
-    request.query_params['page_size'] = request.data.get('page_size', 20)
-    request.query_params._mutable = False
+    return Response(result, status=status.HTTP_200_OK)
 
-    memberships = Membership.objects.filter(organization=request.organization).exclude(role=Membership.PENDING).order_by('-joined_at')
-    result_page = paginator.paginate_queryset(memberships, request)
-    serializer = MembershipSerializer(result_page, many=True)
-    return paginator.get_paginated_response(serializer.data)
 
 
 @swagger_auto_schema(
@@ -369,12 +363,8 @@ def create_invitation(request, id):
 
 @swagger_auto_schema(
     method='post',
-    request_body=openapi.Schema(
-        type=openapi.TYPE_OBJECT,
-        properties={
-            'page': openapi.Schema(type=openapi.TYPE_INTEGER, default=1),
-            'page_size': openapi.Schema(type=openapi.TYPE_INTEGER, default=20),
-        }
+    request_body=QueryOptions.to_openapi_schema(
+        [QuerySteps.PAGINATION]
     ),
     responses={
         200: openapi.Response(
@@ -396,20 +386,18 @@ def create_invitation(request, id):
 @permission_classes([IsAuthenticated])
 @organization_permission_classes(['Owner'])
 def list_organization_invitations(request, id):
-    class CustomPagination(PageNumberPagination):
-        page_size_query_param = 'page_size'
+    base_query = Membership.objects.filter(organization=request.organization, role=Membership.PENDING).order_by('-joined_at')
 
-    paginator = CustomPagination()
+    result = QueryExecutor(
+        base_query,
+        options=QueryOptions.build_from_request(request),
+        supported_steps=[QuerySteps.PAGINATION]
+    ).execute().paginated_serialize(
+        MembershipSerializer
+    )
 
-    request.query_params._mutable = True
-    request.query_params['page'] = request.data.get('page', 1)
-    request.query_params['page_size'] = request.data.get('page_size', 20)
-    request.query_params._mutable = False
+    return Response(result, status=status.HTTP_200_OK)
 
-    memberships = Membership.objects.filter(organization=request.organization, role=Membership.PENDING).order_by('-joined_at')
-    result_page = paginator.paginate_queryset(memberships, request)
-    serializer = MembershipSerializer(result_page, many=True)
-    return paginator.get_paginated_response(serializer.data)
 
 
 @swagger_auto_schema(

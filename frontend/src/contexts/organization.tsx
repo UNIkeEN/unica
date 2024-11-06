@@ -86,28 +86,32 @@ export const OrganizationContextProvider: React.FC<{ children: React.ReactNode }
     }
   };
 
-  const handleListProjects = async (page: number, pageSize: number, org_id: number) => {
+  const handleListProjects = async (page: number, page_size: number, org_id: number) => {
     if (!org_id) return null;
+    
     try {
-      const projectList = await listProjects(page, pageSize, org_id);
+      const projectList = await listProjects({page, page_size}, org_id);
       setOrgInfo({ ...orgInfo, project_count: projectList.count });
       return projectList.results;
     } catch (error) {
       if (error.request && error.request.status === 403) {
         toastNoPermissionAndRedirect(MemberRoleEnum.NO_PERMISSION);
-      } else toast({
-        title: t('Services.projects.listProjects.error'),
-        status: 'error'
-      })
+      } else {
+        toast({
+          title: t('Services.projects.listProjects.error'),
+          status: 'error'
+        });
+      }
       console.error('Failed to list organization projects:', error);
       throw error;
     }
   };
+  
 
-  const handleListDiscussionCategories = async (page: number, pageSize: number, org_id: number) => {
+  const handleListDiscussionCategories = async (page: number, page_size: number, org_id: number) => {
     if (!org_id || (orgInfo && !orgInfo.is_discussion_enabled)) return null;
     try {
-      const res = await listCategories(org_id, page, pageSize);
+      const res = await listCategories(org_id, {page, page_size});
       return res;
     } catch (error) {
       if (error.request && error.request.status === 403) {

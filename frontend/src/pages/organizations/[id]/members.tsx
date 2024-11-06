@@ -75,9 +75,9 @@ const OrganizationMembersPage = () => {
     }
   }, [router.query.id]);
 
-  const handlListOrganizationMembers = async (id: number, page: number = 1, pageSize: number = 20) => {
+  const handlListOrganizationMembers = async (id: number, page: number = 1, page_size: number = 20) => {
     try {
-      const res = await listOrganizationMembers(id, page, pageSize);
+      const res = await listOrganizationMembers(id, {page, page_size});
       orgCtx.setBasicInfo({
         ...orgCtx.basicInfo,
         member_count: res.count
@@ -97,9 +97,9 @@ const OrganizationMembersPage = () => {
     }
   };
 
-  const handleListOrganizationInvitations = async (id: number, page: number = 1, pageSize: number = 20) => {
+  const handleListOrganizationInvitations = async (id: number, page: number = 1, page_size: number = 20) => {
     try {
-      const res = await listOrganizationInvitations(id, page, pageSize);
+      const res = await listOrganizationInvitations(id, {page, page_size});
       setPendingCount(res.count);
       setPendingList(res.results as OrganizationMember[]);
     } catch (error) {

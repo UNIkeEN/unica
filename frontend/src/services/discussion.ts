@@ -1,5 +1,6 @@
 import { request } from "@/services/request";
 import { DiscussionTopicCategory } from "@/models/discussion";
+import { QueryOptions } from "@/models/query";
 
 export async function enableDiscussion(org_id: number) {
   try {
@@ -23,13 +24,9 @@ export async function getTopicInfo(org_id: number, local_id: number) {
   }
 }
 
-export async function listTopics(org_id: number, page: number, page_size: number, category_id?: number) {
+export async function listTopics(org_id: number, query: Partial<QueryOptions>) {
   try {
-    const response = await request.post(`/api/organization/${org_id}/discussion/topic/list/`, {
-      page: page,
-      page_size: page_size,
-      category_id: category_id
-    });
+    const response = await request.post(`/api/organization/${org_id}/discussion/topic/list/`, query);
     return response.data;
   } catch (error) {
     console.error('Failed to get topic list', error);
@@ -65,12 +62,11 @@ export async function deleteTopic(org_id: number, topic_local_id: number) {
   }
 }
 
-export async function listComments(org_id: number, page: number, page_size: number, local_id: number) {
+export async function listComments(org_id: number, topic_local_id: number, query: Partial<QueryOptions>) {
   try {
     const response = await request.post(`/api/organization/${org_id}/discussion/comment/list/` ,{
-      topic_local_id: local_id,
-      page: page,
-      page_size: page_size
+      topic_local_id: topic_local_id,
+      ...query
     });
     return response.data;
   } catch (error) {
@@ -141,12 +137,9 @@ export async function getCategoryInfo(org_id: number, category_id: number) {
   }
 }
 
-export async function listCategories(org_id: number, page: number, page_size: number) {
+export async function listCategories(org_id: number, query: Partial<QueryOptions>) {
   try {
-    const response = await request.post(`/api/organization/${org_id}/discussion/category/list/`, {
-      page: page,
-      page_size: page_size
-    });
+    const response = await request.post(`/api/organization/${org_id}/discussion/category/list/`, query);
     return response.data;
   } catch (error) {
     console.error('Failed to list categories', error);
