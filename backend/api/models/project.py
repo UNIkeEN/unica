@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.db import models
 import mmh3
 from django.contrib.auth import get_user_model
-from api.organization.models import Organization
+from api.models.organization import Organization
 
 User = get_user_model()
 
@@ -28,7 +28,7 @@ class Project(models.Model):
         super().save(*args, **kwargs)
         # Automatically create the associated board
         if not hasattr(self, 'tasks'):
-            from .task.models import TaskCollection
+            from api.models.task import TaskCollection
             TaskCollection.objects.create(project=self)
 
     def __str__(self):

@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import *
+from api.views.organization import *
 
 urlpatterns = [
     # Organization CRUD
@@ -22,5 +22,5 @@ urlpatterns = [
     path('<int:id>/invite/cancel/', cancel_invitation, name='cancel_invitation'),
 
     # Discussion
-    path('<int:id>/discussion/', include('api.organization.discussion.urls')),
+    path('<int:id>/discussion/', include('api.urls.discussion')),
 ]
