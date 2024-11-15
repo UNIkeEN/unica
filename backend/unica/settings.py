@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     # 'adrf',
     'api',
+    'db',
     'files',
     'oauth', 
     'django.contrib.admin',

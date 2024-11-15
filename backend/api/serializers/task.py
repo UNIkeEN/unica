@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from jsonschema import validate, ValidationError as JSONSchemaValidationError
-from api.models.task import TaskCollection, Task
+from db.task import TaskCollection, Task
 from api.schemas.task import PROPERTY_SCHEMA
 
 class TaskCollectionSerializer(serializers.ModelSerializer):

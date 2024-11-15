@@ -3,8 +3,8 @@ from django.utils import timezone
 from django.db import models, transaction
 from jsonschema import validate, ValidationError as JSONSchemaValidationError
 from api.schemas.task import PROPERTY_SCHEMA
-from api.models.project import Project
-from api.models import AbstractComment
+from db.project import Project
+from db.abstract import AbstractComment
 
 User = get_user_model()
 

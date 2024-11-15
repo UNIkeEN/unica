@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from api.models.project import Project
-from api.models.organization import Organization
+from db.project import Project
+from db.organization import Organization
 
 class ProjectSerializer(serializers.ModelSerializer):
     owner_type = serializers.SerializerMethodField()

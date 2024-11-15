@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.contenttypes.models import ContentType
-from api.models.organization import Organization, Membership
-from api.models.project import Project
+from db.organization import Organization, Membership
+from db.project import Project
 from api.serializers.user import UserBasicInfoSerializer
 
 class MembershipSerializer(serializers.ModelSerializer):

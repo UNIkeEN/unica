@@ -8,8 +8,8 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from api.models.organization import Organization, Membership
-from api.models.project import Project
+from db.organization import Organization, Membership
+from db.project import Project
 from api.serializers.organization import OrganizationSerializer, MembershipSerializer
 from api.decorators.organization import organization_permission_classes
 from utils.query import QuerySteps, QueryExecutor, QueryOptions, QueryResult

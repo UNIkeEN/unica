@@ -8,9 +8,9 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
-from api.models.organization import Organization
+from db.organization import Organization
 from api.decorators.organization import organization_permission_classes
-from api.models.project import Project
+from db.project import Project
 from api.serializers.project import ProjectSerializer, ProjectCreationSerializer
 from api.decorators.project import project_basic_permission_required
 from utils.query import QuerySteps, QueryExecutor, QueryOptions
