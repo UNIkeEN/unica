@@ -39,5 +39,5 @@ urlpatterns = [
 
     # App API
     path("api/", include("api.urls")),
-    path("auth/", include("oauth.urls"))
+    path("auth/", include("authentication.urls"))
 ]

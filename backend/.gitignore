@@ -9,14 +9,14 @@ db.sqlite3
 /api/migrations/**
 !/api/migrations/__init__.py
 
+/authentication/migrations/**
+!/authentication/migrations/__init__.py
+
 /db/migrations/**
 !/db/migrations/__init__.py
 
 /files/migrations/**
 !/files/migrations/__init__.py
-
-/oauth/migrations/**
-!/oauth/migrations/__init__.py
 
 ## build
 
