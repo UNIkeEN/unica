@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from db.discussion import Discussion, DiscussionTopic, DiscussionComment, DiscussionCategory
+from db.models.discussion import Discussion, DiscussionTopic, DiscussionComment, DiscussionCategory
 from api.serializers.user import UserBasicInfoSerializer
 
 

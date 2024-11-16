@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.db import models
 import mmh3
 from django.contrib.auth import get_user_model
-from db.organization import Organization
+from db.models.organization import Organization
 
 User = get_user_model()
 

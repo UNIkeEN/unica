@@ -1,8 +1,8 @@
 from functools import wraps
 from rest_framework.response import Response
 from rest_framework import status
-from db.project import Project
-from db.organization import Membership
+from db.models.project import Project
+from db.models.organization import Membership
 
 
 def project_basic_permission_required(func):

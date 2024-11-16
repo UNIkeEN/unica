@@ -1,5 +1,5 @@
 from django.contrib import admin
-from db.organization import Organization, Membership
+from db.models.organization import Organization, Membership
 
 class MembershipInline(admin.TabularInline):
     model = Membership

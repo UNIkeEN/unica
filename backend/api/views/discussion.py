@@ -9,7 +9,7 @@ from drf_yasg import openapi
 from emoji import is_emoji
 from rest_framework.throttling import UserRateThrottle
 from rest_framework.decorators import throttle_classes
-from db.discussion import Discussion
+from db.models.discussion import Discussion
 from api.decorators.organization import organization_permission_classes
 from api.serializers.discussion import *
 from utils.query import QuerySteps, QueryExecutor, QueryOptions

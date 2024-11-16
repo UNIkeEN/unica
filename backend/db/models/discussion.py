@@ -1,8 +1,8 @@
 from django.db import models, transaction
 from django.utils import timezone
 from django.core.exceptions import ValidationError
-from db.abstract import AbstractComment
-from db.organization import Organization
+from db.models.abstract import AbstractComment
+from db.models.organization import Organization
 
 
 class Discussion(models.Model):
