@@ -176,7 +176,7 @@ const AvatarUploader = () => {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>
-            {t("SettingsPages.profile.settings.avatar.modal.title")}
+            {t("SettingsPages.profile.publicProfile.settings.avatar.modal.title")}
           </ModalHeader>
           <ModalCloseButton />
 
@@ -217,7 +217,7 @@ const AvatarUploader = () => {
               )}
               <FormErrorMessage>
                 {avatarTooLarge
-                  ? t("SettingsPages.profile.settings.avatar.modal.tooLarge")
+                  ? t("SettingsPages.profile.publicProfile.settings.avatar.modal.tooLarge")
                   : ""}
               </FormErrorMessage>
             </FormControl>
@@ -231,10 +231,10 @@ const AvatarUploader = () => {
               isLoading={uploadingAvatar}
               isDisabled={!selectedFile || avatarTooLarge}
             >
-              {t("SettingsPages.profile.settings.avatar.modal.upload")}
+              {t("SettingsPages.profile.publicProfile.settings.avatar.modal.upload")}
             </Button>
             <Button onClick={clearState}>
-              {t("SettingsPages.profile.settings.avatar.modal.cancel")}
+              {t("SettingsPages.profile.publicProfile.settings.avatar.modal.cancel")}
             </Button>
           </ModalFooter>
         </ModalContent>
