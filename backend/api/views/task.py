@@ -8,9 +8,9 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
-from .models import TaskCollection, Task
-from .serializers import TaskCollectionSerializer, TaskSerializer
-from ..decorators import project_basic_permission_required
+from db.models.task import TaskCollection, Task
+from api.serializers.task import TaskCollectionSerializer, TaskSerializer
+from api.decorators.project import project_basic_permission_required
 
 
 @swagger_auto_schema(

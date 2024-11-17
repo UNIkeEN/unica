@@ -1,7 +1,7 @@
 from functools import wraps
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Organization, Membership
+from db.models.organization import Organization, Membership
 
 def organization_permission_classes(required_roles=None):
     if required_roles is None:

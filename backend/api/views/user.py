@@ -7,8 +7,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from ..project.task.serializers import TaskSerializer
-from .serializers import UserProfileSerializer
+from api.serializers.task import TaskSerializer
+from api.serializers.user import UserProfileSerializer
 from files.serializers import UserFileSerializer, UserFileSerializerConfig
 from PIL import Image
 from io import BytesIO

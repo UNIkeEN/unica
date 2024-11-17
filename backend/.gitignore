@@ -12,6 +12,9 @@ db.sqlite3
 /authentication/migrations/**
 !/authentication/migrations/__init__.py
 
+/db/migrations/**
+!/db/migrations/__init__.py
+
 /files/migrations/**
 !/files/migrations/__init__.py
 

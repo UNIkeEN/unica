@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import *
+from api.views.project import *
 
 urlpatterns = [
     # Project CRUD
@@ -8,5 +8,5 @@ urlpatterns = [
     path('<int:id>/info/', get_project_info, name='get_project_info'),
 
     # Tasks
-    path('<int:id>/task/', include('api.project.task.urls')),
+    path('<int:id>/task/', include('api.urls.task')),
 ]

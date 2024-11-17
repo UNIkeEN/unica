@@ -2,9 +2,9 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.db import models, transaction
 from jsonschema import validate, ValidationError as JSONSchemaValidationError
-from .schemas import PROPERTY_SCHEMA
-from api.project.models import Project
-from api.models import AbstractComment
+from api.schemas.task import PROPERTY_SCHEMA
+from db.models.project import Project
+from db.models.abstract import AbstractComment
 
 User = get_user_model()
 

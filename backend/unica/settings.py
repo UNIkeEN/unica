@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     # 'adrf',
     'api',
     'authentication',
+    'db',
     'files', 
     'django.contrib.admin',
 ]

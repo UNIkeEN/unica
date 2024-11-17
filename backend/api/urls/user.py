@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import UserProfileAPIView, upload_user_avatar, list_pinned_tasks
+from api.views.user import UserProfileAPIView, upload_user_avatar, list_pinned_tasks
 
 urlpatterns = [
     path('profile/', UserProfileAPIView.as_view(), name='user-profile'),
