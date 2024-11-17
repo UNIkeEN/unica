@@ -28,7 +28,7 @@ class Project(models.Model):
         super().save(*args, **kwargs)
         # Automatically create the associated board
         if not hasattr(self, 'tasks'):
-            from api.models.task import TaskCollection
+            from db.models.task import TaskCollection
             TaskCollection.objects.create(project=self)
 
     def __str__(self):
