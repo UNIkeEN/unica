@@ -13,7 +13,13 @@ def delete_files(directory, pattern):
                 print(f"Error deleting {file}: {e}")
 
 def main():
-    directories = ["api/migrations/", "oauth/migrations/"]
+    directories = [
+        # "api/migrations/", 
+        # "authentication/migrations/", 
+        "db/migrations/", 
+        # "files/migrations/"
+    ]
+    
     for directory in directories:
         delete_files(directory, "*.py")
 

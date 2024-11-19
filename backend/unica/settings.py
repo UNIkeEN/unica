@@ -32,7 +32,7 @@ CSRF_TRUSTED_ORIGINS = []
 if os.environ.get('CSRF_TRUSTED_ORIGINS', None):
     CSRF_TRUSTED_ORIGINS += os.environ.get('CSRF_TRUSTED_ORIGINS').split(',')
 
-AUTH_USER_MODEL = 'oauth.UnicaUser'
+AUTH_USER_MODEL = 'db.UnicaUser'
 
 LOGGING = {
     'version': 1,
@@ -57,14 +57,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'api',
+    'authentication',
+    'db',
+    'files', 
+    'django.contrib.admin',
     'corsheaders',
     'rest_framework',
     'drf_yasg',
-    # 'adrf',
-    'api',
-    'files',
-    'oauth', 
-    'django.contrib.admin',
 ]
 
 MIDDLEWARE = [

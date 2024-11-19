@@ -14,7 +14,7 @@ if platform.system() == 'Darwin':
     import pylibmagic
 import magic
 
-from .models import UserFile
+from db.models.userfile import UserFile
 
 def strict_type_check(file: UploadedFile, allowed_types: List[str]) -> bool:
     mime = magic.Magic(mime=True)
