@@ -9,6 +9,7 @@ import {
   AlertDialogCloseButton,
   Button,
 } from "@chakra-ui/react";
+import { FocusableElement } from "@chakra-ui/utils";
 
 interface GenericConfirmDialogProps {
   isOpen: boolean;
@@ -31,7 +32,7 @@ const GenericConfirmDialog: React.FC<GenericConfirmDialogProps> = ({
   onOKCallback,
   isAlert = true,
 }) => {
-  const cancelRef = useRef();
+  const cancelRef = useRef<HTMLButtonElement>(null);
 
   return (
     <AlertDialog
