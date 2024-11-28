@@ -11,18 +11,18 @@ const NotFoundPage = () => {
   const [seconds, setSeconds] = useState(3);
 
   useEffect(() => {
-    if (seconds > 1) {
-      const timer = setTimeout(() => {
-        setSeconds(seconds - 1);
-      }, 1000);
-      return () => clearTimeout(timer);
-    } else {
-      const timer = setTimeout(() => {
-        router.push('/home');
-      }, 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [seconds, router]);
+    const interval = setInterval(() => {
+      setSeconds((prev) => {
+        if (prev === 1) {
+          clearInterval(interval);
+          router.push('/home'); 
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [router]);
 
   return (
     <>
@@ -39,10 +39,8 @@ const NotFoundPage = () => {
         }}
       >
         <VStack>
-          <Icon as={FiX} w={8} h={8} color='red.500' />
-          <Text>
-            {t('NotFoundPage.text', { seconds: seconds })}
-          </Text>
+          <Icon as={FiX} w={8} h={8} color="red.500" />
+          <Text>{t('NotFoundPage.text', { seconds })}</Text>
         </VStack>
       </div>
     </>
